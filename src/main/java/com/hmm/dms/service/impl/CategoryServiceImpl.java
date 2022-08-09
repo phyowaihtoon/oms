@@ -58,20 +58,20 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public Page<CategoryDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Categories");
+        log.debug("Requesting to get all Categories");
         return categoryRepository.findAll(pageable).map(categoryMapper::toDto);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<CategoryDTO> findOne(Long id) {
-        log.debug("Request to get Category : {}", id);
+        log.debug("Requesting to get Category : {}", id);
         return categoryRepository.findById(id).map(categoryMapper::toDto);
     }
 
     @Override
     public void delete(Long id) {
-        log.debug("Request to delete Category : {}", id);
+        log.debug("Requesting to delete Category : {}", id);
         categoryRepository.deleteById(id);
     }
 }
