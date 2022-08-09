@@ -41,6 +41,8 @@
     "packageFolder": "com/hmm/dms",
     "jwtSecretKey": "ZjkwZDdhZjZkNDAyNTFmZDkyMjQ3OTA2NGFmMGQzMDAwYWExYWE4NTM2MTliNDQ2NWFiMjdiZjlkYzYzNzRmNjE0MTRmYjNhMDIxODFiMDE5YzkyYTYxNzI3NDEzNjY1NGMxNTE4MmEyN2RlNGNmNDRjODkwYTAxNGMzODdlYTE=",
     "clientPackageManager": "npm",
-    "languages": ["en", "my"]
+    "languages": ["en", "my"],
+    "lastLiquibaseTimestamp": 1659972460000,
+    "entities": ["Category", "Book"]
   }
 }
