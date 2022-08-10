@@ -1,28 +1,20 @@
-export interface IMetaDataHeader {
+export interface IDocumentHeader {
   id?: number;
-  docTitle?: string;
+  metaDataHeaderId?: string;
+  fieldNames?: string;
+  fieldValues?: string;
 }
 
-export class MetaDataHeader implements IMetaDataHeader {
-  constructor(public id?: number, public docTitle?: string) {}
+export class DocumentHeader implements IDocumentHeader {
+  constructor(public id?: number, public metaDataHeaderId?: string, public fieldNames?: string, public fieldValues?: string) {}
 }
 
-export interface IMetaData {
+export interface IDocument {
   id?: number;
   headerId?: number;
-  fieldName?: string;
-  fieldType?: string;
-  isRequired?: string;
-  fieldOrder?: number;
+  filePath?: string;
 }
 
-export class MetaData implements IMetaData {
-  constructor(
-    public id?: number,
-    public headerId?: number,
-    public fieldName?: string,
-    public fieldType?: string,
-    public isRequired?: string,
-    public fieldOrder?: number
-  ) {}
+export class Document implements IDocument {
+  constructor(public id?: number, public headerId?: number, public filePath?: string) {}
 }
