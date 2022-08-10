@@ -11,6 +11,6 @@ class CategoryMapperTest {
 
     @BeforeEach
     public void setUp() {
-        categoryMapper = new CategoryMapperImpl();
+        // categoryMapper = new CategoryMapperImpl();
     }
 }
