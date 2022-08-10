@@ -1,6 +1,6 @@
 {
   "login": {
-    "title": "Sign in",
+    "title": "Document Management System",
     "form": {
       "password": "Password",
       "password.placeholder": "Your password",

@@ -1,0 +1,15 @@
+{
+  "fields": [
+    {
+      "fieldName": "docTitle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "MetaDataHeader",
+  "changelogDate": "20220809163109"
+}
