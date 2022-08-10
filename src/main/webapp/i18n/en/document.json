@@ -1,0 +1,24 @@
+{
+  "dmsApp": {
+    "document": {
+      "home": {
+        "title": "Document",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Document",
+        "createOrEditLabel": "Document Creation",
+        "notFound": "No Document found"
+      },
+      "created": "Document is created with identifier {{ param }}",
+      "updated": "Document is updated with identifier {{ param }}",
+      "deleted": "Document is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Document {{ id }}?"
+      },
+      "detail": {
+        "title": "Document"
+      },
+      "id": "ID",
+      "docTitle": "Document Title"
+    }
+  }
+}

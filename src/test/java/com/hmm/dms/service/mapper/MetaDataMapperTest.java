@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class CategoryMapperTest {
+class MetaDataMapperTest {
 
-    private CategoryMapper categoryMapper;
+    private MetaDataMapper metaDataMapper;
 
     @BeforeEach
     public void setUp() {
-        //categoryMapper = new CategoryMapperImpl();
+        //metaDataMapper = new MetaDataMapperImpl();
     }
 }
