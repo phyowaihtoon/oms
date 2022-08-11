@@ -42,7 +42,7 @@
     "jwtSecretKey": "ZjkwZDdhZjZkNDAyNTFmZDkyMjQ3OTA2NGFmMGQzMDAwYWExYWE4NTM2MTliNDQ2NWFiMjdiZjlkYzYzNzRmNjE0MTRmYjNhMDIxODFiMDE5YzkyYTYxNzI3NDEzNjY1NGMxNTE4MmEyN2RlNGNmNDRjODkwYTAxNGMzODdlYTE=",
     "clientPackageManager": "npm",
     "languages": ["en", "my"],
-    "lastLiquibaseTimestamp": 1660147675000,
-    "entities": ["Category", "MetaDataHeader", "MetaData", "DocumentHeader", "Document"]
+    "lastLiquibaseTimestamp": 1660216530000,
+    "entities": ["Category", "MetaDataHeader", "MetaData", "DocumentHeader", "Document", "RoleMenuMap"]
   }
 }
