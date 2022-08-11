@@ -11,6 +11,6 @@ class RoleMenuMapMapperTest {
 
     @BeforeEach
     public void setUp() {
-        roleMenuMapMapper = new RoleMenuMapMapperImpl();
+        //roleMenuMapMapper = new RoleMenuMapMapperImpl();
     }
 }
