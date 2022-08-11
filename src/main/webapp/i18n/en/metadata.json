@@ -1,0 +1,24 @@
+{
+  "dmsApp": {
+    "metadata": {
+      "home": {
+        "title": "MetaData",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new MetaData",
+        "createOrEditLabel": "MetaData Creation",
+        "notFound": "No MetaData found"
+      },
+      "created": "Metadata is created with identifier {{ param }}",
+      "updated": "MetaData is updated with identifier {{ param }}",
+      "deleted": "MetaData is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete MetaData {{ id }}?"
+      },
+      "detail": {
+        "title": "MetaData"
+      },
+      "id": "ID",
+      "docTitle": "Document Title"
+    }
+  }
+}
