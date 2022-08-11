@@ -1,0 +1,22 @@
+{
+  "fields": [
+    {
+      "fieldName": "metaDataHeaderId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "fieldNames",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fieldValues",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "service": "no",
+  "readOnly": false,
+  "pagination": "no",
+  "name": "DocumentHeader",
+  "changelogDate": "20220810160232"
+}
