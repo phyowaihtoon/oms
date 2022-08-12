@@ -8,6 +8,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
-  exports: [FormsModule, CommonModule, NgbModule, InfiniteScrollModule, FontAwesomeModule, ReactiveFormsModule, TranslateModule,NgxExtendedPdfViewerModule],
+  exports: [
+    FormsModule,
+    CommonModule,
+    NgbModule,
+    InfiniteScrollModule,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    NgxExtendedPdfViewerModule,
+  ],
 })
 export class SharedLibsModule {}

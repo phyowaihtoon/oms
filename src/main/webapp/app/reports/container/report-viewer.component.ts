@@ -28,12 +28,14 @@ export class ReportViewerComponent implements OnInit {
     const rptFormat = this.activatedRoute.snapshot.queryParamMap.get('rptFormat');
     if (this.rptFileName != null && rptFormat != null) {
       const rptFileWithExt = this.rptFileName.concat(rptFormat.toString());
-      this.reportService.showPDF(rptFileWithExt).subscribe((res: Blob) => {
-        this.pdfBlobURL = res;
-        console.log("PDF Byte Data from server");
-        console.log(this.pdfBlobURL);
-      },
-      error => console.log("Failed to show file in report viewer",error));
+      this.reportService.showPDF(rptFileWithExt).subscribe(
+        (res: Blob) => {
+          this.pdfBlobURL = res;
+          console.log('PDF Byte Data from server');
+          console.log(this.pdfBlobURL);
+        },
+        error => console.log('Failed to show file in report viewer', error)
+      );
     }
   }
 
@@ -41,13 +43,11 @@ export class ReportViewerComponent implements OnInit {
     const rptFormat = this.editForm.get(['rptFormat'])!.value;
     const rptFileNameWithExt = this.rptFileName?.concat(rptFormat);
     if (rptFileNameWithExt !== undefined) {
-      this.reportService.downloadFile(rptFileNameWithExt).subscribe(
-        (res: Blob) => {
-          FileSaver.saveAs(res, rptFileNameWithExt);
-          // const downloadURL=window.URL.createObjectURL(res);
-          // window.open(downloadURL);
-        }
-      );
+      this.reportService.downloadFile(rptFileNameWithExt).subscribe((res: Blob) => {
+        FileSaver.saveAs(res, rptFileNameWithExt);
+        // const downloadURL=window.URL.createObjectURL(res);
+        // window.open(downloadURL);
+      });
     }
   }
 }

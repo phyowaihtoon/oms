@@ -7,6 +7,8 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./document-update.component.scss'],
 })
 export class DocumentUpdateComponent {
+  docTypes: any = ['Agreement', 'Proposal', 'Payslip', 'Other'];
+
   isSaving = false;
 
   editForm = this.fb.group({
@@ -22,5 +24,9 @@ export class DocumentUpdateComponent {
 
   save(): void {
     this.isSaving = true;
+  }
+
+  onChanged(e: any): void {
+    console.warn('Testing....');
   }
 }

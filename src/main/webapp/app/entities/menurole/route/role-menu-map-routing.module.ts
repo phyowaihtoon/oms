@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RoleMenuMapComponent } from '../list/role-menu-map.component';
-import { RouterModule,Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 const roleMenuMapRoute: Routes = [
   {
@@ -13,4 +13,4 @@ const roleMenuMapRoute: Routes = [
   imports: [RouterModule.forChild(roleMenuMapRoute)],
   exports: [RouterModule],
 })
-export class RoleMenuMapRoutingModule { }
+export class RoleMenuMapRoutingModule {}

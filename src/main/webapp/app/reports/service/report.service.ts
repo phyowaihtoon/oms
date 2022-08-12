@@ -27,6 +27,4 @@ export class ReportService {
   downloadFile(fileName: string): Observable<Blob> {
     return this.http.get(`${this.downloadUrl}/${fileName}`, { responseType: 'blob' });
   }
-
-
 }

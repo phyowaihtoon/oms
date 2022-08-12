@@ -13,11 +13,11 @@
         "menurole": "Role & Menu Mapping",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
-      "modules":{
-        "report":"Report"
+      "modules": {
+        "report": "Report"
       },
-      "reports":{
-        "docmaprpt":"Document Mapping Report"
+      "reports": {
+        "docmaprpt": "Document Mapping Report"
       },
       "account": {
         "main": "Account",

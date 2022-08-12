@@ -8,9 +8,8 @@ describe('RoleMenuMapComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RoleMenuMapComponent ]
-    })
-    .compileComponents();
+      declarations: [RoleMenuMapComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
