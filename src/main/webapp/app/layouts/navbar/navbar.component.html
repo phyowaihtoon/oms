@@ -45,18 +45,6 @@
           <li>
             <a
               class="dropdown-item"
-              routerLink="category"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="collapseNavbar()"
-            >
-              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.entities.category">Category</span>
-            </a>
-          </li>
-          <li>
-            <a
-              class="dropdown-item"
               routerLink="metadata"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
@@ -97,18 +85,7 @@
               <span jhiTranslate="global.menu.entities.document">Document</span>
             </a>
           </li>
-          <li>
-            <a
-              class="dropdown-item"
-              routerLink="menurole"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="collapseNavbar()"
-            >
-              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.entities.menurole">Role & Menu Mapping</span>
-            </a>
-          </li>
+
           <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
         </ul>
       </li>
@@ -166,18 +143,34 @@
               <span jhiTranslate="global.menu.admin.userManagement">User management</span>
             </a>
           </li>
+
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="menurole"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.entities.menurole">Role & Menu Mapping</span>
+            </a>
+          </li>
+          <!--
           <li>
             <a class="dropdown-item" routerLink="admin/metrics" routerLinkActive="active" (click)="collapseNavbar()">
               <fa-icon icon="tachometer-alt" [fixedWidth]="true"></fa-icon>
               <span jhiTranslate="global.menu.admin.metrics">Metrics</span>
             </a>
           </li>
+          -->
           <li>
             <a class="dropdown-item" routerLink="admin/health" routerLinkActive="active" (click)="collapseNavbar()">
               <fa-icon icon="heart" [fixedWidth]="true"></fa-icon>
               <span jhiTranslate="global.menu.admin.health">Health</span>
             </a>
           </li>
+          <!--
           <li>
             <a class="dropdown-item" routerLink="admin/configuration" routerLinkActive="active" (click)="collapseNavbar()">
               <fa-icon icon="cogs" [fixedWidth]="true"></fa-icon>
@@ -196,6 +189,7 @@
               <span jhiTranslate="global.menu.admin.apidocs">API</span>
             </a>
           </li>
+          -->
           <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
         </ul>
       </li>

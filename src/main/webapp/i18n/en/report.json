@@ -1,0 +1,11 @@
+{
+  "report": {
+    "parameter": {
+      "startDate": "Start Date",
+      "endDate": "End Date"
+    },
+    "validation": {
+      "datePattern": "Date must be entered in DD-MM-YYYY"
+    }
+  }
+}
