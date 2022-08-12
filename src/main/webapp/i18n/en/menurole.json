@@ -1,0 +1,24 @@
+{
+  "dmsApp": {
+    "menurole": {
+      "home": {
+        "title": "Role & Menu Mapping",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Mapping",
+        "createOrEditLabel": "Role & Menu Mapping",
+        "notFound": "No Mapping found"
+      },
+      "created": "Mapping is created with identifier {{ param }}",
+      "updated": "Mapping is updated with identifier {{ param }}",
+      "deleted": "Mapping is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Mapping {{ id }}?"
+      },
+      "detail": {
+        "title": "Role & Menu Mapping"
+      },
+      "id": "ID",
+      "roleId": "Role ID"
+    }
+  }
+}

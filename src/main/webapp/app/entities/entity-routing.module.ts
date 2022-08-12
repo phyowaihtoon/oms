@@ -19,6 +19,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'dmsApp.document.home.title' },
         loadChildren: () => import('./document/document.module').then(m => m.DocumentModule),
       },
+      {
+        path: 'menurole',
+        data: { pageTitle: 'dmsApp.menurole.home.title' },
+        loadChildren: () => import('./menurole/role-menu-map.module').then(m => m.RoleMenuMapModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],
