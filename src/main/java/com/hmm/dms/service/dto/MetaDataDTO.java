@@ -25,6 +25,8 @@ public class MetaDataDTO implements Serializable {
 
     private Integer fieldOrder;
 
+    private String fieldValue;
+
     public Long getId() {
         return id;
     }
@@ -73,6 +75,14 @@ public class MetaDataDTO implements Serializable {
         this.fieldOrder = fieldOrder;
     }
 
+    public String getFieldValue() {
+        return fieldValue;
+    }
+
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -104,6 +114,7 @@ public class MetaDataDTO implements Serializable {
             ", fieldType='" + getFieldType() + "'" +
             ", isRequired='" + getIsRequired() + "'" +
             ", fieldOrder=" + getFieldOrder() +
+            ", fieldValue='" + getFieldValue() + "'" +
             "}";
     }
 }
