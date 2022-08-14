@@ -1,6 +1,6 @@
 package com.hmm.dms.web.rest;
 
-import com.hmm.dms.repository.RepositoryRepository;
+import com.hmm.dms.repository.RepositoryDocRepository;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
@@ -41,9 +41,9 @@ public class RepositoryResource {
 
     private final RepositoryService repositoryService;
 
-    private final RepositoryRepository repositoryRepository;
+    private final RepositoryDocRepository repositoryRepository;
 
-    public RepositoryResource(RepositoryService repositoryService, RepositoryRepository repositoryRepository) {
+    public RepositoryResource(RepositoryService repositoryService, RepositoryDocRepository repositoryRepository) {
         this.repositoryService = repositoryService;
         this.repositoryRepository = repositoryRepository;
     }
