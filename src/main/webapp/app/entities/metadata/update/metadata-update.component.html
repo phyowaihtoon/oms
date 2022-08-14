@@ -14,8 +14,55 @@
         </div>
 
         <div class="form-group">
-          <label class="form-control-label" jhiTranslate="dmsApp.metadata.docTitle" for="field_docTitle">Document Title</label>
-          <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
+          <div class="form-group col-6">
+            <label class="form-control-label" jhiTranslate="dmsApp.metadata.docTitle" for="field_docTitle">Document Title</label>
+            <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
+          </div>
+          <h4 style="margin-top: 50px; padding-left: 8px">Please Add Detail Fields</h4>
+          <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+            <table class="table" formArrayName="fieldList">
+              <thead>
+                <tr>
+                  <th class="text-center">Field Name</th>
+                  <th class="text-center">Field Type</th>
+                  <th class="text-center">Field Mandatory</th>
+                  <th class="text-center">Field Order</th>
+                  <th class="text-center">Add/ Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
+                  <td>
+                    <input type="text" class="col-12 form-control" placeholder="Field Name" formControlName="fieldName" />
+                  </td>
+                  <td>
+                    <select class="form-control" name="fieldType" formControlName="fieldType">
+                      <option [value]="data.value" *ngFor="let data of fieldTyepList">{{ data.caption }}</option>
+                    </select>
+                  </td>
+
+                  <td>
+                    <select class="form-control" name="isRequired" formControlName="isRequired">
+                      <option [value]="data.value" *ngFor="let data of mendatoryList">{{ data.caption }}</option>
+                    </select>
+                  </td>
+
+                  <td>
+                    <input type="number" class="col-12 form-control" placeholder="Field Order" formControlName="fieldOrder" />
+                  </td>
+
+                  <td style="padding: 3px">
+                    <span title="Remove" (click)="removeField(i)">
+                      <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                    </span>
+                    <span *ngIf="isLast" title="Add" (click)="addField()">
+                      <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
