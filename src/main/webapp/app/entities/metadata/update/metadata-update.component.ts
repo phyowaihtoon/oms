@@ -21,6 +21,7 @@ export class MetadataUpdateComponent implements AfterViewInit, OnDestroy {
     { value: 'Date', caption: 'Date' },
     { value: 'LOV', caption: 'LOV' },
     { value: 'LOV2', caption: 'LOV2' },
+    { value: 'LOV3', caption: 'LOV3' },
   ];
 
   mendatoryList = [
