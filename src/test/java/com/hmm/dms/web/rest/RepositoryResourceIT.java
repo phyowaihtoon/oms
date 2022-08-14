@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.hmm.dms.IntegrationTest;
 import com.hmm.dms.domain.Repository;
-import com.hmm.dms.repository.RepositoryRepository;
+import com.hmm.dms.repository.RepositoryDocRepository;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.mapper.RepositoryMapper;
 import java.util.List;
@@ -47,7 +47,7 @@ class RepositoryResourceIT {
     private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
-    private RepositoryRepository repositoryRepository;
+    private RepositoryDocRepository repositoryRepository;
 
     @Autowired
     private RepositoryMapper repositoryMapper;
