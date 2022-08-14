@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class MetaDataMapperTest {
+class RepositoryMapperTest {
 
-    private MetaDataMapper metaDataMapper;
+    private RepositoryMapper repositoryMapper;
 
     @BeforeEach
     public void setUp() {
-        metaDataMapper = new MetaDataMapperImpl();
+        repositoryMapper = new RepositoryMapperImpl();
     }
 }

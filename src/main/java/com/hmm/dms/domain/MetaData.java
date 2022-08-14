@@ -39,6 +39,9 @@ public class MetaData implements Serializable {
     @Column(name = "field_order")
     private Integer fieldOrder;
 
+    @Column(name = "field_value")
+    private String fieldValue;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -118,6 +121,19 @@ public class MetaData implements Serializable {
         this.fieldOrder = fieldOrder;
     }
 
+    public String getFieldValue() {
+        return this.fieldValue;
+    }
+
+    public MetaData fieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
+        return this;
+    }
+
+    public void setFieldValue(String fieldValue) {
+        this.fieldValue = fieldValue;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -147,6 +163,7 @@ public class MetaData implements Serializable {
             ", fieldType='" + getFieldType() + "'" +
             ", isRequired='" + getIsRequired() + "'" +
             ", fieldOrder=" + getFieldOrder() +
+            ", fieldValue='" + getFieldValue() + "'" +
             "}";
     }
 }

@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "meta_data_header")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class MetaDataHeader implements Serializable {
+public class MetaDataHeader extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -133,6 +133,9 @@ public class DocumentHeaderResource {
                     if (documentHeader.getFieldValues() != null) {
                         existingDocumentHeader.setFieldValues(documentHeader.getFieldValues());
                     }
+                    if (documentHeader.getRepositoryURL() != null) {
+                        existingDocumentHeader.setRepositoryURL(documentHeader.getRepositoryURL());
+                    }
 
                     return existingDocumentHeader;
                 }

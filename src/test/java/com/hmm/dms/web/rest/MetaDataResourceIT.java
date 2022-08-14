@@ -46,6 +46,9 @@ class MetaDataResourceIT {
     private static final Integer DEFAULT_FIELD_ORDER = 1;
     private static final Integer UPDATED_FIELD_ORDER = 2;
 
+    private static final String DEFAULT_FIELD_VALUE = "AAAAAAAAAA";
+    private static final String UPDATED_FIELD_VALUE = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/meta-data";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -78,7 +81,8 @@ class MetaDataResourceIT {
             .fieldName(DEFAULT_FIELD_NAME)
             .fieldType(DEFAULT_FIELD_TYPE)
             .isRequired(DEFAULT_IS_REQUIRED)
-            .fieldOrder(DEFAULT_FIELD_ORDER);
+            .fieldOrder(DEFAULT_FIELD_ORDER)
+            .fieldValue(DEFAULT_FIELD_VALUE);
         return metaData;
     }
 
@@ -94,7 +98,8 @@ class MetaDataResourceIT {
             .fieldName(UPDATED_FIELD_NAME)
             .fieldType(UPDATED_FIELD_TYPE)
             .isRequired(UPDATED_IS_REQUIRED)
-            .fieldOrder(UPDATED_FIELD_ORDER);
+            .fieldOrder(UPDATED_FIELD_ORDER)
+            .fieldValue(UPDATED_FIELD_VALUE);
         return metaData;
     }
 
@@ -122,6 +127,7 @@ class MetaDataResourceIT {
         assertThat(testMetaData.getFieldType()).isEqualTo(DEFAULT_FIELD_TYPE);
         assertThat(testMetaData.getIsRequired()).isEqualTo(DEFAULT_IS_REQUIRED);
         assertThat(testMetaData.getFieldOrder()).isEqualTo(DEFAULT_FIELD_ORDER);
+        assertThat(testMetaData.getFieldValue()).isEqualTo(DEFAULT_FIELD_VALUE);
     }
 
     @Test
@@ -231,7 +237,8 @@ class MetaDataResourceIT {
             .andExpect(jsonPath("$.[*].fieldName").value(hasItem(DEFAULT_FIELD_NAME)))
             .andExpect(jsonPath("$.[*].fieldType").value(hasItem(DEFAULT_FIELD_TYPE)))
             .andExpect(jsonPath("$.[*].isRequired").value(hasItem(DEFAULT_IS_REQUIRED)))
-            .andExpect(jsonPath("$.[*].fieldOrder").value(hasItem(DEFAULT_FIELD_ORDER)));
+            .andExpect(jsonPath("$.[*].fieldOrder").value(hasItem(DEFAULT_FIELD_ORDER)))
+            .andExpect(jsonPath("$.[*].fieldValue").value(hasItem(DEFAULT_FIELD_VALUE)));
     }
 
     @Test
@@ -250,7 +257,8 @@ class MetaDataResourceIT {
             .andExpect(jsonPath("$.fieldName").value(DEFAULT_FIELD_NAME))
             .andExpect(jsonPath("$.fieldType").value(DEFAULT_FIELD_TYPE))
             .andExpect(jsonPath("$.isRequired").value(DEFAULT_IS_REQUIRED))
-            .andExpect(jsonPath("$.fieldOrder").value(DEFAULT_FIELD_ORDER));
+            .andExpect(jsonPath("$.fieldOrder").value(DEFAULT_FIELD_ORDER))
+            .andExpect(jsonPath("$.fieldValue").value(DEFAULT_FIELD_VALUE));
     }
 
     @Test
@@ -277,7 +285,8 @@ class MetaDataResourceIT {
             .fieldName(UPDATED_FIELD_NAME)
             .fieldType(UPDATED_FIELD_TYPE)
             .isRequired(UPDATED_IS_REQUIRED)
-            .fieldOrder(UPDATED_FIELD_ORDER);
+            .fieldOrder(UPDATED_FIELD_ORDER)
+            .fieldValue(UPDATED_FIELD_VALUE);
         MetaDataDTO metaDataDTO = metaDataMapper.toDto(updatedMetaData);
 
         restMetaDataMockMvc
@@ -297,6 +306,7 @@ class MetaDataResourceIT {
         assertThat(testMetaData.getFieldType()).isEqualTo(UPDATED_FIELD_TYPE);
         assertThat(testMetaData.getIsRequired()).isEqualTo(UPDATED_IS_REQUIRED);
         assertThat(testMetaData.getFieldOrder()).isEqualTo(UPDATED_FIELD_ORDER);
+        assertThat(testMetaData.getFieldValue()).isEqualTo(UPDATED_FIELD_VALUE);
     }
 
     @Test
@@ -376,7 +386,11 @@ class MetaDataResourceIT {
         MetaData partialUpdatedMetaData = new MetaData();
         partialUpdatedMetaData.setId(metaData.getId());
 
-        partialUpdatedMetaData.headerId(UPDATED_HEADER_ID).fieldType(UPDATED_FIELD_TYPE).fieldOrder(UPDATED_FIELD_ORDER);
+        partialUpdatedMetaData
+            .headerId(UPDATED_HEADER_ID)
+            .fieldType(UPDATED_FIELD_TYPE)
+            .fieldOrder(UPDATED_FIELD_ORDER)
+            .fieldValue(UPDATED_FIELD_VALUE);
 
         restMetaDataMockMvc
             .perform(
@@ -395,6 +409,7 @@ class MetaDataResourceIT {
         assertThat(testMetaData.getFieldType()).isEqualTo(UPDATED_FIELD_TYPE);
         assertThat(testMetaData.getIsRequired()).isEqualTo(DEFAULT_IS_REQUIRED);
         assertThat(testMetaData.getFieldOrder()).isEqualTo(UPDATED_FIELD_ORDER);
+        assertThat(testMetaData.getFieldValue()).isEqualTo(UPDATED_FIELD_VALUE);
     }
 
     @Test
@@ -414,7 +429,8 @@ class MetaDataResourceIT {
             .fieldName(UPDATED_FIELD_NAME)
             .fieldType(UPDATED_FIELD_TYPE)
             .isRequired(UPDATED_IS_REQUIRED)
-            .fieldOrder(UPDATED_FIELD_ORDER);
+            .fieldOrder(UPDATED_FIELD_ORDER)
+            .fieldValue(UPDATED_FIELD_VALUE);
 
         restMetaDataMockMvc
             .perform(
@@ -433,6 +449,7 @@ class MetaDataResourceIT {
         assertThat(testMetaData.getFieldType()).isEqualTo(UPDATED_FIELD_TYPE);
         assertThat(testMetaData.getIsRequired()).isEqualTo(UPDATED_IS_REQUIRED);
         assertThat(testMetaData.getFieldOrder()).isEqualTo(UPDATED_FIELD_ORDER);
+        assertThat(testMetaData.getFieldValue()).isEqualTo(UPDATED_FIELD_VALUE);
     }
 
     @Test
