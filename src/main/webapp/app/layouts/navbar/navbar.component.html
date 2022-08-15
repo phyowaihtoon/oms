@@ -38,7 +38,7 @@
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
           <span>
             <fa-icon icon="th-list"></fa-icon>
-            <span jhiTranslate="global.menu.entities.metadata">MetaData</span>
+            <span jhiTranslate="global.menu.metadata.title">MetaData</span>
           </span>
         </a>
         <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
@@ -51,7 +51,7 @@
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.entities.metadata">MetaData</span>
+              <span jhiTranslate="global.menu.metadata.title">MetaData</span>
             </a>
           </li>
           <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
@@ -69,7 +69,7 @@
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
           <span>
             <fa-icon icon="th-list"></fa-icon>
-            <span jhiTranslate="global.menu.entities.document">Document</span>
+            <span jhiTranslate="global.menu.document.title">Document</span>
           </span>
         </a>
         <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
@@ -82,7 +82,19 @@
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.entities.document">Document</span>
+              <span jhiTranslate="global.menu.document.update">Document</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              routerLink="document/search"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.document.search">Document Inquiry</span>
             </a>
           </li>
 
@@ -153,7 +165,7 @@
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.entities.menurole">Role & Menu Mapping</span>
+              <span jhiTranslate="global.menu.menurole.title">Role & Menu Mapping</span>
             </a>
           </li>
           <!--

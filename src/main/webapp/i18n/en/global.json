@@ -8,13 +8,21 @@
       "entities": {
         "main": "Entities",
         "category": "Category",
-        "metadata": "MetaData",
-        "document": "Document",
-        "menurole": "Role & Menu Mapping",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "modules": {
         "report": "Report"
+      },
+      "metadata": {
+        "title": "MetaData"
+      },
+      "document": {
+        "title": "Document",
+        "update": "Document",
+        "search": "Document Inquiry"
+      },
+      "menurole": {
+        "title": "Role & Menu Mapping"
       },
       "reports": {
         "docmaprpt": "Document Mapping Report"
