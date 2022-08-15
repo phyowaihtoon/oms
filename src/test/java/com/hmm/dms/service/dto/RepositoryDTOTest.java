@@ -9,10 +9,10 @@ class RepositoryDTOTest {
 
     @Test
     void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(RepositoryDTO.class);
-        RepositoryDTO repositoryDTO1 = new RepositoryDTO();
+        TestUtil.equalsVerifier(RepositoryDocDTO.class);
+        RepositoryDocDTO repositoryDTO1 = new RepositoryDocDTO();
         repositoryDTO1.setId(1L);
-        RepositoryDTO repositoryDTO2 = new RepositoryDTO();
+        RepositoryDocDTO repositoryDTO2 = new RepositoryDocDTO();
         assertThat(repositoryDTO1).isNotEqualTo(repositoryDTO2);
         repositoryDTO2.setId(repositoryDTO1.getId());
         assertThat(repositoryDTO1).isEqualTo(repositoryDTO2);

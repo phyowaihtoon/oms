@@ -1,6 +1,6 @@
 package com.hmm.dms.repository;
 
-import com.hmm.dms.domain.Repository;
+import com.hmm.dms.domain.RepositoryDoc;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +9,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface RepositoryDocRepository extends JpaRepository<Repository, Long> {}
+public interface RepositoryDocRepository extends JpaRepository<RepositoryDoc, Long> {}

@@ -5,9 +5,9 @@ import java.util.Objects;
 import javax.validation.constraints.*;
 
 /**
- * A DTO for the {@link com.hmm.dms.domain.Repository} entity.
+ * A DTO for the {@link com.hmm.dms.domain.RepositoryDoc} entity.
  */
-public class RepositoryDTO implements Serializable {
+public class RepositoryDocDTO implements Serializable {
 
     private Long id;
 
@@ -55,11 +55,11 @@ public class RepositoryDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RepositoryDTO)) {
+        if (!(o instanceof RepositoryDocDTO)) {
             return false;
         }
 
-        RepositoryDTO repositoryDTO = (RepositoryDTO) o;
+        RepositoryDocDTO repositoryDTO = (RepositoryDocDTO) o;
         if (this.id == null) {
             return false;
         }

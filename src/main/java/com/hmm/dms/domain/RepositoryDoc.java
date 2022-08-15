@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "repository")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Repository extends AbstractAuditingEntity implements Serializable {
+public class RepositoryDoc extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public class Repository extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public Repository id(Long id) {
+    public RepositoryDoc id(Long id) {
         this.id = id;
         return this;
     }
@@ -48,7 +48,7 @@ public class Repository extends AbstractAuditingEntity implements Serializable {
         return this.parentID;
     }
 
-    public Repository parentID(Integer parentID) {
+    public RepositoryDoc parentID(Integer parentID) {
         this.parentID = parentID;
         return this;
     }
@@ -61,7 +61,7 @@ public class Repository extends AbstractAuditingEntity implements Serializable {
         return this.repositoryName;
     }
 
-    public Repository repositoryName(String repositoryName) {
+    public RepositoryDoc repositoryName(String repositoryName) {
         this.repositoryName = repositoryName;
         return this;
     }
@@ -74,7 +74,7 @@ public class Repository extends AbstractAuditingEntity implements Serializable {
         return this.description;
     }
 
-    public Repository description(String description) {
+    public RepositoryDoc description(String description) {
         this.description = description;
         return this;
     }
@@ -90,10 +90,10 @@ public class Repository extends AbstractAuditingEntity implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Repository)) {
+        if (!(o instanceof RepositoryDoc)) {
             return false;
         }
-        return id != null && id.equals(((Repository) o).id);
+        return id != null && id.equals(((RepositoryDoc) o).id);
     }
 
     @Override
