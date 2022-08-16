@@ -20,6 +20,8 @@ export class MetadataUpdateComponent implements AfterViewInit, OnDestroy {
     { value: 'Number', caption: 'Number' },
     { value: 'Date', caption: 'Date' },
     { value: 'LOV', caption: 'LOV' },
+    { value: 'LOV2', caption: 'LOV2' },
+    { value: 'LOV3', caption: 'LOV3' },
   ];
 
   mendatoryList = [
@@ -67,7 +69,7 @@ export class MetadataUpdateComponent implements AfterViewInit, OnDestroy {
   }
 
   removeField(i: number): void {
-    //if (this.fieldList().length !==1)
+    // if (this.fieldList().length !==1)
     this.fieldList().removeAt(i);
   }
 

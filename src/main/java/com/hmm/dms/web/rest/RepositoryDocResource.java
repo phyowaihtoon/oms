@@ -1,8 +1,8 @@
 package com.hmm.dms.web.rest;
 
-import com.hmm.dms.repository.RepositoryRepository;
-import com.hmm.dms.service.RepositoryService;
-import com.hmm.dms.service.dto.RepositoryDTO;
+import com.hmm.dms.repository.RepositoryDocRepository;
+import com.hmm.dms.service.RepositoryDocService;
+import com.hmm.dms.service.dto.RepositoryDocDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,24 +26,24 @@ import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
- * REST controller for managing {@link com.hmm.dms.domain.Repository}.
+ * REST controller for managing {@link com.hmm.dms.domain.RepositoryDoc}.
  */
 @RestController
 @RequestMapping("/api")
-public class RepositoryResource {
+public class RepositoryDocResource {
 
-    private final Logger log = LoggerFactory.getLogger(RepositoryResource.class);
+    private final Logger log = LoggerFactory.getLogger(RepositoryDocResource.class);
 
     private static final String ENTITY_NAME = "repository";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final RepositoryService repositoryService;
+    private final RepositoryDocService repositoryService;
 
-    private final RepositoryRepository repositoryRepository;
+    private final RepositoryDocRepository repositoryRepository;
 
-    public RepositoryResource(RepositoryService repositoryService, RepositoryRepository repositoryRepository) {
+    public RepositoryDocResource(RepositoryDocService repositoryService, RepositoryDocRepository repositoryRepository) {
         this.repositoryService = repositoryService;
         this.repositoryRepository = repositoryRepository;
     }
@@ -56,12 +56,12 @@ public class RepositoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/repositories")
-    public ResponseEntity<RepositoryDTO> createRepository(@Valid @RequestBody RepositoryDTO repositoryDTO) throws URISyntaxException {
+    public ResponseEntity<RepositoryDocDTO> createRepository(@Valid @RequestBody RepositoryDocDTO repositoryDTO) throws URISyntaxException {
         log.debug("REST request to save Repository : {}", repositoryDTO);
         if (repositoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new repository cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        RepositoryDTO result = repositoryService.save(repositoryDTO);
+        RepositoryDocDTO result = repositoryService.save(repositoryDTO);
         return ResponseEntity
             .created(new URI("/api/repositories/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -79,9 +79,9 @@ public class RepositoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/repositories/{id}")
-    public ResponseEntity<RepositoryDTO> updateRepository(
+    public ResponseEntity<RepositoryDocDTO> updateRepository(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody RepositoryDTO repositoryDTO
+        @Valid @RequestBody RepositoryDocDTO repositoryDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Repository : {}, {}", id, repositoryDTO);
         if (repositoryDTO.getId() == null) {
@@ -95,7 +95,7 @@ public class RepositoryResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        RepositoryDTO result = repositoryService.save(repositoryDTO);
+        RepositoryDocDTO result = repositoryService.save(repositoryDTO);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, repositoryDTO.getId().toString()))
@@ -114,9 +114,9 @@ public class RepositoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/repositories/{id}", consumes = "application/merge-patch+json")
-    public ResponseEntity<RepositoryDTO> partialUpdateRepository(
+    public ResponseEntity<RepositoryDocDTO> partialUpdateRepository(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody RepositoryDTO repositoryDTO
+        @NotNull @RequestBody RepositoryDocDTO repositoryDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Repository partially : {}, {}", id, repositoryDTO);
         if (repositoryDTO.getId() == null) {
@@ -130,7 +130,7 @@ public class RepositoryResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<RepositoryDTO> result = repositoryService.partialUpdate(repositoryDTO);
+        Optional<RepositoryDocDTO> result = repositoryService.partialUpdate(repositoryDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -145,9 +145,9 @@ public class RepositoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of repositories in body.
      */
     @GetMapping("/repositories")
-    public ResponseEntity<List<RepositoryDTO>> getAllRepositories(Pageable pageable) {
+    public ResponseEntity<List<RepositoryDocDTO>> getAllRepositories(Pageable pageable) {
         log.debug("REST request to get a page of Repositories");
-        Page<RepositoryDTO> page = repositoryService.findAll(pageable);
+        Page<RepositoryDocDTO> page = repositoryService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -159,9 +159,9 @@ public class RepositoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the repositoryDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/repositories/{id}")
-    public ResponseEntity<RepositoryDTO> getRepository(@PathVariable Long id) {
+    public ResponseEntity<RepositoryDocDTO> getRepository(@PathVariable Long id) {
         log.debug("REST request to get Repository : {}", id);
-        Optional<RepositoryDTO> repositoryDTO = repositoryService.findOne(id);
+        Optional<RepositoryDocDTO> repositoryDTO = repositoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(repositoryDTO);
     }
 
