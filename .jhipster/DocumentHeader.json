@@ -11,6 +11,10 @@
     {
       "fieldName": "fieldValues",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "repositoryURL",
+      "fieldType": "String"
     }
   ],
   "relationships": [],

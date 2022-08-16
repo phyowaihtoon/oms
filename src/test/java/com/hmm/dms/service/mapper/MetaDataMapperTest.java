@@ -11,6 +11,6 @@ class MetaDataMapperTest {
 
     @BeforeEach
     public void setUp() {
-        //metaDataMapper = new MetaDataMapperImpl();
+        metaDataMapper = new MetaDataMapperImpl();
     }
 }

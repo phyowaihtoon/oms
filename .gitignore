@@ -38,6 +38,7 @@ local.properties
 .loadpath
 .factorypath
 /src/main/resources/rebel.xml
+/src/main/webapp/RPT_OUTPUT/**
 
 # External tool builders
 .externalToolBuilders/**

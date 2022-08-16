@@ -1,0 +1,116 @@
+<div class="justify-content-center">
+  <h2>Document Mapping Report</h2>
+  <div class="col-10" style="padding-top: 10px">
+    <form name="editForm" role="form" novalidate (ngSubmit)="generate()" [formGroup]="editForm">
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+      </div>
+
+      <div class="row form-group">
+        <div class="row col-5">
+          <div class="col-4">
+            <label class="form-control-label" jhiTranslate="report.parameter.startDate" for="field_startDate"> Start Date </label>
+          </div>
+          <div class="col-8">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="field_startDate"
+                data-cy="startDate"
+                placeholder="DD-MM-YYYY"
+                name="startDate"
+                formControlName="startDate"
+                ngbDatepicker
+                #startDate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button id="startDateButton" (click)="startDate.toggle()" type="button">
+                  <fa-icon icon="calendar" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-12"
+            *ngIf="editForm.get('startDate')!.invalid && (editForm.get('startDate')!.dirty || editForm.get('startDate')!.touched)"
+          >
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              *ngIf="editForm.get('startDate')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              [hidden]="!editForm.get('startDate')?.errors?.ngbDate"
+              jhiTranslate="report.validation.datePattern"
+            >
+              Date should be entered in DD-MM-YYYY.
+            </small>
+          </div>
+        </div>
+
+        <div class="row col-5">
+          <div class="col-4">
+            <label class="form-control-label" jhiTranslate="report.parameter.endDate" for="field_endDate"> End Date </label>
+          </div>
+          <div class="col-8">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="field_endDate"
+                data-cy="endDate"
+                placeholder="DD-MM-YYYY"
+                name="endDate"
+                formControlName="endDate"
+                ngbDatepicker
+                #endDate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button id="endDateButton" (click)="endDate.toggle()" type="button">
+                  <fa-icon icon="calendar" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-12"
+            *ngIf="editForm.get('endDate')!.invalid && (editForm.get('endDate')!.dirty || editForm.get('endDate')!.touched)"
+          >
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              *ngIf="editForm.get('endDate')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              [hidden]="!editForm.get('endDate')?.errors?.ngbDate"
+              jhiTranslate="report.validation.datePattern"
+            >
+              Date should be entered in DD-MM-YYYY.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          id="generate-report"
+          data-cy="reportGenerateButton"
+          [disabled]="editForm.invalid || isGenerating"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Generate</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
