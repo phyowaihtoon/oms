@@ -69,7 +69,7 @@ export class MetadataUpdateComponent implements AfterViewInit, OnDestroy {
   }
 
   removeField(i: number): void {
-    //if (this.fieldList().length !==1)
+    // if (this.fieldList().length !==1)
     this.fieldList().removeAt(i);
   }
 

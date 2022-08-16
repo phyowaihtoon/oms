@@ -12,6 +12,7 @@ export interface IMetaData {
   headerId?: number;
   fieldName?: string;
   fieldType?: string;
+  fieldValue?: string;
   isRequired?: string;
   fieldOrder?: number;
 }
@@ -22,6 +23,7 @@ export class MetaData implements IMetaData {
     public headerId?: number,
     public fieldName?: string,
     public fieldType?: string,
+    public fieldValue?: string,
     public isRequired?: string,
     public fieldOrder?: number
   ) {}

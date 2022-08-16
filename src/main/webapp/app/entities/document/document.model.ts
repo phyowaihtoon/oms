@@ -3,10 +3,17 @@ export interface IDocumentHeader {
   metaDataHeaderId?: string;
   fieldNames?: string;
   fieldValues?: string;
+  repositoryURL?: string;
 }
 
 export class DocumentHeader implements IDocumentHeader {
-  constructor(public id?: number, public metaDataHeaderId?: string, public fieldNames?: string, public fieldValues?: string) {}
+  constructor(
+    public id?: number,
+    public metaDataHeaderId?: string,
+    public fieldNames?: string,
+    public fieldValues?: string,
+    public repositoryURL?: string
+  ) {}
 }
 
 export interface IDocument {

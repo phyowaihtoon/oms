@@ -11,7 +11,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "document_header")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class DocumentHeader implements Serializable {
+public class DocumentHeader extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,6 +27,9 @@ public class DocumentHeader implements Serializable {
 
     @Column(name = "field_values")
     private String fieldValues;
+
+    @Column(name = "repository_url")
+    private String repositoryURL;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -81,6 +84,19 @@ public class DocumentHeader implements Serializable {
         this.fieldValues = fieldValues;
     }
 
+    public String getRepositoryURL() {
+        return this.repositoryURL;
+    }
+
+    public DocumentHeader repositoryURL(String repositoryURL) {
+        this.repositoryURL = repositoryURL;
+        return this;
+    }
+
+    public void setRepositoryURL(String repositoryURL) {
+        this.repositoryURL = repositoryURL;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -108,6 +124,7 @@ public class DocumentHeader implements Serializable {
             ", metaDataHeaderId=" + getMetaDataHeaderId() +
             ", fieldNames='" + getFieldNames() + "'" +
             ", fieldValues='" + getFieldValues() + "'" +
+            ", repositoryURL='" + getRepositoryURL() + "'" +
             "}";
     }
 }

@@ -23,6 +23,10 @@
     {
       "fieldName": "fieldOrder",
       "fieldType": "Integer"
+    },
+    {
+      "fieldName": "fieldValue",
+      "fieldType": "String"
     }
   ],
   "relationships": [],

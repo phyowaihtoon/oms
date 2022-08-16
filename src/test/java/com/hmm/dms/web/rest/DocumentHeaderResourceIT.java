@@ -38,6 +38,9 @@ class DocumentHeaderResourceIT {
     private static final String DEFAULT_FIELD_VALUES = "AAAAAAAAAA";
     private static final String UPDATED_FIELD_VALUES = "BBBBBBBBBB";
 
+    private static final String DEFAULT_REPOSITORY_URL = "AAAAAAAAAA";
+    private static final String UPDATED_REPOSITORY_URL = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/document-headers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -65,7 +68,8 @@ class DocumentHeaderResourceIT {
         DocumentHeader documentHeader = new DocumentHeader()
             .metaDataHeaderId(DEFAULT_META_DATA_HEADER_ID)
             .fieldNames(DEFAULT_FIELD_NAMES)
-            .fieldValues(DEFAULT_FIELD_VALUES);
+            .fieldValues(DEFAULT_FIELD_VALUES)
+            .repositoryURL(DEFAULT_REPOSITORY_URL);
         return documentHeader;
     }
 
@@ -79,7 +83,8 @@ class DocumentHeaderResourceIT {
         DocumentHeader documentHeader = new DocumentHeader()
             .metaDataHeaderId(UPDATED_META_DATA_HEADER_ID)
             .fieldNames(UPDATED_FIELD_NAMES)
-            .fieldValues(UPDATED_FIELD_VALUES);
+            .fieldValues(UPDATED_FIELD_VALUES)
+            .repositoryURL(UPDATED_REPOSITORY_URL);
         return documentHeader;
     }
 
@@ -106,6 +111,7 @@ class DocumentHeaderResourceIT {
         assertThat(testDocumentHeader.getMetaDataHeaderId()).isEqualTo(DEFAULT_META_DATA_HEADER_ID);
         assertThat(testDocumentHeader.getFieldNames()).isEqualTo(DEFAULT_FIELD_NAMES);
         assertThat(testDocumentHeader.getFieldValues()).isEqualTo(DEFAULT_FIELD_VALUES);
+        assertThat(testDocumentHeader.getRepositoryURL()).isEqualTo(DEFAULT_REPOSITORY_URL);
     }
 
     @Test
@@ -142,7 +148,8 @@ class DocumentHeaderResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(documentHeader.getId().intValue())))
             .andExpect(jsonPath("$.[*].metaDataHeaderId").value(hasItem(DEFAULT_META_DATA_HEADER_ID.intValue())))
             .andExpect(jsonPath("$.[*].fieldNames").value(hasItem(DEFAULT_FIELD_NAMES)))
-            .andExpect(jsonPath("$.[*].fieldValues").value(hasItem(DEFAULT_FIELD_VALUES)));
+            .andExpect(jsonPath("$.[*].fieldValues").value(hasItem(DEFAULT_FIELD_VALUES)))
+            .andExpect(jsonPath("$.[*].repositoryURL").value(hasItem(DEFAULT_REPOSITORY_URL)));
     }
 
     @Test
@@ -159,7 +166,8 @@ class DocumentHeaderResourceIT {
             .andExpect(jsonPath("$.id").value(documentHeader.getId().intValue()))
             .andExpect(jsonPath("$.metaDataHeaderId").value(DEFAULT_META_DATA_HEADER_ID.intValue()))
             .andExpect(jsonPath("$.fieldNames").value(DEFAULT_FIELD_NAMES))
-            .andExpect(jsonPath("$.fieldValues").value(DEFAULT_FIELD_VALUES));
+            .andExpect(jsonPath("$.fieldValues").value(DEFAULT_FIELD_VALUES))
+            .andExpect(jsonPath("$.repositoryURL").value(DEFAULT_REPOSITORY_URL));
     }
 
     @Test
@@ -184,7 +192,8 @@ class DocumentHeaderResourceIT {
         updatedDocumentHeader
             .metaDataHeaderId(UPDATED_META_DATA_HEADER_ID)
             .fieldNames(UPDATED_FIELD_NAMES)
-            .fieldValues(UPDATED_FIELD_VALUES);
+            .fieldValues(UPDATED_FIELD_VALUES)
+            .repositoryURL(UPDATED_REPOSITORY_URL);
 
         restDocumentHeaderMockMvc
             .perform(
@@ -201,6 +210,7 @@ class DocumentHeaderResourceIT {
         assertThat(testDocumentHeader.getMetaDataHeaderId()).isEqualTo(UPDATED_META_DATA_HEADER_ID);
         assertThat(testDocumentHeader.getFieldNames()).isEqualTo(UPDATED_FIELD_NAMES);
         assertThat(testDocumentHeader.getFieldValues()).isEqualTo(UPDATED_FIELD_VALUES);
+        assertThat(testDocumentHeader.getRepositoryURL()).isEqualTo(UPDATED_REPOSITORY_URL);
     }
 
     @Test
@@ -288,6 +298,7 @@ class DocumentHeaderResourceIT {
         assertThat(testDocumentHeader.getMetaDataHeaderId()).isEqualTo(DEFAULT_META_DATA_HEADER_ID);
         assertThat(testDocumentHeader.getFieldNames()).isEqualTo(UPDATED_FIELD_NAMES);
         assertThat(testDocumentHeader.getFieldValues()).isEqualTo(UPDATED_FIELD_VALUES);
+        assertThat(testDocumentHeader.getRepositoryURL()).isEqualTo(DEFAULT_REPOSITORY_URL);
     }
 
     @Test
@@ -305,7 +316,8 @@ class DocumentHeaderResourceIT {
         partialUpdatedDocumentHeader
             .metaDataHeaderId(UPDATED_META_DATA_HEADER_ID)
             .fieldNames(UPDATED_FIELD_NAMES)
-            .fieldValues(UPDATED_FIELD_VALUES);
+            .fieldValues(UPDATED_FIELD_VALUES)
+            .repositoryURL(UPDATED_REPOSITORY_URL);
 
         restDocumentHeaderMockMvc
             .perform(
@@ -322,6 +334,7 @@ class DocumentHeaderResourceIT {
         assertThat(testDocumentHeader.getMetaDataHeaderId()).isEqualTo(UPDATED_META_DATA_HEADER_ID);
         assertThat(testDocumentHeader.getFieldNames()).isEqualTo(UPDATED_FIELD_NAMES);
         assertThat(testDocumentHeader.getFieldValues()).isEqualTo(UPDATED_FIELD_VALUES);
+        assertThat(testDocumentHeader.getRepositoryURL()).isEqualTo(UPDATED_REPOSITORY_URL);
     }
 
     @Test
