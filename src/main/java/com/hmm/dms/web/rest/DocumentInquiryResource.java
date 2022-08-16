@@ -21,7 +21,7 @@ public class DocumentInquiryResource {
         this.documentInquiryService = documentInquiryService;
     }
 
-    @GetMapping("/documents")
+    @GetMapping("/docinquiry")
     public List<DocumentHeaderDTO> getAllDocuments() {
         log.debug("REST request to get all Documents");
         return documentInquiryService.searchDocumentsByRepoURL();

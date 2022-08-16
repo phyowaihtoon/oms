@@ -25,3 +25,13 @@ export interface IDocument {
 export class Document implements IDocument {
   constructor(public id?: number, public headerId?: number, public filePath?: string) {}
 }
+
+export interface IDocumentInquiry {
+  id?: number;
+  docTitle?: string;
+  repositoryURL?: string;
+}
+
+export class DocumentInquiry implements IDocumentInquiry {
+  constructor(public id?: number, public docTitle?: string, public repositoryURL?: string) {}
+}
