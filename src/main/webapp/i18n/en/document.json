@@ -18,7 +18,8 @@
         "title": "Document"
       },
       "id": "ID",
-      "docTitle": "Document Title"
+      "docTitle": "Document Title",
+      "repositoryURL": "Repository URL"
     }
   }
 }
