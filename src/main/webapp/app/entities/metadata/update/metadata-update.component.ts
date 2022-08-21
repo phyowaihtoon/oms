@@ -1,17 +1,18 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, Validators, FormControl } from '@angular/forms';
 import { IMetaDataHeader, MetaDataHeader, IMetaData, MetaData } from '../metadata.model';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { MetaDataService } from '../service/metadata.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'jhi-metadata-update',
   templateUrl: './metadata-update.component.html',
   styleUrls: ['./metadata-update.component.scss'],
 })
-export class MetadataUpdateComponent implements AfterViewInit {
+export class MetadataUpdateComponent implements OnInit {
   isSaving = false;
 
   editForm = this.fb.group({
@@ -32,16 +33,18 @@ export class MetadataUpdateComponent implements AfterViewInit {
     { value: 'NO', caption: 'NO' },
   ];
 
-  constructor(protected service: MetaDataService, protected fb: FormBuilder) {}
+  constructor(protected service: MetaDataService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
 
-  /* ngOnInit(): void {
-
-  } */
-
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    this.addField();
+    this.activatedRoute.data.subscribe(({ metadata }) => {
+      this.updateForm(metadata);
+    });
+  }
+  /* ngAfterViewInit(): void {
     this.addField();
   }
-
+ */
   previousState(): void {
     window.history.back();
   }
@@ -85,6 +88,7 @@ export class MetadataUpdateComponent implements AfterViewInit {
   save(): void {
     this.isSaving = true;
     const metadata = this.createFromForm();
+    console.log(JSON.stringify(metadata));
     if (metadata.id !== undefined) {
       this.subscribeToSaveResponse(this.service.update(metadata));
     } else {
@@ -111,14 +115,6 @@ export class MetadataUpdateComponent implements AfterViewInit {
     this.isSaving = false;
   }
 
-  protected createMetaDataDetails(): IMetaData[] {
-    const fieldList: IMetaData[] = [];
-    this.fieldList().controls.forEach(data => {
-      fieldList.push(this.createMetaDataDetail(data));
-    });
-    return fieldList;
-  }
-
   protected createMetaDataDetail(data: any): IMetaData {
     return {
       ...new MetaData(),
@@ -132,12 +128,43 @@ export class MetadataUpdateComponent implements AfterViewInit {
     };
   }
 
+  protected createMetaDataDetails(): IMetaData[] {
+    const fieldList: IMetaData[] = [];
+    this.fieldList().controls.forEach(data => {
+      fieldList.push(this.createMetaDataDetail(data));
+    });
+    return fieldList;
+  }
+
   protected createFromForm(): IMetaDataHeader {
     return {
       ...new MetaDataHeader(),
-      id: undefined,
+      id: this.editForm.get(['id'])!.value,
       docTitle: this.editForm.get(['docTitle'])!.value,
       metaDataDetails: this.createMetaDataDetails(),
     };
+  }
+
+  protected updateForm(metadata: IMetaDataHeader): void {
+    this.editForm.patchValue({
+      id: metadata.id,
+      docTitle: metadata.docTitle,
+      fieldList: this.updateMetaDataDetails(metadata.metaDataDetails),
+    });
+  }
+
+  protected updateMetaDataDetails(metaDataDetails: IMetaData[] | undefined): void {
+    this.removeAllField();
+    let index = 0;
+    metaDataDetails?.forEach(data => {
+      this.addField();
+      this.fieldList().controls[index].get(['fieldName'])!.setValue(data.fieldName);
+      this.fieldList().controls[index].get(['fieldType'])!.setValue(data.fieldType);
+      this.fieldList().controls[index].get(['fieldValue'])!.setValue(data.fieldValue);
+      this.fieldList().controls[index].get(['isRequired'])!.setValue(data.isRequired);
+      this.fieldList().controls[index].get(['fieldOrder'])!.setValue(data.fieldOrder);
+      this.onFieldTypeChange(index);
+      index = index + 1;
+    });
   }
 }

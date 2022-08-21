@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,7 @@ public class MetaDataServiceImpl implements MetaDataService {
         for (MetaData metaData : metaDataList) {
             metaData.setHeaderId(metaDataHeader.getId());
         }
+        metaDataRepository.deleteByHeaderId(metaDataHeader.getId());
         metaDataList = metaDataRepository.saveAll(metaDataList);
         return metaDataHeaderMapper.toDto(metaDataHeader);
     }
@@ -93,7 +96,11 @@ public class MetaDataServiceImpl implements MetaDataService {
     @Transactional(readOnly = true)
     public Optional<MetaDataHeaderDTO> findOne(Long id) {
         log.debug("Request to get MetaData : {}", id);
-        return metaDataHeaderRepository.findById(id).map(metaDataHeaderMapper::toDto);
+        Optional<MetaDataHeaderDTO> metaDataHeaderDto = metaDataHeaderRepository.findById(id).map(metaDataHeaderMapper::toDto);
+        metaDataHeaderDto
+            .get()
+            .setMetaDataDetails(metaDataRepository.findByHeaderId(id).map(metaDataMapper::toDto).collect(Collectors.toList()));
+        return metaDataHeaderDto;
     }
 
     @Override
@@ -101,5 +108,11 @@ public class MetaDataServiceImpl implements MetaDataService {
         log.debug("Request to delete MetaData : {}", id);
         metaDataHeaderRepository.deleteById(id);
         metaDataRepository.deleteByHeaderId(id);
+    }
+
+    @Override
+    public Page<MetaDataHeaderDTO> findAll(Pageable pageable) {
+        log.debug("Requesting to get all Categories");
+        return metaDataHeaderRepository.findAll(pageable).map(metaDataHeaderMapper::toDto);
     }
 }
