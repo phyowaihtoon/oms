@@ -15,7 +15,6 @@ export class LoadSetupService {
 
   loadAllMetaDataHeader(): Observable<MeataDataHeaderSetupArray> {
     const childURL = '/metadataheader';
-    console.log('Calling Load Setup Service');
     return this.http.get<IMetaDataHeader[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }
