@@ -13,13 +13,21 @@
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
+        <!-- <div class="form-group col-3">
+          <label class="form-control-label" jhiTranslate="mfiuappApp.mFIUInfo.rBusTypeID" for="field_rBusTypeID">Industry Type</label>
+          
+          <select class="form-control" id="field_rBusTypeID" name="rBusTypeID" formControlName="rBusTypeID">
+            <option [ngValue]="null"></option>
+            <option [ngValue]="industryTypeOption.id" *ngFor="let industryTypeOption of industryTypesSharedCollection; trackBy: trackIndustryTypeById">{{ industryTypeOption.description }}</option>
+        </select>-->
+
         <div class="form-group col-6">
           <label class="form-control-label" for="field_docType">Documnet Type</label>
           <!--jhiTranslate="dmsApp.document.docTitle" **/-->
 
           <select class="custom-select mb-3" (onChange)="onChanged($event)" formControlName="docType">
             <option value="">-</option>
-            <option *ngFor="let doctype of docTypes" [ngValue]="doctype">
+            <option value="MetaData.id" *ngfor="let doctype of docTypes" [ngValue]="doctype">
               {{ doctype }}
             </option>
           </select>
