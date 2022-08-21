@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DocumentDetailComponent } from '../detail/document-detail.component';
 import { DocumentComponent } from '../list/document.component';
-import { DocumentSearchComponent } from '../search/document-search.component';
 import { DocumentUpdateComponent } from '../update/document-update.component';
 
 const metadataRoute: Routes = [
@@ -10,12 +10,12 @@ const metadataRoute: Routes = [
     component: DocumentUpdateComponent,
   },
   {
-    path: 'search',
-    component: DocumentSearchComponent,
-  },
-  {
     path: 'list',
     component: DocumentComponent,
+  },
+  {
+    path: ':id/view',
+    component: DocumentDetailComponent,
   },
 ];
 
