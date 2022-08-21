@@ -1,8 +1,9 @@
 package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DocumentInquiryService {
-    public List<DocumentHeaderDTO> searchDocumentsByRepoURL();
+    public Page<DocumentHeaderDTO> searchDocumentsByRepoURL(Pageable pageable);
 }

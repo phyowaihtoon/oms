@@ -38,11 +38,17 @@ import {
   faUsersCog,
   faWrench,
   faMinus,
+  faAngleRight,
+  faAngleDown,
+  faAngleDoubleRight,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
   faArrowLeft,
+  faAngleRight,
+  faAngleDown,
+  faAngleDoubleRight,
   faAsterisk,
   faBan,
   faBars,

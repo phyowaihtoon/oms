@@ -19,7 +19,9 @@
       },
       "id": "ID",
       "docTitle": "Document Title",
-      "repositoryURL": "Repository URL"
+      "repositoryURL": "Repository URL",
+      "search": "SEARCH",
+      "result": "SEARCH RESULT"
     }
   }
 }
