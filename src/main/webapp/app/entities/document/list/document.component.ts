@@ -6,6 +6,8 @@ import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { DocumentInquiryService } from '../service/document-inquiry.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
+import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 
 @Component({
   selector: 'jhi-document',
@@ -14,6 +16,7 @@ import { combineLatest } from 'rxjs';
 })
 export class DocumentComponent implements OnInit {
   documentHeaders?: IDocumentInquiry[];
+  metaDataHdrList?: IMetaDataHeader[] | null;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -26,6 +29,7 @@ export class DocumentComponent implements OnInit {
   isShowingResult = false;
 
   searchForm = this.fb.group({
+    metaDataHdrID: [],
     docTitle: [],
     repositoryURL: [],
   });
@@ -34,14 +38,20 @@ export class DocumentComponent implements OnInit {
     protected fb: FormBuilder,
     protected documentInquiryService: DocumentInquiryService,
     protected activatedRoute: ActivatedRoute,
-    protected router: Router
+    protected router: Router,
+    protected loadSetupService: LoadSetupService
   ) {}
 
   ngOnInit(): void {
+    this.loadAllSetup();
     this.loadPage();
   }
 
   trackId(index: number, item: IDocumentInquiry): number {
+    return item.id!;
+  }
+
+  trackMetaDtaaByID(index: number, item: IMetaDataHeader): number {
     return item.id!;
   }
 
@@ -51,6 +61,18 @@ export class DocumentComponent implements OnInit {
 
   showResultArea(): void {
     this.isShowingResult = !this.isShowingResult;
+  }
+
+  loadAllSetup(): void {
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        console.log('Response Data :', res.body);
+        this.metaDataHdrList = res.body;
+      },
+      error => {
+        console.log('Response Failed : ', error);
+      }
+    );
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {

@@ -19,7 +19,12 @@
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Title</label>
       </div>
       <div class="col-2">
-        <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
+        <select class="form-control" id="field_metaDataHdrID" data-cy="metaDataHdrID" name="metaDataHdrID" formControlName="metaDataHdrID">
+          <option [ngValue]="null"></option>
+          <option [ngValue]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDtaaByID">
+            {{ metaData.docTitle }}
+          </option>
+        </select>
       </div>
       <div class="col-2">
         <label class="form-control-label" jhiTranslate="dmsApp.document.repositoryURL" for="field_repositoryURL">Repository URL</label>
