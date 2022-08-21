@@ -27,14 +27,14 @@
 
           <select class="custom-select mb-3" (onChange)="onChanged($event)" formControlName="docType">
             <option value="">-</option>
-            <option value="MetaData.id" *ngfor="let doctype of docTypes" [ngValue]="doctype">
-              {{ doctype }}
+            <option value="doctype.id" *ngfor="let doctype of docTypes" [ngValue]="doctype">
+              {{ doctype.docTitle }}
             </option>
           </select>
         </div>
       </div>
 
-      <div class="form-group col-6">
+      <!-- <div class="form-group col-6">
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Title</label>
         <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
       </div>
@@ -57,7 +57,7 @@
       <div class="form-group col-6">
         <label class="form-control-label" for="field_payEmpId">Employee ID</label>
         <input type="text" class="form-control" name="payEmpId" id="field_payEmpId" data-cy="payEmpId" formControlName="payEmpId" />
-      </div>
+      </div> -->
 
       <div class="form-group col-6">
         <label class="form-control-label" for="field_browse">Upload File Here</label>
