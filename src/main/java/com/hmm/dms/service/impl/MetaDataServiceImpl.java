@@ -1,9 +1,13 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.MetaData;
+import com.hmm.dms.domain.MetaDataHeader;
+import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
+import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,21 +27,39 @@ public class MetaDataServiceImpl implements MetaDataService {
 
     private final Logger log = LoggerFactory.getLogger(MetaDataServiceImpl.class);
 
+    private final MetaDataHeaderRepository metaDataHeaderRepository;
+
     private final MetaDataRepository metaDataRepository;
+
+    private final MetaDataHeaderMapper metaDataHeaderMapper;
 
     private final MetaDataMapper metaDataMapper;
 
-    public MetaDataServiceImpl(MetaDataRepository metaDataRepository, MetaDataMapper metaDataMapper) {
+    public MetaDataServiceImpl(
+        MetaDataHeaderRepository metaDataHeaderRepository,
+        MetaDataRepository metaDataRepository,
+        MetaDataHeaderMapper metaDataHeaderMapper,
+        MetaDataMapper metaDataMapper
+    ) {
+        this.metaDataHeaderRepository = metaDataHeaderRepository;
         this.metaDataRepository = metaDataRepository;
+        this.metaDataHeaderMapper = metaDataHeaderMapper;
         this.metaDataMapper = metaDataMapper;
     }
 
     @Override
-    public MetaDataDTO save(MetaDataDTO metaDataDTO) {
+    public MetaDataHeaderDTO save(MetaDataHeaderDTO metaDataDTO) {
         log.debug("Request to save MetaData : {}", metaDataDTO);
-        MetaData metaData = metaDataMapper.toEntity(metaDataDTO);
-        metaData = metaDataRepository.save(metaData);
-        return metaDataMapper.toDto(metaData);
+        MetaDataHeader metaDataHeader = metaDataHeaderMapper.toEntity(metaDataDTO);
+        List<MetaData> metaDataList = metaDataDTO.getMetaDataDetails().stream().map(metaDataMapper::toEntity).collect(Collectors.toList());
+
+        //MetaData metaData = metaDataMapper.toEntity(metaDataDTO);
+        metaDataHeader = metaDataHeaderRepository.save(metaDataHeader);
+        for (MetaData metaData : metaDataList) {
+            metaData.setHeaderId(metaDataHeader.getId());
+        }
+        metaDataList = metaDataRepository.saveAll(metaDataList);
+        return metaDataHeaderMapper.toDto(metaDataHeader);
     }
 
     @Override
@@ -58,21 +80,26 @@ public class MetaDataServiceImpl implements MetaDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MetaDataDTO> findAll() {
+    public List<MetaDataHeaderDTO> findAll() {
         log.debug("Request to get all MetaData");
-        return metaDataRepository.findAll().stream().map(metaDataMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        return metaDataHeaderRepository
+            .findAll()
+            .stream()
+            .map(metaDataHeaderMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<MetaDataDTO> findOne(Long id) {
+    public Optional<MetaDataHeaderDTO> findOne(Long id) {
         log.debug("Request to get MetaData : {}", id);
-        return metaDataRepository.findById(id).map(metaDataMapper::toDto);
+        return metaDataHeaderRepository.findById(id).map(metaDataHeaderMapper::toDto);
     }
 
     @Override
     public void delete(Long id) {
         log.debug("Request to delete MetaData : {}", id);
-        metaDataRepository.deleteById(id);
+        metaDataHeaderRepository.deleteById(id);
+        metaDataRepository.deleteByHeaderId(id);
     }
 }

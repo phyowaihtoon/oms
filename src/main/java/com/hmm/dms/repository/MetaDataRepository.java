@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface MetaDataRepository extends JpaRepository<MetaData, Long> {}
+public interface MetaDataRepository extends JpaRepository<MetaData, Long> {
+    void deleteByHeaderId(Long id);
+}

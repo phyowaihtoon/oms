@@ -1,7 +1,7 @@
 package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 public class MetaDataHeaderDTO implements Serializable {
@@ -12,6 +12,9 @@ public class MetaDataHeaderDTO implements Serializable {
 
     @NotNull
     private String docTitle;
+
+    @NotNull
+    private List<MetaDataDTO> metaDataDetails;
 
     public Long getId() {
         return id;
@@ -29,24 +32,44 @@ public class MetaDataHeaderDTO implements Serializable {
         this.docTitle = docTitle;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MetaDataHeaderDTO)) {
-            return false;
-        }
+    public List<MetaDataDTO> getMetaDataDetails() {
+        return metaDataDetails;
+    }
 
-        MetaDataHeaderDTO documentDTO = (MetaDataHeaderDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, documentDTO.id);
+    public void setMetaDataDetails(List<MetaDataDTO> metaDataDetails) {
+        this.metaDataDetails = metaDataDetails;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((docTitle == null) ? 0 : docTitle.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((metaDataDetails == null) ? 0 : metaDataDetails.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        MetaDataHeaderDTO other = (MetaDataHeaderDTO) obj;
+        if (docTitle == null) {
+            if (other.docTitle != null) return false;
+        } else if (!docTitle.equals(other.docTitle)) return false;
+        if (id == null) {
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
+        if (metaDataDetails == null) {
+            if (other.metaDataDetails != null) return false;
+        } else if (!metaDataDetails.equals(other.metaDataDetails)) return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "MetaDataHeaderDTO [id=" + id + ", docTitle=" + docTitle + ", metaDataDetails=" + metaDataDetails + "]";
     }
 }
