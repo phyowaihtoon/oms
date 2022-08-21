@@ -1,6 +1,7 @@
 package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.MetaDataDTO;
+import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ public interface MetaDataService {
      * @param metaDataDTO the entity to save.
      * @return the persisted entity.
      */
-    MetaDataDTO save(MetaDataDTO metaDataDTO);
+    MetaDataHeaderDTO save(MetaDataHeaderDTO metaDataDTO);
 
     /**
      * Partially updates a metaData.
@@ -29,7 +30,7 @@ public interface MetaDataService {
      *
      * @return the list of entities.
      */
-    List<MetaDataDTO> findAll();
+    List<MetaDataHeaderDTO> findAll();
 
     /**
      * Get the "id" metaData.
@@ -37,7 +38,7 @@ public interface MetaDataService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<MetaDataDTO> findOne(Long id);
+    Optional<MetaDataHeaderDTO> findOne(Long id);
 
     /**
      * Delete the "id" metaData.
