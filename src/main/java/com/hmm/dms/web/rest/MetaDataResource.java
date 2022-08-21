@@ -3,6 +3,7 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
+import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,12 +51,12 @@ public class MetaDataResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/meta-data")
-    public ResponseEntity<MetaDataDTO> createMetaData(@Valid @RequestBody MetaDataDTO metaDataDTO) throws URISyntaxException {
+    public ResponseEntity<MetaDataHeaderDTO> createMetaData(@Valid @RequestBody MetaDataHeaderDTO metaDataDTO) throws URISyntaxException {
         log.debug("REST request to save MetaData : {}", metaDataDTO);
         if (metaDataDTO.getId() != null) {
             throw new BadRequestAlertException("A new metaData cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        MetaDataDTO result = metaDataService.save(metaDataDTO);
+        MetaDataHeaderDTO result = metaDataService.save(metaDataDTO);
         return ResponseEntity
             .created(new URI("/api/meta-data/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -73,9 +74,9 @@ public class MetaDataResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/meta-data/{id}")
-    public ResponseEntity<MetaDataDTO> updateMetaData(
+    public ResponseEntity<MetaDataHeaderDTO> updateMetaData(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody MetaDataDTO metaDataDTO
+        @Valid @RequestBody MetaDataHeaderDTO metaDataDTO
     ) throws URISyntaxException {
         log.debug("REST request to update MetaData : {}, {}", id, metaDataDTO);
         if (metaDataDTO.getId() == null) {
@@ -89,7 +90,7 @@ public class MetaDataResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        MetaDataDTO result = metaDataService.save(metaDataDTO);
+        MetaDataHeaderDTO result = metaDataService.save(metaDataDTO);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, metaDataDTO.getId().toString()))
@@ -138,7 +139,7 @@ public class MetaDataResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of metaData in body.
      */
     @GetMapping("/meta-data")
-    public List<MetaDataDTO> getAllMetaData() {
+    public List<MetaDataHeaderDTO> getAllMetaData() {
         log.debug("REST request to get all MetaData");
         return metaDataService.findAll();
     }
@@ -150,9 +151,9 @@ public class MetaDataResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the metaDataDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/meta-data/{id}")
-    public ResponseEntity<MetaDataDTO> getMetaData(@PathVariable Long id) {
+    public ResponseEntity<MetaDataHeaderDTO> getMetaData(@PathVariable Long id) {
         log.debug("REST request to get MetaData : {}", id);
-        Optional<MetaDataDTO> metaDataDTO = metaDataService.findOne(id);
+        Optional<MetaDataHeaderDTO> metaDataDTO = metaDataService.findOne(id);
         return ResponseUtil.wrapOrNotFound(metaDataDTO);
     }
 

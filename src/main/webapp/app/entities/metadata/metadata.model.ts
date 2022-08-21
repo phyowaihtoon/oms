@@ -1,10 +1,11 @@
 export interface IMetaDataHeader {
   id?: number;
   docTitle?: string;
+  metaDataDetails?: IMetaData[];
 }
 
 export class MetaDataHeader implements IMetaDataHeader {
-  constructor(public id?: number, public docTitle?: string) {}
+  constructor(public id?: number, public docTitle?: string, public metaDataDetails?: IMetaData[]) {}
 }
 
 export interface IMetaData {
@@ -27,4 +28,8 @@ export class MetaData implements IMetaData {
     public isRequired?: string,
     public fieldOrder?: number
   ) {}
+}
+
+export function getMetadataIdentifier(metaDataHeader: IMetaDataHeader): number | undefined {
+  return metaDataHeader.id;
 }

@@ -23,11 +23,12 @@
             <table class="table" formArrayName="fieldList">
               <thead>
                 <tr>
-                  <th class="text-center">Field Name</th>
-                  <th class="text-center">Field Type</th>
-                  <th class="text-center">Field Mandatory</th>
-                  <th class="text-center">Field Order</th>
-                  <th class="text-center">Add/ Remove</th>
+                  <th class="text-center" style="width: 30%">Field Name</th>
+                  <th class="text-center" style="width: 10%">Field Type</th>
+                  <th class="text-center" style="width: 20%">Field Value</th>
+                  <th class="text-center" style="width: 20%">Field Mandatory</th>
+                  <th class="text-center" style="width: 10%">Field Order</th>
+                  <th class="text-center" style="width: 10%">Add/ Remove</th>
                 </tr>
               </thead>
               <tbody>
@@ -36,9 +37,12 @@
                     <input type="text" class="col-12 form-control" placeholder="Field Name" formControlName="fieldName" />
                   </td>
                   <td>
-                    <select class="form-control" name="fieldType" formControlName="fieldType">
+                    <select class="form-control" name="fieldType" formControlName="fieldType" (change)="onFieldTypeChange(i)">
                       <option [value]="data.value" *ngFor="let data of fieldTyepList">{{ data.caption }}</option>
                     </select>
+                  </td>
+                  <td>
+                    <input type="text" class="col-12 form-control" placeholder="Field Value" formControlName="fieldValue" />
                   </td>
 
                   <td>
