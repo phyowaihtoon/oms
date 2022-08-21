@@ -40,11 +40,12 @@
       <tbody>
         <tr *ngFor="let metadata of metadatas; trackBy: trackId" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/metadata', metadata.id, 'view']">{{ metadata.id }}</a>
+            <a [routerLink]="['/metadata', metadata.id, 'edit']">{{ metadata.id }}</a>
           </td>
           <td>{{ metadata.docTitle }}</td>
           <td class="text-right">
             <div class="btn-group">
+              <!--
               <button
                 type="submit"
                 [routerLink]="['/metadata', metadata.id, 'view']"
@@ -54,7 +55,7 @@
                 <fa-icon icon="eye"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
               </button>
-
+              -->
               <button
                 type="submit"
                 [routerLink]="['/metadata', metadata.id, 'edit']"
