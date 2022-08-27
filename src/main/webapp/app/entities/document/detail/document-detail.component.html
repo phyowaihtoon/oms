@@ -18,17 +18,17 @@
         <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
       </div>
       <div class="col-4 dms-view-data">
-        <span>{{ _documentHeader.metaDataHeaderId }}</span>
+        <span>{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}</span>
       </div>
       <div class="col-2">
         <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
       </div>
       <div class="col-4 dms-view-data">
-        <span>{{ _documentHeader.repositoryURL }}</span>
+        <span>{{ _documentHeader?.repositoryURL }}</span>
       </div>
     </div>
   </div>
-  <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader.fieldNames, _documentHeader.fieldValues)"></div>
+  <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"></div>
 </div>
 
 <div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.docDetailLabel">MetaData Information</span></div>

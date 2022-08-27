@@ -1,6 +1,7 @@
 package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class DocumentHeaderDTO implements Serializable {
@@ -16,6 +17,8 @@ public class DocumentHeaderDTO implements Serializable {
     private String fieldValues;
 
     private String repositoryURL;
+
+    private List<DocumentDTO> docList;
 
     public Long getId() {
         return id;
@@ -55,6 +58,14 @@ public class DocumentHeaderDTO implements Serializable {
 
     public void setRepositoryURL(String repositoryURL) {
         this.repositoryURL = repositoryURL;
+    }
+
+    public List<DocumentDTO> getDocList() {
+        return docList;
+    }
+
+    public void setDocList(List<DocumentDTO> docList) {
+        this.docList = docList;
     }
 
     @Override

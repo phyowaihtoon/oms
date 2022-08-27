@@ -33,7 +33,7 @@
       <div class="col-2">
         <select class="form-control" id="field_metaDataHdrID" data-cy="metaDataHdrID" name="metaDataHdrID" formControlName="metaDataHdrID">
           <option [ngValue]="null"></option>
-          <option [ngValue]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDtaaByID">
+          <option [ngValue]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDataByID">
             {{ metaData.docTitle }}
           </option>
         </select>
@@ -91,7 +91,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackId" data-cy="entityTable">
+        <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
           <td>
             <a [routerLink]="['/document', documentHeader.id, 'view']">{{ documentHeader.id }}</a>
           </td>
