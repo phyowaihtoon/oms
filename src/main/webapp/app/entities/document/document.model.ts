@@ -4,6 +4,7 @@ export interface IDocumentHeader {
   fieldNames?: string;
   fieldValues?: string;
   repositoryURL?: string;
+  docList?: IDocument[];
 }
 
 export class DocumentHeader implements IDocumentHeader {
@@ -12,7 +13,8 @@ export class DocumentHeader implements IDocumentHeader {
     public metaDataHeaderId?: number,
     public fieldNames?: string,
     public fieldValues?: string,
-    public repositoryURL?: string
+    public repositoryURL?: string,
+    public docList?: IDocument[]
   ) {}
 }
 

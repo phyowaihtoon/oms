@@ -1,7 +1,8 @@
 package com.hmm.dms.repository;
 
 import com.hmm.dms.domain.Document;
-import org.springframework.data.jpa.repository.*;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DocumentRepository extends JpaRepository<Document, Long> {}
+public interface DocumentRepository extends JpaRepository<Document, Long> {
+    List<Document> findAllByHeaderId(Long id);
+}

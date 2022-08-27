@@ -1,4 +1,8 @@
+import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IDocument, IDocumentHeader } from '../document.model';
 
 @Component({
@@ -8,8 +12,8 @@ import { IDocument, IDocumentHeader } from '../document.model';
   encapsulation: ViewEncapsulation.None,
 })
 export class DocumentDetailComponent implements OnInit {
-  _documentHeader: IDocumentHeader = {};
-  _documentDetails: IDocument[] = [];
+  _documentHeader: IDocumentHeader | undefined;
+  _documentDetails: IDocument[] | undefined;
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
     { extension: 'docx', value: 'WORD' },
@@ -19,24 +23,32 @@ export class DocumentDetailComponent implements OnInit {
     { extension: 'txt', value: 'TEXT' },
     { extension: 'csv', value: 'CSV' },
   ];
+  _metaDataHdrList?: IMetaDataHeader[] | null;
+
+  constructor(protected activatedRoute: ActivatedRoute, protected loadSetupService: LoadSetupService) {}
 
   ngOnInit(): void {
-    this._documentHeader = {
-      id: 1,
-      metaDataHeaderId: 2,
-      fieldNames: 'Open Date|Account Number|Address|Age',
-      fieldValues: '01-02-2022|10000000123|Hlaing Township, Yangon, Myanmar|20',
-      repositoryURL: 'example/abc',
-    };
-    this._documentDetails = [
-      { id: 1, headerId: 1, filePath: 'example/abc/test.pdf' },
-      { id: 2, headerId: 1, filePath: 'example/abc/test.xls' },
-      { id: 3, headerId: 1, filePath: 'example/abc/test.jpg' },
-      { id: 4, headerId: 1, filePath: 'example/abc/test.docx' },
-      { id: 5, headerId: 1, filePath: 'example/abc/test.pdf' },
-      { id: 6, headerId: 1, filePath: 'example/abc/test.pdf' },
-      { id: 6, headerId: 1, filePath: 'example/abc/test.html' },
-    ];
+    this.activatedRoute.data.subscribe(({ docHeader }) => {
+      this._documentHeader = docHeader;
+      this._documentDetails = this._documentHeader?.docList;
+    });
+    this.loadAllSetup();
+  }
+
+  loadAllSetup(): void {
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        this._metaDataHdrList = res.body;
+      },
+      error => {
+        console.log('Response Failed : ', error);
+      }
+    );
+  }
+
+  getDocTitleByID(id?: number): string | undefined {
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === id);
+    return metaDataHeader?.docTitle;
   }
 
   getFileType(fileName?: string): string | undefined {

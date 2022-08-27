@@ -31,23 +31,17 @@ public class DocumentInquiryResource {
     }
 
     @PostMapping("/docinquiry")
-    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocuments(@RequestBody DocumentHeaderDTO dto, Pageable pageable) {
+    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentHeaderDTO dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
-        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentsByRepoURL(
-            dto.getMetaDataHeaderId(),
-            dto.getRepositoryURL(),
-            pageable
-        );
+        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentHeaderByMetaData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-    /*
-    @GetMapping("/docinquiry/{id}/{repRUL}")
-    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocuments(@PathVariable Long id,@PathVariable String repRUL,Pageable pageable) {
+
+    @GetMapping("/docinquiry/{id}")
+    public DocumentHeaderDTO getAllDocuments(@PathVariable Long id) {
         log.debug("REST request to get all Documents");
-        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentsByRepoURL(id,repRUL,pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        DocumentHeaderDTO headerDTO = documentInquiryService.getDocumentsById(id);
+        return headerDTO;
     }
-     */
 }

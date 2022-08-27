@@ -45,11 +45,11 @@ export class DocumentComponent implements OnInit {
     this.loadAllSetup();
   }
 
-  trackId(index: number, item: IDocumentHeader): number {
+  trackDocumentHeaderById(index: number, item: IDocumentHeader): number {
     return item.id!;
   }
 
-  trackMetaDtaaByID(index: number, item: IMetaDataHeader): number {
+  trackMetaDataByID(index: number, item: IMetaDataHeader): number {
     return item.id!;
   }
 
@@ -88,7 +88,6 @@ export class DocumentComponent implements OnInit {
   loadAllSetup(): void {
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
-        console.log('Response Data :', res.body);
         this.metaDataHdrList = res.body;
       },
       error => {
@@ -98,7 +97,6 @@ export class DocumentComponent implements OnInit {
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
-    console.log(' Calling Search function ');
     this.isLoading = true;
     this.isShowingResult = true;
     this.documentHeaders = [];
