@@ -54,10 +54,8 @@ export class DocumentUpdateComponent implements OnInit {
     this.isSaving = true;
   }
 
-  onChange(event: any) {
-    // this.searchMedatas = [];
-    // this.medataTypeId = event.target.value;
-    // this.searchRequirdMetadata(this.medataTypeId);
+  onChange(e: any): void {
+    console.warn('Testing....');
   }
 
   protected updateForm(documentHeader: DocumentHeader): void {

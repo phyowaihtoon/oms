@@ -16,9 +16,9 @@
         <div class="form-group col-6">
           <label class="form-control-label" for="field_docType">Documnet Type</label>
 
-          <select class="custom-select mb-3" (onChange)="onChanged($event)" formControlName="docType">
+          <select class="custom-select mb-3" formControlName="docType">
             <option value="">-</option>
-            <option [value]="doctype.id" *ngFor="let doctype of docTypes">
+            <option [value]="doctype.id" *ngFor="let doctype of docTypes" (change)="onChange($event)">
               {{ doctype.docTitle }}
             </option>
           </select>
