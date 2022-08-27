@@ -4,6 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { IMetaDataHeader, MetaData, MetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 
@@ -25,7 +26,7 @@ export class DocumentUpdateComponent implements OnInit {
     repositoryURL: [],
   });
 
-  constructor(protected documentService: DocumentService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(protected loadSetupService: LoadSetupService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
 
   // ngOnInit(): void {
   //   this.activatedRoute.data.subscribe(({ category }) => {
@@ -34,11 +35,14 @@ export class DocumentUpdateComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    this.documentService.getAllMetaDataHeader().subscribe(
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
         this.docTypes = res.body;
+        console.log(res);
       },
-      () => {}
+      () => {
+        console.log('error');
+      }
     );
   }
 
@@ -50,8 +54,10 @@ export class DocumentUpdateComponent implements OnInit {
     this.isSaving = true;
   }
 
-  onChanged(e: any): void {
-    console.warn('Testing....');
+  onChange(event: any) {
+    // this.searchMedatas = [];
+    // this.medataTypeId = event.target.value;
+    // this.searchRequirdMetadata(this.medataTypeId);
   }
 
   protected updateForm(documentHeader: DocumentHeader): void {
