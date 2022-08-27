@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IDocumentInquiry } from '../document.model';
+import { DocumentHeader, IDocumentHeader, IDocumentInquiry } from '../document.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { FormBuilder } from '@angular/forms';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -15,7 +15,7 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
   styleUrls: ['./document.component.scss'],
 })
 export class DocumentComponent implements OnInit {
-  documentHeaders?: IDocumentInquiry[];
+  documentHeaders?: IDocumentHeader[];
   metaDataHdrList?: IMetaDataHeader[] | null;
   isLoading = false;
   totalItems = 0;
@@ -30,7 +30,6 @@ export class DocumentComponent implements OnInit {
 
   searchForm = this.fb.group({
     metaDataHdrID: [],
-    docTitle: [],
     repositoryURL: [],
   });
 
@@ -46,7 +45,7 @@ export class DocumentComponent implements OnInit {
     this.loadAllSetup();
   }
 
-  trackId(index: number, item: IDocumentInquiry): number {
+  trackId(index: number, item: IDocumentHeader): number {
     return item.id!;
   }
 
@@ -62,6 +61,30 @@ export class DocumentComponent implements OnInit {
     this.isShowingResult = !this.isShowingResult;
   }
 
+  getDocTitleByID(id?: number): string | undefined {
+    const metaDataHeader = this.metaDataHdrList?.find(item => item.id === id);
+    return metaDataHeader?.docTitle;
+  }
+
+  arrangeMetaData(fNames?: string, fValues?: string): string {
+    let arrangedFields = '';
+    if (fNames !== undefined && fValues !== undefined && fNames.trim().length > 0 && fValues.trim().length > 0) {
+      const fNameArray = fNames.split('|');
+      const fValueArray = fValues.split('|');
+      if (fNameArray.length > 0 && fValueArray.length > 0 && fNameArray.length === fValueArray.length) {
+        let arrIndex = 0;
+        while (arrIndex < fNameArray.length) {
+          arrangedFields += '<b>' + fNameArray[arrIndex] + '</b>' + ' : ' + fValueArray[arrIndex] + '&nbsp;&nbsp;';
+          if ((arrIndex + 1) / 2 === 0) {
+            arrangedFields += '<br>';
+          }
+          arrIndex++;
+        }
+      }
+    }
+    return arrangedFields;
+  }
+
   loadAllSetup(): void {
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
@@ -75,25 +98,38 @@ export class DocumentComponent implements OnInit {
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
+    console.log(' Calling Search function ');
     this.isLoading = true;
-    this.isShowingResult = !this.isShowingResult;
+    this.isShowingResult = true;
+    this.documentHeaders = [];
+
     const pageToLoad: number = page ?? this.page ?? 1;
-    this.documentInquiryService
-      .query({
-        page: pageToLoad - 1,
-        size: this.itemsPerPage,
-        // sort: this.sort(),
-      })
-      .subscribe(
-        (res: HttpResponse<IDocumentInquiry[]>) => {
-          this.isLoading = false;
-          this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
-        },
-        () => {
-          this.isLoading = false;
-          this.onError();
-        }
-      );
+    const paginationReqParams = {
+      page: pageToLoad - 1,
+      size: this.itemsPerPage,
+      // sort: this.sort(),
+    };
+    const searchCriteria = {
+      ...new DocumentHeader(),
+      metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
+      repositoryURL: this.searchForm.get('repositoryURL')!.value,
+    };
+    this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
+      (res: HttpResponse<IDocumentHeader[]>) => {
+        this.isLoading = false;
+        this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
+      },
+      () => {
+        this.isLoading = false;
+        this.onError();
+      }
+    );
+  }
+
+  clearFormData(): void {
+    this.searchForm.reset();
+    this.documentHeaders = [];
+    this.isShowingResult = false;
   }
 
   protected sort(): string[] {
@@ -104,7 +140,7 @@ export class DocumentComponent implements OnInit {
     return result;
   }
 
-  protected onSuccess(data: IDocumentInquiry[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
+  protected onSuccess(data: IDocumentHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     this.documentHeaders = data ?? [];

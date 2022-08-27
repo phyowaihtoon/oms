@@ -1,5 +1,6 @@
 package com.hmm.dms.service.impl;
 
+import com.hmm.dms.domain.DocumentHeader;
 import com.hmm.dms.repository.DocumentHeaderRepository;
 import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
@@ -27,7 +28,9 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     }
 
     @Override
-    public Page<DocumentHeaderDTO> searchDocumentsByRepoURL(Pageable pageable) {
-        return this.documentRepository.findAll(pageable).map(documentMapper::toDto);
+    public Page<DocumentHeaderDTO> searchDocumentsByRepoURL(Long id, String repURL, Pageable pageable) {
+        if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = "";
+        Page<DocumentHeader> pageWithEntity = this.documentRepository.findAll(id, repURL, pageable);
+        return pageWithEntity.map(documentMapper::toDto);
     }
 }

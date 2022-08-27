@@ -34,12 +34,9 @@ export class DocumentUpdateComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    this.documentService.getAllMetaDataHeader().subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.docTypes = res.body;
-      },
-      () => {}
-    );
+    this.documentService.getAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
+      this.docTypes = res.body;
+    });
   }
 
   previousState(): void {

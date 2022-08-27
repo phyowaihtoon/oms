@@ -1,1 +1,70 @@
-<p>document-detail works!</p>
+<div id="page-heading" class="row">
+  <div class="col-10">
+    <span>Document</span>
+    <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
+    <span> >> Document Inquiry</span>
+  </div>
+  <div class="col-2 d-flex justify-content-end">
+    <button type="submit" (click)="previousState()" class="btn btn-info btn-sm" data-cy="entityDetailsBackButton">
+      <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span class="d-none d-md-inline" jhiTranslate="entity.action.back">Back</span>
+    </button>
+  </div>
+</div>
+<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span></div>
+<div class="row" id="documentHeaderView">
+  <div class="row col-12">
+    <div class="row col-12">
+      <div class="col-2">
+        <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
+      </div>
+      <div class="col-4 dms-view-data">
+        <span>{{ _documentHeader.metaDataHeaderId }}</span>
+      </div>
+      <div class="col-2">
+        <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
+      </div>
+      <div class="col-4 dms-view-data">
+        <span>{{ _documentHeader.repositoryURL }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader.fieldNames, _documentHeader.fieldValues)"></div>
+</div>
+
+<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.docDetailLabel">MetaData Information</span></div>
+
+<div class="row" id="documentDetailView">
+  <div class="table-responsive" id="entities" *ngIf="_documentDetails && _documentDetails.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.no">No.</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.filePath">File Path</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.fileType">File Type</span>
+          </th>
+          <th scope="col" style="text-align: center">
+            <span jhiTranslate="dmsApp.document.download">Download</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
+          <td>{{ i + 1 }}</td>
+          <td>{{ docDetail.filePath }}</td>
+          <td>{{ getFileType(docDetail.filePath) }}</td>
+
+          <td style="text-align: center">
+            <span style="cursor: pointer">
+              <fa-icon icon="download"></fa-icon>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
