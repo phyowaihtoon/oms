@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
-import { IDocumentInquiry } from '../document.model';
+import { IDocumentHeader } from '../document.model';
 import { createRequestOption } from 'app/core/request/request-util';
-export type EntityArrayResponseType = HttpResponse<IDocumentInquiry[]>;
+export type EntityArrayResponseType = HttpResponse<IDocumentHeader[]>;
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +14,15 @@ export class DocumentInquiryService {
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  query(req?: any): Observable<EntityArrayResponseType> {
+  query(criteriaData: IDocumentHeader, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<IDocumentInquiry[]>(this.resourceUrl, { params: options, observe: 'response' });
+    return this.http.post<IDocumentHeader[]>(`${this.resourceUrl}`, criteriaData, { params: options, observe: 'response' });
   }
+
+  /*
+  query(criteriaData:IDocumentHeader,req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IDocumentHeader[]>(`${this.resourceUrl}/${criteriaData.metaDataHeaderId as number}/${criteriaData.repositoryURL as string}`, { params: options, observe: 'response' });
+  }
+  */
 }

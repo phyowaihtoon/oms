@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DocumentInquiryService {
-    public Page<DocumentHeaderDTO> searchDocumentsByRepoURL(Pageable pageable);
+    public Page<DocumentHeaderDTO> searchDocumentsByRepoURL(Long id, String repURL, Pageable pageable);
 }

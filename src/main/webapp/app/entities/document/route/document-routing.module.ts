@@ -6,7 +6,7 @@ import { DocumentUpdateComponent } from '../update/document-update.component';
 
 const metadataRoute: Routes = [
   {
-    path: '',
+    path: 'new',
     component: DocumentUpdateComponent,
   },
   {
@@ -16,6 +16,10 @@ const metadataRoute: Routes = [
   {
     path: ':id/view',
     component: DocumentDetailComponent,
+  },
+  {
+    path: ':id/edit',
+    component: DocumentUpdateComponent,
   },
 ];
 

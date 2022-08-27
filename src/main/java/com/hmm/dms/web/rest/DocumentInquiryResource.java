@@ -10,6 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,11 +30,24 @@ public class DocumentInquiryResource {
         this.documentInquiryService = documentInquiryService;
     }
 
-    @GetMapping("/docinquiry")
-    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocuments(Pageable pageable) {
+    @PostMapping("/docinquiry")
+    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocuments(@RequestBody DocumentHeaderDTO dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
-        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentsByRepoURL(pageable);
+        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentsByRepoURL(
+            dto.getMetaDataHeaderId(),
+            dto.getRepositoryURL(),
+            pageable
+        );
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    /*
+    @GetMapping("/docinquiry/{id}/{repRUL}")
+    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocuments(@PathVariable Long id,@PathVariable String repRUL,Pageable pageable) {
+        log.debug("REST request to get all Documents");
+        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentsByRepoURL(id,repRUL,pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+     */
 }
