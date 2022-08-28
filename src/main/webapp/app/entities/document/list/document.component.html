@@ -5,9 +5,13 @@
     <span> >> Document Inquiry</span>
   </div>
   <div class="col-2 d-flex justify-content-end">
-    <button class="btn btn-primary btn-sm" (click)="loadPage()" [disabled]="isLoading">
+    <button class="btn btn-primary btn-sm" (click)="loadPage(1)" [disabled]="isLoading">
       <fa-icon icon="search"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+    </button>
+    <span style="width: 5px"></span>
+    <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
     </button>
   </div>
 </div>
@@ -29,7 +33,7 @@
       <div class="col-2">
         <select class="form-control" id="field_metaDataHdrID" data-cy="metaDataHdrID" name="metaDataHdrID" formControlName="metaDataHdrID">
           <option [ngValue]="null"></option>
-          <option [ngValue]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDtaaByID">
+          <option [ngValue]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDataByID">
             {{ metaData.docTitle }}
           </option>
         </select>
@@ -80,16 +84,20 @@
             <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
             <fa-icon icon="sort"></fa-icon>
           </th>
+          <th scope="col" jhiSortBy="otherMetaData">
+            <span jhiTranslate="dmsApp.document.otherMetaData">Other MetaData</span>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackId" data-cy="entityTable">
+        <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
           <td>
             <a [routerLink]="['/document', documentHeader.id, 'view']">{{ documentHeader.id }}</a>
           </td>
-          <td>{{ documentHeader.docTitle }}</td>
+          <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
           <td>{{ documentHeader.repositoryURL }}</td>
+          <td [innerHTML]="arrangeMetaData(documentHeader.fieldNames, documentHeader.fieldValues)"></td>
           <td class="text-right">
             <div class="btn-group">
               <button

@@ -1,18 +1,20 @@
 export interface IDocumentHeader {
   id?: number;
-  metaDataHeaderId?: string;
+  metaDataHeaderId?: number;
   fieldNames?: string;
   fieldValues?: string;
   repositoryURL?: string;
+  docList?: IDocument[];
 }
 
 export class DocumentHeader implements IDocumentHeader {
   constructor(
     public id?: number,
-    public metaDataHeaderId?: string,
+    public metaDataHeaderId?: number,
     public fieldNames?: string,
     public fieldValues?: string,
-    public repositoryURL?: string
+    public repositoryURL?: string,
+    public docList?: IDocument[]
   ) {}
 }
 
@@ -29,7 +31,6 @@ export class Document implements IDocument {
 export interface IDocumentInquiry {
   id?: number;
   metaDataHeaderId?: number;
-  docTitle?: string;
   repositoryURL?: string;
 }
 

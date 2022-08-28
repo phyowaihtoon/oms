@@ -47,6 +47,7 @@ export class DocumentUpdateComponent implements OnInit {
         console.log('error');
       }
     );
+
   }
 
   previousState(): void {
