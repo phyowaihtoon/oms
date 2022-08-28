@@ -1,7 +1,15 @@
-<div id="page-heading">
-  <span>Document</span>
-  <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
-  <span> >> Document Inquiry</span>
+<div id="page-heading" class="row">
+  <div class="col-10">
+    <span>Document</span>
+    <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
+    <span> >> Document Inquiry</span>
+  </div>
+  <div class="col-2 d-flex justify-content-end">
+    <button class="btn btn-primary btn-sm" (click)="loadPage()" [disabled]="isLoading">
+      <fa-icon icon="search"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+    </button>
+  </div>
 </div>
 
 <div *ngIf="isShowingFilters">
@@ -14,7 +22,7 @@
 
 <div *ngIf="isShowingFilters" id="search-area" class="col-12">
   <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
-    <div class="row col-12">
+    <div class="form-group row col-12">
       <div class="col-2">
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Title</label>
       </div>

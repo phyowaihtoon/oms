@@ -15,13 +15,30 @@
 
         <div class="form-group col-6">
           <label class="form-control-label" for="field_docType">Documnet Type</label>
-
-          <select class="custom-select mb-3" formControlName="docType">
-            <option value="">-</option>
-            <option [value]="doctype.id" *ngFor="let doctype of docTypes" (change)="onChange($event)">
+          <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
+            <option [value]="0">-</option>
+            <option [value]="doctype.id" *ngFor="let doctype of docTypes">
               {{ doctype.docTitle }}
             </option>
           </select>
+        </div>
+
+        <div class="form-group col-6" *ngFor="let metaitem of meta; let i = index">
+          <div *ngIf="metaitem.fieldType == 'String'">
+            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+
+            <input type="text" class="form-control" formControlName="fieldNames" [placeholder]="metaitem.fieldName" />
+
+            <input type="text" class="form-control" [name]="metaitem.fieldName" formControlName="fieldValues" />
+          </div>
+        </div>
+
+        <div class="form-group col-6" *ngFor="let metaitem of meta">
+          <div *ngIf="metaitem.fieldType == 'Date'">
+            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+
+            <input type="date" class="form-control" [name]="metaitem.fieldName" formControlName="fieldValues" />
+          </div>
         </div>
       </div>
 
@@ -35,13 +52,7 @@
           <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
 
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
+        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary">
           <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
         </button>
       </div>

@@ -2,9 +2,10 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { Observable } from 'rxjs';
-import { IMetaDataHeader } from '../metadata/metadata.model';
+import { IMetaData, IMetaDataHeader } from '../metadata/metadata.model';
 
 export type MeataDataHeaderSetupArray = HttpResponse<IMetaDataHeader[]>;
+export type MetaDataSetupArray = HttpResponse<IMetaData[]>;
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,11 @@ export class LoadSetupService {
 
   loadAllMetaDataHeader(): Observable<MeataDataHeaderSetupArray> {
     const childURL = '/metadataheader';
-    console.log('Calling Load Setup Service');
     return this.http.get<IMetaDataHeader[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadAllMetaDatabyMetadatHeaderId(id: number): Observable<MetaDataSetupArray> {
+    const childURL = this.resourceUrl + '/metadata/' + id.toString();
+    return this.http.get<IMetaData[]>(childURL, { observe: 'response' });
   }
 }

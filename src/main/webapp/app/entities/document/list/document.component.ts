@@ -44,7 +44,6 @@ export class DocumentComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllSetup();
-    this.loadPage();
   }
 
   trackId(index: number, item: IDocumentInquiry): number {
@@ -77,6 +76,7 @@ export class DocumentComponent implements OnInit {
 
   loadPage(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
+    this.isShowingResult = !this.isShowingResult;
     const pageToLoad: number = page ?? this.page ?? 1;
     this.documentInquiryService
       .query({

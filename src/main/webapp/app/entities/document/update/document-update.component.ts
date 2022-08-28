@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { IMetaDataHeader, MetaData, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { DocumentHeader } from '../document.model';
+import { DocumentHeader, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 
 @Component({
@@ -15,6 +15,9 @@ import { DocumentService } from '../service/document.service';
 })
 export class DocumentUpdateComponent implements OnInit {
   docTypes: MetaDataHeader[] | null = [];
+  meta: MetaData[] | null = [];
+
+  metaHeaderId: number = 0;
 
   isSaving = false;
 
@@ -51,14 +54,42 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   save(): void {
+    console.log('Inside SAVE....');
+
     this.isSaving = true;
+
+    console.log(this.editForm.get(['id'])!.value);
+    console.log(this.editForm.get(['metaDataHeaderId'])!.value);
+    console.log(this.editForm.get(['fieldNames'])!.value);
+    console.log(this.editForm.get(['fieldValues'])!.value);
+
+    this.createFromForm();
   }
 
   onChange(e: any): void {
-    console.warn('Testing....');
+    this.metaHeaderId = e.target.value;
+
+    console.log('Inside onChane....' + this.metaHeaderId.toString());
+
+    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(this.metaHeaderId).subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        this.meta = res.body;
+        console.log(res);
+      },
+      () => {
+        console.log('error');
+      }
+    );
   }
 
-  protected updateForm(documentHeader: DocumentHeader): void {
-    this.editForm.patchValue({});
+  protected createFromForm(): IDocumentHeader {
+    return {
+      ...new DocumentHeader(),
+      id: this.editForm.get(['id'])!.value,
+      metaDataHeaderId: this.editForm.get(['metaDataHeaderId'])!.value,
+      //fieldNames: this.editForm.get(['label'])!.value,
+      //fieldValues:  this.editForm.get(['Text','Date'])!.value,
+      //repositoryURL: "Testing URL"
+    };
   }
 }

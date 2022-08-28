@@ -4,6 +4,8 @@ import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service Interface for managing {@link com.hmm.dms.domain.MetaData}.
@@ -46,4 +48,6 @@ public interface MetaDataService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Page<MetaDataHeaderDTO> findAll(Pageable pageable);
 }
