@@ -4,7 +4,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { IMetaDataHeader, MetaData, MetaDataHeader } from 'app/entities/metadata/metadata.model';
-import { DocumentHeader } from '../document.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { DocumentHeader, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 
 @Component({
@@ -14,6 +15,9 @@ import { DocumentService } from '../service/document.service';
 })
 export class DocumentUpdateComponent implements OnInit {
   docTypes: MetaDataHeader[] | null = [];
+  meta: MetaData[] | null = [];
+
+  metaHeaderId: number = 0;
 
   isSaving = false;
 
@@ -25,7 +29,7 @@ export class DocumentUpdateComponent implements OnInit {
     repositoryURL: [],
   });
 
-  constructor(protected documentService: DocumentService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(protected loadSetupService: LoadSetupService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
 
   // ngOnInit(): void {
   //   this.activatedRoute.data.subscribe(({ category }) => {
@@ -34,9 +38,16 @@ export class DocumentUpdateComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    this.documentService.getAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
-      this.docTypes = res.body;
-    });
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        this.docTypes = res.body;
+        console.log(res);
+      },
+      () => {
+        console.log('error');
+      }
+    );
+
   }
 
   previousState(): void {
@@ -44,14 +55,42 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   save(): void {
+    console.log('Inside SAVE....');
+
     this.isSaving = true;
+
+    console.log(this.editForm.get(['id'])!.value);
+    console.log(this.editForm.get(['metaDataHeaderId'])!.value);
+    console.log(this.editForm.get(['fieldNames'])!.value);
+    console.log(this.editForm.get(['fieldValues'])!.value);
+
+    this.createFromForm();
   }
 
-  onChanged(e: any): void {
-    console.warn('Testing....');
+  onChange(e: any): void {
+    this.metaHeaderId = e.target.value;
+
+    console.log('Inside onChane....' + this.metaHeaderId.toString());
+
+    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(this.metaHeaderId).subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        this.meta = res.body;
+        console.log(res);
+      },
+      () => {
+        console.log('error');
+      }
+    );
   }
 
-  protected updateForm(documentHeader: DocumentHeader): void {
-    this.editForm.patchValue({});
+  protected createFromForm(): IDocumentHeader {
+    return {
+      ...new DocumentHeader(),
+      id: this.editForm.get(['id'])!.value,
+      metaDataHeaderId: this.editForm.get(['metaDataHeaderId'])!.value,
+      //fieldNames: this.editForm.get(['label'])!.value,
+      //fieldValues:  this.editForm.get(['Text','Date'])!.value,
+      //repositoryURL: "Testing URL"
+    };
   }
 }

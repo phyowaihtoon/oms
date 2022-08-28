@@ -100,7 +100,6 @@ export class DocumentComponent implements OnInit {
     this.isLoading = true;
     this.isShowingResult = true;
     this.documentHeaders = [];
-
     const pageToLoad: number = page ?? this.page ?? 1;
     const paginationReqParams = {
       page: pageToLoad - 1,
