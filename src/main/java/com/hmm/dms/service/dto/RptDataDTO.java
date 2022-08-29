@@ -1,6 +1,13 @@
 package com.hmm.dms.service.dto;
 
-public class RptDataDTO {
+import java.io.Serializable;
+
+public class RptDataDTO implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     private String dataS1;
     private String dataS2;

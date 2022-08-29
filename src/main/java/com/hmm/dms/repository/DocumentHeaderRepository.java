@@ -1,7 +1,10 @@
 package com.hmm.dms.repository;
 
 import com.hmm.dms.domain.DocumentHeader;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,4 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, Long> {}
+public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, Long> {
+    @Query("SELECT dh FROM DocumentHeader dh WHERE dh.metaDataHeaderId=?1 AND dh.repositoryURL LIKE ?2%")
+    Page<DocumentHeader> findAll(Long id, String repURL, Pageable pageable);
+}

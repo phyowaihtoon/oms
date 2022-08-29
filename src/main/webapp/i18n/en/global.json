@@ -18,7 +18,8 @@
       },
       "document": {
         "title": "Document",
-        "update": "Document",
+        "create": "Document Mapping",
+        "update": "Document Mapping",
         "search": "Document Inquiry"
       },
       "menurole": {
@@ -115,7 +116,9 @@
       "edit": "Edit",
       "open": "Open",
       "save": "Save",
-      "view": "View"
+      "view": "View",
+      "search": "Search",
+      "clear": "Clear"
     },
     "detail": {
       "field": "Field",

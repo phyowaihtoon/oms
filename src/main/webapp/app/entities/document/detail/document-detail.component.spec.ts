@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DocumentSearchComponent } from './document-search.component';
+import { DocumentDetailComponent } from './document-detail.component';
 
-describe('DocumentSearchComponent', () => {
-  let component: DocumentSearchComponent;
-  let fixture: ComponentFixture<DocumentSearchComponent>;
+describe('DocumentDetailComponent', () => {
+  let component: DocumentDetailComponent;
+  let fixture: ComponentFixture<DocumentDetailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DocumentSearchComponent],
+      declarations: [DocumentDetailComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocumentSearchComponent);
+    fixture = TestBed.createComponent(DocumentDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

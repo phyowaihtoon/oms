@@ -76,19 +76,19 @@
           <li>
             <a
               class="dropdown-item"
-              routerLink="document"
+              routerLink="document/new"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.document.update">Document</span>
+              <span jhiTranslate="global.menu.document.create">Document Mapping</span>
             </a>
           </li>
           <li>
             <a
               class="dropdown-item"
-              routerLink="document/search"
+              routerLink="document/list"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="collapseNavbar()"

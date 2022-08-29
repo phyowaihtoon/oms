@@ -11,6 +11,6 @@ class RepositoryMapperTest {
 
     @BeforeEach
     public void setUp() {
-        repositoryMapper = new RepositoryMapperImpl();
+        //repositoryMapper = new RepositoryMapperImpl();
     }
 }
