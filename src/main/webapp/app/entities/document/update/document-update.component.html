@@ -13,51 +13,34 @@
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <!-- <div class="form-group col-3">
-          <label class="form-control-label" jhiTranslate="mfiuappApp.mFIUInfo.rBusTypeID" for="field_rBusTypeID">Industry Type</label>
-          
-          <select class="form-control" id="field_rBusTypeID" name="rBusTypeID" formControlName="rBusTypeID">
-            <option [ngValue]="null"></option>
-            <option [ngValue]="industryTypeOption.id" *ngFor="let industryTypeOption of industryTypesSharedCollection; trackBy: trackIndustryTypeById">{{ industryTypeOption.description }}</option>
-        </select>-->
-
         <div class="form-group col-6">
           <label class="form-control-label" for="field_docType">Documnet Type</label>
-          <!--jhiTranslate="dmsApp.document.docTitle" **/-->
-
-          <select class="custom-select mb-3" (onChange)="onChanged($event)" formControlName="docType">
-            <option value="">-</option>
-            <option value="doctype.id" *ngfor="let doctype of docTypes" [ngValue]="doctype">
+          <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
+            <option [value]="0">-</option>
+            <option [value]="doctype.id" *ngFor="let doctype of docTypes">
               {{ doctype.docTitle }}
             </option>
           </select>
         </div>
-      </div>
 
-      <!-- <div class="form-group col-6">
-        <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Title</label>
-        <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
-      </div>
+        <div class="form-group col-6" *ngFor="let metaitem of meta; let i = index">
+          <div *ngIf="metaitem.fieldType == 'String'">
+            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
 
-      <div class="form-group col-4">
-        <label class="form-control-label" for="field_payDate">Pay Date</label>
-        <div class="d-flex">
-          <input
-            id="field_payDate"
-            data-cy="payDate"
-            type="date"
-            class="form-control"
-            name="payDate"
-            formControlName="payDate"
-            placeholder="YYYY-MM-DD HH:mm"
-          />
+            <input type="text" class="form-control" formControlName="fieldNames" [placeholder]="metaitem.fieldName" />
+
+            <input type="text" class="form-control" [name]="metaitem.fieldName" formControlName="fieldValues" />
+          </div>
+        </div>
+
+        <div class="form-group col-6" *ngFor="let metaitem of meta">
+          <div *ngIf="metaitem.fieldType == 'Date'">
+            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+
+            <input type="date" class="form-control" [name]="metaitem.fieldName" formControlName="fieldValues" />
+          </div>
         </div>
       </div>
-
-      <div class="form-group col-6">
-        <label class="form-control-label" for="field_payEmpId">Employee ID</label>
-        <input type="text" class="form-control" name="payEmpId" id="field_payEmpId" data-cy="payEmpId" formControlName="payEmpId" />
-      </div> -->
 
       <div class="form-group col-6">
         <label class="form-control-label" for="field_browse">Upload File Here</label>
@@ -69,13 +52,7 @@
           <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
 
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
+        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary">
           <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
         </button>
       </div>
