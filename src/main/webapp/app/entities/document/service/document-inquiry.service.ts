@@ -4,9 +4,11 @@ import { Observable } from 'rxjs';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { IDocumentHeader } from '../document.model';
 import { createRequestOption } from 'app/core/request/request-util';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
 
 export type EntityArrayResponseType = HttpResponse<IDocumentHeader[]>;
 export type EntityResponseType = HttpResponse<IDocumentHeader>;
+export type FileResponseType = HttpResponse<IReplyMessage>;
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +25,9 @@ export class DocumentInquiryService {
 
   getDocumentsById(id: number): Observable<EntityResponseType> {
     return this.http.get(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  downloadFile(docId: number): Observable<Blob> {
+    return this.http.get(`${this.resourceUrl}/download/${docId}`, { responseType: 'blob' });
   }
 }

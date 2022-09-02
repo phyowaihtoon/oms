@@ -3,13 +3,13 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.domain.User;
 import com.hmm.dms.service.ReportService;
 import com.hmm.dms.service.UserService;
+import com.hmm.dms.service.dto.ReplyMessage;
 import com.hmm.dms.service.dto.RptParamsDTO;
 import com.hmm.dms.util.SharedUtils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import javax.servlet.ServletContext;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public class ReportResource {
     }
 
     @PostMapping("/docmap-rpt")
-    public RptParamsDTO generateDocumentListRpt(@Valid @RequestBody RptParamsDTO rptParams) {
+    public ReplyMessage<RptParamsDTO> generateDocumentListRpt(@Valid @RequestBody RptParamsDTO rptParams) {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
         String rptOutputPath = rptOutFolder + "\\" + loginUser.getLogin() + "\\";
@@ -85,7 +85,7 @@ public class ReportResource {
         rptParams.setRptOutputPath(rptOutputPath);
         rptParams.setRptJrxml("DocumentMappingRpt.jrxml");
         rptParams.setRptJasper("DocumentMappingRpt.jrxml");
-        String rptOutFilePath = this.reportService.generateDocumentListRpt(rptParams);
-        if (rptOutFilePath != null && rptOutFilePath != "") return rptParams; else return null;
+        ReplyMessage<RptParamsDTO> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
+        return replyMessage;
     }
 }

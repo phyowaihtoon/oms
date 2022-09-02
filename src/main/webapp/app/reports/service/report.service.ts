@@ -1,10 +1,11 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { Observable } from 'rxjs';
 import { IRptParamsDTO } from '../report.model';
 
-export type EntityResponseType = HttpResponse<IRptParamsDTO>;
+export type EntityResponseType = HttpResponse<IReplyMessage>;
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class ReportService {
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   generateDocMappingListRpt(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
-    return this.http.post<IRptParamsDTO>(this.docMappingListRptURL, reportDTO, { observe: 'response' });
+    return this.http.post<IReplyMessage>(this.docMappingListRptURL, reportDTO, { observe: 'response' });
   }
 
   showPDF(fileName: string): Observable<Blob> {

@@ -59,7 +59,7 @@
           <td>{{ getFileType(docDetail.filePath) }}</td>
 
           <td style="text-align: center">
-            <span style="cursor: pointer">
+            <span style="cursor: pointer" (click)="downloadFile(docDetail.id, docDetail.filePath)">
               <fa-icon icon="download"></fa-icon>
             </span>
           </td>

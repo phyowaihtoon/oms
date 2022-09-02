@@ -60,6 +60,12 @@ spring:
 server:
   port: 8080
 
+ftpserver:
+  host: 192.168.1.9
+  port: 21
+  username: ftp-user1
+  password: ftp@user
+
 # ===================================================================
 # JHipster specific properties
 #

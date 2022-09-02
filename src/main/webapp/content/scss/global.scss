@@ -171,3 +171,12 @@ ui bootstrap tweaks
 }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+/* The following codes are added to get gull screen space*/
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
