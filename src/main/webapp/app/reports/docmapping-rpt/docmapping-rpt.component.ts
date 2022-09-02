@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { IRptParamsDTO, RptParamsDTO } from '../report.model';
 import { ReportService } from '../service/report.service';
 
@@ -11,8 +12,11 @@ import { ReportService } from '../service/report.service';
 })
 export class DocMappingRptComponent {
   isGenerating = false;
-  rptParams: IRptParamsDTO | null = null;
-  testData: IRptParamsDTO | null = null;
+  _replyMessage: IReplyMessage | null = null;
+  _messageCode?: string;
+  _messageDesc?: string;
+  _isReplySuccessful = true;
+  rptParams?: IRptParamsDTO;
   rptTitleName: string = 'Document Mapping Report';
   rptFileName: string = 'DocumentMappingRpt';
   rptFormat: string = '.pdf';
@@ -30,18 +34,34 @@ export class DocMappingRptComponent {
   generate(): void {
     this.isGenerating = true;
     const reportData = this.createFromForm();
-    this.reportService.generateDocMappingListRpt(reportData).subscribe(res => {
-      this.rptParams = res.body;
-      if (this.rptParams != null) {
-        this.router.navigate(['report/report-viewer'], {
-          queryParams: {
-            rptTitleName: this.rptParams.rptTitleName,
-            rptFileName: this.rptParams.rptFileName,
-            rptFormat: this.rptParams.rptFormat,
-          },
-        });
+    this.reportService.generateDocMappingListRpt(reportData).subscribe(
+      res => {
+        this._replyMessage = res.body;
+
+        if (this._replyMessage?.code === '000') {
+          this._isReplySuccessful = true;
+          this.rptParams = this._replyMessage.data;
+          this.router.navigate(['report/report-viewer'], {
+            queryParams: {
+              rptTitleName: this.rptParams?.rptTitleName,
+              rptFileName: this.rptParams?.rptFileName,
+              rptFormat: this.rptParams?.rptFormat,
+            },
+          });
+        } else {
+          this._isReplySuccessful = false;
+          this.isGenerating = false;
+          this._messageCode = this._replyMessage?.code;
+          this._messageDesc = this._replyMessage?.description;
+        }
+      },
+      error => {
+        this._isReplySuccessful = false;
+        this.isGenerating = false;
+        this._messageCode = '';
+        this._messageDesc = 'Connection is not available. Please, check network connection with your server.';
       }
-    });
+    );
   }
 
   protected createFromForm(): IRptParamsDTO {

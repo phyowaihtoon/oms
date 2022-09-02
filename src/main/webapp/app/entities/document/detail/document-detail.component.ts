@@ -3,7 +3,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
+import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
+import { DocumentInquiryService } from '../service/document-inquiry.service';
 
 @Component({
   selector: 'jhi-document-detail',
@@ -14,6 +17,7 @@ import { IDocument, IDocumentHeader } from '../document.model';
 export class DocumentDetailComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentDetails: IDocument[] | undefined;
+  _replyMessage?: IReplyMessage;
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
     { extension: 'docx', value: 'WORD' },
@@ -25,7 +29,11 @@ export class DocumentDetailComponent implements OnInit {
   ];
   _metaDataHdrList?: IMetaDataHeader[] | null;
 
-  constructor(protected activatedRoute: ActivatedRoute, protected loadSetupService: LoadSetupService) {}
+  constructor(
+    protected activatedRoute: ActivatedRoute,
+    protected loadSetupService: LoadSetupService,
+    protected documentInquiryService: DocumentInquiryService
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ docHeader }) => {
@@ -44,6 +52,15 @@ export class DocumentDetailComponent implements OnInit {
         console.log('Response Failed : ', error);
       }
     );
+  }
+
+  downloadFile(docId?: number, filePath?: string): void {
+    if (docId !== undefined && filePath !== undefined) {
+      const fileName = filePath.split('/').pop();
+      this.documentInquiryService.downloadFile(docId).subscribe((res: Blob) => {
+        FileSaver.saveAs(res, fileName);
+      });
+    }
   }
 
   getDocTitleByID(id?: number): string | undefined {
