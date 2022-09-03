@@ -31,8 +31,6 @@ export class ReportViewerComponent implements OnInit {
       this.reportService.showPDF(rptFileWithExt).subscribe(
         (res: Blob) => {
           this.pdfBlobURL = res;
-          console.log('PDF Byte Data from server');
-          console.log(this.pdfBlobURL);
         },
         error => console.log('Failed to show file in report viewer', error)
       );
@@ -49,5 +47,9 @@ export class ReportViewerComponent implements OnInit {
         // window.open(downloadURL);
       });
     }
+  }
+
+  previousState(): void {
+    window.history.back();
   }
 }
