@@ -24,6 +24,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'dmsApp.menurole.home.title' },
         loadChildren: () => import('./menurole/role-menu-map.module').then(m => m.RoleMenuMapModule),
       },
+      {
+        path: 'repository',
+        data: { pageTitle: 'dmsApp.repository.home.title' },
+        loadChildren: () => import('./repository/repository.module').then(m => m.RepositoryModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

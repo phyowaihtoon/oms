@@ -4,7 +4,7 @@ import com.hmm.dms.domain.RepositoryDoc;
 import com.hmm.dms.repository.RepositoryDocRepository;
 import com.hmm.dms.service.RepositoryDocService;
 import com.hmm.dms.service.dto.RepositoryDocDTO;
-import com.hmm.dms.service.mapper.RepositoryMapper;
+import com.hmm.dms.service.mapper.RepositoryDocMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,9 @@ public class RepositoryDocServiceImpl implements RepositoryDocService {
 
     private final RepositoryDocRepository repositoryDocRepository;
 
-    private final RepositoryMapper repositoryMapper;
+    private final RepositoryDocMapper repositoryMapper;
 
-    public RepositoryDocServiceImpl(RepositoryDocRepository repositoryRepository, RepositoryMapper repositoryMapper) {
+    public RepositoryDocServiceImpl(RepositoryDocRepository repositoryRepository, RepositoryDocMapper repositoryMapper) {
         this.repositoryDocRepository = repositoryRepository;
         this.repositoryMapper = repositoryMapper;
     }
