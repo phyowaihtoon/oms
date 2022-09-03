@@ -9,7 +9,7 @@ import com.hmm.dms.IntegrationTest;
 import com.hmm.dms.domain.RepositoryDoc;
 import com.hmm.dms.repository.RepositoryDocRepository;
 import com.hmm.dms.service.dto.RepositoryDocDTO;
-import com.hmm.dms.service.mapper.RepositoryMapper;
+import com.hmm.dms.service.mapper.RepositoryDocMapper;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -50,7 +50,7 @@ class RepositoryResourceIT {
     private RepositoryDocRepository repositoryRepository;
 
     @Autowired
-    private RepositoryMapper repositoryMapper;
+    private RepositoryDocMapper repositoryMapper;
 
     @Autowired
     private EntityManager em;

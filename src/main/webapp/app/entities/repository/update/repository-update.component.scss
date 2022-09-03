@@ -1,0 +1,46 @@
+.text-center {
+  font-weight: 600;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.text-left {
+  font-weight: 600;
+  color: #000000;
+  font-size: 15px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  color: white;
+  border: none;
+  padding: 5px;
+  background-color: #056e7c;
+}
+
+td {
+  border: none;
+  padding: 0px;
+}
+
+th,
+td {
+  min-width: 105px;
+}
+
+.fa-icon-theme {
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 2px 7px 0px 7px;
+  box-shadow: 0 0px 2px #a7a7a7;
+  margin: 6px;
+}
+
+.fa-icon-theme:hover {
+  background-color: #d58e03;
+}
