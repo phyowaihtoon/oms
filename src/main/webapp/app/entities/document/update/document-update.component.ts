@@ -1,10 +1,13 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { IMetaDataHeader, MetaData, MetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { IMetaData, IMetaDataHeader, MetaData, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { stringify } from 'querystring';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { DocumentHeader, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 
@@ -15,9 +18,15 @@ import { DocumentService } from '../service/document.service';
 })
 export class DocumentUpdateComponent implements OnInit {
   docTypes: MetaDataHeader[] | null = [];
-  meta: MetaData[] | null = [];
+  metaData: IMetaData[] | null = [];
 
   metaHeaderId: number = 0;
+
+  fNames: string[] = [];
+  fName: string = '';
+
+  fValues: string[] = [];
+  fValue: string = '';
 
   isSaving = false;
 
@@ -26,10 +35,16 @@ export class DocumentUpdateComponent implements OnInit {
     metaDataHeaderId: [],
     fieldNames: [],
     fieldValues: [],
+
     repositoryURL: [],
   });
 
-  constructor(protected loadSetupService: LoadSetupService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(
+    protected loadSetupService: LoadSetupService,
+    protected documentHeaderService: DocumentService,
+    protected activatedRoute: ActivatedRoute,
+    protected fb: FormBuilder
+  ) {}
 
   // ngOnInit(): void {
   //   this.activatedRoute.data.subscribe(({ category }) => {
@@ -41,13 +56,12 @@ export class DocumentUpdateComponent implements OnInit {
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
         this.docTypes = res.body;
-        console.log(res);
+        //  console.log(res);
       },
       () => {
         console.log('error');
       }
     );
-
   }
 
   previousState(): void {
@@ -56,26 +70,24 @@ export class DocumentUpdateComponent implements OnInit {
 
   save(): void {
     console.log('Inside SAVE....');
-
     this.isSaving = true;
-
-    console.log(this.editForm.get(['id'])!.value);
-    console.log(this.editForm.get(['metaDataHeaderId'])!.value);
-    console.log(this.editForm.get(['fieldNames'])!.value);
-    console.log(this.editForm.get(['fieldValues'])!.value);
-
-    this.createFromForm();
+    const documentHeaderdata = this.createFromForm();
+    console.log(JSON.stringify(documentHeaderdata));
+    if (documentHeaderdata.id !== undefined) {
+      console.log('Inside Save ... () null');
+      // this.subscribeToSaveResponse(this.documentHeaderService.update(metadata));
+    } else {
+      console.log('Inside Save ... ()');
+      this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+    }
   }
 
   onChange(e: any): void {
     this.metaHeaderId = e.target.value;
-
-    console.log('Inside onChane....' + this.metaHeaderId.toString());
-
     this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(this.metaHeaderId).subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.meta = res.body;
-        console.log(res);
+        this.metaData = res.body;
+        this.forControlBind();
       },
       () => {
         console.log('error');
@@ -83,14 +95,80 @@ export class DocumentUpdateComponent implements OnInit {
     );
   }
 
+  forControlBind(): void {
+    this.metaData?.forEach(metaDataItem => {
+      const id: number = metaDataItem.id!;
+      const idStr: string = id.toString();
+      const fcnforFieldName: string = metaDataItem.fieldName! + '-' + idStr;
+
+      this.editForm.addControl(fcnforFieldName + '-fieldName', this.fb.control([null]));
+    });
+  }
+
+  getFieldName(group: FormGroup): string {
+    this.fNames = [];
+    this.fName = '';
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (key.includes('-fieldName')) {
+        const fieldName: string = key.split('-', 1).toString();
+        this.fNames.push(fieldName);
+      }
+    });
+
+    this.fNames.forEach(Name => {
+      this.fName += Name;
+      this.fName += '|';
+    });
+    return this.fName.slice(0, -1);
+  }
+
+  getFieldValue(group: FormGroup): string {
+    this.fValues = [];
+    this.fValue = '';
+    Object.keys(group.controls).forEach((key: string) => {
+      const abstractControl = group.get(key);
+      if (key.includes('-fieldName')) {
+        const fieldValue: string = abstractControl?.value;
+        this.fValues.push(fieldValue);
+      }
+    });
+
+    this.fValues.forEach(value => {
+      this.fValue += value;
+      this.fValue += '|';
+    });
+    return this.fValue.slice(0, -1);
+  }
+
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IDocumentHeader>>): void {
+    console.log('Inside subscribeToSaveResponse');
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
+
+  protected onSaveSuccess(): void {
+    this.editForm.reset();
+    // this.previousState();
+  }
+
+  protected onSaveError(): void {
+    // Api for inheritance.
+  }
+
+  protected onSaveFinalize(): void {
+    this.isSaving = false;
+  }
+
   protected createFromForm(): IDocumentHeader {
     return {
       ...new DocumentHeader(),
-      id: this.editForm.get(['id'])!.value,
+      id: undefined,
       metaDataHeaderId: this.editForm.get(['metaDataHeaderId'])!.value,
-      //fieldNames: this.editForm.get(['label'])!.value,
-      //fieldValues:  this.editForm.get(['Text','Date'])!.value,
-      //repositoryURL: "Testing URL"
+      fieldValues: this.getFieldValue(this.editForm),
+      fieldNames: this.getFieldName(this.editForm),
     };
   }
 }
