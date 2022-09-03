@@ -37,6 +37,19 @@
         </div>
 
         <div class="form-group col-6" *ngFor="let metaitem of metaData">
+          <div *ngIf="metaitem.fieldType == 'Number'">
+            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+
+            <input
+              type="number"
+              class="form-control"
+              [name]="metaitem.fieldType"
+              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+            />
+          </div>
+        </div>
+
+        <div class="form-group col-6" *ngFor="let metaitem of metaData">
           <div *ngIf="metaitem.fieldType == 'Date'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
             <input

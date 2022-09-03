@@ -13,7 +13,7 @@ export type EntityArrayResponseType = HttpResponse<IMetaDataHeader[]>;
 })
 export class DocumentService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/categories');
-  public resourceUrl2 = this.applicationConfigService.getEndpointFor('api/documents');
+  public resourceUrl2 = this.applicationConfigService.getEndpointFor('api/documentHeader');
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
@@ -22,6 +22,7 @@ export class DocumentService {
   }
 
   create(documentHeader: IDocumentHeader): Observable<EntityResponseType> {
-    return this.http.post<IDocumentHeader>(this.resourceUrl, documentHeader, { observe: 'response' });
+    console.log('inside create()');
+    return this.http.post<IDocumentHeader>(this.resourceUrl2, documentHeader, { observe: 'response' });
   }
 }

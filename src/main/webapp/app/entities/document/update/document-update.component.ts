@@ -71,12 +71,14 @@ export class DocumentUpdateComponent implements OnInit {
   save(): void {
     console.log('Inside SAVE....');
     this.isSaving = true;
-    const metadata = this.createFromForm();
-    console.log(JSON.stringify(metadata));
-    if (metadata.id !== undefined) {
+    const documentHeaderdata = this.createFromForm();
+    console.log(JSON.stringify(documentHeaderdata));
+    if (documentHeaderdata.id !== undefined) {
+      console.log('Inside Save ... () null');
       // this.subscribeToSaveResponse(this.documentHeaderService.update(metadata));
     } else {
-      this.subscribeToSaveResponse(this.documentHeaderService.create(metadata));
+      console.log('Inside Save ... ()');
+      this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
     }
   }
 
@@ -118,9 +120,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.fName += Name;
       this.fName += '|';
     });
-
-    console.log(this.fName);
-    return this.fName;
+    return this.fName.slice(0, -1);
   }
 
   getFieldValue(group: FormGroup): string {
@@ -138,12 +138,11 @@ export class DocumentUpdateComponent implements OnInit {
       this.fValue += value;
       this.fValue += '|';
     });
-
-    console.log(this.fValue);
-    return this.fValue;
+    return this.fValue.slice(0, -1);
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IDocumentHeader>>): void {
+    console.log('Inside subscribeToSaveResponse');
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       () => this.onSaveSuccess(),
       () => this.onSaveError()
@@ -151,7 +150,8 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   protected onSaveSuccess(): void {
-    this.previousState();
+    this.editForm.reset();
+    // this.previousState();
   }
 
   protected onSaveError(): void {
@@ -165,10 +165,10 @@ export class DocumentUpdateComponent implements OnInit {
   protected createFromForm(): IDocumentHeader {
     return {
       ...new DocumentHeader(),
-      id: this.editForm.get(['id'])!.value,
+      id: undefined,
       metaDataHeaderId: this.editForm.get(['metaDataHeaderId'])!.value,
-      fieldValues: this.getFieldName(this.editForm),
-      fieldNames: this.getFieldValue(this.editForm),
+      fieldValues: this.getFieldValue(this.editForm),
+      fieldNames: this.getFieldName(this.editForm),
     };
   }
 }
