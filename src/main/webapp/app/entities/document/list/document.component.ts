@@ -31,6 +31,7 @@ export class DocumentComponent implements OnInit {
   searchForm = this.fb.group({
     metaDataHdrID: [],
     repositoryURL: [],
+    fieldValues: [],
   });
 
   constructor(
@@ -110,6 +111,7 @@ export class DocumentComponent implements OnInit {
       ...new DocumentHeader(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
       repositoryURL: this.searchForm.get('repositoryURL')!.value,
+      fieldValues: this.searchForm.get('fieldValues')!.value,
     };
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {

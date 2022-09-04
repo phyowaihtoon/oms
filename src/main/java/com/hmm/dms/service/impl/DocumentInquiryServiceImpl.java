@@ -55,8 +55,10 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentHeaderDTO dto, Pageable pageable) {
         String repURL = dto.getRepositoryURL();
-        if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = "";
-        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), repURL, pageable);
+        String fValues = dto.getFieldValues();
+        if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = ""; else repURL = repURL.trim();
+        if (fValues == null || fValues.equals("null") || fValues.isEmpty()) fValues = ""; else fValues = fValues.trim();
+        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), repURL, fValues, pageable);
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 
