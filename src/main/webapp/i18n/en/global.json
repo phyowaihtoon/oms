@@ -19,6 +19,9 @@
         "create": "MetaData Creation",
         "search": "MetaData Inquiry"
       },
+      "repository": {
+        "title": "Repository"
+      },
       "document": {
         "title": "Document",
         "create": "Document Mapping",

@@ -1,0 +1,24 @@
+{
+  "dmsApp": {
+    "repository": {
+      "home": {
+        "title": "Repository",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Repository",
+        "createOrEditLabel": "Repository Creation",
+        "notFound": "No Repository found"
+      },
+      "created": "Repository is created with identifier {{ param }}",
+      "updated": "Repository is updated with identifier {{ param }}",
+      "deleted": "Repository is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Repository {{ id }}?"
+      },
+      "detail": {
+        "title": "Repository"
+      },
+      "id": "ID",
+      "repositoryName": "Repository Name"
+    }
+  }
+}
