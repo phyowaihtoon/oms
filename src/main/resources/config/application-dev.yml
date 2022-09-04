@@ -61,7 +61,7 @@ server:
   port: 8080
 
 ftpserver:
-  host: 192.168.1.9
+  host: localhost
   port: 21
   username: ftp-user1
   password: ftp@user
