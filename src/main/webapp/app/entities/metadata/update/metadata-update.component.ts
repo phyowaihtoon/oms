@@ -38,13 +38,15 @@ export class MetadataUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.addField();
     this.activatedRoute.data.subscribe(({ metadata }) => {
-      this.updateForm(metadata);
+      if (metadata !== null) {
+        if (metadata.id !== null && metadata.id !== undefined) {
+          this.removeAllField();
+        }
+        this.updateForm(metadata);
+      }
     });
   }
-  /* ngAfterViewInit(): void {
-    this.addField();
-  }
- */
+
   previousState(): void {
     window.history.back();
   }
@@ -154,7 +156,6 @@ export class MetadataUpdateComponent implements OnInit {
   }
 
   protected updateMetaDataDetails(metaDataDetails: IMetaData[] | undefined): void {
-    this.removeAllField();
     let index = 0;
     metaDataDetails?.forEach(data => {
       this.addField();
