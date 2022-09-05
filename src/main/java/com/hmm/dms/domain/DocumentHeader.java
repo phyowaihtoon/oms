@@ -2,6 +2,7 @@ package com.hmm.dms.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -30,6 +31,13 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
 
     @Column(name = "repository_url")
     private String repositoryURL;
+
+    @Column(name = "message")
+    private String message;
+
+    @NotNull
+    @Column(name = "del_flag")
+    private String delFlag;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -97,7 +105,21 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
         this.repositoryURL = repositoryURL;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -125,6 +147,7 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
             ", fieldNames='" + getFieldNames() + "'" +
             ", fieldValues='" + getFieldValues() + "'" +
             ", repositoryURL='" + getRepositoryURL() + "'" +
+            ", message='" + getMessage() + "'" +
             "}";
     }
 }
