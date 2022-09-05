@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "meta_data")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class MetaData implements Serializable {
+public class MetaData extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,10 @@ public class MetaData implements Serializable {
     @Column(name = "field_value")
     private String fieldValue;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @NotNull
+    @Column(name = "del_flag")
+    private String delFlag;
+
     public Long getId() {
         return id;
     }
@@ -134,7 +137,13 @@ public class MetaData implements Serializable {
         this.fieldValue = fieldValue;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
 
     @Override
     public boolean equals(Object o) {

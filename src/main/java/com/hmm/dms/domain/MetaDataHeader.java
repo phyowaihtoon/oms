@@ -24,7 +24,10 @@ public class MetaDataHeader extends AbstractAuditingEntity implements Serializab
     @Column(name = "doc_title", nullable = false)
     private String docTitle;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @NotNull
+    @Column(name = "del_flag")
+    private String delFlag;
+
     public Long getId() {
         return id;
     }
@@ -51,7 +54,13 @@ public class MetaDataHeader extends AbstractAuditingEntity implements Serializab
         this.docTitle = docTitle;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
 
     @Override
     public boolean equals(Object o) {

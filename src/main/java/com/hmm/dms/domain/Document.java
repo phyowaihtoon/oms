@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "document")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Document implements Serializable {
+public class Document extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,19 @@ public class Document implements Serializable {
     @Column(name = "file_path", nullable = false)
     private String filePath;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @Column(name = "file_size")
+    private Long fileSize;
+
+    @Column(name = "version")
+    private float version;
+
+    @Column(name = "remark")
+    private String remark;
+
+    @NotNull
+    @Column(name = "del_flag")
+    private String delFlag;
+
     public Long getId() {
         return id;
     }
@@ -68,7 +80,29 @@ public class Document implements Serializable {
         this.filePath = filePath;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public float getVersion() {
+        return version;
+    }
+
+    public void setVersion(float version) {
+        this.version = version;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     @Override
     public boolean equals(Object o) {
