@@ -4,11 +4,11 @@ import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.dto.ReplyMessage;
+import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -51,7 +51,7 @@ public class DocumentInquiryResource {
     }
 
     @GetMapping("/docinquiry/download/{docId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long docId) {
+    public ResponseEntity<?> downloadFile(@PathVariable Long docId) {
         log.debug("REST request to get all Documents");
         DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
         String filePath = docDTO.getFilePath();
@@ -59,13 +59,21 @@ public class DocumentInquiryResource {
         String fileName = directories[directories.length - 1];
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
-        ReplyMessage<ByteArrayResource> message = documentInquiryService.downloadFileFromFTPServer(filePath);
+        ReplyMessage<ByteArrayResource> message = null;
+        try {
+            message = documentInquiryService.downloadFileFromFTPServer(filePath);
+        } catch (IOException e) {
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(205).build();
+        }
+
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
         return ResponseEntity
             .ok()
             .headers(header)
-            // .contentLength(file.length())
+            //.contentLength(file.length())
             .contentType(MediaType.parseMediaType("application/" + extension))
             .body(message.getData());
     }

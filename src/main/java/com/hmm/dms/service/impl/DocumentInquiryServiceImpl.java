@@ -80,22 +80,15 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     }
 
     @Override
-    public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) {
+    public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) throws IOException, Exception {
         ReplyMessage<ByteArrayResource> replyMessage = new ReplyMessage<ByteArrayResource>();
-        try {
-            FtpSession ftpSession = this.ftpSessionFactory.getSession();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ftpSession.read(filePath, out);
-            ByteArrayResource byteResource = new ByteArrayResource(out.toByteArray());
-            replyMessage.setCode("000");
-            replyMessage.setData(byteResource);
-            ftpSession.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        FtpSession ftpSession = this.ftpSessionFactory.getSession();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ftpSession.read(filePath, out);
+        ByteArrayResource resource = new ByteArrayResource(out.toByteArray());
+        replyMessage.setCode("000");
+        replyMessage.setData(resource);
+        ftpSession.close();
         return replyMessage;
     }
 }

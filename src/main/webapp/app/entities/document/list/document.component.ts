@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'jhi-document',

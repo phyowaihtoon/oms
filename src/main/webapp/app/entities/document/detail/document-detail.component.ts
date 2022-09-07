@@ -17,7 +17,9 @@ import { DocumentInquiryService } from '../service/document-inquiry.service';
 export class DocumentDetailComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentDetails: IDocument[] | undefined;
-  _replyMessage?: IReplyMessage;
+  _replyMessage?: IReplyMessage | null;
+  _isReplySuccessful = true;
+  _messageDesc = '';
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
     { extension: 'docx', value: 'WORD' },
@@ -57,9 +59,26 @@ export class DocumentDetailComponent implements OnInit {
   downloadFile(docId?: number, filePath?: string): void {
     if (docId !== undefined && filePath !== undefined) {
       const fileName = filePath.split('/').pop();
-      this.documentInquiryService.downloadFile(docId).subscribe((res: Blob) => {
-        FileSaver.saveAs(res, fileName);
-      });
+      this.documentInquiryService.downloadFile(docId).subscribe(
+        (res: HttpResponse<Blob>) => {
+          if (res.status === 200 && res.body) {
+            this._isReplySuccessful = true;
+            FileSaver.saveAs(res.body, fileName);
+            const myURL = URL.createObjectURL(res.body);
+            window.open(myURL);
+          } else if (res.status === 204) {
+            this._isReplySuccessful = false;
+            this._messageDesc = 'File Not Found';
+          } else {
+            this._isReplySuccessful = false;
+            this._messageDesc = 'Connection failed to FTP Server. Please, check network connection to FTP Server.';
+          }
+        },
+        error => {
+          this._isReplySuccessful = false;
+          this._messageDesc = 'Connection is not available. Please, check network connection to application server.';
+        }
+      );
     }
   }
 

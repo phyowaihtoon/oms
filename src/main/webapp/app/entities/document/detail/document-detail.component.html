@@ -45,6 +45,15 @@
             <span jhiTranslate="dmsApp.document.filePath">File Path</span>
           </th>
           <th scope="col">
+            <span jhiTranslate="dmsApp.document.fileSize">Size</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.fileVersion">Version</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.remark">Remark</span>
+          </th>
+          <th scope="col">
             <span jhiTranslate="dmsApp.document.fileType">File Type</span>
           </th>
           <th scope="col" style="text-align: center">
@@ -56,6 +65,9 @@
         <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
           <td>{{ i + 1 }}</td>
           <td>{{ docDetail.filePath }}</td>
+          <td>{{ docDetail.fileSize }}</td>
+          <td>{{ docDetail.version }}</td>
+          <td>{{ docDetail.remark }}</td>
           <td>{{ getFileType(docDetail.filePath) }}</td>
 
           <td style="text-align: center">
@@ -67,4 +79,8 @@
       </tbody>
     </table>
   </div>
+</div>
+
+<div class="alert alert-warning col-12" id="no-result" *ngIf="!_isReplySuccessful">
+  <span>{{ _messageDesc }}</span>
 </div>

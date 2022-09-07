@@ -39,7 +39,6 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
     @Column(name = "del_flag")
     private String delFlag;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }

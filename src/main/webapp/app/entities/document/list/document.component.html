@@ -97,6 +97,10 @@
             <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
             <fa-icon icon="sort"></fa-icon>
           </th>
+          <th scope="col" jhiSortBy="docTitle">
+            <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
+            <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col" jhiSortBy="otherMetaData">
             <span jhiTranslate="dmsApp.document.otherMetaData">Other MetaData</span>
           </th>
@@ -110,6 +114,7 @@
           </td>
           <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
           <td>{{ documentHeader.repositoryURL }}</td>
+          <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
           <td [innerHTML]="arrangeMetaData(documentHeader.fieldNames, documentHeader.fieldValues)"></td>
           <td class="text-right">
             <div class="btn-group">
