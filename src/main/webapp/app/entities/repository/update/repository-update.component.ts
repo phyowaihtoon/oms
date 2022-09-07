@@ -132,7 +132,7 @@ export class RepositoryUpdateComponent implements OnInit {
   }
 
   protected updateRepositoryDetails(metaDataDetails: IRepository[] | undefined): void {
-    //this.removeAllField();
+    // this.removeAllField();
     let index = 0;
     metaDataDetails?.forEach(data => {
       this.addField();

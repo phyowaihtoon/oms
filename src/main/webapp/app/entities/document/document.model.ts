@@ -1,3 +1,5 @@
+import * as dayjs from 'dayjs';
+
 export interface IDocumentHeader {
   id?: number;
   metaDataHeaderId?: number;
@@ -5,6 +7,8 @@ export interface IDocumentHeader {
   fieldValues?: string;
   repositoryURL?: string;
   message?: string;
+  createdBy?: string;
+  createdDate?: dayjs.Dayjs;
   docList?: IDocument[];
 }
 
@@ -16,6 +20,8 @@ export class DocumentHeader implements IDocumentHeader {
     public fieldValues?: string,
     public repositoryURL?: string,
     public message?: string,
+    public createdBy?: string,
+    public createdDate?: dayjs.Dayjs,
     public docList?: IDocument[]
   ) {}
 }

@@ -19,6 +19,14 @@ public class DocumentDTO implements Serializable {
     @NotNull
     private String filePath;
 
+    private Long fileSize;
+
+    private float version;
+
+    private String remark;
+
+    private String delFlag;
+
     public Long getId() {
         return id;
     }
@@ -41,6 +49,38 @@ public class DocumentDTO implements Serializable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public float getVersion() {
+        return version;
+    }
+
+    public void setVersion(float version) {
+        this.version = version;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
     }
 
     @Override
