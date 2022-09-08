@@ -27,6 +27,7 @@
       "fileVersion": "Version",
       "remark": "Remark",
       "fileType": "File Type",
+      "preview": "Preview",
       "download": "Download",
       "otherMetaData": "Other MetaData",
       "search": "SEARCH",
