@@ -124,7 +124,8 @@
       "save": "Save",
       "view": "View",
       "search": "Search",
-      "clear": "Clear"
+      "clear": "Clear",
+      "ok": "OK"
     },
     "detail": {
       "field": "Field",

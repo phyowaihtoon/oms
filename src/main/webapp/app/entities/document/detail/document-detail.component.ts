@@ -1,7 +1,9 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
@@ -18,14 +20,14 @@ export class DocumentDetailComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentDetails: IDocument[] | undefined;
   _replyMessage?: IReplyMessage | null;
-  _isReplySuccessful = true;
-  _messageDesc = '';
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
     { extension: 'docx', value: 'WORD' },
     { extension: 'xls', value: 'EXCEL' },
     { extension: 'xlsx', value: 'EXCEL' },
-    { extension: 'jpg', value: 'JPG' },
+    { extension: 'jpg', value: 'IMAGE' },
+    { extension: 'jpeg', value: 'IMAGE' },
+    { extension: 'png', value: 'IMAGE' },
     { extension: 'txt', value: 'TEXT' },
     { extension: 'csv', value: 'CSV' },
   ];
@@ -34,7 +36,8 @@ export class DocumentDetailComponent implements OnInit {
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected loadSetupService: LoadSetupService,
-    protected documentInquiryService: DocumentInquiryService
+    protected documentInquiryService: DocumentInquiryService,
+    protected modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -56,27 +59,61 @@ export class DocumentDetailComponent implements OnInit {
     );
   }
 
-  downloadFile(docId?: number, filePath?: string): void {
-    if (docId !== undefined && filePath !== undefined) {
+  validate(isPreview: boolean, filePath: string): boolean {
+    let message1 = '',
+      message2 = '';
+    if (isPreview) {
+      const fileExtension = filePath.split('.').pop();
+      if (fileExtension === undefined || fileExtension.trim().length === 0) {
+        message1 = 'Invalid File Type.';
+      }
+
+      if (fileExtension !== 'pdf') {
+        message1 = 'Preview is only available for PDF documents.';
+        message2 = 'You can download the file and view it.';
+      }
+
+      if (message1.length > 0) {
+        this.showAlertMessage(message1, message2);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  showAlertMessage(msg1: string, msg2: string): void {
+    const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+    modalRef.componentInstance.messageLine1 = msg1;
+    modalRef.componentInstance.messageLine2 = msg2;
+  }
+
+  downloadFile(isPreview: boolean, docId?: number, filePath?: string): void {
+    if (docId !== undefined && filePath !== undefined && this.validate(isPreview, filePath)) {
       const fileName = filePath.split('/').pop();
       this.documentInquiryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
-            this._isReplySuccessful = true;
-            FileSaver.saveAs(res.body, fileName);
-            const myURL = URL.createObjectURL(res.body);
-            window.open(myURL);
+            if (isPreview) {
+              const myURL = URL.createObjectURL(res.body);
+              window.open(myURL);
+            } else {
+              FileSaver.saveAs(res.body, fileName);
+            }
           } else if (res.status === 204) {
-            this._isReplySuccessful = false;
-            this._messageDesc = 'File Not Found';
+            const msg1 = 'This file does not exist in server.';
+            const msg2 = '';
+            this.showAlertMessage(msg1, msg2);
           } else {
-            this._isReplySuccessful = false;
-            this._messageDesc = 'Connection failed to FTP Server. Please, check network connection to FTP Server.';
+            const msg1 = 'Connection failed to FTP Server. Please, check network connection to FTP Server.';
+            const msg2 = '';
+            this.showAlertMessage(msg1, msg2);
           }
         },
         error => {
-          this._isReplySuccessful = false;
-          this._messageDesc = 'Connection is not available. Please, check network connection to application server.';
+          const msg1 = 'Connection is not available. Please, check network connection to application server.';
+          const msg2 = '';
+          this.showAlertMessage(msg1, msg2);
         }
       );
     }
@@ -94,6 +131,7 @@ export class DocumentDetailComponent implements OnInit {
       if (fileExtension === undefined || fileExtension.trim().length === 0) {
         return fileType;
       }
+
       const docExtensionType = this._docExtensionTypes.find(item => item.extension === fileExtension);
       if (docExtensionType) {
         fileType = docExtensionType.value;

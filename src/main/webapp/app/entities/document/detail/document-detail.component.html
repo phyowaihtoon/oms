@@ -57,6 +57,9 @@
             <span jhiTranslate="dmsApp.document.fileType">File Type</span>
           </th>
           <th scope="col" style="text-align: center">
+            <span jhiTranslate="dmsApp.document.preview">Preview</span>
+          </th>
+          <th scope="col" style="text-align: center">
             <span jhiTranslate="dmsApp.document.download">Download</span>
           </th>
         </tr>
@@ -65,13 +68,17 @@
         <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
           <td>{{ i + 1 }}</td>
           <td>{{ docDetail.filePath }}</td>
-          <td>{{ docDetail.fileSize }}</td>
+          <td>{{ docDetail.fileSize }} KB</td>
           <td>{{ docDetail.version }}</td>
           <td>{{ docDetail.remark }}</td>
           <td>{{ getFileType(docDetail.filePath) }}</td>
-
           <td style="text-align: center">
-            <span style="cursor: pointer" (click)="downloadFile(docDetail.id, docDetail.filePath)">
+            <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.filePath)">
+              <a style="color: #2780e3; text-decoration: none">Preview</a>
+            </span>
+          </td>
+          <td style="text-align: center">
+            <span style="cursor: pointer" (click)="downloadFile(false, docDetail.id, docDetail.filePath)">
               <fa-icon icon="download"></fa-icon>
             </span>
           </td>
@@ -79,8 +86,4 @@
       </tbody>
     </table>
   </div>
-</div>
-
-<div class="alert alert-warning col-12" id="no-result" *ngIf="!_isReplySuccessful">
-  <span>{{ _messageDesc }}</span>
 </div>
