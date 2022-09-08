@@ -26,6 +26,10 @@ const metadataRoute: Routes = [
   {
     path: ':id/edit',
     component: DocumentUpdateComponent,
+    resolve: {
+      docHeader: DocumentRoutingResolveService,
+    },
+    canActivate: [UserRouteAccessService],
   },
 ];
 
