@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.hmm.dms.web.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 
-class RepositoryTest {
+class RepositoryDomainTest {
 
     @Test
     void equalsVerifier() throws Exception {

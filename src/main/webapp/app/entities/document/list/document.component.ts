@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'jhi-document',
@@ -31,6 +32,7 @@ export class DocumentComponent implements OnInit {
   searchForm = this.fb.group({
     metaDataHdrID: [],
     repositoryURL: [],
+    fieldValues: [],
   });
 
   constructor(
@@ -110,6 +112,7 @@ export class DocumentComponent implements OnInit {
       ...new DocumentHeader(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
       repositoryURL: this.searchForm.get('repositoryURL')!.value,
+      fieldValues: this.searchForm.get('fieldValues')!.value,
     };
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {

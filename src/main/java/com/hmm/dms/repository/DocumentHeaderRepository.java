@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, Long> {
-    @Query("SELECT dh FROM DocumentHeader dh WHERE dh.metaDataHeaderId=?1 AND dh.repositoryURL LIKE ?2%")
-    Page<DocumentHeader> findAll(Long id, String repURL, Pageable pageable);
+    @Query("SELECT dh FROM DocumentHeader dh WHERE dh.metaDataHeaderId=?1 AND dh.repositoryURL LIKE ?2% AND dh.fieldValues LIKE %?3%")
+    Page<DocumentHeader> findAll(Long id, String repURL, String fieldValues, Pageable pageable);
 }

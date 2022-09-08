@@ -1,6 +1,6 @@
 package com.hmm.dms.web.rest;
 
-import com.hmm.dms.repository.MetaDataRepository;
+import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
@@ -49,11 +49,11 @@ public class MetaDataResource {
 
     private final MetaDataService metaDataService;
 
-    private final MetaDataRepository metaDataRepository;
+    private final MetaDataHeaderRepository metaDataHeaderRepository;
 
-    public MetaDataResource(MetaDataService metaDataService, MetaDataRepository metaDataRepository) {
+    public MetaDataResource(MetaDataService metaDataService, MetaDataHeaderRepository metaDataHeaderRepository) {
         this.metaDataService = metaDataService;
-        this.metaDataRepository = metaDataRepository;
+        this.metaDataHeaderRepository = metaDataHeaderRepository;
     }
 
     /**
@@ -99,7 +99,7 @@ public class MetaDataResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!metaDataRepository.existsById(id)) {
+        if (!metaDataHeaderRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
@@ -134,7 +134,7 @@ public class MetaDataResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!metaDataRepository.existsById(id)) {
+        if (!metaDataHeaderRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
@@ -162,7 +162,7 @@ public class MetaDataResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of metaData in body.
      */
     @GetMapping("/meta-data")
-    public ResponseEntity<List<MetaDataHeaderDTO>> getAllCategories(Pageable pageable) {
+    public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaDatas(Pageable pageable) {
         log.debug("REST request to get a page of Categories");
         Page<MetaDataHeaderDTO> page = metaDataService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
