@@ -23,21 +23,41 @@
           </select>
         </div>
 
-        <div class="form-group col-6" *ngFor="let metaitem of meta; let i = index">
+        <div class="form-group col-6" *ngFor="let metaitem of metaData">
           <div *ngIf="metaitem.fieldType == 'String'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
 
-            <input type="text" class="form-control" formControlName="fieldNames" [placeholder]="metaitem.fieldName" />
-
-            <input type="text" class="form-control" [name]="metaitem.fieldName" formControlName="fieldValues" />
+            <input
+              type="text"
+              class="form-control"
+              [name]="metaitem.fieldType"
+              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+            />
           </div>
         </div>
 
-        <div class="form-group col-6" *ngFor="let metaitem of meta">
-          <div *ngIf="metaitem.fieldType == 'Date'">
+        <div class="form-group col-6" *ngFor="let metaitem of metaData">
+          <div *ngIf="metaitem.fieldType == 'Number'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
 
-            <input type="date" class="form-control" [name]="metaitem.fieldName" formControlName="fieldValues" />
+            <input
+              type="number"
+              class="form-control"
+              [name]="metaitem.fieldType"
+              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+            />
+          </div>
+        </div>
+
+        <div class="form-group col-6" *ngFor="let metaitem of metaData">
+          <div *ngIf="metaitem.fieldType == 'Date'">
+            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+            <input
+              type="date"
+              class="form-control"
+              [name]="metaitem.fieldType"
+              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+            />
           </div>
         </div>
       </div>

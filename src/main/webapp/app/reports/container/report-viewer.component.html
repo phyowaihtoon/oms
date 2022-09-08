@@ -1,45 +1,49 @@
-<div class="row justify-content-center">
-  <div class="col-12">
-    <form name="editForm" role="form" novalidate (ngSubmit)="download()" [formGroup]="editForm">
-      <div class="row">
-        <div class="col-6">
-          <h4>{{ rptTitleName }}</h4>
-        </div>
-        <div class="col-6">
-          <div class="form-group row col-12">
-            <label class="col-6 col-form-label" style="text-align: right" for="field_format">Choose Format</label>
-            <div class="col-4">
-              <select class="form-control" name="rptFormat" formControlName="rptFormat" id="field_format" data-cy="rptFormat">
-                <option value=".pdf">PDF</option>
-                <option value=".xls">Excel</option>
-              </select>
-              <div *ngIf="editForm.get('rptFormat')!.invalid && (editForm.get('rptFormat')!.dirty || editForm.get('rptFormat')!.touched)">
-                <small
-                  class="form-text text-danger"
-                  *ngIf="editForm.get('rptFormat')?.errors?.required"
-                  jhiTranslate="entity.validation.required"
-                >
-                  This field is required.
-                </small>
-              </div>
-            </div>
-            <div class="col-2">
-              <button
-                type="submit"
-                id="download-report"
-                data-cy="reportDownloadButton"
-                [disabled]="editForm.invalid || isDownloading"
-                class="btn btn-success btn-sm"
-              >
-                <span>Download</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12">
-        <ngx-extended-pdf-viewer [src]="pdfBlobURL" [useBrowserLocale]="true" [height]="'65vh'"> </ngx-extended-pdf-viewer>
-      </div>
-    </form>
+<form name="editForm" role="form" novalidate (ngSubmit)="download()" [formGroup]="editForm">
+  <div id="page-heading" class="row">
+    <div class="col-6">
+      <span>Report</span>
+      <span> >> {{ rptTitleName }}</span>
+    </div>
+    <div class="col-6 d-flex justify-content-end">
+      <label class="form-control-label" for="field_format">Choose Format</label>
+      <span style="width: 5px"></span>
+      <select class="form-control rpt-control" name="rptFormat" formControlName="rptFormat" id="field_format" data-cy="rptFormat">
+        <option value=".pdf">PDF</option>
+        <option value=".xls">Excel</option>
+      </select>
+      <span style="width: 5px"></span>
+      <button
+        class="btn btn-primary btn-sm"
+        type="submit"
+        id="download-report"
+        data-cy="reportDownloadButton"
+        [disabled]="editForm.invalid || isDownloading"
+      >
+        <span class="d-none d-md-inline" jhiTranslate="report.action.download">Download</span>
+      </button>
+      <span style="width: 5px"></span>
+      <button
+        class="btn btn-primary btn-sm"
+        id="close-report"
+        data-cy="reportCloseButton"
+        [disabled]="isDownloading"
+        (click)="previousState()"
+      >
+        <span class="d-none d-md-inline" jhiTranslate="report.action.close">Close</span>
+      </button>
+    </div>
   </div>
+</form>
+
+<div>
+  <ngx-extended-pdf-viewer
+    [src]="pdfBlobURL"
+    [useBrowserLocale]="true"
+    [showRotateButton]="false"
+    [showBookmarkButton]="false"
+    [showSecondaryToolbarButton]="false"
+    [showOpenFileButton]="false"
+    [zoom]="'100%'"
+  >
+  </ngx-extended-pdf-viewer>
 </div>

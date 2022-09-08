@@ -1,6 +1,7 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.service.ReportService;
+import com.hmm.dms.service.dto.ReplyMessage;
 import com.hmm.dms.service.dto.RptDataDTO;
 import com.hmm.dms.service.dto.RptParamsDTO;
 import com.hmm.dms.util.ReportPrint;
@@ -25,13 +26,20 @@ public class ReportServiceImpl implements ReportService {
     public ReportServiceImpl() {}
 
     @Override
-    public String generateDocumentListRpt(RptParamsDTO rptPara) {
+    public ReplyMessage<RptParamsDTO> generateDocumentListRpt(RptParamsDTO rptPara) {
+        ReplyMessage<RptParamsDTO> replyMessage = new ReplyMessage<RptParamsDTO>();
+
         StoredProcedureQuery query = em.createStoredProcedureQuery("SP_DOCMAPPING_RPT");
         query.registerStoredProcedureParameter("frmDate", String.class, ParameterMode.IN);
         query.registerStoredProcedureParameter("toDate", String.class, ParameterMode.IN);
         query.setParameter("frmDate", rptPara.getRptPS1());
         query.setParameter("toDate", rptPara.getRptPS2());
         List<Object[]> resultList = query.getResultList();
+        if (resultList == null || resultList.size() == 0) {
+            replyMessage.setCode("R001");
+            replyMessage.setDescription("NO DATA FOUND");
+            return replyMessage;
+        }
         List<RptDataDTO> documentList = null;
         if (resultList != null) {
             documentList = new ArrayList<RptDataDTO>();
@@ -50,6 +58,15 @@ public class ReportServiceImpl implements ReportService {
         parameters.put("frmDate", rptPara.getRptPS1());
         parameters.put("toDate", rptPara.getRptPS2());
         String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
-        return rptFilePath;
+        if (rptFilePath == null || rptFilePath.equals("")) {
+            replyMessage.setCode("R002");
+            replyMessage.setDescription("Report File cannot be generated");
+            return replyMessage;
+        }
+
+        replyMessage.setCode("000");
+        replyMessage.setDescription("Report is successfully generated");
+        replyMessage.setData(rptPara);
+        return replyMessage;
     }
 }

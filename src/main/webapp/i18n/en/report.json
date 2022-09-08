@@ -1,11 +1,16 @@
 {
   "report": {
-    "parameter": {
-      "startDate": "Start Date",
-      "endDate": "End Date"
+    "action": {
+      "download": "Download",
+      "close": "Close"
     },
     "validation": {
       "datePattern": "Date must be entered in DD-MM-YYYY"
+    },
+    "docmapping": {
+      "criteriaLbl": "Report Criteria",
+      "startdate": "Start Date",
+      "enddate": "End Date"
     }
   }
 }

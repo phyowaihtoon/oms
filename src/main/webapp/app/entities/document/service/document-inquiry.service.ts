@@ -4,9 +4,14 @@ import { Observable } from 'rxjs';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { IDocumentHeader } from '../document.model';
 import { createRequestOption } from 'app/core/request/request-util';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
+import { map } from 'rxjs/operators';
+import * as dayjs from 'dayjs';
 
 export type EntityArrayResponseType = HttpResponse<IDocumentHeader[]>;
 export type EntityResponseType = HttpResponse<IDocumentHeader>;
+export type ReplyMessageType = HttpResponse<IReplyMessage>;
+export type BlobType = HttpResponse<Blob>;
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +23,25 @@ export class DocumentInquiryService {
 
   query(criteriaData: IDocumentHeader, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.post<IDocumentHeader[]>(`${this.resourceUrl}`, criteriaData, { params: options, observe: 'response' });
+    return this.http
+      .post<IDocumentHeader[]>(`${this.resourceUrl}`, criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   getDocumentsById(id: number): Observable<EntityResponseType> {
     return this.http.get(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  downloadFile(docId: number): Observable<BlobType> {
+    return this.http.get(`${this.resourceUrl}/download/${docId}`, { observe: 'response', responseType: 'blob' });
+  }
+
+  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((documentHeader: IDocumentHeader) => {
+        documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
+      });
+    }
+    return res;
   }
 }

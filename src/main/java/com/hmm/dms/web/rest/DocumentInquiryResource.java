@@ -1,13 +1,18 @@
 package com.hmm.dms.web.rest;
 
 import com.hmm.dms.service.DocumentInquiryService;
+import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
+import com.hmm.dms.service.dto.ReplyMessage;
+import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +46,35 @@ public class DocumentInquiryResource {
     @GetMapping("/docinquiry/{id}")
     public DocumentHeaderDTO getAllDocuments(@PathVariable Long id) {
         log.debug("REST request to get all Documents");
-        DocumentHeaderDTO headerDTO = documentInquiryService.getDocumentsById(id);
+        DocumentHeaderDTO headerDTO = documentInquiryService.findAllDocumentsByHeaderId(id);
         return headerDTO;
+    }
+
+    @GetMapping("/docinquiry/download/{docId}")
+    public ResponseEntity<?> downloadFile(@PathVariable Long docId) {
+        log.debug("REST request to get all Documents");
+        DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
+        String filePath = docDTO.getFilePath();
+        String[] directories = filePath.split("/");
+        String fileName = directories[directories.length - 1];
+        int dot = fileName.lastIndexOf('.');
+        String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
+        ReplyMessage<ByteArrayResource> message = null;
+        try {
+            message = documentInquiryService.downloadFileFromFTPServer(filePath);
+        } catch (IOException e) {
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(205).build();
+        }
+
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
+        return ResponseEntity
+            .ok()
+            .headers(header)
+            //.contentLength(file.length())
+            .contentType(MediaType.parseMediaType("application/" + extension))
+            .body(message.getData());
     }
 }
