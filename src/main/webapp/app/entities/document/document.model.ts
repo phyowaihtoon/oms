@@ -7,6 +7,7 @@ export interface IDocumentHeader {
   fieldValues?: string;
   repositoryURL?: string;
   message?: string;
+  delFlag?: string;
   createdBy?: string;
   createdDate?: dayjs.Dayjs;
   docList?: IDocument[];
@@ -20,6 +21,7 @@ export class DocumentHeader implements IDocumentHeader {
     public fieldValues?: string,
     public repositoryURL?: string,
     public message?: string,
+    public delFlag?: string,
     public createdBy?: string,
     public createdDate?: dayjs.Dayjs,
     public docList?: IDocument[]
@@ -33,6 +35,7 @@ export interface IDocument {
   fileSize?: number;
   version?: number;
   remark?: string;
+  delFlag?: string;
 }
 
 export class Document implements IDocument {
@@ -42,6 +45,7 @@ export class Document implements IDocument {
     public filePath?: string,
     public fileSize?: number,
     public version?: number,
+    public delFlag?: string,
     public remark?: string
   ) {}
 }
