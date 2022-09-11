@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) throws IOException, Exception {
         ReplyMessage<ByteArrayResource> replyMessage = new ReplyMessage<ByteArrayResource>();
         FtpSession ftpSession = this.ftpSessionFactory.getSession();
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ftpSession.read(filePath, out);
         ByteArrayResource resource = new ByteArrayResource(out.toByteArray());

@@ -1,21 +1,53 @@
 package com.hmm.dms.web.rest;
 
+import static java.nio.file.Files.copy;
+import static java.nio.file.Paths.get;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+
 import com.hmm.dms.repository.DocumentRepository;
 import com.hmm.dms.service.DocumentService;
 import com.hmm.dms.service.dto.DocumentDTO;
+import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.integration.ftp.session.FtpSession;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -30,12 +62,25 @@ public class DocumentResource {
 
     private static final String ENTITY_NAME = "document";
 
+    @Autowired
+    private FTPSessionFactory ftpSessionFactory;
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final DocumentService documentService;
 
     private final DocumentRepository documentRepository;
+
+    List<String> filenames = new ArrayList<>();
+    String server = "localhost";
+    int port = 21;
+    String user = "admin";
+    String pass = "asdf123!";
+
+    private int returnCode;
+
+    FTPClient ftpClient = new FTPClient();
 
     public DocumentResource(DocumentService documentService, DocumentRepository documentRepository) {
         this.documentService = documentService;
@@ -170,5 +215,67 @@ public class DocumentResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    // Define a method to Upload
+    @PostMapping("/documents/upload")
+    public ResponseEntity<List<String>> uploadFile(@RequestParam("files") List<MultipartFile> multipartFiles) throws IOException {
+        try {
+            /*
+             * ftpClient.connect(server, port); ftpClient.login(user, pass);
+             * ftpClient.enterLocalPassiveMode();
+             * ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+             */
+
+            FtpSession ftpSession = this.ftpSessionFactory.getSession();
+            ftpClient = ftpSession.getClientInstance();
+
+            for (MultipartFile file : multipartFiles) {
+                String[] filenameNdir = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
+
+                String filename = filenameNdir[0];
+                String directory = filenameNdir[1];
+                //String filename = StringUtils.cleanPath(file.getOriginalFilename());
+                //String directory = "/FTP_Folder/Test";
+                boolean isDirExists = checkFileExists(directory);
+                if (!isDirExists) {
+                    ftpClient.makeDirectory(directory);
+                }
+
+                String firstRemoteFile = directory + filename;
+
+                InputStream inputStream = file.getInputStream();
+                System.out.println("Start uploading first file");
+
+                boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
+                inputStream.close();
+                if (done) {
+                    System.out.println("The first file is uploaded successfully.");
+                    filenames.add(filename);
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (ftpClient.isConnected()) {
+                    ftpClient.logout();
+                    ftpClient.disconnect();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return ResponseEntity.ok().body(filenames);
+    }
+
+    boolean checkFileExists(String filePath) throws IOException {
+        InputStream inputStream = ftpClient.retrieveFileStream(filePath);
+        returnCode = ftpClient.getReplyCode();
+        if (inputStream == null || returnCode == 550) {
+            return false;
+        }
+        return true;
     }
 }

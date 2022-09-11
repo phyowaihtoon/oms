@@ -104,6 +104,14 @@ public class Document extends AbstractAuditingEntity implements Serializable {
         this.remark = remark;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
