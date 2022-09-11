@@ -19,6 +19,7 @@ import { DocumentService } from '../service/document.service';
   styleUrls: ['./document-update.component.scss'],
 })
 export class DocumentUpdateComponent implements OnInit {
+  _documentHeader: IDocumentHeader | undefined;
   docTypes: MetaDataHeader[] | null = [];
   metaData: IMetaData[] | null = [];
 
@@ -35,7 +36,7 @@ export class DocumentUpdateComponent implements OnInit {
   filenames: string[] = [];
   fileStatus = { status: '', requestType: '', percent: 0 };
   files?: FileList;
-  repositoryurl: string = '/FTP_Folder/Test/Test1/';
+  repositoryurl: string = '';
 
   editForm = this.fb.group({
     id: [],
@@ -44,6 +45,7 @@ export class DocumentUpdateComponent implements OnInit {
     fieldValues: [],
     repositoryURL: [],
     message: [],
+    reposistory: [],
     delFlag: [],
     docList: [],
   });
@@ -56,6 +58,10 @@ export class DocumentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ docHeader }) => {
+      this._documentHeader = docHeader;
+    });
+
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
         this.docTypes = res.body;
@@ -151,7 +157,7 @@ export class DocumentUpdateComponent implements OnInit {
 
     const formData = new FormData();
     for (let i = 0; i < this.files.length; i++) {
-      //formData.append('files', this.files.item(i)!, this.files.item(i)!.name+"@"+this.repositoryurl);
+      // formData.append('files', this.files.item(i)!, this.files.item(i)!.name+"@"+this.repositoryurl);
       this.filenames.unshift(this.files.item(i)!.name);
     }
 
@@ -223,7 +229,7 @@ export class DocumentUpdateComponent implements OnInit {
       fieldValues: this.getFieldValue(this.editForm),
       fieldNames: this.getFieldName(this.editForm),
       delFlag: 'N',
-      repositoryURL: '/FTP_Folder/Test/Test1/',
+      repositoryURL: '',
       docList: this.createFileListDetails(),
     };
   }
@@ -240,11 +246,14 @@ export class DocumentUpdateComponent implements OnInit {
     const fieldNoString: string = number.toString();
     const remarkFieldName: string = 'Remark' + fieldNoString;
     const versionFieldName: string = 'Version' + fieldNoString;
+    const reposistory: string = this.editForm.get(['reposistory'])!.value;
+    this.repositoryurl = reposistory;
+
     return {
       ...new Document(),
       id: undefined,
       headerId: undefined,
-      filePath: data,
+      filePath: reposistory + '/' + data,
       fileSize: undefined,
       version: this.editForm.get([versionFieldName])!.value,
       remark: this.editForm.get([remarkFieldName])!.value,
