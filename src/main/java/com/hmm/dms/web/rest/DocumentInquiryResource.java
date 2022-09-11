@@ -3,6 +3,7 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
+import com.hmm.dms.service.dto.DocumentInquiryDTO;
 import com.hmm.dms.service.dto.ReplyMessage;
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,7 @@ public class DocumentInquiryResource {
     }
 
     @PostMapping("/docinquiry")
-    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentHeaderDTO dto, Pageable pageable) {
+    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentInquiryDTO dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
         Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentHeaderByMetaData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
