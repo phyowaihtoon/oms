@@ -237,12 +237,13 @@ public class DocumentResource {
                 String directory = filenameNdir[1];
                 //String filename = StringUtils.cleanPath(file.getOriginalFilename());
                 //String directory = "/FTP_Folder/Test";
-                boolean isDirExists = checkFileExists(directory);
+
+                boolean isDirExists = checkDirectoryExists(directory);
                 if (!isDirExists) {
                     ftpClient.makeDirectory(directory);
                 }
 
-                String firstRemoteFile = directory + filename;
+                String firstRemoteFile = directory + "/" + filename;
 
                 InputStream inputStream = file.getInputStream();
                 System.out.println("Start uploading first file");
@@ -270,10 +271,10 @@ public class DocumentResource {
         return ResponseEntity.ok().body(filenames);
     }
 
-    boolean checkFileExists(String filePath) throws IOException {
-        InputStream inputStream = ftpClient.retrieveFileStream(filePath);
+    boolean checkDirectoryExists(String dirPath) throws IOException {
+        ftpClient.changeWorkingDirectory(dirPath);
         returnCode = ftpClient.getReplyCode();
-        if (inputStream == null || returnCode == 550) {
+        if (returnCode == 550) {
             return false;
         }
         return true;

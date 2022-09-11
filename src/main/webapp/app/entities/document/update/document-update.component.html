@@ -31,6 +31,12 @@
           <input type="text" class="form-control" name="message" formControlName="message" />
         </div>
 
+        <div class="form-group col-6">
+          <label class="form-control-label" for="text"> Reposistory </label>
+
+          <input type="text" class="form-control" name="reposistory" formControlName="reposistory" />
+        </div>
+
         <div class="form-group col-6" *ngFor="let metaitem of metaData">
           <div *ngIf="metaitem.fieldType == 'String'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
