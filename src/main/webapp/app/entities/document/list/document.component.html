@@ -39,17 +39,26 @@
         </select>
       </div>
       <div class="col-2">
-        <label class="form-control-label" jhiTranslate="dmsApp.document.repositoryURL" for="field_repositoryURL">Repository URL</label>
+        <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
       </div>
       <div class="col-2">
-        <input
-          type="text"
-          class="form-control"
-          name="repositoryURL"
-          id="field_repositoryURL"
-          data-cy="repositoryURL"
-          formControlName="repositoryURL"
-        />
+        <div class="input-group">
+          <input
+            class="form-control"
+            id="field_createdDate"
+            data-cy="createdDate"
+            placeholder="DD-MM-YYYY"
+            name="createdDate"
+            formControlName="createdDate"
+            ngbDatepicker
+            #createdDate="ngbDatepicker"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
+              <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+            </button>
+          </div>
+        </div>
       </div>
       <div class="col-2">
         <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
@@ -93,16 +102,16 @@
             <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
             <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="repositoryURL">
-            <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
-            <fa-icon icon="sort"></fa-icon>
+          <th scope="col" jhiSortBy="otherMetaData">
+            <span jhiTranslate="dmsApp.document.otherMetaData">Other MetaData</span>
           </th>
           <th scope="col" jhiSortBy="docTitle">
             <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
             <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="otherMetaData">
-            <span jhiTranslate="dmsApp.document.otherMetaData">Other MetaData</span>
+          <th scope="col" jhiSortBy="createdBy">
+            <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+            <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col"></th>
         </tr>
@@ -113,9 +122,9 @@
             <a [routerLink]="['/document', documentHeader.id, 'view']">{{ documentHeader.id }}</a>
           </td>
           <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
-          <td>{{ documentHeader.repositoryURL }}</td>
-          <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
           <td [innerHTML]="arrangeMetaData(documentHeader.fieldNames, documentHeader.fieldValues)"></td>
+          <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
+          <td>{{ documentHeader.createdBy }}</td>
           <td class="text-right">
             <div class="btn-group">
               <button

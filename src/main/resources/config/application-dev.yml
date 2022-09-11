@@ -63,8 +63,8 @@ server:
 ftpserver:
   host: localhost
   port: 21
-  username: Admin
-  password: asdf123!
+  username: ftp-user1
+  password: ftp@user
 
 # ===================================================================
 # JHipster specific properties
