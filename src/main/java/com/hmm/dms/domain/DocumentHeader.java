@@ -29,9 +29,6 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
     @Column(name = "field_values")
     private String fieldValues;
 
-    @Column(name = "repository_url")
-    private String repositoryURL;
-
     @Column(name = "message")
     private String message;
 
@@ -91,19 +88,6 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
         this.fieldValues = fieldValues;
     }
 
-    public String getRepositoryURL() {
-        return this.repositoryURL;
-    }
-
-    public DocumentHeader repositoryURL(String repositoryURL) {
-        this.repositoryURL = repositoryURL;
-        return this;
-    }
-
-    public void setRepositoryURL(String repositoryURL) {
-        this.repositoryURL = repositoryURL;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -145,7 +129,6 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
             ", metaDataHeaderId=" + getMetaDataHeaderId() +
             ", fieldNames='" + getFieldNames() + "'" +
             ", fieldValues='" + getFieldValues() + "'" +
-            ", repositoryURL='" + getRepositoryURL() + "'" +
             ", message='" + getMessage() + "'" +
             "}";
     }
