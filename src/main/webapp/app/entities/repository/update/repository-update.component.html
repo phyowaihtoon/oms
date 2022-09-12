@@ -36,16 +36,18 @@
               <tbody>
                 <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
                   <td>
-                    <input type="text" class="col-12 form-control" placeholder="Folder Name" formControlName="folderName" />
-                  </td>
-
-                  <td style="padding: 3px">
-                    <span title="Remove" (click)="removeField(i)">
-                      <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
-                    </span>
-                    <span *ngIf="isLast" title="Add" (click)="addField()">
-                      <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
-                    </span>
+                    <div class="input-group">
+                      <span *ngIf="!isLast" title="Remove" (click)="removeField(i)">
+                        <fa-icon icon="minus" class="fa-icon-theme"></fa-icon>
+                      </span>
+                      <span *ngIf="isLast" title="Add" (click)="addField()">
+                        <fa-icon icon="plus" class="fa-icon-theme"></fa-icon>
+                      </span>
+                      <span>
+                        <fa-icon icon="folder" class="folder-theme"></fa-icon>
+                      </span>
+                      <input type="text" class="col-12 form-control" placeholder="Folder Name" formControlName="folderName" />
+                    </div>
                   </td>
                 </tr>
               </tbody>

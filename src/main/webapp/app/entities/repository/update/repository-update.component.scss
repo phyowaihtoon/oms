@@ -23,7 +23,7 @@ th {
 
 td {
   border: none;
-  padding: 0px;
+  padding: 1px;
 }
 
 th,
@@ -31,16 +31,23 @@ td {
   min-width: 105px;
 }
 
+td:nth-child(2n) {
+  padding-left: n * 15;
+}
 .fa-icon-theme {
-  font-size: 15px;
+  font-size: 0.7rem;
   cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  padding: 2px 7px 0px 7px;
-  box-shadow: 0 0px 2px #a7a7a7;
-  margin: 6px;
+  //border: 1px solid transparent;
+  // border-radius: 3px;
+  padding: 0px 1px 0px 1px;
+  //box-shadow: 0 0px 2px #a7a7a7;
+  margin: 2px;
 }
 
-.fa-icon-theme:hover {
-  background-color: #d58e03;
+.folder-theme {
+  color: #eabc16;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0px 1px 0px 1px;
+  margin: 2px;
 }
