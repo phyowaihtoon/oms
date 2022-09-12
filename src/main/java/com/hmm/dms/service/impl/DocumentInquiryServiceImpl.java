@@ -7,6 +7,7 @@ import com.hmm.dms.repository.DocumentRepository;
 import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
+import com.hmm.dms.service.dto.DocumentInquiryDTO;
 import com.hmm.dms.service.dto.ReplyMessage;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
@@ -53,12 +54,20 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     }
 
     @Override
-    public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentHeaderDTO dto, Pageable pageable) {
+    public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryDTO dto, Pageable pageable) {
         String repURL = dto.getRepositoryURL();
         String fValues = dto.getFieldValues();
         if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = ""; else repURL = repURL.trim();
         if (fValues == null || fValues.equals("null") || fValues.isEmpty()) fValues = ""; else fValues = fValues.trim();
-        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), repURL, fValues, pageable);
+
+        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
+            String createdDate = dto.getCreatedDate();
+            Page<DocumentHeader> pageWithEntity =
+                this.documentHeaderRepository.findAllByDate(dto.getMetaDataHeaderId(), fValues, createdDate, repURL, pageable);
+            return pageWithEntity.map(documentHeaderMapper::toDto);
+        }
+
+        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), fValues, repURL, pageable);
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 
@@ -83,6 +92,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) throws IOException, Exception {
         ReplyMessage<ByteArrayResource> replyMessage = new ReplyMessage<ByteArrayResource>();
         FtpSession ftpSession = this.ftpSessionFactory.getSession();
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ftpSession.read(filePath, out);
         ByteArrayResource resource = new ByteArrayResource(out.toByteArray());
