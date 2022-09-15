@@ -1,6 +1,8 @@
 package com.hmm.dms.domain;
 
+import com.hmm.dms.service.dto.RepositoryDTO;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
@@ -72,5 +74,10 @@ public class RepositoryHeader extends AbstractAuditingEntity implements Serializ
     @Override
     public String toString() {
         return "RepositoryHeader [id=" + id + ", repositoryName=" + repositoryName + ", delFlag=" + delFlag + "]";
+    }
+
+    public void setRepositoryDetails(List<RepositoryDTO> collect) {
+        // TODO Auto-generated method stub
+
     }
 }

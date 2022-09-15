@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
+import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-document-update',
@@ -54,7 +56,8 @@ export class DocumentUpdateComponent implements OnInit {
     protected loadSetupService: LoadSetupService,
     protected documentHeaderService: DocumentService,
     protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +78,16 @@ export class DocumentUpdateComponent implements OnInit {
 
   previousState(): void {
     window.history.back();
+  }
+
+  searchRepository(): void {
+    //this.fieldList().push(this.newField());
+    const modalRef = this.modalService.open(RepositoryDialogComponent, { size: 'xl', backdrop: 'static' });
+    //modalRef.componentInstance.lovStr = this.fieldList().controls[i].get(['fieldValue'])!.value;
+    // unsubscribe not needed because closed completes on modal close
+    modalRef.componentInstance.passEntry.subscribe((data: any) => {
+      this.editForm.get(['reposistory'])!.setValue(data);
+    });
   }
 
   save(): void {

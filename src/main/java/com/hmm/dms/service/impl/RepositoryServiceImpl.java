@@ -130,10 +130,26 @@ public class RepositoryServiceImpl implements RepositoryService {
             String createdDate = dto.getCreatedDate();
             Page<RepositoryHeader> pageWithEntity =
                 this.repositoryHeaderRepository.findAllByRepositoryNameAndDate(repoName, createdDate, pageable);
-            return pageWithEntity.map(repositoryHeaderMapper::toDto);
+            Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);
+            for (int i = 0; i < pageWithEntity.getContent().size(); i++) {
+                data
+                    .getContent()
+                    .get(i)
+                    .setRepositoryDetails(repositoryRepo.findByHeaderId(1L).map(repositoryMapper::toDto).collect(Collectors.toList()));
+            }
+
+            return data;
         }
 
         Page<RepositoryHeader> pageWithEntity = this.repositoryHeaderRepository.findAllByRepositoryName(repoName, pageable);
-        return pageWithEntity.map(repositoryHeaderMapper::toDto);
+        Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);
+        for (int i = 0; i < pageWithEntity.getContent().size(); i++) {
+            data
+                .getContent()
+                .get(i)
+                .setRepositoryDetails(repositoryRepo.findByHeaderId(1L).map(repositoryMapper::toDto).collect(Collectors.toList()));
+        }
+
+        return data;
     }
 }
