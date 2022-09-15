@@ -49,13 +49,26 @@
           <li>
             <a
               class="dropdown-item"
+              routerLink="repository/new"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.repository.create">Repository Creation</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="dropdown-item"
               routerLink="repository"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span jhiTranslate="global.menu.repository.title">Repository</span>
+              <span jhiTranslate="global.menu.repository.search">Repository Inquiry</span>
             </a>
           </li>
           <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
