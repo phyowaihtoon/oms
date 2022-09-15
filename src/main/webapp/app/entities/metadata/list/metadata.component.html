@@ -1,39 +1,102 @@
-<div>
-  <h2 id="page-heading" data-cy="MetadataHeading">
-    <span jhiTranslate="dmsApp.metadata.home.title">Metadata</span>
+<div id="page-heading" class="row">
+  <div class="col-10">
+    <span>MetaData</span>
+    <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
+    <span> >> MetaData Inquiry</span>
+  </div>
+  <div class="col-2 d-flex justify-content-end">
+    <button class="btn btn-primary btn-sm" (click)="loadPage(1)" [disabled]="isLoading">
+      <fa-icon icon="search"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+    </button>
+    <span style="width: 5px"></span>
+    <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+    </button>
+  </div>
+</div>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info mr-2" (click)="loadPage()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="dmsApp.metadata.home.refreshListLabel">Refresh List</span>
-      </button>
+<jhi-alert-error></jhi-alert-error>
 
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-metadata"
-        [routerLink]="['/metadata/new']"
-      >
-        <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="dmsApp.metadata.home.createLabel"> Create a new Metadata </span>
-      </button>
+<jhi-alert></jhi-alert>
+
+<div *ngIf="isShowingFilters">
+  <fa-icon icon="angle-down" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.metaData.search">Search MetaData</span>
+</div>
+
+<div *ngIf="!isShowingFilters">
+  <fa-icon icon="angle-right" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.metaData.search">Search MetaData</span>
+</div>
+
+<div *ngIf="isShowingFilters" id="search-area" class="col-12">
+  <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
+    <div class="form-group row col-12">
+      <div class="col-2">
+        <label class="form-control-label" jhiTranslate="dmsApp.metaData.docTitle" for="field_docTitle">Document Template</label>
+      </div>
+      <div class="col-2">
+        <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
+      </div>
+      <div class="col-2">
+        <label class="form-control-label" jhiTranslate="dmsApp.metaData.createdDate" for="field_createdDate">Created Date</label>
+      </div>
+      <div class="col-2">
+        <div class="input-group">
+          <input
+            class="form-control"
+            id="field_createdDate"
+            data-cy="createdDate"
+            placeholder="DD-MM-YYYY"
+            name="createdDate"
+            formControlName="createdDate"
+            ngbDatepicker
+            #createdDate="ngbDatepicker"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
+              <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </h2>
+  </form>
+</div>
 
-  <jhi-alert-error></jhi-alert-error>
+<div *ngIf="isShowingResult" class="result-header">
+  <fa-icon icon="angle-down" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.metaData.result">Search Result</span>
+</div>
 
-  <jhi-alert></jhi-alert>
+<div *ngIf="!isShowingResult" class="result-header">
+  <fa-icon icon="angle-right" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.metaData.result">Search Result</span>
+</div>
 
+<div id="result-container" *ngIf="isShowingResult">
   <div class="alert alert-warning" id="no-result" *ngIf="metadatas?.length === 0">
-    <span jhiTranslate="dmsApp.metadata.home.notFound">No Metadata found</span>
+    <span jhiTranslate="dmsApp.metaData.home.notFound">No MetaData found</span>
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="metadatas && metadatas.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-          <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="documentTitle"><span>Document Title</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="id">
+            <span jhiTranslate="global.field.id">ID</span>
+            <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="docTitle">
+            <span jhiTranslate="dmsApp.metaData.docTitle">Document Template</span>
+            <fa-icon icon="sort"></fa-icon>
+          </th>
+
+          <th scope="col" jhiSortBy="createdDate">
+            <span jhiTranslate="dmsApp.metaData.createdDate">Created Date</span>
+            <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="createdBy">
+            <span jhiTranslate="dmsApp.metaData.createdBy">Created By</span>
+            <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -43,19 +106,10 @@
             <a [routerLink]="['/metadata', metadata.id, 'edit']">{{ metadata.id }}</a>
           </td>
           <td>{{ metadata.docTitle }}</td>
+          <td>{{ metadata.createdDate ? metadata.createdDate.format('DD-MM-YYYY') : '-' }}</td>
+          <td>{{ metadata.createdBy }}</td>
           <td class="text-right">
             <div class="btn-group">
-              <!--
-              <button
-                type="submit"
-                [routerLink]="['/metadata', metadata.id, 'view']"
-                class="btn btn-info btn-sm"
-                data-cy="entityDetailsButton"
-              >
-                <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-              </button>
-              -->
               <button
                 type="submit"
                 [routerLink]="['/metadata', metadata.id, 'edit']"
@@ -80,9 +134,7 @@
   <div *ngIf="metadatas && metadatas.length > 0">
     <div class="row justify-content-center">
       <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-    </div>
-
-    <div class="row justify-content-center">
+      <span style="width: 30px">&nbsp;&nbsp;</span>
       <ngb-pagination
         [collectionSize]="totalItems"
         [(page)]="ngbPaginationPage"

@@ -5,7 +5,10 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IMetaDataHeader, getMetadataIdentifier } from '../metadata.model';
+import { IMetaDataHeader, getMetadataIdentifier, IMetaDataInquiry } from '../metadata.model';
+
+import { map } from 'rxjs/operators';
+import * as dayjs from 'dayjs';
 
 export type EntityResponseType = HttpResponse<IMetaDataHeader>;
 export type EntityArrayResponseType = HttpResponse<IMetaDataHeader[]>;
@@ -17,7 +20,7 @@ export class MetaDataService {
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   create(metadata: IMetaDataHeader): Observable<EntityResponseType> {
-    return this.http.post<IMetaDataHeader>(this.resourceUrl, metadata, { observe: 'response' });
+    return this.http.post<IMetaDataHeader>(this.resourceUrl + '/save', metadata, { observe: 'response' });
   }
 
   update(metadata: IMetaDataHeader): Observable<EntityResponseType> {
@@ -36,9 +39,25 @@ export class MetaDataService {
     return this.http.get<IMetaDataHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  query(req?: any): Observable<EntityArrayResponseType> {
+  /* query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IMetaDataHeader[]>(this.resourceUrl, { params: options, observe: 'response' });
+  } */
+
+  query(criteriaData: IMetaDataInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IMetaDataHeader[]>(this.resourceUrl + '/search', criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
+  convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((documentHeader: IMetaDataHeader) => {
+        documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
+      });
+    }
+    return res;
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

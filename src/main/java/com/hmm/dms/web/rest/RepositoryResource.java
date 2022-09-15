@@ -4,6 +4,7 @@ import com.hmm.dms.repository.RepositoryHeaderRepository;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
+import com.hmm.dms.service.dto.RepositoryInquiryDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,7 +64,7 @@ public class RepositoryResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new repositoryDTO, or with status {@code 400 (Bad Request)} if the repository has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/repository")
+    @PostMapping("/repository/save")
     public ResponseEntity<RepositoryHeaderDTO> createRepository(@Valid @RequestBody RepositoryHeaderDTO repositoryDTO)
         throws URISyntaxException {
         log.debug("REST request to save Repository : {}", repositoryDTO);
@@ -197,5 +198,13 @@ public class RepositoryResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/repository/search")
+    public ResponseEntity<List<RepositoryHeaderDTO>> getAllMetaData(@RequestBody RepositoryInquiryDTO dto, Pageable pageable) {
+        log.debug("REST request to get all Documents");
+        Page<RepositoryHeaderDTO> page = repositoryService.getAllRepositoryData(dto, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

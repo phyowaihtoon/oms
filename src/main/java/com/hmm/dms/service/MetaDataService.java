@@ -2,6 +2,7 @@ package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.dto.MetaDataInquiryDTO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -50,4 +51,6 @@ public interface MetaDataService {
     void delete(Long id);
 
     Page<MetaDataHeaderDTO> findAll(Pageable pageable);
+
+    Page<MetaDataHeaderDTO> getAllMetaData(MetaDataInquiryDTO dto, Pageable pageable);
 }

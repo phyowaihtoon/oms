@@ -31,6 +31,10 @@ public class RepositoryDomain implements Serializable {
     @Column(name = "folder_order")
     private Integer folderOrder;
 
+    @NotNull
+    @Column(name = "del_flag")
+    private String delFlag;
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     public Long getId() {
@@ -65,6 +69,14 @@ public class RepositoryDomain implements Serializable {
         this.folderOrder = folderOrder;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -84,7 +96,19 @@ public class RepositoryDomain implements Serializable {
 
     @Override
     public String toString() {
-        return "Repository [id=" + id + ", headerId=" + headerId + ", folderName=" + folderName + ", folderOrder=" + folderOrder + "]";
+        return (
+            "RepositoryDomain [id=" +
+            id +
+            ", headerId=" +
+            headerId +
+            ", folderName=" +
+            folderName +
+            ", folderOrder=" +
+            folderOrder +
+            ", delFlag=" +
+            delFlag +
+            "]"
+        );
     }
     // prettier-ignore
 
