@@ -1,22 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { IRepositoryHeader, RepositoryInquiry } from '../repository.model';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { IRepositoryHeader, RepositoryInquiry, IRepository } from 'app/entities/repository/repository.model';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { RepositoryService } from '../service/repository.service';
-import { RepositoryDeleteDialogComponent } from '../delete/repository-delete-dialog.component';
-import { FormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpResponse, HttpHeaders } from '@angular/common/http';
+import { combineLatest } from 'rxjs';
+import { LoadSetupService } from '../load-setup.service';
 
 @Component({
-  selector: 'jhi-repository',
-  templateUrl: './repository.component.html',
-  styleUrls: ['./repository.component.scss'],
+  selector: 'jhi-repository-dialog',
+  templateUrl: './repository-dialog.component.html',
+  styleUrls: ['./repository-dialog.component.scss'],
 })
-export class RepositoryComponent {
+export class RepositoryDialogComponent implements OnInit {
   repositorys?: IRepositoryHeader[];
   isLoading = false;
   totalItems = 0;
@@ -34,17 +32,29 @@ export class RepositoryComponent {
     createdDate: [],
   });
 
+  @Output() passEntry: EventEmitter<any> = new EventEmitter();
+
   constructor(
     protected fb: FormBuilder,
-    protected service: RepositoryService,
+    protected service: LoadSetupService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected activeModal: NgbActiveModal
   ) {}
 
-  /* ngOnInit(): void {
+  ngOnInit(): void {
     this.handleNavigation();
-  } */
+  }
+
+  selectRepo(repository: any): void {
+    this.passEntry.emit(this.loadRepositoryPath(repository.repositoryDetails));
+    this.activeModal.dismiss();
+  }
+
+  cancel(): void {
+    this.activeModal.dismiss();
+  }
 
   trackId(index: number, item: IRepositoryHeader): number {
     return item.id!;
@@ -56,18 +66,6 @@ export class RepositoryComponent {
 
   showResultArea(): void {
     this.isShowingResult = !this.isShowingResult;
-  }
-
-  loadRepositoryPath(repoDetails: any): string {
-    let str = '';
-    repoDetails.forEach((data: any) => {
-      if (str === '') {
-        str = String(data.folderName);
-      } else {
-        str = str + '|' + String(data.folderName);
-      }
-    });
-    return str;
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
@@ -106,7 +104,7 @@ export class RepositoryComponent {
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
     };
 
-    this.service.query(searchCriteria, paginationReqParams).subscribe(
+    this.service.loadRepository(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IRepositoryHeader[]>) => {
         this.isLoading = false;
         this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
@@ -118,15 +116,16 @@ export class RepositoryComponent {
     );
   }
 
-  delete(repository: IRepositoryHeader): void {
-    const modalRef = this.modalService.open(RepositoryDeleteDialogComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.repository = repository;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed.subscribe(reason => {
-      if (reason === 'deleted') {
-        this.loadPage();
+  loadRepositoryPath(repoDetails: any): string {
+    let str = '';
+    repoDetails.forEach((data: any) => {
+      if (str === '') {
+        str = String(data.folderName);
+      } else {
+        str = str + '|' + String(data.folderName);
       }
     });
+    return str;
   }
 
   clearFormData(): void {

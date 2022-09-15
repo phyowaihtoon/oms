@@ -185,7 +185,12 @@
             <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col" jhiSortBy="repositoryName">
-            <span jhiTranslate="dmsApp.repository.repositoryName">Document Template</span>
+            <span jhiTranslate="dmsApp.repository.repositoryName">Repository Name</span>
+            <fa-icon icon="sort"></fa-icon>
+          </th>
+
+          <th scope="col" jhiSortBy="repositoryPath">
+            <span jhiTranslate="dmsApp.repository.repositoryPath">Repository Path</span>
             <fa-icon icon="sort"></fa-icon>
           </th>
 
@@ -206,6 +211,7 @@
             <a [routerLink]="['/repository', repository.id, 'edit']">{{ repository.id }}</a>
           </td>
           <td>{{ repository.repositoryName }}</td>
+          <td>{{ loadRepositoryPath(repository.repositoryDetails) }}</td>
           <td>{{ repository.createdDate ? repository.createdDate.format('DD-MM-YYYY') : '-' }}</td>
           <td>{{ repository.createdBy }}</td>
           <td class="text-right">

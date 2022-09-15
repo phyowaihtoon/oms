@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
       },
       {
         path: 'metadata',
-        data: { pageTitle: 'dmsApp.metadata.home.title' },
+        data: { pageTitle: 'dmsApp.metaData.home.title' },
         loadChildren: () => import('./metadata/metadata.module').then(m => m.MetadataModule),
       },
       {
