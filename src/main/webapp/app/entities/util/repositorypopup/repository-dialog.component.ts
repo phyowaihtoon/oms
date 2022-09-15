@@ -48,7 +48,7 @@ export class RepositoryDialogComponent implements OnInit {
   }
 
   selectRepo(repository: any): void {
-    this.passEntry.emit(this.loadRepositoryPath(repository.repositoryDetails));
+    this.passEntry.emit(String(repository.repositoryName) + '//' + this.loadRepositoryPath(repository.repositoryDetails));
     this.activeModal.dismiss();
   }
 
