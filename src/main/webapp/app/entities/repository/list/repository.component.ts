@@ -4,17 +4,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { IRepositoryHeader } from '../repository.model';
+import { IRepositoryHeader, RepositoryInquiry } from '../repository.model';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { RepositoryService } from '../service/repository.service';
 import { RepositoryDeleteDialogComponent } from '../delete/repository-delete-dialog.component';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'jhi-repository',
   templateUrl: './repository.component.html',
+  styleUrls: ['./repository.component.scss'],
 })
-export class RepositoryComponent implements OnInit {
+export class RepositoryComponent {
   repositorys?: IRepositoryHeader[];
   isLoading = false;
   totalItems = 0;
@@ -24,15 +26,40 @@ export class RepositoryComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
 
+  isShowingFilters = true;
+  isShowingResult = false;
+
+  searchForm = this.fb.group({
+    repositoryName: [],
+    createdDate: [],
+  });
+
   constructor(
+    protected fb: FormBuilder,
     protected service: RepositoryService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected modalService: NgbModal
   ) {}
 
+  /* ngOnInit(): void {
+    this.handleNavigation();
+  } */
+
+  trackId(index: number, item: IRepositoryHeader): number {
+    return item.id!;
+  }
+
+  showFilters(): void {
+    this.isShowingFilters = !this.isShowingFilters;
+  }
+
+  showResultArea(): void {
+    this.isShowingResult = !this.isShowingResult;
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
-    this.isLoading = true;
+    /* this.isLoading = true;
     const pageToLoad: number = page ?? this.page ?? 1;
 
     this.service
@@ -50,19 +77,37 @@ export class RepositoryComponent implements OnInit {
           this.isLoading = false;
           this.onError();
         }
-      );
-  }
+      ); */
 
-  ngOnInit(): void {
-    this.handleNavigation();
-  }
+    this.isLoading = true;
+    this.isShowingResult = true;
+    this.repositorys = [];
+    const pageToLoad: number = page ?? this.page ?? 1;
+    const paginationReqParams = {
+      page: pageToLoad - 1,
+      size: this.itemsPerPage,
+      // sort: this.sort(),
+    };
+    const searchCriteria = {
+      ...new RepositoryInquiry(),
+      repositoryName: this.searchForm.get('repositoryName')!.value,
+      createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
+    };
 
-  trackId(index: number, item: IRepositoryHeader): number {
-    return item.id!;
+    this.service.query(searchCriteria, paginationReqParams).subscribe(
+      (res: HttpResponse<IRepositoryHeader[]>) => {
+        this.isLoading = false;
+        this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
+      },
+      () => {
+        this.isLoading = false;
+        this.onError();
+      }
+    );
   }
 
   delete(repository: IRepositoryHeader): void {
-    const modalRef = this.modalService.open(RepositoryDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(RepositoryDeleteDialogComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.repository = repository;
     // unsubscribe not needed because closed completes on modal close
     modalRef.closed.subscribe(reason => {
@@ -70,6 +115,12 @@ export class RepositoryComponent implements OnInit {
         this.loadPage();
       }
     });
+  }
+
+  clearFormData(): void {
+    this.searchForm.reset();
+    this.repositorys = [];
+    this.isShowingResult = false;
   }
 
   protected sort(): string[] {
@@ -95,7 +146,7 @@ export class RepositoryComponent implements OnInit {
     });
   }
 
-  protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
+  /* protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     if (navigate) {
@@ -107,6 +158,13 @@ export class RepositoryComponent implements OnInit {
         },
       });
     }
+    this.repositorys = data ?? [];
+    this.ngbPaginationPage = this.page;
+  } */
+
+  protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
+    this.totalItems = Number(headers.get('X-Total-Count'));
+    this.page = page;
     this.repositorys = data ?? [];
     this.ngbPaginationPage = this.page;
   }

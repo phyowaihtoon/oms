@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { MetaDataService } from '../service/metadata.service';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LovSetupDialogComponent } from '../lov-setup/lov-setup-dialog.component';
 
 @Component({
   selector: 'jhi-metadata-update',
@@ -33,7 +35,12 @@ export class MetadataUpdateComponent implements OnInit {
     { value: 'NO', caption: 'NO' },
   ];
 
-  constructor(protected service: MetaDataService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(
+    protected service: MetaDataService,
+    protected activatedRoute: ActivatedRoute,
+    protected fb: FormBuilder,
+    protected modalService: NgbModal
+  ) {}
 
   ngOnInit(): void {
     this.addField();
@@ -47,8 +54,12 @@ export class MetadataUpdateComponent implements OnInit {
     });
   }
 
-  previousState(): void {
-    window.history.back();
+  cancel(): void {
+    //window.history.back();
+    this.editForm.controls['id']!.setValue(undefined);
+    this.editForm.controls['docTitle']!.setValue('');
+    this.removeAllField();
+    this.addField();
   }
 
   fieldList(): FormArray {
@@ -83,13 +94,25 @@ export class MetadataUpdateComponent implements OnInit {
     if (this.fieldList().controls[i].get(['fieldType'])!.value === 'LOV') {
       this.fieldList().controls[i].get(['fieldValue'])!.enable({ onlySelf: true });
     } else {
+      this.fieldList().controls[i].get(['fieldValue'])!.setValue('');
       this.fieldList().controls[i].get(['fieldValue'])!.disable({ onlySelf: true });
     }
   }
 
+  addLovValue(i: number): void {
+    const val = this.fieldList().controls[i].get(['fieldValue'])!.value;
+    //this.fieldList().push(this.newField());
+    const modalRef = this.modalService.open(LovSetupDialogComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.lovStr = this.fieldList().controls[i].get(['fieldValue'])!.value;
+    // unsubscribe not needed because closed completes on modal close
+    modalRef.componentInstance.passEntry.subscribe((data: any) => {
+      this.fieldList().controls[i].get(['fieldValue'])!.setValue(data);
+    });
+  }
+
   save(): void {
     this.isSaving = true;
-    const metadata = this.createFromForm();
+    const metadata = this.createForm();
     console.log(JSON.stringify(metadata));
     if (metadata.id !== undefined) {
       this.subscribeToSaveResponse(this.service.update(metadata));
@@ -106,7 +129,7 @@ export class MetadataUpdateComponent implements OnInit {
   }
 
   protected onSaveSuccess(): void {
-    this.previousState();
+    // this.previousState();
   }
 
   protected onSaveError(): void {
@@ -127,6 +150,7 @@ export class MetadataUpdateComponent implements OnInit {
       fieldValue: data.get(['fieldValue'])!.value,
       isRequired: data.get(['isRequired'])!.value,
       fieldOrder: data.get(['fieldOrder'])!.value,
+      delFlag: 'N',
     };
   }
 
@@ -138,11 +162,12 @@ export class MetadataUpdateComponent implements OnInit {
     return fieldList;
   }
 
-  protected createFromForm(): IMetaDataHeader {
+  protected createForm(): IMetaDataHeader {
     return {
       ...new MetaDataHeader(),
       id: this.editForm.get(['id'])!.value,
       docTitle: this.editForm.get(['docTitle'])!.value,
+      delFlag: 'N',
       metaDataDetails: this.createMetaDataDetails(),
     };
   }

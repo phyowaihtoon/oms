@@ -12,12 +12,17 @@ public class RepositoryDTO implements Serializable {
 
     private Long id;
 
+    @NotNull
     private Long headerId;
 
     @NotNull
     private String folderName;
 
+    @NotNull
     private Integer folderOrder;
+
+    @NotNull
+    private String delFlag;
 
     public Long getId() {
         return id;
@@ -51,10 +56,19 @@ public class RepositoryDTO implements Serializable {
         this.folderOrder = folderOrder;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((delFlag == null) ? 0 : delFlag.hashCode());
         result = prime * result + ((folderName == null) ? 0 : folderName.hashCode());
         result = prime * result + ((folderOrder == null) ? 0 : folderOrder.hashCode());
         result = prime * result + ((headerId == null) ? 0 : headerId.hashCode());
@@ -68,6 +82,9 @@ public class RepositoryDTO implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         RepositoryDTO other = (RepositoryDTO) obj;
+        if (delFlag == null) {
+            if (other.delFlag != null) return false;
+        } else if (!delFlag.equals(other.delFlag)) return false;
         if (folderName == null) {
             if (other.folderName != null) return false;
         } else if (!folderName.equals(other.folderName)) return false;
@@ -85,6 +102,18 @@ public class RepositoryDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "RepositoryDTO [id=" + id + ", headerId=" + headerId + ", folderName=" + folderName + ", folderOrder=" + folderOrder + "]";
+        return (
+            "RepositoryDTO [id=" +
+            id +
+            ", headerId=" +
+            headerId +
+            ", folderName=" +
+            folderName +
+            ", folderOrder=" +
+            folderOrder +
+            ", delFlag=" +
+            delFlag +
+            "]"
+        );
     }
 }

@@ -44,6 +44,10 @@ import {
   faCalendar,
   faDownload,
   faWindowClose,
+  faFolder,
+  faFolderMinus,
+  faFolderPlus,
+  faFolderOpen,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -93,5 +97,9 @@ export const fontAwesomeIcons = [
   faCalendarAlt,
   faDownload,
   faWindowClose,
+  faFolder,
+  faFolderMinus,
+  faFolderPlus,
+  faFolderOpen,
   // jhipster-needle-add-icon-import
 ];

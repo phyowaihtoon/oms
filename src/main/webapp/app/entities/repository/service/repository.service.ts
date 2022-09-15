@@ -5,7 +5,10 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IRepositoryHeader, getRepositoryIdentifier } from '../repository.model';
+import { IRepositoryHeader, getRepositoryIdentifier, IRepositoryInquiry } from '../repository.model';
+
+import { map } from 'rxjs/operators';
+import * as dayjs from 'dayjs';
 
 export type EntityResponseType = HttpResponse<IRepositoryHeader>;
 export type EntityArrayResponseType = HttpResponse<IRepositoryHeader[]>;
@@ -17,7 +20,7 @@ export class RepositoryService {
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   create(repository: IRepositoryHeader): Observable<EntityResponseType> {
-    return this.http.post<IRepositoryHeader>(this.resourceUrl, repository, { observe: 'response' });
+    return this.http.post<IRepositoryHeader>(this.resourceUrl + '/save', repository, { observe: 'response' });
   }
 
   update(repository: IRepositoryHeader): Observable<EntityResponseType> {
@@ -36,9 +39,25 @@ export class RepositoryService {
     return this.http.get<IRepositoryHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  query(req?: any): Observable<EntityArrayResponseType> {
+  /* query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IRepositoryHeader[]>(this.resourceUrl, { params: options, observe: 'response' });
+  } */
+
+  query(criteriaData: IRepositoryInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IRepositoryHeader[]>(this.resourceUrl + '/search', criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
+  convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((documentHeader: IRepositoryHeader) => {
+        documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
+      });
+    }
+    return res;
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

@@ -162,17 +162,26 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "MetaData{" +
-            "id=" + getId() +
-            ", headerId=" + getHeaderId() +
-            ", fieldName='" + getFieldName() + "'" +
-            ", fieldType='" + getFieldType() + "'" +
-            ", isRequired='" + getIsRequired() + "'" +
-            ", fieldOrder=" + getFieldOrder() +
-            ", fieldValue='" + getFieldValue() + "'" +
-            "}";
+        return (
+            "MetaData [id=" +
+            id +
+            ", headerId=" +
+            headerId +
+            ", fieldName=" +
+            fieldName +
+            ", fieldType=" +
+            fieldType +
+            ", isRequired=" +
+            isRequired +
+            ", fieldOrder=" +
+            fieldOrder +
+            ", fieldValue=" +
+            fieldValue +
+            ", delFlag=" +
+            delFlag +
+            "]"
+        );
     }
 }

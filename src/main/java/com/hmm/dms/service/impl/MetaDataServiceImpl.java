@@ -7,6 +7,7 @@ import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.dto.MetaDataInquiryDTO;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import java.util.LinkedList;
@@ -106,13 +107,28 @@ public class MetaDataServiceImpl implements MetaDataService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete MetaData : {}", id);
-        metaDataHeaderRepository.deleteById(id);
-        metaDataRepository.deleteByHeaderId(id);
+        metaDataHeaderRepository.updateById(id);
+        metaDataRepository.updateByHeaderId(id);
     }
 
     @Override
     public Page<MetaDataHeaderDTO> findAll(Pageable pageable) {
         log.debug("Requesting to get all Categories");
         return metaDataHeaderRepository.findAll(pageable).map(metaDataHeaderMapper::toDto);
+    }
+
+    @Override
+    public Page<MetaDataHeaderDTO> getAllMetaData(MetaDataInquiryDTO dto, Pageable pageable) {
+        String docTitle = dto.getDocTitle();
+        if (docTitle == null || docTitle.equals("null") || docTitle.isEmpty()) docTitle = ""; else docTitle = docTitle.trim();
+
+        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
+            String createdDate = dto.getCreatedDate();
+            Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitleAndDate(docTitle, createdDate, pageable);
+            return pageWithEntity.map(metaDataHeaderMapper::toDto);
+        }
+
+        Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitle(docTitle, pageable);
+        return pageWithEntity.map(metaDataHeaderMapper::toDto);
     }
 }
