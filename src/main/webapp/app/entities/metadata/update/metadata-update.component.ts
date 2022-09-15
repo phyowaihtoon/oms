@@ -123,12 +123,13 @@ export class MetadataUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IMetaDataHeader>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
-      () => this.onSaveSuccess(),
+      res => this.onSaveSuccess(res),
       () => this.onSaveError()
     );
   }
 
-  protected onSaveSuccess(): void {
+  protected onSaveSuccess(result: HttpResponse<IMetaDataHeader>): void {
+    this.editForm.get(['id'])?.setValue(result.body?.id);
     // this.previousState();
   }
 
