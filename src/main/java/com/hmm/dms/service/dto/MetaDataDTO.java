@@ -1,8 +1,7 @@
 package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
-import java.util.Objects;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the {@link com.hmm.dms.domain.MetaData} entity.
@@ -30,6 +29,9 @@ public class MetaDataDTO implements Serializable {
     private Integer fieldOrder;
 
     private String fieldValue;
+
+    @NotNull
+    private String delFlag;
 
     public Long getId() {
         return id;
@@ -87,6 +89,19 @@ public class MetaDataDTO implements Serializable {
         this.fieldValue = fieldValue;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -95,30 +110,29 @@ public class MetaDataDTO implements Serializable {
         if (!(o instanceof MetaDataDTO)) {
             return false;
         }
-
-        MetaDataDTO metaDataDTO = (MetaDataDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, metaDataDTO.id);
+        return id != null && id.equals(((MetaDataDTO) o).id);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
-
-    // prettier-ignore
     @Override
     public String toString() {
-        return "MetaDataDTO{" +
-            "id=" + getId() +
-            ", headerId=" + getHeaderId() +
-            ", fieldName='" + getFieldName() + "'" +
-            ", fieldType='" + getFieldType() + "'" +
-            ", isRequired='" + getIsRequired() + "'" +
-            ", fieldOrder=" + getFieldOrder() +
-            ", fieldValue='" + getFieldValue() + "'" +
-            "}";
+        return (
+            "MetaDataDTO [id=" +
+            id +
+            ", headerId=" +
+            headerId +
+            ", fieldName=" +
+            fieldName +
+            ", fieldType=" +
+            fieldType +
+            ", isRequired=" +
+            isRequired +
+            ", fieldOrder=" +
+            fieldOrder +
+            ", fieldValue=" +
+            fieldValue +
+            ", delFlag=" +
+            delFlag +
+            "]"
+        );
     }
 }

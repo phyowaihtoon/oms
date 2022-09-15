@@ -4,17 +4,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { IMetaDataHeader } from '../metadata.model';
+import { IMetaDataHeader, MetaDataInquiry } from '../metadata.model';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { MetaDataService } from '../service/metadata.service';
 import { MetaDataDeleteDialogComponent } from '../delete/metadata-delete-dialog.component';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'jhi-metadata',
   templateUrl: './metadata.component.html',
+  styleUrls: ['./metadata.component.scss'],
 })
-export class MetaDataComponent implements OnInit {
+export class MetaDataComponent {
   metadatas?: IMetaDataHeader[];
   isLoading = false;
   totalItems = 0;
@@ -24,15 +26,40 @@ export class MetaDataComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
 
+  isShowingFilters = true;
+  isShowingResult = false;
+
+  searchForm = this.fb.group({
+    docTitle: [],
+    createdDate: [],
+  });
+
   constructor(
+    protected fb: FormBuilder,
     protected service: MetaDataService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected modalService: NgbModal
   ) {}
 
+  /* ngOnInit(): void {
+    //this.handleNavigation();
+  } */
+
+  trackId(index: number, item: IMetaDataHeader): number {
+    return item.id!;
+  }
+
+  showFilters(): void {
+    this.isShowingFilters = !this.isShowingFilters;
+  }
+
+  showResultArea(): void {
+    this.isShowingResult = !this.isShowingResult;
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
-    this.isLoading = true;
+    /* this.isLoading = true;
     const pageToLoad: number = page ?? this.page ?? 1;
 
     this.service
@@ -50,19 +77,37 @@ export class MetaDataComponent implements OnInit {
           this.isLoading = false;
           this.onError();
         }
-      );
-  }
+      ); */
 
-  ngOnInit(): void {
-    this.handleNavigation();
-  }
+    this.isLoading = true;
+    this.isShowingResult = true;
+    this.metadatas = [];
+    const pageToLoad: number = page ?? this.page ?? 1;
+    const paginationReqParams = {
+      page: pageToLoad - 1,
+      size: this.itemsPerPage,
+      // sort: this.sort(),
+    };
+    const searchCriteria = {
+      ...new MetaDataInquiry(),
+      docTitle: this.searchForm.get('docTitle')!.value,
+      createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
+    };
 
-  trackId(index: number, item: IMetaDataHeader): number {
-    return item.id!;
+    this.service.query(searchCriteria, paginationReqParams).subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        this.isLoading = false;
+        this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
+      },
+      () => {
+        this.isLoading = false;
+        this.onError();
+      }
+    );
   }
 
   delete(metadata: IMetaDataHeader): void {
-    const modalRef = this.modalService.open(MetaDataDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(MetaDataDeleteDialogComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.metadata = metadata;
     // unsubscribe not needed because closed completes on modal close
     modalRef.closed.subscribe(reason => {
@@ -70,6 +115,12 @@ export class MetaDataComponent implements OnInit {
         this.loadPage();
       }
     });
+  }
+
+  clearFormData(): void {
+    this.searchForm.reset();
+    this.metadatas = [];
+    this.isShowingResult = false;
   }
 
   protected sort(): string[] {
@@ -95,6 +146,7 @@ export class MetaDataComponent implements OnInit {
     });
   }
 
+  /*
   protected onSuccess(data: IMetaDataHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
@@ -107,6 +159,14 @@ export class MetaDataComponent implements OnInit {
         },
       });
     }
+    this.metadatas = data ?? [];
+    this.ngbPaginationPage = this.page;
+  }
+  */
+
+  protected onSuccess(data: IMetaDataHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
+    this.totalItems = Number(headers.get('X-Total-Count'));
+    this.page = page;
     this.metadatas = data ?? [];
     this.ngbPaginationPage = this.page;
   }

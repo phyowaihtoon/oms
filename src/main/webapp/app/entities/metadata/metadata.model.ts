@@ -1,11 +1,23 @@
+import * as dayjs from 'dayjs';
+
 export interface IMetaDataHeader {
   id?: number;
   docTitle?: string;
+  delFlag?: string;
+  createdBy?: string;
+  createdDate?: dayjs.Dayjs;
   metaDataDetails?: IMetaData[];
 }
 
 export class MetaDataHeader implements IMetaDataHeader {
-  constructor(public id?: number, public docTitle?: string, public metaDataDetails?: IMetaData[]) {}
+  constructor(
+    public id?: number,
+    public docTitle?: string,
+    public delFlag?: string,
+    public createdBy?: string,
+    public createdDate?: dayjs.Dayjs,
+    public metaDataDetails?: IMetaData[]
+  ) {}
 }
 
 export interface IMetaData {
@@ -16,6 +28,7 @@ export interface IMetaData {
   fieldValue?: string;
   isRequired?: string;
   fieldOrder?: number;
+  delFlag?: string;
 }
 
 export class MetaData implements IMetaData {
@@ -26,10 +39,20 @@ export class MetaData implements IMetaData {
     public fieldType?: string,
     public fieldValue?: string,
     public isRequired?: string,
-    public fieldOrder?: number
+    public fieldOrder?: number,
+    public delFlag?: string
   ) {}
 }
 
 export function getMetadataIdentifier(metaDataHeader: IMetaDataHeader): number | undefined {
   return metaDataHeader.id;
+}
+
+export interface IMetaDataInquiry {
+  docTitle?: string;
+  createdDate?: string;
+}
+
+export class MetaDataInquiry implements IMetaDataInquiry {
+  constructor(public docTitle?: string, public createdDate?: string) {}
 }

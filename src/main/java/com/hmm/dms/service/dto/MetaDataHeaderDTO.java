@@ -1,6 +1,7 @@
 package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +13,17 @@ public class MetaDataHeaderDTO implements Serializable {
 
     @NotNull
     private String docTitle;
+
+    @NotNull
+    private String delFlag;
+
+    private String createdBy;
+
+    private Instant createdDate;
+
+    private String lastModifiedBy;
+
+    private Instant lastModifiedDate;
 
     @NotNull
     private List<MetaDataDTO> metaDataDetails;
@@ -32,6 +44,46 @@ public class MetaDataHeaderDTO implements Serializable {
         this.docTitle = docTitle;
     }
 
+    public String getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(String delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     public List<MetaDataDTO> getMetaDataDetails() {
         return metaDataDetails;
     }
@@ -42,34 +94,40 @@ public class MetaDataHeaderDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((docTitle == null) ? 0 : docTitle.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((metaDataDetails == null) ? 0 : metaDataDetails.hashCode());
-        return result;
+        return getClass().hashCode();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        MetaDataHeaderDTO other = (MetaDataHeaderDTO) obj;
-        if (docTitle == null) {
-            if (other.docTitle != null) return false;
-        } else if (!docTitle.equals(other.docTitle)) return false;
-        if (id == null) {
-            if (other.id != null) return false;
-        } else if (!id.equals(other.id)) return false;
-        if (metaDataDetails == null) {
-            if (other.metaDataDetails != null) return false;
-        } else if (!metaDataDetails.equals(other.metaDataDetails)) return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MetaDataHeaderDTO)) {
+            return false;
+        }
+        return id != null && id.equals(((MetaDataHeaderDTO) o).id);
     }
 
     @Override
     public String toString() {
-        return "MetaDataHeaderDTO [id=" + id + ", docTitle=" + docTitle + ", metaDataDetails=" + metaDataDetails + "]";
+        return (
+            "MetaDataHeaderDTO [id=" +
+            id +
+            ", docTitle=" +
+            docTitle +
+            ", delFlag=" +
+            delFlag +
+            ", createdBy=" +
+            createdBy +
+            ", createdDate=" +
+            createdDate +
+            ", lastModifiedBy=" +
+            lastModifiedBy +
+            ", lastModifiedDate=" +
+            lastModifiedDate +
+            ", metaDataDetails=" +
+            metaDataDetails +
+            "]"
+        );
     }
 }

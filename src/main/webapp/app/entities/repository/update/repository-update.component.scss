@@ -31,9 +31,10 @@ td {
   min-width: 105px;
 }
 
-td:nth-child(2n) {
+/* td:nth-child(2n) {
   padding-left: n * 15;
-}
+} */
+
 .fa-icon-theme {
   font-size: 0.7rem;
   cursor: pointer;
@@ -50,4 +51,27 @@ td:nth-child(2n) {
   cursor: pointer;
   padding: 0px 1px 0px 1px;
   margin: 2px;
+}
+
+#page-heading {
+  font-size: 13pt;
+  padding-top: 10px;
+}
+
+.tbl-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+form {
+  width: 100%;
+}
+
+.input-btn-primary {
+  color: #fff;
+  background-color: #2780e3;
+  border-color: #2780e3;
+  height: 1.5rem;
+  padding: 0px 5px 0px 5px;
+  cursor: pointer;
 }

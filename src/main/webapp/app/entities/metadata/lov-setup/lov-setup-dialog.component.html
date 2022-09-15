@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Lov Details</h4>
+
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="editForm">
+    <div class="row">
+      <div class="form-group col-12">
+        <div class="tbl-container">
+          <table class="table" formArrayName="fieldList">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 90%">LOV Value</th>
+                <th class="text-center" style="width: 10%">#</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
+                <td>
+                  <input type="text" class="col-12 form-control" placeholder="LOV Value" formControlName="lovValue" />
+                </td>
+                <td>
+                  <span title="Remove" (click)="removeField(i)">
+                    <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                  </span>
+                  <span *ngIf="isLast" title="Add" (click)="addField()">
+                    <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="cancel()">
+    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+  </button>
+
+  <button type="button" class="btn btn-primary btn-sm" (click)="add()"><fa-icon icon="plus"></fa-icon>&nbsp;<span>Add</span></button>
+</div>

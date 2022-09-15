@@ -8,15 +8,15 @@
   <div class="modal-body">
     <jhi-alert-error></jhi-alert-error>
 
-    <p id="jhi-delete-metadata-heading" jhiTranslate="dmsApp.metadata.delete.question">Are you sure you want to delete this Metadata?</p>
+    <p id="jhi-delete-metadata-heading" jhiTranslate="dmsApp.metaData.delete.question">Are you sure you want to delete this Metadata?</p>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="cancel()">
       <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
     </button>
 
-    <button id="jhi-confirm-delete-metadata" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+    <button id="jhi-confirm-delete-metadata" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger btn-sm">
       <fa-icon icon="times"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
     </button>
   </div>
