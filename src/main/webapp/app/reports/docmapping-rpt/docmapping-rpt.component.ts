@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { IRptParamsDTO, RptParamsDTO } from '../report.model';
 import { ReportService } from '../service/report.service';
@@ -16,6 +18,7 @@ export class DocMappingRptComponent {
   _messageCode?: string;
   _messageDesc?: string;
   _isReplySuccessful = true;
+  _modalRef?: NgbModalRef;
   rptParams?: IRptParamsDTO;
   rptTitleName: string = 'Document Mapping Report';
   rptFileName: string = 'DocumentMappingRpt';
@@ -29,13 +32,21 @@ export class DocMappingRptComponent {
     endDate: [null, [Validators.required]],
   });
 
-  constructor(private reportService: ReportService, protected fb: FormBuilder, protected router: Router) {}
+  constructor(
+    private reportService: ReportService,
+    protected fb: FormBuilder,
+    protected router: Router,
+    protected modalService: NgbModal
+  ) {}
 
   generate(): void {
     this.isGenerating = true;
     const reportData = this.createFromForm();
+    this.showLoading('Generating Report');
     this.reportService.generateDocMappingListRpt(reportData).subscribe(
       res => {
+        setTimeout(() => this._modalRef?.close(), 1500);
+
         this._replyMessage = res.body;
 
         if (this._replyMessage?.code === '000') {
@@ -56,12 +67,18 @@ export class DocMappingRptComponent {
         }
       },
       error => {
+        this._modalRef?.close();
         this._isReplySuccessful = false;
         this.isGenerating = false;
         this._messageCode = '';
         this._messageDesc = 'Connection is not available. Please, check network connection with your server.';
       }
     );
+  }
+
+  showLoading(loadingMessage?: string): void {
+    this._modalRef = this.modalService.open(LoadingPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+    this._modalRef.componentInstance.loadingMessage = loadingMessage;
   }
 
   protected createFromForm(): IRptParamsDTO {
