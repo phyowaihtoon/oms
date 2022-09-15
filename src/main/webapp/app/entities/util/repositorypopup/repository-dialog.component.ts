@@ -122,7 +122,7 @@ export class RepositoryDialogComponent implements OnInit {
       if (str === '') {
         str = String(data.folderName);
       } else {
-        str = str + '|' + String(data.folderName);
+        str = str + '//' + String(data.folderName);
       }
     });
     return str;
