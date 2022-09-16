@@ -51,11 +51,12 @@ export class Document implements IDocument {
 }
 
 export interface IDocumentInquiry {
-  id?: number;
   metaDataHeaderId?: number;
   repositoryURL?: string;
+  createdDate?: string;
+  fieldValues?: string;
 }
 
 export class DocumentInquiry implements IDocumentInquiry {
-  constructor(public id?: number, public metaDataHeaderId?: number, public docTitle?: string, public repositoryURL?: string) {}
+  constructor(public metaDataHeaderId?: number, public repositoryURL?: string, public createdDate?: string, public fieldValues?: string) {}
 }

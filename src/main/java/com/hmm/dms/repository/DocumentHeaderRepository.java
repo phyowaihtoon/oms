@@ -13,6 +13,21 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, Long> {
-    @Query("SELECT dh FROM DocumentHeader dh WHERE dh.metaDataHeaderId=?1 AND dh.repositoryURL LIKE ?2% AND dh.fieldValues LIKE %?3%")
-    Page<DocumentHeader> findAll(Long id, String repURL, String fieldValues, Pageable pageable);
+    @Query(
+        value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
+        "dh.created_by, date(dh.created_date) as created_date," +
+        "dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
+        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND dh.field_values LIKE %?2%",
+        nativeQuery = true
+    )
+    Page<DocumentHeader> findAll(Long id, String fieldValues, String repURL, Pageable pageable);
+
+    @Query(
+        value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
+        "dh.created_by, date(dh.created_date) as created_date," +
+        "dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
+        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND dh.field_values LIKE %?2% AND date(dh.created_date) = str_to_date(?3,'%d-%m-%Y')",
+        nativeQuery = true
+    )
+    Page<DocumentHeader> findAllByDate(Long id, String fieldValues, String createdDate, String repURL, Pageable pageable);
 }

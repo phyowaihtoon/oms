@@ -3,9 +3,15 @@ import { Injectable } from '@angular/core';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { Observable } from 'rxjs';
 import { IMetaData, IMetaDataHeader } from '../metadata/metadata.model';
+import { IRepositoryInquiry, IRepositoryHeader } from '../repository/repository.model';
+import { EntityArrayResponseType } from '../category/service/category.service';
+import { createRequestOption } from 'app/core/request/request-util';
 
 export type MeataDataHeaderSetupArray = HttpResponse<IMetaDataHeader[]>;
 export type MetaDataSetupArray = HttpResponse<IMetaData[]>;
+
+import { map } from 'rxjs/operators';
+import * as dayjs from 'dayjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +28,21 @@ export class LoadSetupService {
   loadAllMetaDatabyMetadatHeaderId(id: number): Observable<MetaDataSetupArray> {
     const childURL = this.resourceUrl + '/metadata/' + id.toString();
     return this.http.get<IMetaData[]>(childURL, { observe: 'response' });
+  }
+
+  loadRepository(criteriaData: IRepositoryInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IRepositoryHeader[]>(this.resourceUrl + '/repository', criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
+  convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((documentHeader: IRepositoryHeader) => {
+        documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
+      });
+    }
+    return res;
   }
 }

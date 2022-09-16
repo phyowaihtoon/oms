@@ -1,7 +1,7 @@
 .text-center {
   font-weight: 600;
   color: white;
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
   vertical-align: middle;
 }
@@ -22,8 +22,8 @@ th {
 }
 
 td {
-  border: 1px solid #716f6f;
-  padding: 0px;
+  border: none !important;
+  padding: 2px;
 }
 
 th,
@@ -32,15 +32,38 @@ td {
 }
 
 .fa-icon-theme {
-  font-size: 20px;
+  font-size: 15px;
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 3px;
-  padding: 0px 7px 1px 7px;
+  padding: 0px 5px 0px 5px;
   box-shadow: 0 0px 2px #a7a7a7;
   margin: 6px;
 }
 
 .fa-icon-theme:hover {
   background-color: #d58e03;
+}
+
+#page-heading {
+  font-size: 13pt;
+  padding-top: 10px;
+}
+
+.tbl-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+form {
+  width: 100%;
+}
+
+.input-btn-primary {
+  color: #fff;
+  background-color: #2780e3;
+  border-color: #2780e3;
+  height: 1.5rem;
+  padding: 0px 5px 0px 5px;
+  cursor: pointer;
 }

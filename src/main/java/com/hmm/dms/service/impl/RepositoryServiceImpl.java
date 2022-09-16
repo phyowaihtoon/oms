@@ -7,6 +7,7 @@ import com.hmm.dms.repository.RepositoryRepo;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
+import com.hmm.dms.service.dto.RepositoryInquiryDTO;
 import com.hmm.dms.service.mapper.RepositoryHeaderMapper;
 import com.hmm.dms.service.mapper.RepositoryMapper;
 import java.util.LinkedList;
@@ -110,13 +111,45 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Repository : {}", id);
-        repositoryHeaderRepository.deleteById(id);
-        repositoryRepo.deleteByHeaderId(id);
+        repositoryHeaderRepository.updateById(id);
+        repositoryRepo.updateByHeaderId(id);
     }
 
     @Override
     public Page<RepositoryHeaderDTO> findAll(Pageable pageable) {
         log.debug("Requesting to get all Categories");
         return repositoryHeaderRepository.findAll(pageable).map(repositoryHeaderMapper::toDto);
+    }
+
+    @Override
+    public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryDTO dto, Pageable pageable) {
+        String repoName = dto.getRepositoryName();
+        if (repoName == null || repoName.equals("null") || repoName.isEmpty()) repoName = ""; else repoName = repoName.trim();
+
+        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
+            String createdDate = dto.getCreatedDate();
+            Page<RepositoryHeader> pageWithEntity =
+                this.repositoryHeaderRepository.findAllByRepositoryNameAndDate(repoName, createdDate, pageable);
+            Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);
+            for (int i = 0; i < pageWithEntity.getContent().size(); i++) {
+                data
+                    .getContent()
+                    .get(i)
+                    .setRepositoryDetails(repositoryRepo.findByHeaderId(1L).map(repositoryMapper::toDto).collect(Collectors.toList()));
+            }
+
+            return data;
+        }
+
+        Page<RepositoryHeader> pageWithEntity = this.repositoryHeaderRepository.findAllByRepositoryName(repoName, pageable);
+        Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);
+        for (int i = 0; i < pageWithEntity.getContent().size(); i++) {
+            data
+                .getContent()
+                .get(i)
+                .setRepositoryDetails(repositoryRepo.findByHeaderId(1L).map(repositoryMapper::toDto).collect(Collectors.toList()));
+        }
+
+        return data;
     }
 }

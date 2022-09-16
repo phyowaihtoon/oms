@@ -45,11 +45,10 @@ public class ReportServiceImpl implements ReportService {
             documentList = new ArrayList<RptDataDTO>();
             for (Object[] arr : resultList) {
                 RptDataDTO dto = new RptDataDTO();
-                //dto.setStartDateStr(String.valueOf(arr[0]));
-                dto.setDataS1(String.valueOf(arr[1]));
-                dto.setDataS2(String.valueOf(arr[2]));
-                dto.setDataS3(String.valueOf(arr[3]));
-                dto.setDataInt1(Integer.parseInt(String.valueOf(arr[4])));
+                dto.setDataS1(String.valueOf(arr[0]));
+                dto.setDataS2(String.valueOf(arr[1]));
+                dto.setDataS3(String.valueOf(arr[2]));
+                dto.setDataS4(String.valueOf(arr[3]));
                 documentList.add(dto);
             }
         }

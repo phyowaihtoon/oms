@@ -4,6 +4,7 @@ import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.dto.MetaDataInquiryDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,7 +64,7 @@ public class MetaDataResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new metaDataDTO, or with status {@code 400 (Bad Request)} if the metaData has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/meta-data")
+    @PostMapping("/meta-data/save")
     public ResponseEntity<MetaDataHeaderDTO> createMetaData(@Valid @RequestBody MetaDataHeaderDTO metaDataDTO) throws URISyntaxException {
         log.debug("REST request to save MetaData : {}", metaDataDTO);
         if (metaDataDTO.getId() != null) {
@@ -196,5 +197,13 @@ public class MetaDataResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PostMapping("/meta-data/search")
+    public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaData(@RequestBody MetaDataInquiryDTO dto, Pageable pageable) {
+        log.debug("REST request to get all Documents");
+        Page<MetaDataHeaderDTO> page = metaDataService.getAllMetaData(dto, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }

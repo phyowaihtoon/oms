@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DocumentHeader, IDocumentHeader, IDocumentInquiry } from '../document.model';
+import { DocumentHeader, DocumentInquiry, IDocumentHeader, IDocumentInquiry } from '../document.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { FormBuilder } from '@angular/forms';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -31,7 +31,7 @@ export class DocumentComponent implements OnInit {
 
   searchForm = this.fb.group({
     metaDataHdrID: [],
-    repositoryURL: [],
+    createdDate: [],
     fieldValues: [],
   });
 
@@ -109,9 +109,9 @@ export class DocumentComponent implements OnInit {
       // sort: this.sort(),
     };
     const searchCriteria = {
-      ...new DocumentHeader(),
+      ...new DocumentInquiry(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
-      repositoryURL: this.searchForm.get('repositoryURL')!.value,
+      createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
       fieldValues: this.searchForm.get('fieldValues')!.value,
     };
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(

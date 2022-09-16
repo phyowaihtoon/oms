@@ -20,7 +20,9 @@
         "search": "MetaData Inquiry"
       },
       "repository": {
-        "title": "Repository"
+        "title": "Repository",
+        "create": "Repository Creation",
+        "search": "Repository Inquiry"
       },
       "document": {
         "title": "Document",
