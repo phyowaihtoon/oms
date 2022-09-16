@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
-import { IDocumentHeader } from '../document.model';
+import { IDocumentHeader, IDocumentInquiry } from '../document.model';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { map } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class DocumentInquiryService {
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  query(criteriaData: IDocumentHeader, req?: any): Observable<EntityArrayResponseType> {
+  query(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
       .post<IDocumentHeader[]>(`${this.resourceUrl}`, criteriaData, { params: options, observe: 'response' })

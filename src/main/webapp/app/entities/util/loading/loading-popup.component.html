@@ -1,0 +1,16 @@
+<div class="modal-header dms-modal-header"></div>
+
+<div class="modal-body">
+  <div class="d-flex justify-content-center">
+    <fa-icon icon="spinner" [spin]="true" class="fa-4x"></fa-icon>
+  </div>
+  <div class="d-flex justify-content-center">
+    <span>{{ loadingMessage }}</span>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cancel()">
+    <span jhiTranslate="entity.action.cancel">Cancel</span>
+  </button>
+</div>

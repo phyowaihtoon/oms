@@ -1,15 +1,9 @@
 package com.hmm.dms.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 public class DocumentHeaderDTO implements Serializable {
 

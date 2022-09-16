@@ -35,10 +35,18 @@ export class RepositoryUpdateComponent implements OnInit {
     });
   }
 
-  previousState(): void {
-    window.history.back();
+  cancel(): void {
+    //window.history.back();
+    this.editForm.controls['id']!.setValue(undefined);
+    this.editForm.controls['repositoryName']!.setValue('');
+    this.removeAllField();
+    this.addField();
   }
 
+  /* previousState(): void {
+    window.history.back();
+  }
+ */
   fieldList(): FormArray {
     return this.editForm.get('fieldList') as FormArray;
   }
@@ -77,13 +85,14 @@ export class RepositoryUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IRepositoryHeader>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
-      () => this.onSaveSuccess(),
+      res => this.onSaveSuccess(res),
       () => this.onSaveError()
     );
   }
 
-  protected onSaveSuccess(): void {
-    this.previousState();
+  protected onSaveSuccess(result: HttpResponse<IRepositoryHeader>): void {
+    this.editForm.get(['id'])?.setValue(result.body?.id);
+    //this.previousState();
   }
 
   protected onSaveError(): void {
@@ -101,6 +110,7 @@ export class RepositoryUpdateComponent implements OnInit {
       headerId: undefined,
       folderName: data.get(['folderName'])!.value,
       folderOrder: index,
+      delFlag: 'N',
     };
   }
 
@@ -119,6 +129,7 @@ export class RepositoryUpdateComponent implements OnInit {
       ...new RepositoryHeader(),
       id: this.editForm.get(['id'])!.value,
       repositoryName: this.editForm.get(['repositoryName'])!.value,
+      delFlag: 'N',
       repositoryDetails: this.createRepositoryDetails(),
     };
   }

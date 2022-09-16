@@ -13,7 +13,8 @@ import { finalize } from 'rxjs/operators';
 import { DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
-import { version } from 'os';
+import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-document-update',
@@ -60,7 +61,8 @@ export class DocumentUpdateComponent implements OnInit {
     protected loadSetupService: LoadSetupService,
     protected documentHeaderService: DocumentService,
     protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -69,8 +71,11 @@ export class DocumentUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ docHeader }) => {
       this._documentHeader = docHeader;
       this._documentDetails = this._documentHeader?.docList;
-      if (docHeader !== undefined) {
-        this.updateForm(this._documentHeader!);
+      if (docHeader !== null) {
+        if (docHeader.id !== null && docHeader.id !== undefined) {
+          this.removeAllField();
+        }
+        this.updateForm(docHeader);
       }
     });
 
@@ -123,8 +128,19 @@ export class DocumentUpdateComponent implements OnInit {
   get reposistory(): any {
     return this.editForm.get('reposistory');
   }
+
   previousState(): void {
     window.history.back();
+  }
+
+  searchRepository(): void {
+    //this.fieldList().push(this.newField());
+    const modalRef = this.modalService.open(RepositoryDialogComponent, { size: 'xl', backdrop: 'static' });
+    //modalRef.componentInstance.lovStr = this.fieldList().controls[i].get(['fieldValue'])!.value;
+    // unsubscribe not needed because closed completes on modal close
+    modalRef.componentInstance.passEntry.subscribe((data: any) => {
+      this.editForm.get(['reposistory'])!.setValue(data);
+    });
   }
 
   save(): void {
@@ -213,7 +229,7 @@ export class DocumentUpdateComponent implements OnInit {
     this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
     for (let i = 0; i < this.files.length; i++) {
-      this.addField(this.repositoryurl + '/' + this.files.item(i)!.name, Math.round(this.files.item(i)!.size / 1024));
+      this.addField(this.repositoryurl + '//' + this.files.item(i)!.name, Math.round(this.files.item(i)!.size / 1024));
     }
     // this.forControlBindAttachment();
   }
@@ -319,12 +335,21 @@ export class DocumentUpdateComponent implements OnInit {
       id: docHeaderData.id,
       metaDataHeaderId: docHeaderData.metaDataHeaderId,
       message: docHeaderData.message,
-      docList: this.updateDocumentDataDetails(docHeaderData.docList!),
+      docList: this.updateDocumentDataDetails(docHeaderData.docList),
     });
   }
 
-  protected updateDocumentDataDetails(docList: IDocument[]): void {
-    console.log(docList);
+  protected updateDocumentDataDetails(docList: IDocument[] | undefined): void {
+    let index = 0;
+    docList?.forEach(data => {
+      this.addField('', 0);
+      this.docList1().controls[index].get(['filePath'])!.setValue(data.filePath);
+      this.docList1().controls[index].get(['fileSize'])!.setValue(data.fileSize);
+      this.docList1().controls[index].get(['remark'])!.setValue(data.remark);
+      this.docList1().controls[index].get(['version'])!.setValue(data.version);
+      // this.onFieldTypeChange(index);
+      index = index + 1;
+    });
   }
 
   private resportProgress(httpEvent: HttpEvent<string[] | Blob>): void {

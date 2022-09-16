@@ -50,20 +50,6 @@
           </div>
         </div>
 
-        <!-- <div class="form-group col-6" *ngFor="let metaitem of metaData">
-          <div *ngIf="metaitem.fieldType == 'LOV'">
-            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
-
-            <select class="form-control" formControlName="metaDataHeaderId">
-              <option [value]="0">-</option>
-              <option [value]="doctype.id" *ngFor="let doctype of docTypes">
-                {{ doctype.docTitle }}
-              </option>
-            </select>
-
-          </div>
-        </div> -->
-
         <div class="form-group col-6" *ngFor="let metaitem of metaData">
           <div *ngIf="metaitem.fieldType == 'String'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
@@ -102,12 +88,22 @@
         </div>
 
         <div class="form-group col-6">
-          <label class="form-control-label" for="text"> Reposistory </label>
-
-          <input type="text" class="form-control" name="reposistory" formControlName="reposistory" />
-
-          <div class="form-group col-6" *ngIf="reposistory && reposistory.touched && reposistory.invalid" style="color: red">
-            This field is required.
+          <label class="form-control-label" for="text"> Message </label>
+          <div class="input-group col-12" style="padding: 0px !important">
+            <input
+              type="text"
+              readonly
+              placeholder="Reposistory"
+              formControlName="reposistory"
+              class="form-control input-sm"
+              style="background: white"
+              (click)="searchRepository()"
+            />
+            <div class="input-group-append">
+              <span class="input-sm input-btn-primary" (click)="searchRepository()">
+                <fa-icon icon="search"></fa-icon>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -135,7 +131,7 @@
               <th class="text-center" style="width: 10%">File Size</th>
               <th class="text-center" style="width: 20%">Remark</th>
               <th class="text-center" style="width: 20%">Version</th>
-              <th class="text-center" style="width: 10%">Add/ Remove</th>
+              <th class="text-center" style="width: 5%">Remove</th>
             </tr>
           </thead>
           <tbody>
@@ -153,7 +149,7 @@
                 <input type="text" class="col-12 form-control" placeholder="version" formControlName="version" />
               </td>
 
-              <td style="padding: 3px">
+              <td style="padding-left: 10px">
                 <span title="Remove" (click)="removeField(i)">
                   <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
                 </span>

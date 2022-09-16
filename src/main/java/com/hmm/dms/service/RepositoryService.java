@@ -2,6 +2,7 @@ package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
+import com.hmm.dms.service.dto.RepositoryInquiryDTO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -50,4 +51,6 @@ public interface RepositoryService {
     void delete(Long id);
 
     Page<RepositoryHeaderDTO> findAll(Pageable pageable);
+
+    Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryDTO dto, Pageable pageable);
 }

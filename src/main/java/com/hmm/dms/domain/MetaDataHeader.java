@@ -79,12 +79,10 @@ public class MetaDataHeader extends AbstractAuditingEntity implements Serializab
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "MetaDataHeader{" +
-            "id=" + getId() +
-            ", docTitle='" + getDocTitle() + "'" +
-            "}";
+        return "MetaDataHeader [id=" + id + ", docTitle=" + docTitle + ", delFlag=" + delFlag + "]";
     }
+    // prettier-ignore
+
 }

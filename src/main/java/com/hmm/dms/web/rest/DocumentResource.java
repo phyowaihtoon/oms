@@ -207,12 +207,6 @@ public class DocumentResource {
     @PostMapping("/documents/upload")
     public ResponseEntity<List<String>> uploadFile(@RequestParam("files") List<MultipartFile> multipartFiles) throws IOException {
         try {
-            /*
-             * ftpClient.connect(server, port); ftpClient.login(user, pass);
-             * ftpClient.enterLocalPassiveMode();
-             * ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-             */
-
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
             ftpClient = ftpSession.getClientInstance();
 
@@ -220,32 +214,27 @@ public class DocumentResource {
                 String[] filenameNdir = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
 
                 String filename = filenameNdir[0];
-                String[] fullDirectory = filenameNdir[1].split("/");
+                String[] fullDirectory = filenameNdir[1].split("//");
                 String directory = "";
-                boolean isSuccessMkDir = false;
 
-                for (int i = 1; i < fullDirectory.length; i++) {
+                for (int i = 0; i < fullDirectory.length; i++) {
                     directory += "/" + fullDirectory[i];
 
                     boolean isDirExists = checkDirectoryExists(directory);
                     if (!isDirExists) {
-                        isSuccessMkDir = ftpClient.makeDirectory(directory);
-                        if (!isSuccessMkDir) break;
+                        ftpClient.makeDirectory(directory);
                     }
                 }
+                String firstRemoteFile = directory + "/" + filename;
 
-                if (isSuccessMkDir) {
-                    String firstRemoteFile = directory + "/" + filename;
+                InputStream inputStream = file.getInputStream();
+                System.out.println("Start uploading first file");
 
-                    InputStream inputStream = file.getInputStream();
-                    System.out.println("Start uploading first file");
-
-                    boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
-                    inputStream.close();
-                    if (done) {
-                        System.out.println("The first file is uploaded successfully.");
-                        filenames.add(filename);
-                    }
+                boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
+                inputStream.close();
+                if (done) {
+                    System.out.println("The first file is uploaded successfully.");
+                    filenames.add(filename);
                 }
             }
         } catch (IOException ex) {
