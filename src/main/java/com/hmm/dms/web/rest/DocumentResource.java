@@ -1,39 +1,25 @@
 package com.hmm.dms.web.rest;
 
-import static java.nio.file.Files.copy;
-import static java.nio.file.Paths.get;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-
 import com.hmm.dms.repository.DocumentRepository;
 import com.hmm.dms.service.DocumentService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.integration.ftp.session.FtpSession;
 import org.springframework.util.StringUtils;
@@ -221,12 +207,6 @@ public class DocumentResource {
     @PostMapping("/documents/upload")
     public ResponseEntity<List<String>> uploadFile(@RequestParam("files") List<MultipartFile> multipartFiles) throws IOException {
         try {
-            /*
-             * ftpClient.connect(server, port); ftpClient.login(user, pass);
-             * ftpClient.enterLocalPassiveMode();
-             * ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-             */
-
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
             ftpClient = ftpSession.getClientInstance();
 
@@ -234,15 +214,17 @@ public class DocumentResource {
                 String[] filenameNdir = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
 
                 String filename = filenameNdir[0];
-                String directory = filenameNdir[1];
-                //String filename = StringUtils.cleanPath(file.getOriginalFilename());
-                //String directory = "/FTP_Folder/Test";
+                String[] fullDirectory = filenameNdir[1].split("//");
+                String directory = "";
 
-                boolean isDirExists = checkDirectoryExists(directory);
-                if (!isDirExists) {
-                    ftpClient.makeDirectory(directory);
+                for (int i = 0; i < fullDirectory.length; i++) {
+                    directory += "/" + fullDirectory[i];
+
+                    boolean isDirExists = checkDirectoryExists(directory);
+                    if (!isDirExists) {
+                        ftpClient.makeDirectory(directory);
+                    }
                 }
-
                 String firstRemoteFile = directory + "/" + filename;
 
                 InputStream inputStream = file.getInputStream();
