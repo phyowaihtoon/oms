@@ -7,8 +7,22 @@
 
       <div>
         <jhi-alert-error></jhi-alert-error>
-
         <jhi-alert></jhi-alert>
+
+        <div *ngIf="fileStatus.status === 'progress'">
+          <div class="progress">
+            <div
+              [style.width.%]="fileStatus.percent"
+              class="progress-bar progress-bar-animated bg-info"
+              role="progressbar"
+              aria-valuenow="50"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              {{ fileStatus.requestType }} {{ fileStatus.percent }}
+            </div>
+          </div>
+        </div>
 
         <div class="form-group" [hidden]="editForm.get('id')!.value == null">
           <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
@@ -18,40 +32,21 @@
         <div class="form-group col-6">
           <label class="form-control-label" for="field_docType">Documnet Type</label>
           <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
-            <option [value]="0">-</option>
             <option [value]="doctype.id" *ngFor="let doctype of docTypes">
               {{ doctype.docTitle }}
             </option>
           </select>
+          <div class="form-group col-6" *ngIf="metaDataHeaderId && metaDataHeaderId.touched && metaDataHeaderId.invalid" style="color: red">
+            This field is required.
+          </div>
         </div>
 
         <div class="form-group col-6">
           <label class="form-control-label" for="text"> Message </label>
 
           <input type="text" class="form-control" name="message" formControlName="message" />
-        </div>
-
-        <div class="form-group col-6">
-          <label class="form-control-label" for="text"> Reposistory </label>
-
-          <!--
-          <input type="text" class="form-control" name="reposistory" formControlName="reposistory" />
-          -->
-          <div class="input-group col-12" style="padding: 0px !important">
-            <input
-              type="text"
-              readonly
-              placeholder="Reposistory"
-              formControlName="reposistory"
-              class="form-control input-sm"
-              style="background: white"
-              (click)="searchRepository()"
-            />
-            <div class="input-group-append">
-              <span class="input-sm input-btn-primary" (click)="searchRepository()">
-                <fa-icon icon="search"></fa-icon>
-              </span>
-            </div>
+          <div class="form-group col-6" *ngIf="message && message.touched && message.invalid" style="color: red">
+            This field is required.
           </div>
         </div>
 
@@ -71,7 +66,6 @@
         <div class="form-group col-6" *ngFor="let metaitem of metaData">
           <div *ngIf="metaitem.fieldType == 'Number'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
-
             <input
               type="number"
               class="form-control"
@@ -92,6 +86,26 @@
             />
           </div>
         </div>
+
+        <div class="form-group col-6">
+          <label class="form-control-label" for="text"> Message </label>
+          <div class="input-group col-12" style="padding: 0px !important">
+            <input
+              type="text"
+              readonly
+              placeholder="Reposistory"
+              formControlName="reposistory"
+              class="form-control input-sm"
+              style="background: white"
+              (click)="searchRepository()"
+            />
+            <div class="input-group-append">
+              <span class="input-sm input-btn-primary" (click)="searchRepository()">
+                <fa-icon icon="search"></fa-icon>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <form enctype="multipart/form-data">
@@ -104,38 +118,66 @@
         </fieldset>
       </form>
 
-      <div *ngIf="filenames.length > 0" class="js-upload-finished">
+      <!-- <div *ngIf="filenames.length > 0" class="js-upload-finished">
         <h3>File List</h3>
-        <div *ngIf="fileStatus.status === 'progress'">
-          <div class="progress">
-            <div
-              [style.width.%]="fileStatus.percent"
-              class="progress-bar progress-bar-animated bg-info"
-              role="progressbar"
-              aria-valuenow="50"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              {{ fileStatus.requestType }} {{ fileStatus.percent }}
-            </div>
-          </div>
-        </div>
-        <hr />
+        
+        <hr/> -->
 
-        <table class="table">
+      <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+        <table class="table" formArrayName="docList1">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 30%">File Name</th>
+              <th class="text-center" style="width: 10%">File Size</th>
+              <th class="text-center" style="width: 20%">Remark</th>
+              <th class="text-center" style="width: 20%">Version</th>
+              <th class="text-center" style="width: 5%">Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of docList1().controls; last as isLast; let i = index" [formGroupName]="i">
+              <td>
+                <input type="text" class="col-12 form-control" placeholder="filePath" formControlName="filePath" />
+              </td>
+              <td>
+                <input type="text" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" />
+              </td>
+              <td>
+                <input type="text" class="col-12 form-control" placeholder="remark" formControlName="remark" />
+              </td>
+              <td>
+                <input type="text" class="col-12 form-control" placeholder="version" formControlName="version" />
+              </td>
+
+              <td style="padding-left: 10px">
+                <span title="Remove" (click)="removeField(i)">
+                  <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                </span>
+                <!-- <span *ngIf="isLast" title="Add" (click)="addField()">
+                    <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
+                  </span> -->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- <table class="table">
           <thead>
             <tr>
               <th lass="text-center" style="width: 30%">File Name</th>
-              <th lass="text-center" style="width: 20%">Remark</th>
+              <th lass="text-center" style="width: 20%">File Size</th>
               <th lass="text-center" style="width: 20%">Version</th>
+              <th lass="text-center" style="width: 20%">Remark</th>
               <th lass="text-center" style="width: 10%">Download/View</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let filename of filenames; let i = index">
-              <td>{{ filename }}</td>
-              <td><input type="text" class="form-control" [formControlName]="'Remark' + i" /></td>
+              <td> {{ filename.filename }} </td>
+              <td> {{ filename.filesize }} KB</td>
               <td><input type="text" class="form-control" [formControlName]="'Version' + i" /></td>
+              <td><input type="text" class="form-control" [formControlName]="'Remark' + i" /></td>
               <td>
                 <span title="Add">
                   <a class="float-right" style="cursor: pointer; padding-left: 1em">Download</a>
@@ -144,8 +186,8 @@
               </td>
             </tr>
           </tbody>
-        </table>
-      </div>
+        </table> 
+      </div>-->
 
       <div>
         <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
