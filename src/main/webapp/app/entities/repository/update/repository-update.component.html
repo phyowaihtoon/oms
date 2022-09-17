@@ -96,13 +96,13 @@
     <span style="width: 5px"></span>
     <button type="button" id="cancel-save" class="btn btn-secondary btn-sm" (click)="cancel()">
       <fa-icon icon="ban"></fa-icon>
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
     </button>
   </div>
 </div>
 
 <div id="page-heading" class="row">
-  <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+  <form name="editForm" role="form" novalidate [formGroup]="editForm">
     <jhi-alert-error></jhi-alert-error>
 
     <jhi-alert></jhi-alert>
@@ -137,7 +137,7 @@
               <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
                 <td>
                   <div class="input-group">
-                    <span *ngIf="!isLast" title="Remove" (click)="removeField(i)">
+                    <span title="Remove" (click)="removeField(i)">
                       <fa-icon icon="minus" class="fa-icon-theme"></fa-icon>
                     </span>
                     <span *ngIf="isLast" title="Add" (click)="addField()">

@@ -127,7 +127,8 @@
       "view": "View",
       "search": "Search",
       "clear": "Clear",
-      "ok": "OK"
+      "ok": "OK",
+      "new": "New"
     },
     "detail": {
       "field": "Field",

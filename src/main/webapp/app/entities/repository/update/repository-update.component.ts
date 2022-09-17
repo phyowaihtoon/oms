@@ -64,7 +64,7 @@ export class RepositoryUpdateComponent implements OnInit {
 
   removeField(i: number): void {
     if (this.fieldList().length > 1) {
-      this.fieldList().removeAt(i);
+      this.fieldList().controls.splice(i);
     }
   }
 

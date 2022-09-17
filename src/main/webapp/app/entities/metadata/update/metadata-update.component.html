@@ -19,7 +19,7 @@
     <span style="width: 5px"></span>
     <button type="button" id="cancel-save" class="btn btn-secondary btn-sm" (click)="cancel()">
       <fa-icon icon="ban"></fa-icon>
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
     </button>
   </div>
 </div>
@@ -108,7 +108,7 @@
                 </td>
 
                 <td>
-                  <input type="number" class="col-12 form-control" placeholder="Field Order" formControlName="fieldOrder" />
+                  <input type="number" class="col-12 form-control" readonly placeholder="Field Order" formControlName="fieldOrder" />
                 </td>
 
                 <td>

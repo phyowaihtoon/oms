@@ -69,10 +69,10 @@ export class MetadataUpdateComponent implements OnInit {
   newField(): FormGroup {
     return this.fb.group({
       fieldName: ['', [Validators.required]],
-      fieldType: ['', [Validators.required]],
+      fieldType: ['String', [Validators.required]],
       fieldValue: [{ value: '', disabled: true }, Validators.required],
-      isRequired: ['', [Validators.required]],
-      fieldOrder: ['', [Validators.required]],
+      isRequired: ['YES', [Validators.required]],
+      fieldOrder: [this.fieldList().controls.length + 1, [Validators.required]],
     });
   }
 
@@ -83,7 +83,16 @@ export class MetadataUpdateComponent implements OnInit {
   removeField(i: number): void {
     if (this.fieldList().length > 1) {
       this.fieldList().removeAt(i);
+      this.reorderFieldList();
     }
+  }
+
+  reorderFieldList(): void {
+    let index = 1;
+    this.fieldList().controls.forEach(data => {
+      data.get(['fieldOrder'])!.setValue(index);
+      index = index + 1;
+    });
   }
 
   removeAllField(): void {
@@ -104,6 +113,7 @@ export class MetadataUpdateComponent implements OnInit {
     // this.fieldList().push(this.newField());
     const modalRef = this.modalService.open(LovSetupDialogComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.lovStr = this.fieldList().controls[i].get(['fieldValue'])!.value;
+    modalRef.componentInstance.fieldName = this.fieldList().controls[i].get(['fieldName'])!.value;
     // unsubscribe not needed because closed completes on modal close
     modalRef.componentInstance.passEntry.subscribe((data: any) => {
       this.fieldList().controls[i].get(['fieldValue'])!.setValue(data);
