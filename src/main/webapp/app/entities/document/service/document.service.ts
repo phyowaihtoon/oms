@@ -4,7 +4,7 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { EntityResponseType } from 'app/entities/category/service/category.service';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { Observable } from 'rxjs';
-import { IDocumentHeader } from '../document.model';
+import { getDocIdentifier, IDocumentHeader } from '../document.model';
 
 export type EntityArrayResponseType = HttpResponse<IMetaDataHeader[]>;
 
@@ -25,6 +25,18 @@ export class DocumentService {
   create(documentHeader: IDocumentHeader): Observable<EntityResponseType> {
     console.log('inside create()');
     return this.http.post<IDocumentHeader>(this.resourceUrl2, documentHeader, { observe: 'response' });
+  }
+
+  update(documentHeader: IDocumentHeader): Observable<EntityResponseType> {
+    return this.http.put<IDocumentHeader>(`${this.resourceUrl2}/${getDocIdentifier(documentHeader) as number}`, documentHeader, {
+      observe: 'response',
+    });
+  }
+
+  partialUpdate(documentHeader: IDocumentHeader): Observable<EntityResponseType> {
+    return this.http.patch<IDocumentHeader>(`${this.resourceUrl}/${getDocIdentifier(documentHeader) as number}`, documentHeader, {
+      observe: 'response',
+    });
   }
 
   // define function to Upload files

@@ -71,10 +71,13 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         List<Document> documentList = documentHeaderDTO.getDocList().stream().map(documentMapper::toEntity).collect(Collectors.toList());
 
         documentHeader = documentHeaderRepository.save(documentHeader);
+
         for (Document document : documentList) {
             document.setHeaderId(documentHeader.getId());
             document.setDelFlag("N");
         }
+
+        documentRepository.deleteByHeaderId(documentHeader.getId());
         documentList = documentRepository.saveAll(documentList);
         return documentHeaderMapper.toDto(documentHeader);
     }
