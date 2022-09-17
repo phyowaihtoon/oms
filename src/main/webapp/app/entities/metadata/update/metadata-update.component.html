@@ -17,9 +17,9 @@
       <span class="d-none d-md-inline" jhiTranslate="entity.action.save">Save</span>
     </button>
     <span style="width: 5px"></span>
-    <button type="button" id="cancel-save" class="btn btn-secondary btn-sm" (click)="cancel()">
-      <fa-icon icon="ban"></fa-icon>
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
+    <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="cancel()">
+      <fa-icon icon="plus"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
     </button>
   </div>
 </div>
@@ -108,7 +108,7 @@
                 </td>
 
                 <td>
-                  <input type="number" class="col-12 form-control" placeholder="Field Order" formControlName="fieldOrder" />
+                  <input type="number" class="col-12 form-control" readonly placeholder="Field Order" formControlName="fieldOrder" />
                 </td>
 
                 <td>
