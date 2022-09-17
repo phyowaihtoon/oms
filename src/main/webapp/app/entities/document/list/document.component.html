@@ -5,7 +5,7 @@
     <span> >> Document Inquiry</span>
   </div>
   <div class="col-2 d-flex justify-content-end">
-    <button class="btn btn-primary btn-sm" (click)="loadPage(1)" [disabled]="isLoading">
+    <button class="btn btn-primary btn-sm" (click)="searchDocument(1)" [disabled]="isLoading">
       <fa-icon icon="search"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
     </button>
@@ -28,7 +28,7 @@
   <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
     <div class="form-group row col-12">
       <div class="col-2">
-        <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Title</label>
+        <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Template</label>
       </div>
       <div class="col-2">
         <select class="form-control" id="field_metaDataHdrID" data-cy="metaDataHdrID" name="metaDataHdrID" formControlName="metaDataHdrID">
@@ -37,6 +37,19 @@
             {{ metaData.docTitle }}
           </option>
         </select>
+        <div
+          *ngIf="
+            searchForm.get('metaDataHdrID')!.invalid && (searchForm.get('metaDataHdrID')!.dirty || searchForm.get('metaDataHdrID')!.touched)
+          "
+        >
+          <small
+            class="form-text text-danger"
+            *ngIf="searchForm.get('metaDataHdrID')?.errors?.required"
+            jhiTranslate="entity.validation.required"
+          >
+            This field is required.
+          </small>
+        </div>
       </div>
       <div class="col-2">
         <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
@@ -86,32 +99,29 @@
 </div>
 
 <div id="result-container" *ngIf="isShowingResult">
-  <div class="alert alert-warning" id="no-result" *ngIf="documentHeaders?.length === 0">
-    <span jhiTranslate="dmsApp.document.home.notFound">No Document Mapping found</span>
+  <div class="alert alert-info" *ngIf="isShowingAlert">
+    <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+    <span>{{ _alertMessage }}</span>
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="documentHeaders && documentHeaders.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-          <th scope="col" jhiSortBy="id">
+          <th scope="col">
             <span jhiTranslate="global.field.id">ID</span>
-            <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="docTitle">
+          <th scope="col">
             <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
-            <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="otherMetaData">
+          <th scope="col">
             <span jhiTranslate="dmsApp.document.otherMetaData">Other MetaData</span>
           </th>
-          <th scope="col" jhiSortBy="docTitle">
+          <th scope="col">
             <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
-            <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="createdBy">
+          <th scope="col">
             <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
-            <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col"></th>
         </tr>

@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { DocumentHeader, DocumentInquiry, IDocumentHeader, IDocumentInquiry } from '../document.model';
+import { DocumentInquiry, IDocumentHeader } from '../document.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { DocumentInquiryService } from '../service/document-inquiry.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import * as dayjs from 'dayjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-document',
@@ -28,9 +27,11 @@ export class DocumentComponent implements OnInit {
 
   isShowingFilters = true;
   isShowingResult = false;
+  isShowingAlert = false;
+  _alertMessage = '';
 
   searchForm = this.fb.group({
-    metaDataHdrID: [],
+    metaDataHdrID: [null, [Validators.required]],
     createdDate: [],
     fieldValues: [],
   });
@@ -40,7 +41,8 @@ export class DocumentComponent implements OnInit {
     protected documentInquiryService: DocumentInquiryService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
-    protected loadSetupService: LoadSetupService
+    protected loadSetupService: LoadSetupService,
+    protected translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -87,6 +89,10 @@ export class DocumentComponent implements OnInit {
     return arrangedFields;
   }
 
+  closeAlert(): void {
+    this.isShowingAlert = false;
+  }
+
   loadAllSetup(): void {
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
@@ -96,6 +102,17 @@ export class DocumentComponent implements OnInit {
         console.log('Response Failed : ', error);
       }
     );
+  }
+
+  searchDocument(page?: number): void {
+    if (this.searchForm.invalid) {
+      this.searchForm.get('metaDataHdrID')!.markAsTouched();
+      this.isShowingResult = true;
+      this.isShowingAlert = true;
+      this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
+      return;
+    }
+    this.loadPage(page);
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
@@ -144,6 +161,8 @@ export class DocumentComponent implements OnInit {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     this.documentHeaders = data ?? [];
+    this.isShowingAlert = this.documentHeaders.length === 0;
+    this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
     this.ngbPaginationPage = this.page;
   }
 
