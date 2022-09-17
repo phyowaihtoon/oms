@@ -26,8 +26,8 @@ export class DocumentUpdateComponent implements OnInit {
   _documentDetails: IDocument[] | undefined;
 
   docTypes: MetaDataHeader[] | null = [];
-  fieldValue: string[] = [];
-  metaData: IMetaData[] | null = [];
+  fieldValue?: string[] = [];
+  metaData?: IMetaData[];
   metaDataUpdate: IMetaData[] | null = [];
 
   metaHeaderId: number = 0;
@@ -131,8 +131,8 @@ export class DocumentUpdateComponent implements OnInit {
     return this.editForm.get('reposistory');
   }
 
+  // window.history.back();
   previousState(): void {
-    // window.history.back();
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['metaDataHeaderId']!.setValue('');
     this.editForm.controls['message']!.setValue('');
@@ -150,15 +150,20 @@ export class DocumentUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const documentHeaderdata = this.createFromForm();
-    this.onUploadFilestoPath();
-    console.log(JSON.stringify(documentHeaderdata));
-    if (documentHeaderdata.id! > 0) {
-      console.log('Inside Save ... () null');
-      this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
+
+    if (this.files !== undefined) {
+      this.onUploadFilestoPath();
     } else {
-      console.log('Inside Save ... ()');
-      this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+      const documentHeaderdata = this.createFromForm();
+      console.log(JSON.stringify(documentHeaderdata));
+
+      if (documentHeaderdata.id! > 0) {
+        console.log('Inside Save ... () null');
+        this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
+      } else {
+        console.log('Inside Save ... ()');
+        this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+      }
     }
   }
 
@@ -169,8 +174,10 @@ export class DocumentUpdateComponent implements OnInit {
 
   loadMetaDatabyMetadaHeaderID(metaDataHeaderId: number): void {
     this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(metaDataHeaderId).subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.metaData = res.body;
+      (res: HttpResponse<IMetaData[]>) => {
+        if (res.body) {
+          this.metaData = res.body;
+        }
         this.forControlBind();
       },
       () => {
@@ -180,24 +187,32 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   forControlBind(): void {
-    this.metaData?.forEach(metaDataItem => {
+    Object.keys(this.editForm.controls).forEach((key: string) => {
+      const abstractControl = this.editForm.get(key);
+      if (key.includes('_fieldName')) {
+        const fieldName: string = key;
+        this.editForm.removeControl(fieldName);
+      }
+    });
+
+    this.metaData?.forEach((metaDataItem: IMetaData) => {
       const id: number = metaDataItem.id!;
       const idStr: string = id.toString();
-      const fcnforFieldName: string = metaDataItem.fieldName! + '-' + idStr;
-      this.editForm.addControl(fcnforFieldName + '-fieldName', this.fb.control([null]));
-      if (metaDataItem.fieldValue !== undefined) {
-        this.fieldValue = metaDataItem.fieldValue.split('|');
-      }
+      const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr;
+      this.editForm.addControl(fcnforFieldName + '_fieldName', this.fb.control([null]));
+      this.editForm.controls[fcnforFieldName + '_fieldName'].setValidators([Validators.required]);
+      this.fieldValue = metaDataItem.fieldValue?.split('|');
     });
   }
 
   getFieldName(group: FormGroup): string {
     this.fNames = [];
     this.fName = '';
+
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
-      if (key.includes('-fieldName')) {
-        const fieldName: string = key.split('-', 1).toString();
+      if (key.includes('_fieldName')) {
+        const fieldName: string = key.split('_', 1).toString();
         this.fNames.push(fieldName);
       }
     });
@@ -212,9 +227,10 @@ export class DocumentUpdateComponent implements OnInit {
   getFieldValue(group: FormGroup): string {
     this.fValues = [];
     this.fValue = '';
+
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
-      if (key.includes('-fieldName')) {
+      if (key.includes('_fieldName')) {
         const fieldValue: string = abstractControl?.value;
         this.fValues.push(fieldValue);
       }
@@ -343,7 +359,7 @@ export class DocumentUpdateComponent implements OnInit {
         this.metaDataUpdate?.forEach(metaDataItem => {
           const id: number = metaDataItem.id!;
           const idStr: string = id.toString();
-          const fcnforFieldName: string = metaDataItem.fieldName! + '-' + idStr + '-fieldName';
+          const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr + '_fieldName';
 
           for (let i = 0; i < fn.length; i++) {
             if (fn[i].includes(metaDataItem.fieldName!)) {
@@ -395,11 +411,25 @@ export class DocumentUpdateComponent implements OnInit {
             })
           );
         }
-        this.fileStatus.status = 'done';
+
+        {
+          this.fileStatus.status = 'done';
+          const documentHeaderdata = this.createFromForm();
+          console.log(JSON.stringify(documentHeaderdata));
+          if (documentHeaderdata.id! > 0) {
+            console.log('Inside Save ... () null');
+            this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
+          } else {
+            console.log('Inside Save ... ()');
+            this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+          }
+        }
+
         break;
-      default:
+      default: {
         console.log(httpEvent);
         break;
+      }
     }
   }
 }
