@@ -21,6 +21,7 @@
       "id": "ID",
       "no": "No.",
       "docTitle": "Document Template",
+      "message": "Message",
       "repositoryURL": "Repository URL",
       "createdDate": "Created Date",
       "createdBy": "Created By",

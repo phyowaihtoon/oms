@@ -55,7 +55,7 @@ export class MetadataUpdateComponent implements OnInit {
   }
 
   cancel(): void {
-    //window.history.back();
+    // window.history.back();
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['docTitle']!.setValue('');
     this.removeAllField();
@@ -101,7 +101,7 @@ export class MetadataUpdateComponent implements OnInit {
 
   addLovValue(i: number): void {
     const val = this.fieldList().controls[i].get(['fieldValue'])!.value;
-    //this.fieldList().push(this.newField());
+    // this.fieldList().push(this.newField());
     const modalRef = this.modalService.open(LovSetupDialogComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.lovStr = this.fieldList().controls[i].get(['fieldValue'])!.value;
     // unsubscribe not needed because closed completes on modal close
