@@ -26,7 +26,9 @@ export class DocumentUpdateComponent implements OnInit {
   _documentDetails: IDocument[] | undefined;
 
   docTypes: MetaDataHeader[] | null = [];
+  fieldValue: string[] = [];
   metaData: IMetaData[] | null = [];
+  metaDataUpdate: IMetaData[] | null = [];
 
   metaHeaderId: number = 0;
 
@@ -40,7 +42,7 @@ export class DocumentUpdateComponent implements OnInit {
 
   // filenames: string[] = [];
   fileStatus = { status: '', requestType: '', percent: 0 };
-  files?: FileList;
+  files: FileList | undefined;
   repositoryurl: string = '';
   filenames: FileInfo[] = [];
 
@@ -130,14 +132,17 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   previousState(): void {
-    window.history.back();
+    // window.history.back();
+    this.editForm.controls['id']!.setValue(undefined);
+    this.editForm.controls['metaDataHeaderId']!.setValue('');
+    this.editForm.controls['message']!.setValue('');
+    this.editForm.controls['reposistory']!.setValue('');
+    this.removeAllField();
+    this.loadMetaDatabyMetadaHeaderID(0);
   }
 
   searchRepository(): void {
-    //this.fieldList().push(this.newField());
     const modalRef = this.modalService.open(RepositoryDialogComponent, { size: 'xl', backdrop: 'static' });
-    //modalRef.componentInstance.lovStr = this.fieldList().controls[i].get(['fieldValue'])!.value;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.componentInstance.passEntry.subscribe((data: any) => {
       this.editForm.get(['reposistory'])!.setValue(data);
     });
@@ -148,9 +153,9 @@ export class DocumentUpdateComponent implements OnInit {
     const documentHeaderdata = this.createFromForm();
     this.onUploadFilestoPath();
     console.log(JSON.stringify(documentHeaderdata));
-    if (documentHeaderdata.id !== undefined) {
+    if (documentHeaderdata.id! > 0) {
       console.log('Inside Save ... () null');
-      // this.subscribeToSaveResponse(this.documentHeaderService.update(metadata));
+      this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
     } else {
       console.log('Inside Save ... ()');
       this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
@@ -179,9 +184,9 @@ export class DocumentUpdateComponent implements OnInit {
       const id: number = metaDataItem.id!;
       const idStr: string = id.toString();
       const fcnforFieldName: string = metaDataItem.fieldName! + '-' + idStr;
-
-      if (metaDataItem.isRequired === 'YES') {
-        this.editForm.addControl(fcnforFieldName + '-fieldName', this.fb.control([null]));
+      this.editForm.addControl(fcnforFieldName + '-fieldName', this.fb.control([null]));
+      if (metaDataItem.fieldValue !== undefined) {
+        this.fieldValue = metaDataItem.fieldValue.split('|');
       }
     });
   }
@@ -231,7 +236,6 @@ export class DocumentUpdateComponent implements OnInit {
     for (let i = 0; i < this.files.length; i++) {
       this.addField(this.repositoryurl + '//' + this.files.item(i)!.name, Math.round(this.files.item(i)!.size / 1024));
     }
-    // this.forControlBindAttachment();
   }
 
   onUploadFilestoPath(): void {
@@ -241,6 +245,7 @@ export class DocumentUpdateComponent implements OnInit {
     for (let i = 0; i < this.files!.length; i++) {
       formData.append('files', this.files!.item(i)!, this.files!.item(i)!.name + '@' + this.repositoryurl);
     }
+
     this.documentHeaderService.upload(formData).subscribe(
       event => {
         console.log(event);
@@ -258,30 +263,15 @@ export class DocumentUpdateComponent implements OnInit {
     this.fileStatus.percent = Math.round((100 * loaded) / total);
   }
 
-  // forControlBindAttachment(): void {
-  //   console.log(this.filenames);
-  //   console.log(this.filenames.length);
-
-  //   for (let i = 0; i < this.filenames.length; i++) {
-  //     console.log('inside forControlBindAttachment');
-  //     const number = i.toString();
-  //     this.editForm.addControl('Remark' + number, this.fb.control([null]));
-  //     this.editForm.addControl('Version' + number, this.fb.control([null]));
-  //     this.editForm.addControl('Filesize' + number, this.fb.control([null]));
-  //   }
-  // }
-
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IDocumentHeader>>): void {
-    console.log('Inside subscribeToSaveResponse');
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
-      () => this.onSaveSuccess(),
+      res => this.onSaveSuccess(res),
       () => this.onSaveError()
     );
   }
 
-  protected onSaveSuccess(): void {
-    this.editForm.reset();
-    this.filenames = [];
+  protected onSaveSuccess(result: HttpResponse<IMetaDataHeader>): void {
+    this.editForm.get(['id'])?.setValue(result.body?.id);
   }
 
   protected onSaveError(): void {
@@ -295,7 +285,7 @@ export class DocumentUpdateComponent implements OnInit {
   protected createFromForm(): IDocumentHeader {
     return {
       ...new DocumentHeader(),
-      id: undefined,
+      id: this.editForm.get(['id'])!.value,
       metaDataHeaderId: this.editForm.get(['metaDataHeaderId'])!.value,
       message: this.editForm.get(['message'])!.value,
       fieldValues: this.getFieldValue(this.editForm),
@@ -330,13 +320,42 @@ export class DocumentUpdateComponent implements OnInit {
 
   protected updateForm(docHeaderData: IDocumentHeader): void {
     this.loadMetaDatabyMetadaHeaderID(docHeaderData.metaDataHeaderId!);
+    this.updateDynamicField(docHeaderData.metaDataHeaderId!, docHeaderData.fieldValues!, docHeaderData.fieldNames!);
 
     this.editForm.patchValue({
       id: docHeaderData.id,
       metaDataHeaderId: docHeaderData.metaDataHeaderId,
       message: docHeaderData.message,
+      fieldValues: docHeaderData.fieldValues,
+      fieldNames: docHeaderData.fieldNames,
       docList: this.updateDocumentDataDetails(docHeaderData.docList),
     });
+  }
+
+  protected updateDynamicField(metaDataHeaderId: number, fieldValue: string, fieldName: string): void {
+    const fn = fieldName.split('|');
+    const fv = fieldValue.split('|');
+
+    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(metaDataHeaderId).subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        this.metaDataUpdate = res.body;
+
+        this.metaDataUpdate?.forEach(metaDataItem => {
+          const id: number = metaDataItem.id!;
+          const idStr: string = id.toString();
+          const fcnforFieldName: string = metaDataItem.fieldName! + '-' + idStr + '-fieldName';
+
+          for (let i = 0; i < fn.length; i++) {
+            if (fn[i].includes(metaDataItem.fieldName!)) {
+              this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
+            }
+          }
+        });
+      },
+      () => {
+        console.log('error');
+      }
+    );
   }
 
   protected updateDocumentDataDetails(docList: IDocument[] | undefined): void {
