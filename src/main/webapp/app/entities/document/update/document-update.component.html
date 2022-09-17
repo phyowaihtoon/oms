@@ -1,203 +1,184 @@
-<div class="row justify-content-center">
-  <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-document-heading" data-cy="DocumentCreateUpdateHeading" jhiTranslate="dmsApp.document.home.createOrEditLabel">
-        Create or edit a document
-      </h2>
+<div id="page-heading" class="row">
+  <div class="col-10">
+    <span>Document</span>
+    <span> >> Document Mapping <small></small></span>
+  </div>
 
-      <div>
-        <jhi-alert-error></jhi-alert-error>
-        <jhi-alert></jhi-alert>
+  <div class="col-2 d-flex justify-content-end">
+    <button type="button" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm" (click)="save()">
+      <fa-icon icon="save"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.save">Save</span>
+    </button>
+    <span style="width: 5px"></span>
+    <button type="button" id="cancel-save" class="btn btn-secondary btn-sm" (click)="previousState()">
+      <fa-icon icon="ban"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
+    </button>
+  </div>
+</div>
 
-        <div *ngIf="fileStatus.status === 'progress'">
-          <div class="progress">
-            <div
-              [style.width.%]="fileStatus.percent"
-              class="progress-bar progress-bar-animated bg-info"
-              role="progressbar"
-              aria-valuenow="50"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              {{ fileStatus.requestType }} {{ fileStatus.percent }}
-            </div>
-          </div>
-        </div>
+<div id="page-heading" class="col-10">
+  <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+    <jhi-alert-error></jhi-alert-error>
+    <jhi-alert></jhi-alert>
 
-        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-        </div>
-
-        <div class="form-group col-6">
-          <label class="form-control-label" for="field_docType">Documnet Type</label>
-          <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
-            <option [value]="doctype.id" *ngFor="let doctype of docTypes">
-              {{ doctype.docTitle }}
-            </option>
-          </select>
-          <div class="form-group col-6" *ngIf="metaDataHeaderId && metaDataHeaderId.touched && metaDataHeaderId.invalid" style="color: red">
-            This field is required.
-          </div>
-        </div>
-
-        <div class="form-group col-6">
-          <label class="form-control-label" for="text"> Message </label>
-
-          <input type="text" class="form-control" name="message" formControlName="message" />
-          <div class="form-group col-6" *ngIf="message && message.touched && message.invalid" style="color: red">
-            This field is required.
-          </div>
-        </div>
-
-        <div class="form-group col-6" *ngFor="let metaitem of metaData">
-          <div *ngIf="metaitem.fieldType == 'String'">
-            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
-
-            <input
-              type="text"
-              class="form-control"
-              [name]="metaitem.fieldType"
-              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
-            />
-          </div>
-        </div>
-
-        <div class="form-group col-6" *ngFor="let metaitem of metaData">
-          <div *ngIf="metaitem.fieldType == 'Number'">
-            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
-            <input
-              type="number"
-              class="form-control"
-              [name]="metaitem.fieldType"
-              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
-            />
-          </div>
-        </div>
-
-        <div class="form-group col-6" *ngFor="let metaitem of metaData">
-          <div *ngIf="metaitem.fieldType == 'Date'">
-            <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
-            <input
-              type="date"
-              class="form-control"
-              [name]="metaitem.fieldType"
-              [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
-            />
-          </div>
-        </div>
-
-        <div class="form-group col-6">
-          <label class="form-control-label" for="text"> Message </label>
-          <div class="input-group col-12" style="padding: 0px !important">
-            <input
-              type="text"
-              readonly
-              placeholder="Reposistory"
-              formControlName="reposistory"
-              class="form-control input-sm"
-              style="background: white"
-              (click)="searchRepository()"
-            />
-            <div class="input-group-append">
-              <span class="input-sm input-btn-primary" (click)="searchRepository()">
-                <fa-icon icon="search"></fa-icon>
-              </span>
-            </div>
-          </div>
+    <div *ngIf="fileStatus.status === 'progress'">
+      <div class="progress">
+        <div
+          [style.width.%]="fileStatus.percent"
+          class="progress-bar progress-bar-animated bg-info"
+          role="progressbar"
+          aria-valuenow="50"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          {{ fileStatus.requestType }} {{ fileStatus.percent }}
         </div>
       </div>
+    </div>
+    <div class="form-group">
+      <div class="form-group col-6" [hidden]="editForm.get('id')!.value == null">
+        <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+        <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+      </div>
+    </div>
 
-      <form enctype="multipart/form-data">
-        <fieldset>
-          <div class="form-group col-6">
-            <div>
-              <input type="file" (change)="onUploadFiles($event)" name="files" multiple />
-            </div>
+    <div class="form-group">
+      <div class="form-group col-6">
+        <label class="form-control-label" for="field_docType">Documnet Type</label>
+        <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
+          <option [value]="doctype.id" *ngFor="let doctype of docTypes">
+            {{ doctype.docTitle }}
+          </option>
+        </select>
+        <div class="form-group col-6" *ngIf="metaDataHeaderId && metaDataHeaderId.touched && metaDataHeaderId.invalid" style="color: red">
+          This field is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group col-6">
+      <label class="form-control-label" for="text"> Message </label>
+
+      <input type="text" class="form-control" name="message" formControlName="message" />
+      <div class="form-group col-6" *ngIf="message && message.touched && message.invalid" style="color: red">This field is required.</div>
+    </div>
+
+    <div class="form-group col-6" *ngFor="let metaitem of metaData">
+      <div *ngIf="metaitem.fieldType == 'String'">
+        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+
+        <input
+          type="text"
+          class="form-control"
+          [name]="metaitem.fieldType"
+          [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+        />
+      </div>
+    </div>
+
+    <div class="form-group col-6" *ngFor="let metaitem of metaData">
+      <div *ngIf="metaitem.fieldType == 'Number'">
+        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <input
+          type="number"
+          class="form-control"
+          [name]="metaitem.fieldType"
+          [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+        />
+      </div>
+    </div>
+
+    <div class="form-group col-6" *ngFor="let metaitem of metaData">
+      <div *ngIf="metaitem.fieldType == 'LOV'">
+        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <select class="form-control" [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'">
+          <option [value]="f_value" *ngFor="let f_value of fieldValue">
+            {{ f_value }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group col-6" *ngFor="let metaitem of metaData">
+      <div *ngIf="metaitem.fieldType == 'Date'">
+        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <input
+          type="date"
+          class="form-control"
+          [name]="metaitem.fieldType"
+          [formControlName]="metaitem.fieldName! + '-' + metaitem.id + '-fieldName'"
+        />
+      </div>
+    </div>
+
+    <div class="form-group col-6">
+      <label class="form-control-label" for="text"> Reposistory URL </label>
+      <div class="input-group col-12" style="padding: 0px !important">
+        <input
+          type="text"
+          readonly
+          placeholder="Reposistory"
+          formControlName="reposistory"
+          class="form-control input-sm"
+          style="background: white"
+          (click)="searchRepository()"
+        />
+        <div class="input-group-append">
+          <span class="input-sm input-btn-primary" (click)="searchRepository()">
+            <fa-icon icon="search"></fa-icon>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <form enctype="multipart/form-data">
+      <fieldset>
+        <div class="form-group col-6">
+          <div>
+            <input type="file" (change)="onUploadFiles($event)" name="files" multiple />
           </div>
-        </fieldset>
-      </form>
+        </div>
+      </fieldset>
+    </form>
 
-      <!-- <div *ngIf="filenames.length > 0" class="js-upload-finished">
-        <h3>File List</h3>
-        
-        <hr/> -->
+    <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+      <table class="table" formArrayName="docList1">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 30%">File Name</th>
+            <th class="text-center" style="width: 10%">File Size</th>
+            <th class="text-center" style="width: 20%">Remark</th>
+            <th class="text-center" style="width: 20%">Version</th>
+            <th class="text-center" style="width: 5%">Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of docList1().controls; last as isLast; let i = index" [formGroupName]="i">
+            <td>
+              <input type="text" class="col-12 form-control" placeholder="filePath" formControlName="filePath" />
+            </td>
+            <td>
+              <input type="text" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" />
+            </td>
+            <td>
+              <input type="text" class="col-12 form-control" placeholder="remark" formControlName="remark" />
+            </td>
+            <td>
+              <input type="number" class="col-12 form-control" placeholder="version" formControlName="version" />
+            </td>
 
-      <div class="form-group" style="padding: 8px !important; overflow-x: auto">
-        <table class="table" formArrayName="docList1">
-          <thead>
-            <tr>
-              <th class="text-center" style="width: 30%">File Name</th>
-              <th class="text-center" style="width: 10%">File Size</th>
-              <th class="text-center" style="width: 20%">Remark</th>
-              <th class="text-center" style="width: 20%">Version</th>
-              <th class="text-center" style="width: 5%">Remove</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of docList1().controls; last as isLast; let i = index" [formGroupName]="i">
-              <td>
-                <input type="text" class="col-12 form-control" placeholder="filePath" formControlName="filePath" />
-              </td>
-              <td>
-                <input type="text" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" />
-              </td>
-              <td>
-                <input type="text" class="col-12 form-control" placeholder="remark" formControlName="remark" />
-              </td>
-              <td>
-                <input type="text" class="col-12 form-control" placeholder="version" formControlName="version" />
-              </td>
-
-              <td style="padding-left: 10px">
-                <span title="Remove" (click)="removeField(i)">
-                  <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
-                </span>
-                <!-- <span *ngIf="isLast" title="Add" (click)="addField()">
+            <td style="padding-left: 10px">
+              <span title="Remove" (click)="removeField(i)">
+                <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+              </span>
+              <!-- <span *ngIf="isLast" title="Add" (click)="addField()">
                     <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
                   </span> -->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- <table class="table">
-          <thead>
-            <tr>
-              <th lass="text-center" style="width: 30%">File Name</th>
-              <th lass="text-center" style="width: 20%">File Size</th>
-              <th lass="text-center" style="width: 20%">Version</th>
-              <th lass="text-center" style="width: 20%">Remark</th>
-              <th lass="text-center" style="width: 10%">Download/View</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let filename of filenames; let i = index">
-              <td> {{ filename.filename }} </td>
-              <td> {{ filename.filesize }} KB</td>
-              <td><input type="text" class="form-control" [formControlName]="'Version' + i" /></td>
-              <td><input type="text" class="form-control" [formControlName]="'Remark' + i" /></td>
-              <td>
-                <span title="Add">
-                  <a class="float-right" style="cursor: pointer; padding-left: 1em">Download</a>
-                  <a class="float-right" style="cursor: pointer">View</a>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table> 
-      </div>-->
-
-      <div>
-        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-        </button>
-
-        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary">
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-        </button>
-      </div>
-    </form>
-  </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
 </div>

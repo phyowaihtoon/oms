@@ -60,3 +60,7 @@ export interface IDocumentInquiry {
 export class DocumentInquiry implements IDocumentInquiry {
   constructor(public metaDataHeaderId?: number, public repositoryURL?: string, public createdDate?: string, public fieldValues?: string) {}
 }
+
+export function getDocIdentifier(docHeader: IDocumentHeader): number | undefined {
+  return docHeader.id;
+}

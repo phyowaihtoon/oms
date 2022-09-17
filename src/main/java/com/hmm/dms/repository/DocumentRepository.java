@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findAllByHeaderId(Long id);
+    void deleteByHeaderId(Long id);
 }
