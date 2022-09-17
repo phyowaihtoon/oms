@@ -36,7 +36,7 @@ export class RepositoryUpdateComponent implements OnInit {
   }
 
   cancel(): void {
-    //window.history.back();
+    // window.history.back();
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['repositoryName']!.setValue('');
     this.removeAllField();
@@ -92,7 +92,7 @@ export class RepositoryUpdateComponent implements OnInit {
 
   protected onSaveSuccess(result: HttpResponse<IRepositoryHeader>): void {
     this.editForm.get(['id'])?.setValue(result.body?.id);
-    //this.previousState();
+    // this.previousState();
   }
 
   protected onSaveError(): void {
