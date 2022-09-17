@@ -17,7 +17,7 @@ import { DocumentInquiryService } from '../service/document-inquiry.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class DocumentDetailComponent implements OnInit {
-  _documentHeader: IDocumentHeader | undefined;
+  _documentHeader: IDocumentHeader | null = null;
   _documentDetails: IDocument[] | undefined;
   _replyMessage?: IReplyMessage | null;
   _docExtensionTypes = [
@@ -151,7 +151,7 @@ export class DocumentDetailComponent implements OnInit {
         let arrIndex = 0;
         while (arrIndex < fNameArray.length) {
           const rowStart = "<div class='row col-12'>";
-          const col_1_Start = "<div class='col-2'>";
+          const col_1_Start = "<div class='col-2 dms-label'>";
           const col_1_Data = '<span>' + fNameArray[arrIndex] + '</span>';
           const col_1_End = '</div>';
           const col_2_Start = "<div class='col-4 dms-view-data'>";
