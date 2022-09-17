@@ -29,7 +29,9 @@ export class DocumentInquiryService {
   }
 
   getDocumentsById(id: number): Observable<EntityResponseType> {
-    return this.http.get(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   downloadFile(docId: number): Observable<BlobType> {
@@ -41,6 +43,13 @@ export class DocumentInquiryService {
       res.body.forEach((documentHeader: IDocumentHeader) => {
         documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
       });
+    }
+    return res;
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
     }
     return res;
   }

@@ -29,37 +29,49 @@ public class ReportServiceImpl implements ReportService {
     public ReplyMessage<RptParamsDTO> generateDocumentListRpt(RptParamsDTO rptPara) {
         ReplyMessage<RptParamsDTO> replyMessage = new ReplyMessage<RptParamsDTO>();
 
-        StoredProcedureQuery query = em.createStoredProcedureQuery("SP_DOCMAPPING_RPT");
-        query.registerStoredProcedureParameter("frmDate", String.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("toDate", String.class, ParameterMode.IN);
-        query.setParameter("frmDate", rptPara.getRptPS1());
-        query.setParameter("toDate", rptPara.getRptPS2());
-        List<Object[]> resultList = query.getResultList();
-        if (resultList == null || resultList.size() == 0) {
-            replyMessage.setCode("R001");
-            replyMessage.setDescription("NO DATA FOUND");
-            return replyMessage;
-        }
-        List<RptDataDTO> documentList = null;
-        if (resultList != null) {
-            documentList = new ArrayList<RptDataDTO>();
-            for (Object[] arr : resultList) {
-                RptDataDTO dto = new RptDataDTO();
-                dto.setDataS1(String.valueOf(arr[0]));
-                dto.setDataS2(String.valueOf(arr[1]));
-                dto.setDataS3(String.valueOf(arr[2]));
-                dto.setDataS4(String.valueOf(arr[3]));
-                documentList.add(dto);
+        try {
+            StoredProcedureQuery query = em.createStoredProcedureQuery("SP_DOCMAPPING_RPT");
+            query.registerStoredProcedureParameter("frmDate", String.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("toDate", String.class, ParameterMode.IN);
+            query.setParameter("frmDate", rptPara.getRptPS1());
+            query.setParameter("toDate", rptPara.getRptPS2());
+            List<Object[]> resultList = query.getResultList();
+            if (resultList == null || resultList.size() == 0) {
+                replyMessage.setCode("R001");
+                replyMessage.setDescription("NO DATA FOUND");
+                return replyMessage;
             }
-        }
+            List<RptDataDTO> documentList = null;
+            if (resultList != null) {
+                documentList = new ArrayList<RptDataDTO>();
+                for (Object[] arr : resultList) {
+                    RptDataDTO dto = new RptDataDTO();
+                    dto.setDataS1(String.valueOf(arr[0]));
+                    dto.setDataS2(String.valueOf(arr[1]));
+                    dto.setDataS3(String.valueOf(arr[2]));
+                    dto.setDataS4(String.valueOf(arr[3]));
+                    documentList.add(dto);
+                }
+            }
 
-        Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("frmDate", rptPara.getRptPS1());
-        parameters.put("toDate", rptPara.getRptPS2());
-        String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
-        if (rptFilePath == null || rptFilePath.equals("")) {
-            replyMessage.setCode("R002");
-            replyMessage.setDescription("Report File cannot be generated");
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("frmDate", rptPara.getRptPS1());
+            parameters.put("toDate", rptPara.getRptPS2());
+            String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
+            if (rptFilePath == null || rptFilePath.equals("")) {
+                replyMessage.setCode("R002");
+                replyMessage.setDescription("Report File cannot be generated");
+                return replyMessage;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            replyMessage.setCode("R003");
+            replyMessage.setDescription("Report columns do not match.");
+            return replyMessage;
+        } catch (Exception e) {
+            e.printStackTrace();
+            replyMessage.setCode("R004");
+            replyMessage.setDescription("Report generation failed");
             return replyMessage;
         }
 

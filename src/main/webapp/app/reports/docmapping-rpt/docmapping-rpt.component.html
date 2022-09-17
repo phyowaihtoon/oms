@@ -117,6 +117,9 @@
   </form>
 </div>
 
-<div class="alert alert-warning col-12" id="no-result" *ngIf="!_isReplySuccessful">
-  <span>{{ _messageDesc }}</span>
+<div class="dms-alert-container">
+  <div class="alert alert-info" id="no-result" *ngIf="isShowingAlert">
+    <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+    <span>{{ _alertMessage }}</span>
+  </div>
 </div>

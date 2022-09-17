@@ -14,17 +14,23 @@
 <div class="row" id="documentHeaderView">
   <div class="row col-12">
     <div class="row col-12">
-      <div class="col-2">
-        <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
       </div>
       <div class="col-4 dms-view-data">
         <span>{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}</span>
       </div>
-      <div class="col-2">
-        <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
       </div>
-      <div class="col-4 dms-view-data">
-        <span>{{ _documentHeader?.repositoryURL }}</span>
+      <div class="col-1 dms-view-data">
+        <span>{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}</span>
+      </div>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+      </div>
+      <div class="col-1 dms-view-data">
+        <span>{{ _documentHeader?.createdBy }}</span>
       </div>
     </div>
   </div>
