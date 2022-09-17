@@ -1,80 +1,3 @@
-<!--
-<div class="row justify-content-center">
-  <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-repository-heading" data-cy="repositoryCreateUpdateHeading" jhiTranslate="dmsApp.repository.home.createOrEditLabel">
-        Create or edit a repository
-      </h2>
-
-      <div>
-        <jhi-alert-error></jhi-alert-error>
-
-        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
-          <div class="form-group col-6">
-            <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-group col-6">
-            <label class="form-control-label" jhiTranslate="dmsApp.repository.repositoryName" for="field_repositoryName">Repository Name</label>
-            <input
-              type="text"
-              class="form-control"
-              name="repositoryName"
-              id="field_repositoryName"
-              data-cy="repositoryName"
-              formControlName="repositoryName"
-            />
-          </div>
-
-          <h4 style="margin-top: 50px; padding-left: 8px">Repository Path</h4>
-          <div class="form-group" style="padding: 8px !important; overflow-x: auto">
-            <table class="table" formArrayName="fieldList">
-              <tbody>
-                <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
-                  <td>
-                    <div class="input-group">
-                      <span *ngIf="!isLast" title="Remove" (click)="removeField(i)">
-                        <fa-icon icon="minus" class="fa-icon-theme"></fa-icon>
-                      </span>
-                      <span *ngIf="isLast" title="Add" (click)="addField()">
-                        <fa-icon icon="plus" class="fa-icon-theme"></fa-icon>
-                      </span>
-                      <span>
-                        <fa-icon icon="folder" class="folder-theme"></fa-icon>
-                      </span>
-                      <input type="text" class="col-12 form-control" placeholder="Folder Name" formControlName="folderName" />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-        </button>
-
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
--->
-
 <div id="page-heading" class="row">
   <div class="col-10">
     <span>Repository</span>
@@ -94,8 +17,8 @@
       <span class="d-none d-md-inline" jhiTranslate="entity.action.save">Save</span>
     </button>
     <span style="width: 5px"></span>
-    <button type="button" id="cancel-save" class="btn btn-secondary btn-sm" (click)="cancel()">
-      <fa-icon icon="ban"></fa-icon>
+    <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="cancel()">
+      <fa-icon icon="plus"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
     </button>
   </div>
