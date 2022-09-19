@@ -24,7 +24,7 @@ export class DocumentUpdateComponent implements OnInit {
   _documentDetails: IDocument[] | undefined;
 
   docTypes: MetaDataHeader[] | null = [];
-  fieldValue?: string[] = [];
+  _fieldValue?: string[] = [];
   metaData?: IMetaData[];
   metaDataUpdate: IMetaData[] | null = [];
 
@@ -190,7 +190,10 @@ export class DocumentUpdateComponent implements OnInit {
       } else {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
       }
-      this.fieldValue = metaDataItem.fieldValue?.split('|');
+
+      if (metaDataItem.fieldValue !== '') {
+        this._fieldValue = metaDataItem.fieldValue?.split('|');
+      }
     });
   }
 
