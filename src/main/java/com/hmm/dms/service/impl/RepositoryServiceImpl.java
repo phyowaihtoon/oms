@@ -135,7 +135,12 @@ public class RepositoryServiceImpl implements RepositoryService {
                 data
                     .getContent()
                     .get(i)
-                    .setRepositoryDetails(repositoryRepo.findByHeaderId(1L).map(repositoryMapper::toDto).collect(Collectors.toList()));
+                    .setRepositoryDetails(
+                        repositoryRepo
+                            .findByHeaderId(data.getContent().get(i).getId())
+                            .map(repositoryMapper::toDto)
+                            .collect(Collectors.toList())
+                    );
             }
 
             return data;
@@ -147,7 +152,12 @@ public class RepositoryServiceImpl implements RepositoryService {
             data
                 .getContent()
                 .get(i)
-                .setRepositoryDetails(repositoryRepo.findByHeaderId(1L).map(repositoryMapper::toDto).collect(Collectors.toList()));
+                .setRepositoryDetails(
+                    repositoryRepo
+                        .findByHeaderId(data.getContent().get(i).getId())
+                        .map(repositoryMapper::toDto)
+                        .collect(Collectors.toList())
+                );
         }
 
         return data;
