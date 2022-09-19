@@ -16,8 +16,8 @@ export class DocMappingRptComponent {
   isGenerating = false;
   _replyMessage: IReplyMessage | null = null;
   _messageCode?: string;
-  _messageDesc?: string;
-  _isReplySuccessful = true;
+  _alertMessage?: string;
+  isShowingAlert = false;
   _modalRef?: NgbModalRef;
   rptParams?: IRptParamsDTO;
   rptTitleName: string = 'Document Mapping Report';
@@ -45,12 +45,11 @@ export class DocMappingRptComponent {
     this.showLoading('Generating Report');
     this.reportService.generateDocMappingListRpt(reportData).subscribe(
       res => {
-        setTimeout(() => this._modalRef?.close(), 1500);
+        setTimeout(() => this._modalRef?.close(), 1000);
 
         this._replyMessage = res.body;
 
         if (this._replyMessage?.code === '000') {
-          this._isReplySuccessful = true;
           this.rptParams = this._replyMessage.data;
           this.router.navigate(['report/report-viewer'], {
             queryParams: {
@@ -60,25 +59,29 @@ export class DocMappingRptComponent {
             },
           });
         } else {
-          this._isReplySuccessful = false;
+          this.isShowingAlert = true;
           this.isGenerating = false;
           this._messageCode = this._replyMessage?.code;
-          this._messageDesc = this._replyMessage?.description;
+          this._alertMessage = this._replyMessage?.description;
         }
       },
       error => {
         this._modalRef?.close();
-        this._isReplySuccessful = false;
+        this.isShowingAlert = true;
         this.isGenerating = false;
         this._messageCode = '';
-        this._messageDesc = 'Connection is not available. Please, check network connection with your server.';
+        this._alertMessage = 'Connection is not available. Please, check network connection with your server.';
       }
     );
   }
 
   showLoading(loadingMessage?: string): void {
-    this._modalRef = this.modalService.open(LoadingPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+    this._modalRef = this.modalService.open(LoadingPopupComponent, { size: 'sm', backdrop: 'static', centered: true });
     this._modalRef.componentInstance.loadingMessage = loadingMessage;
+  }
+
+  closeAlert(): void {
+    this.isShowingAlert = false;
   }
 
   protected createFromForm(): IRptParamsDTO {

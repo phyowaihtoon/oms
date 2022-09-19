@@ -9,6 +9,7 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
 })
 export class LovSetupDialogComponent implements OnInit {
   lovStr = '';
+  fieldName = '';
 
   editForm = this.fb.group({
     fieldList: this.fb.array([]),
