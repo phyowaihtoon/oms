@@ -101,7 +101,7 @@
       <div class="form-group col-6" *ngIf="metaitem.fieldType == 'LOV'">
         <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
         <select class="form-control" [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'">
-          <option [value]="f_value" *ngFor="let f_value of fieldValue">
+          <option [value]="f_value" *ngFor="let f_value of _fieldValue">
             {{ f_value }}
           </option>
         </select>

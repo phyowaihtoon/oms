@@ -63,7 +63,7 @@ server:
 ftpserver:
   host: localhost
   port: 21
-  username: admin
+  username: Admin
   password: asdf123!
 
 # ===================================================================
