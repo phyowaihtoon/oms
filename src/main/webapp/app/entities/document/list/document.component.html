@@ -31,9 +31,16 @@
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Template</label>
       </div>
       <div class="col-2">
-        <select class="form-control" id="field_metaDataHdrID" data-cy="metaDataHdrID" name="metaDataHdrID" formControlName="metaDataHdrID">
-          <option [ngValue]="null"></option>
-          <option [ngValue]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDataByID">
+        <select
+          (change)="onChangeDocumentTemplate($event)"
+          class="form-control"
+          id="field_metaDataHdrID"
+          data-cy="metaDataHdrID"
+          name="metaDataHdrID"
+          formControlName="metaDataHdrID"
+        >
+          <option [value]="0"></option>
+          <option [value]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDataByID">
             {{ metaData.docTitle }}
           </option>
         </select>
@@ -50,6 +57,19 @@
             This field is required.
           </small>
         </div>
+      </div>
+      <div class="col-2">
+        <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
+      </div>
+      <div class="col-2">
+        <input
+          type="text"
+          class="form-control"
+          name="fieldValues"
+          id="field_fieldValues"
+          data-cy="fieldValues"
+          formControlName="fieldValues"
+        />
       </div>
       <div class="col-2">
         <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
@@ -72,19 +92,6 @@
             </button>
           </div>
         </div>
-      </div>
-      <div class="col-2">
-        <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
-      </div>
-      <div class="col-2">
-        <input
-          type="text"
-          class="form-control"
-          name="fieldValues"
-          id="field_fieldValues"
-          data-cy="fieldValues"
-          formControlName="fieldValues"
-        />
       </div>
     </div>
   </form>
@@ -114,8 +121,20 @@
           <th scope="col">
             <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
           </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.otherMetaData">Other MetaData</span>
+          <th scope="col" *ngIf="_metaData1.valid">
+            <span>{{ _metaData1.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData2.valid">
+            <span>{{ _metaData2.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData3.valid">
+            <span>{{ _metaData3.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData4.valid">
+            <span>{{ _metaData4.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData5.valid">
+            <span>{{ _metaData5.name }}</span>
           </th>
           <th scope="col">
             <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
@@ -129,10 +148,16 @@
       <tbody>
         <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/document', documentHeader.id, 'view']">{{ documentHeader.id }}</a>
+            <a [routerLink]="['/document', documentHeader.id, 'view']"
+              >{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a
+            >
           </td>
           <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
-          <td [innerHTML]="arrangeMetaData(documentHeader.fieldNames, documentHeader.fieldValues)"></td>
+          <td *ngIf="_metaData1.valid">{{ _metaData1.value }}</td>
+          <td *ngIf="_metaData2.valid">{{ _metaData2.value }}</td>
+          <td *ngIf="_metaData3.valid">{{ _metaData3.value }}</td>
+          <td *ngIf="_metaData4.valid">{{ _metaData4.value }}</td>
+          <td *ngIf="_metaData5.valid">{{ _metaData5.value }}</td>
           <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
           <td>{{ documentHeader.createdBy }}</td>
           <td class="text-right">
