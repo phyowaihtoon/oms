@@ -40,7 +40,7 @@
           formControlName="metaDataHdrID"
         >
           <option [value]="0"></option>
-          <option [value]="metaData.id" *ngFor="let metaData of metaDataHdrList; trackBy: trackMetaDataByID">
+          <option [value]="metaData.id" *ngFor="let metaData of _metaDataHdrList; trackBy: trackMetaDataByID">
             {{ metaData.docTitle }}
           </option>
         </select>
@@ -111,7 +111,7 @@
     <span>{{ _alertMessage }}</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="documentHeaders && documentHeaders.length > 0">
+  <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
@@ -146,7 +146,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
+        <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
           <td>
             <a [routerLink]="['/document', documentHeader.id, 'view']"
               >{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a
@@ -188,7 +188,7 @@
     </table>
   </div>
 
-  <div *ngIf="documentHeaders && documentHeaders.length > 0">
+  <div *ngIf="_documentHeaders && _documentHeaders.length > 0">
     <div class="row justify-content-center">
       <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
       <span style="width: 30px">&nbsp;&nbsp;</span>

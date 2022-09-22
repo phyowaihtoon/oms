@@ -15,8 +15,8 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./document.component.scss'],
 })
 export class DocumentComponent implements OnInit {
-  documentHeaders?: IDocumentHeader[];
-  metaDataHdrList?: IMetaDataHeader[] | null;
+  _documentHeaders?: IDocumentHeader[];
+  _metaDataHdrList?: IMetaDataHeader[] | null;
   _selectedMetaDataList?: IMetaData[];
   isLoading = false;
   totalItems = 0;
@@ -73,13 +73,13 @@ export class DocumentComponent implements OnInit {
   }
 
   getDocTitleByID(id?: number): string | undefined {
-    const metaDataHeader = this.metaDataHdrList?.find(item => item.id === id);
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === id);
     return metaDataHeader?.docTitle;
   }
 
   onChangeDocumentTemplate(event: any): void {
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
-    const metaDataHeader = this.metaDataHdrList?.find(item => item.id === headerID);
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
     }
@@ -174,7 +174,7 @@ export class DocumentComponent implements OnInit {
   loadAllSetup(): void {
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.metaDataHdrList = res.body;
+        this._metaDataHdrList = res.body;
       },
       error => {
         console.log('Response Failed : ', error);
@@ -197,7 +197,7 @@ export class DocumentComponent implements OnInit {
   loadPage(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
     this.isShowingResult = true;
-    this.documentHeaders = [];
+    this._documentHeaders = [];
     const pageToLoad: number = page ?? this.page ?? 1;
     const paginationReqParams = {
       page: pageToLoad - 1,
@@ -224,7 +224,7 @@ export class DocumentComponent implements OnInit {
 
   clearFormData(): void {
     this.searchForm.reset();
-    this.documentHeaders = [];
+    this._documentHeaders = [];
     this.isShowingResult = false;
   }
 
@@ -239,8 +239,8 @@ export class DocumentComponent implements OnInit {
   protected onSuccess(data: IDocumentHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
-    this.documentHeaders = data ?? [];
-    this.isShowingAlert = this.documentHeaders.length === 0;
+    this._documentHeaders = data ?? [];
+    this.isShowingAlert = this._documentHeaders.length === 0;
     this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
     this.ngbPaginationPage = this.page;
   }
