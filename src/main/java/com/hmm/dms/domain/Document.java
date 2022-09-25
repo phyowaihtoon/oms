@@ -84,17 +84,17 @@ public class Document extends AbstractAuditingEntity implements Serializable {
         this.filePath = filePath;
     }
 
-    public String getFile_name() {
-        return fileName;
-    }
-
     public Document fileName(String fileName) {
         this.fileName = fileName;
         return this;
     }
 
-    public void setFile_name(String file_name) {
-        this.fileName = file_name;
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Long getFileSize() {
