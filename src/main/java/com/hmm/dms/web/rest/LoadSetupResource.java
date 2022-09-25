@@ -34,7 +34,7 @@ public class LoadSetupResource {
 
     @GetMapping("/metadataheader")
     public List<MetaDataHeaderDTO> loadAllMetaDataHeader() {
-        return this.loadSetupService.getMetaDataHeader();
+        return this.loadSetupService.getAllMetaDataHeader();
     }
 
     @GetMapping("/metadata/{id}")
