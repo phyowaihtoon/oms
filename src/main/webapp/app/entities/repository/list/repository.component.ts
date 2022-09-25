@@ -10,6 +10,7 @@ import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { RepositoryService } from '../service/repository.service';
 import { RepositoryDeleteDialogComponent } from '../delete/repository-delete-dialog.component';
 import { FormBuilder } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-repository',
@@ -28,6 +29,8 @@ export class RepositoryComponent {
 
   isShowingFilters = true;
   isShowingResult = false;
+  isShowingAlert = false;
+  _alertMessage = '';
 
   searchForm = this.fb.group({
     repositoryName: [],
@@ -39,7 +42,8 @@ export class RepositoryComponent {
     protected service: RepositoryService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected translateService: TranslateService
   ) {}
 
   /* ngOnInit(): void {
@@ -58,6 +62,10 @@ export class RepositoryComponent {
     this.isShowingResult = !this.isShowingResult;
   }
 
+  closeAlert(): void {
+    this.isShowingAlert = false;
+  }
+
   loadRepositoryPath(repoDetails: any): string {
     let str = '';
     repoDetails.forEach((data: any) => {
@@ -71,26 +79,6 @@ export class RepositoryComponent {
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
-    /* this.isLoading = true;
-    const pageToLoad: number = page ?? this.page ?? 1;
-
-    this.service
-      .query({
-        page: pageToLoad - 1,
-        size: this.itemsPerPage,
-        sort: this.sort(),
-      })
-      .subscribe(
-        (res: HttpResponse<IRepositoryHeader[]>) => {
-          this.isLoading = false;
-          this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
-        },
-        () => {
-          this.isLoading = false;
-          this.onError();
-        }
-      ); */
-
     this.isLoading = true;
     this.isShowingResult = true;
     this.repositorys = [];
@@ -158,26 +146,12 @@ export class RepositoryComponent {
     });
   }
 
-  /* protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
-    this.totalItems = Number(headers.get('X-Total-Count'));
-    this.page = page;
-    if (navigate) {
-      this.router.navigate(['/repository'], {
-        queryParams: {
-          page: this.page,
-          size: this.itemsPerPage,
-          sort: this.predicate + ',' + (this.ascending ? 'asc' : 'desc'),
-        },
-      });
-    }
-    this.repositorys = data ?? [];
-    this.ngbPaginationPage = this.page;
-  } */
-
   protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     this.repositorys = data ?? [];
+    this.isShowingAlert = this.repositorys.length === 0;
+    this._alertMessage = this.translateService.instant('dmsApp.repository.home.notFound');
     this.ngbPaginationPage = this.page;
   }
 
