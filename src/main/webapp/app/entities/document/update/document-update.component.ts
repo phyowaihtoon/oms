@@ -198,6 +198,7 @@ export class DocumentUpdateComponent implements OnInit {
       const id: number = metaDataItem.id!;
       const idStr: string = id.toString();
       const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr;
+
       if (metaDataItem.isRequired === 'YES') {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl('', Validators.required));
       } else {
