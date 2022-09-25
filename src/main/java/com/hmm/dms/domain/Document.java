@@ -28,6 +28,10 @@ public class Document extends AbstractAuditingEntity implements Serializable {
     @Column(name = "file_path", nullable = false)
     private String filePath;
 
+    @NotNull
+    @Column(name = "file_name", nullable = false)
+    private String fileName;
+
     @Column(name = "file_size")
     private Long fileSize;
 
@@ -78,6 +82,19 @@ public class Document extends AbstractAuditingEntity implements Serializable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getFile_name() {
+        return fileName;
+    }
+
+    public Document fileName(String fileName) {
+        this.fileName = fileName;
+        return this;
+    }
+
+    public void setFile_name(String file_name) {
+        this.fileName = file_name;
     }
 
     public Long getFileSize() {

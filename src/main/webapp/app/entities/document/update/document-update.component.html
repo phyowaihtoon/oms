@@ -165,7 +165,8 @@
       <table class="table" formArrayName="docList1">
         <thead>
           <tr>
-            <th class="text-center" style="width: 30%">File Name</th>
+            <th class="text-center" style="width: 25%">Repository URL</th>
+            <th class="text-center" style="width: 10%">File Name</th>
             <th class="text-center" style="width: 10%">File Size (KB)</th>
             <th class="text-center" style="width: 20%">Remark</th>
             <th class="text-center" style="width: 20%">Version</th>
@@ -176,6 +177,9 @@
           <tr *ngFor="let item of docList1().controls; last as isLast; let i = index" [formGroupName]="i">
             <td>
               <input type="text" class="col-12 form-control" placeholder="filePath" formControlName="filePath" />
+            </td>
+            <td>
+              <input type="text" class="col-12 form-control" placeholder="fileName" formControlName="fileName" />
             </td>
             <td>
               <input type="number" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" />
