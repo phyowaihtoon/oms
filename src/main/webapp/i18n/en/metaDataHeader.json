@@ -1,0 +1,24 @@
+{
+  "dmsApp": {
+    "metaDataHeader": {
+      "home": {
+        "title": "Meta Data Headers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Meta Data Header",
+        "createOrEditLabel": "Create or edit a Meta Data Header",
+        "notFound": "No Meta Data Headers found"
+      },
+      "created": "A new Meta Data Header is created with identifier {{ param }}",
+      "updated": "A Meta Data Header is updated with identifier {{ param }}",
+      "deleted": "A Meta Data Header is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Meta Data Header {{ id }}?"
+      },
+      "detail": {
+        "title": "Meta Data Header"
+      },
+      "id": "ID",
+      "docTitle": "Doc Title"
+    }
+  }
+}
