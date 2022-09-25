@@ -44,6 +44,7 @@ export class DocumentDetailComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ docHeader }) => {
       this._documentHeader = docHeader;
       this._documentDetails = this._documentHeader?.docList;
+      console.log('Document Header Information :', this._documentHeader);
     });
     this.loadAllSetup();
   }
@@ -74,7 +75,7 @@ export class DocumentDetailComponent implements OnInit {
       }
 
       if (message1.length > 0) {
-        this.showAlertMessage(message1, message2);
+        this.showInfoMessage(message1, message2);
         return false;
       }
     }
@@ -82,7 +83,7 @@ export class DocumentDetailComponent implements OnInit {
     return true;
   }
 
-  showAlertMessage(msg1: string, msg2: string): void {
+  showInfoMessage(msg1: string, msg2: string): void {
     const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
     modalRef.componentInstance.messageLine1 = msg1;
     modalRef.componentInstance.messageLine2 = msg2;
@@ -103,17 +104,17 @@ export class DocumentDetailComponent implements OnInit {
           } else if (res.status === 204) {
             const msg1 = 'This file does not exist in server.';
             const msg2 = '';
-            this.showAlertMessage(msg1, msg2);
+            this.showInfoMessage(msg1, msg2);
           } else {
             const msg1 = 'Connection failed to FTP Server. Please, check network connection to FTP Server.';
             const msg2 = '';
-            this.showAlertMessage(msg1, msg2);
+            this.showInfoMessage(msg1, msg2);
           }
         },
         error => {
           const msg1 = 'Connection is not available. Please, check network connection to application server.';
           const msg2 = '';
-          this.showAlertMessage(msg1, msg2);
+          this.showInfoMessage(msg1, msg2);
         }
       );
     }

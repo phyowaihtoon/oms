@@ -4,14 +4,16 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { Observable } from 'rxjs';
 import { IMetaData, IMetaDataHeader } from '../metadata/metadata.model';
 import { IRepositoryInquiry, IRepositoryHeader } from '../repository/repository.model';
-import { EntityArrayResponseType } from '../category/service/category.service';
 import { createRequestOption } from 'app/core/request/request-util';
 
 export type MeataDataHeaderSetupArray = HttpResponse<IMetaDataHeader[]>;
 export type MetaDataSetupArray = HttpResponse<IMetaData[]>;
+export type RepositoryHeaderArrayType = HttpResponse<IRepositoryHeader[]>;
+export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
+import { IWorkflowAuthority } from './setup.model';
 
 @Injectable({
   providedIn: 'root',
@@ -30,19 +32,24 @@ export class LoadSetupService {
     return this.http.get<IMetaData[]>(childURL, { observe: 'response' });
   }
 
-  loadRepository(criteriaData: IRepositoryInquiry, req?: any): Observable<EntityArrayResponseType> {
+  loadRepository(criteriaData: IRepositoryInquiry, req?: any): Observable<RepositoryHeaderArrayType> {
     const options = createRequestOption(req);
     return this.http
       .post<IRepositoryHeader[]>(this.resourceUrl + '/repository', criteriaData, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .pipe(map((res: RepositoryHeaderArrayType) => this.convertDateArrayFromServer(res)));
   }
 
-  convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+  convertDateArrayFromServer(res: RepositoryHeaderArrayType): RepositoryHeaderArrayType {
     if (res.body) {
       res.body.forEach((documentHeader: IRepositoryHeader) => {
         documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
       });
     }
     return res;
+  }
+
+  loadWorkflowAuthority(): Observable<WorkflowAuthorityArrayType> {
+    const childURL = '/workflow';
+    return this.http.get<IWorkflowAuthority[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }

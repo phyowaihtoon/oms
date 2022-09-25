@@ -1,0 +1,123 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-application-user-heading"
+        data-cy="ApplicationUserCreateUpdateHeading"
+        jhiTranslate="dmsApp.applicationUser.home.createOrEditLabel"
+      >
+        Create or edit a Application User
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.user" for="field_user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user">
+            <option *ngIf="!editForm.get('user')!.value" [ngValue]="null" selected></option>
+            <option
+              [ngValue]="userOption.id === editForm.get('user')!.value?.id ? editForm.get('user')!.value : userOption"
+              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
+            >
+              {{ userOption.login }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="editForm.get(['user'])!.invalid && (editForm.get(['user'])!.dirty || editForm.get(['user'])!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get(['user'])?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.userRole" for="field_userRole">User Role</label>
+          <input type="text" class="form-control" name="userRole" id="field_userRole" data-cy="userRole" formControlName="userRole" />
+          <div *ngIf="editForm.get('userRole')!.invalid && (editForm.get('userRole')!.dirty || editForm.get('userRole')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('userRole')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.workflowAuthority" for="field_workflowAuthority"
+            >Workflow Authority</label
+          >
+          <select
+            class="form-control"
+            name="workflowAuthority"
+            id="field_workflowAuthority"
+            data-cy="workflowAuthority"
+            formControlName="workflowAuthority"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                workflow.value === editForm.get('workflowAuthority')!.value?.value ? editForm.get('workflowAuthority')!.value : workflow
+              "
+              *ngFor="let workflow of workflowAuthorityCollection; trackBy: trackWorkflowByValue"
+            >
+              {{ workflow.description }}
+            </option>
+          </select>
+
+          <div
+            *ngIf="
+              editForm.get('workflowAuthority')!.invalid &&
+              (editForm.get('workflowAuthority')!.dirty || editForm.get('workflowAuthority')!.touched)
+            "
+          >
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('workflowAuthority')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.department" for="field_department">Department</label>
+          <select class="form-control" id="field_department" data-cy="department" name="department" formControlName="department">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                departmentOption.id === editForm.get('department')!.value?.id ? editForm.get('department')!.value : departmentOption
+              "
+              *ngFor="let departmentOption of departmentsSharedCollection; trackBy: trackDepartmentById"
+            >
+              {{ departmentOption.departmentName }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

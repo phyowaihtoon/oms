@@ -5,7 +5,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { DocumentInquiryService } from '../service/document-inquiry.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -15,8 +15,9 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./document.component.scss'],
 })
 export class DocumentComponent implements OnInit {
-  documentHeaders?: IDocumentHeader[];
-  metaDataHdrList?: IMetaDataHeader[] | null;
+  _documentHeaders?: IDocumentHeader[];
+  _metaDataHdrList?: IMetaDataHeader[] | null;
+  _selectedMetaDataList?: IMetaData[];
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -29,6 +30,12 @@ export class DocumentComponent implements OnInit {
   isShowingResult = false;
   isShowingAlert = false;
   _alertMessage = '';
+
+  _metaData1 = { name: '', value: '', valid: false };
+  _metaData2 = { name: '', value: '', valid: false };
+  _metaData3 = { name: '', value: '', valid: false };
+  _metaData4 = { name: '', value: '', valid: false };
+  _metaData5 = { name: '', value: '', valid: false };
 
   searchForm = this.fb.group({
     metaDataHdrID: [null, [Validators.required]],
@@ -66,27 +73,98 @@ export class DocumentComponent implements OnInit {
   }
 
   getDocTitleByID(id?: number): string | undefined {
-    const metaDataHeader = this.metaDataHdrList?.find(item => item.id === id);
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === id);
     return metaDataHeader?.docTitle;
   }
 
-  arrangeMetaData(fNames?: string, fValues?: string): string {
-    let arrangedFields = '';
-    if (fNames !== undefined && fValues !== undefined && fNames.trim().length > 0 && fValues.trim().length > 0) {
-      const fNameArray = fNames.split('|');
+  onChangeDocumentTemplate(event: any): void {
+    const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
+    if (metaDataHeader) {
+      this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+    }
+  }
+
+  bindMetaDataNames(): void {
+    this.resetMetaDataNames();
+    if (this._selectedMetaDataList !== undefined) {
+      let arrIndex = 0;
+      while (arrIndex < this._selectedMetaDataList.length) {
+        if (arrIndex === 0) {
+          this._metaData1.name = this._selectedMetaDataList[arrIndex].fieldName!;
+          this._metaData1.valid = true;
+        }
+        if (arrIndex === 1) {
+          this._metaData2.name = this._selectedMetaDataList[arrIndex].fieldName!;
+          this._metaData2.valid = true;
+        }
+        if (arrIndex === 2) {
+          this._metaData3.name = this._selectedMetaDataList[arrIndex].fieldName!;
+          this._metaData3.valid = true;
+        }
+        if (arrIndex === 3) {
+          this._metaData4.name = this._selectedMetaDataList[arrIndex].fieldName!;
+          this._metaData4.valid = true;
+        }
+        if (arrIndex === 4) {
+          this._metaData5.name = this._selectedMetaDataList[arrIndex].fieldName!;
+          this._metaData5.valid = true;
+        }
+
+        arrIndex++;
+      }
+    }
+  }
+
+  resetMetaDataNames(): void {
+    this._metaData1.name = '';
+    this._metaData1.valid = false;
+    this._metaData2.name = '';
+    this._metaData2.valid = false;
+    this._metaData3.name = '';
+    this._metaData3.valid = false;
+    this._metaData4.name = '';
+    this._metaData4.valid = false;
+    this._metaData5.name = '';
+    this._metaData5.valid = false;
+  }
+
+  resetMetaDataValues(): void {
+    this._metaData1.value = '';
+    this._metaData2.value = '';
+    this._metaData3.value = '';
+    this._metaData4.value = '';
+    this._metaData5.value = '';
+  }
+
+  bindMetaDataValues(fValues?: string): void {
+    this.resetMetaDataValues();
+
+    if (fValues !== undefined && fValues.trim().length > 0) {
       const fValueArray = fValues.split('|');
-      if (fNameArray.length > 0 && fValueArray.length > 0 && fNameArray.length === fValueArray.length) {
+      if (fValueArray.length > 0) {
         let arrIndex = 0;
-        while (arrIndex < fNameArray.length) {
-          arrangedFields += '<b>' + fNameArray[arrIndex] + '</b>' + ' : ' + fValueArray[arrIndex] + '&nbsp;&nbsp;';
-          if ((arrIndex + 1) / 2 === 0) {
-            arrangedFields += '<br>';
+        while (arrIndex < fValueArray.length) {
+          if (arrIndex === 0) {
+            this._metaData1.value = fValueArray[arrIndex];
           }
+          if (arrIndex === 1) {
+            this._metaData2.value = fValueArray[arrIndex];
+          }
+          if (arrIndex === 2) {
+            this._metaData3.value = fValueArray[arrIndex];
+          }
+          if (arrIndex === 3) {
+            this._metaData4.value = fValueArray[arrIndex];
+          }
+          if (arrIndex === 4) {
+            this._metaData5.value = fValueArray[arrIndex];
+          }
+
           arrIndex++;
         }
       }
     }
-    return arrangedFields;
   }
 
   closeAlert(): void {
@@ -96,7 +174,7 @@ export class DocumentComponent implements OnInit {
   loadAllSetup(): void {
     this.loadSetupService.loadAllMetaDataHeader().subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.metaDataHdrList = res.body;
+        this._metaDataHdrList = res.body;
       },
       error => {
         console.log('Response Failed : ', error);
@@ -110,15 +188,16 @@ export class DocumentComponent implements OnInit {
       this.isShowingResult = true;
       this.isShowingAlert = true;
       this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
-      return;
+    } else {
+      this.bindMetaDataNames();
+      this.loadPage(page);
     }
-    this.loadPage(page);
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
     this.isShowingResult = true;
-    this.documentHeaders = [];
+    this._documentHeaders = [];
     const pageToLoad: number = page ?? this.page ?? 1;
     const paginationReqParams = {
       page: pageToLoad - 1,
@@ -145,7 +224,7 @@ export class DocumentComponent implements OnInit {
 
   clearFormData(): void {
     this.searchForm.reset();
-    this.documentHeaders = [];
+    this._documentHeaders = [];
     this.isShowingResult = false;
   }
 
@@ -160,8 +239,8 @@ export class DocumentComponent implements OnInit {
   protected onSuccess(data: IDocumentHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
-    this.documentHeaders = data ?? [];
-    this.isShowingAlert = this.documentHeaders.length === 0;
+    this._documentHeaders = data ?? [];
+    this.isShowingAlert = this._documentHeaders.length === 0;
     this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
     this.ngbPaginationPage = this.page;
   }

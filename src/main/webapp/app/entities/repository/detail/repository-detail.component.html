@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="repository">
+      <h2 data-cy="repositoryDetailsHeading"><span jhiTranslate="dmsApp.repository.detail.title">Repository</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ repository.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.repository.parentID">Parent ID</span></dt>
+        <dd>
+          <span>{{ repository.parentID }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.repository.repositoryName">Repository Name</span></dt>
+        <dd>
+          <span>{{ repository.repositoryName }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.repository.description">Description</span></dt>
+        <dd>
+          <span>{{ repository.description }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/repository', repository.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

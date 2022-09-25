@@ -59,10 +59,6 @@ public class DocumentResource {
     private final DocumentRepository documentRepository;
 
     List<String> filenames = new ArrayList<>();
-    String server = "localhost";
-    int port = 21;
-    String user = "admin";
-    String pass = "asdf123!";
 
     private int returnCode;
 

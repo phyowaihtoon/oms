@@ -66,7 +66,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
 
     @Override
     public DocumentHeaderDTO save(DocumentHeaderDTO documentHeaderDTO) {
-        log.debug("Request to save Document : {}", documentHeaderDTO);
+        log.debug("Saving Document Header: {}", documentHeaderDTO);
         DocumentHeader documentHeader = documentHeaderMapper.toEntity(documentHeaderDTO);
         List<Document> documentList = documentHeaderDTO.getDocList().stream().map(documentMapper::toEntity).collect(Collectors.toList());
 
@@ -74,10 +74,12 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
 
         for (Document document : documentList) {
             document.setHeaderId(documentHeader.getId());
-            document.setDelFlag("N");
         }
 
+        log.debug("Deleteing Document Details by header ID before saving: {}");
         documentRepository.deleteByHeaderId(documentHeader.getId());
+
+        log.debug("Saving Document Details");
         documentList = documentRepository.saveAll(documentList);
         return documentHeaderMapper.toDto(documentHeader);
     }
