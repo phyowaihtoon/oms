@@ -2,8 +2,8 @@ package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.RepositoryDomain;
 import com.hmm.dms.domain.RepositoryHeader;
+import com.hmm.dms.repository.RepositoryDetailRepository;
 import com.hmm.dms.repository.RepositoryHeaderRepository;
-import com.hmm.dms.repository.RepositoryRepo;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
@@ -32,7 +32,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private final RepositoryHeaderRepository repositoryHeaderRepository;
 
-    private final RepositoryRepo repositoryRepo;
+    private final RepositoryDetailRepository repositoryRepo;
 
     private final RepositoryHeaderMapper repositoryHeaderMapper;
 
@@ -40,7 +40,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     public RepositoryServiceImpl(
         RepositoryHeaderRepository repositoryHeaderRepository,
-        RepositoryRepo repositoryRepo,
+        RepositoryDetailRepository repositoryRepo,
         RepositoryHeaderMapper repositoryHeaderMapper,
         RepositoryMapper repositoryMapper
     ) {

@@ -1,0 +1,40 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="roleMenuMap">
+      <h2 data-cy="roleMenuMapDetailsHeading"><span jhiTranslate="dmsApp.roleMenuMap.detail.title">Role Menu Map</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ roleMenuMap.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.roleMenuMap.roleId">Role Id</span></dt>
+        <dd>
+          <span>{{ roleMenuMap.roleId }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.roleMenuMap.menuId">Menu Id</span></dt>
+        <dd>
+          <span>{{ roleMenuMap.menuId }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.roleMenuMap.allowed">Allowed</span></dt>
+        <dd>
+          <span>{{ roleMenuMap.allowed }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/role-menu-map', roleMenuMap.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

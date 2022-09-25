@@ -1,0 +1,44 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="documentHeader">
+      <h2 data-cy="documentHeaderDetailsHeading"><span jhiTranslate="dmsApp.documentHeader.detail.title">Document Header</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="global.field.id">ID</span></dt>
+        <dd>
+          <span>{{ documentHeader.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.documentHeader.metaDataHeaderId">Meta Data Header Id</span></dt>
+        <dd>
+          <span>{{ documentHeader.metaDataHeaderId }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.documentHeader.fieldNames">Field Names</span></dt>
+        <dd>
+          <span>{{ documentHeader.fieldNames }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.documentHeader.fieldValues">Field Values</span></dt>
+        <dd>
+          <span>{{ documentHeader.fieldValues }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.documentHeader.repositoryURL">Repository URL</span></dt>
+        <dd>
+          <span>{{ documentHeader.repositoryURL }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/document-header', documentHeader.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

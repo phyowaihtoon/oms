@@ -1,0 +1,28 @@
+{
+  "dmsApp": {
+    "applicationUser": {
+      "home": {
+        "title": "Application Users",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Application User အသစ်ထည့်မည်",
+        "createOrEditLabel": "Application User အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
+        "notFound": "No Application Users found"
+      },
+      "created": "{{ param }} အိုင်ဒီဖြင့် Application User အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
+      "updated": "{{ param }} အိုင်ဒီဖြင့် Application User တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
+      "deleted": "{{ param }} အိုင်ဒီဖြင့် Application User တစ်ခုအား ဖျက်ပြီးပါပြီ။",
+      "delete": {
+        "question": "Application User {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+      },
+      "detail": {
+        "title": "Application User"
+      },
+      "id": "ID",
+      "userRole": "User Role",
+      "workflowAuthority": "Workflow Authority",
+      "delFlag": "Del Flag",
+      "user": "User",
+      "department": "Department"
+    }
+  }
+}

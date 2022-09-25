@@ -1,0 +1,88 @@
+<div>
+  <h2 id="page-heading" data-cy="MetaDataHeading">
+    <span jhiTranslate="dmsApp.metaData.home.title">Meta Data</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="dmsApp.metaData.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-meta-data"
+        [routerLink]="['/meta-data/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="dmsApp.metaData.home.createLabel"> Create a new Meta Data </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="metaData?.length === 0">
+    <span jhiTranslate="dmsApp.metaData.home.notFound">No metaData found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="metaData && metaData.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.metaData.headerId">Header Id</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.metaData.fieldName">Field Name</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.metaData.fieldType">Field Type</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.metaData.isRequired">Is Required</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.metaData.fieldOrder">Field Order</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.metaData.fieldValue">Field Value</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let metaData of metaData; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/meta-data', metaData.id, 'view']">{{ metaData.id }}</a>
+          </td>
+          <td>{{ metaData.headerId }}</td>
+          <td>{{ metaData.fieldName }}</td>
+          <td>{{ metaData.fieldType }}</td>
+          <td>{{ metaData.isRequired }}</td>
+          <td>{{ metaData.fieldOrder }}</td>
+          <td>{{ metaData.fieldValue }}</td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/meta-data', metaData.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/meta-data', metaData.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(metaData)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

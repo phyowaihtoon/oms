@@ -9,6 +9,14 @@
         "main": "Entities များ",
         "category": "Category",
         "book": "Book",
+        "department": "Department",
+        "metaDataHeader": "Meta Data Header",
+        "metaData": "Meta Data",
+        "documentHeader": "Document Header",
+        "document": "Document",
+        "roleMenuMap": "Role Menu Map",
+        "repository": "Repository",
+        "applicationUser": "Application User",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
