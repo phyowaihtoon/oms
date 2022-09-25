@@ -9,9 +9,11 @@ import { createRequestOption } from 'app/core/request/request-util';
 export type MeataDataHeaderSetupArray = HttpResponse<IMetaDataHeader[]>;
 export type MetaDataSetupArray = HttpResponse<IMetaData[]>;
 export type RepositoryHeaderArrayType = HttpResponse<IRepositoryHeader[]>;
+export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
+import { IWorkflowAuthority } from './setup.model';
 
 @Injectable({
   providedIn: 'root',
@@ -44,5 +46,10 @@ export class LoadSetupService {
       });
     }
     return res;
+  }
+
+  loadWorkflowAuthority(): Observable<WorkflowAuthorityArrayType> {
+    const childURL = '/workflow';
+    return this.http.get<IWorkflowAuthority[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }

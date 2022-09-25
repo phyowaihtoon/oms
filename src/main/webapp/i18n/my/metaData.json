@@ -1,0 +1,29 @@
+{
+  "dmsApp": {
+    "metaData": {
+      "home": {
+        "title": "Meta Data",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Meta Data အသစ်ထည့်မည်",
+        "createOrEditLabel": "Meta Data အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
+        "notFound": "No Meta Data found"
+      },
+      "created": "{{ param }} အိုင်ဒီဖြင့် Meta Data အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
+      "updated": "{{ param }} အိုင်ဒီဖြင့် Meta Data တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
+      "deleted": "{{ param }} အိုင်ဒီဖြင့် Meta Data တစ်ခုအား ဖျက်ပြီးပါပြီ။",
+      "delete": {
+        "question": "Meta Data {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+      },
+      "detail": {
+        "title": "Meta Data"
+      },
+      "id": "ID",
+      "headerId": "Header Id",
+      "fieldName": "Field Name",
+      "fieldType": "Field Type",
+      "isRequired": "Is Required",
+      "fieldOrder": "Field Order",
+      "fieldValue": "Field Value"
+    }
+  }
+}

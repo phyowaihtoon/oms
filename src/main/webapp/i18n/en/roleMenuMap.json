@@ -1,0 +1,26 @@
+{
+  "dmsApp": {
+    "roleMenuMap": {
+      "home": {
+        "title": "Role Menu Maps",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Role Menu Map",
+        "createOrEditLabel": "Create or edit a Role Menu Map",
+        "notFound": "No Role Menu Maps found"
+      },
+      "created": "A new Role Menu Map is created with identifier {{ param }}",
+      "updated": "A Role Menu Map is updated with identifier {{ param }}",
+      "deleted": "A Role Menu Map is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Role Menu Map {{ id }}?"
+      },
+      "detail": {
+        "title": "Role Menu Map"
+      },
+      "id": "ID",
+      "roleId": "Role Id",
+      "menuId": "Menu Id",
+      "allowed": "Allowed"
+    }
+  }
+}

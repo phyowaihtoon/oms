@@ -5,8 +5,8 @@ import com.hmm.dms.domain.MetaDataHeader;
 import com.hmm.dms.domain.RepositoryHeader;
 import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.repository.MetaDataRepository;
+import com.hmm.dms.repository.RepositoryDetailRepository;
 import com.hmm.dms.repository.RepositoryHeaderRepository;
-import com.hmm.dms.repository.RepositoryRepo;
 import com.hmm.dms.service.LoadSetupService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
@@ -33,7 +33,7 @@ public class LoadSetupServiceImpl implements LoadSetupService {
     private final MetaDataMapper metaDataMapper;
 
     private final RepositoryHeaderRepository repositoryHeaderRepository;
-    private final RepositoryRepo repositoryRepo;
+    private final RepositoryDetailRepository repositoryRepo;
     private final RepositoryHeaderMapper repositoryHeaderMapper;
     private final RepositoryMapper repositoryMapper;
 
@@ -43,7 +43,7 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         MetaDataRepository metadataReposistory,
         MetaDataMapper metaDataMapper,
         RepositoryHeaderRepository repositoryHeaderRepository,
-        RepositoryRepo repositoryRepo,
+        RepositoryDetailRepository repositoryRepo,
         RepositoryHeaderMapper repositoryHeaderMapper,
         RepositoryMapper repositoryMapper
     ) {

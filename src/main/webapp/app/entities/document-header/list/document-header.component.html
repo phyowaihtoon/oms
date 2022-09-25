@@ -1,0 +1,84 @@
+<div>
+  <h2 id="page-heading" data-cy="DocumentHeaderHeading">
+    <span jhiTranslate="dmsApp.documentHeader.home.title">Document Headers</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="dmsApp.documentHeader.home.refreshListLabel">Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-document-header"
+        [routerLink]="['/document-header/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="dmsApp.documentHeader.home.createLabel"> Create a new Document Header </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="documentHeaders?.length === 0">
+    <span jhiTranslate="dmsApp.documentHeader.home.notFound">No documentHeaders found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="documentHeaders && documentHeaders.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span jhiTranslate="global.field.id">ID</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.documentHeader.metaDataHeaderId">Meta Data Header Id</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.documentHeader.fieldNames">Field Names</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.documentHeader.fieldValues">Field Values</span></th>
+          <th scope="col"><span jhiTranslate="dmsApp.documentHeader.repositoryURL">Repository URL</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let documentHeader of documentHeaders; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/document-header', documentHeader.id, 'view']">{{ documentHeader.id }}</a>
+          </td>
+          <td>{{ documentHeader.metaDataHeaderId }}</td>
+          <td>{{ documentHeader.fieldNames }}</td>
+          <td>{{ documentHeader.fieldValues }}</td>
+          <td>{{ documentHeader.repositoryURL }}</td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/document-header', documentHeader.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/document-header', documentHeader.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(documentHeader)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

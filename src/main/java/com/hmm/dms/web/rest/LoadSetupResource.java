@@ -1,10 +1,13 @@
 package com.hmm.dms.web.rest;
 
+import com.hmm.dms.enumeration.CommonEnum.WorkflowAuthority;
 import com.hmm.dms.service.LoadSetupService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryInquiryDTO;
+import com.hmm.dms.service.dto.SetupDTO;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,18 @@ public class LoadSetupResource {
 
     public LoadSetupResource(LoadSetupService loadSetupService) {
         this.loadSetupService = loadSetupService;
+    }
+
+    @GetMapping("/workflow")
+    public List<SetupDTO> loadWorkflowAuthority() {
+        List<SetupDTO> workflowAuthorityList = new ArrayList<SetupDTO>();
+        for (WorkflowAuthority data : WorkflowAuthority.values()) {
+            SetupDTO setupDTO = new SetupDTO();
+            setupDTO.setValue(data.value);
+            setupDTO.setDescription(data.description);
+            workflowAuthorityList.add(setupDTO);
+        }
+        return workflowAuthorityList;
     }
 
     @GetMapping("/metadataheader")

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface RepositoryRepo extends JpaRepository<RepositoryDomain, Long> {
+public interface RepositoryDetailRepository extends JpaRepository<RepositoryDomain, Long> {
     void deleteByHeaderId(Long id);
 
     Stream<RepositoryDomain> findByHeaderId(Long id);
