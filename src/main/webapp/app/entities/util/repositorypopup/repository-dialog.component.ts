@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { combineLatest } from 'rxjs';
 import { LoadSetupService } from '../load-setup.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-repository-dialog',
@@ -26,6 +27,8 @@ export class RepositoryDialogComponent implements OnInit {
 
   isShowingFilters = true;
   isShowingResult = false;
+  isShowingAlert = false;
+  _alertMessage = '';
 
   searchForm = this.fb.group({
     repositoryName: [],
@@ -40,7 +43,8 @@ export class RepositoryDialogComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected modalService: NgbModal,
-    protected activeModal: NgbActiveModal
+    protected activeModal: NgbActiveModal,
+    protected translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -68,27 +72,11 @@ export class RepositoryDialogComponent implements OnInit {
     this.isShowingResult = !this.isShowingResult;
   }
 
+  closeAlert(): void {
+    this.isShowingAlert = false;
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
-    /* this.isLoading = true;
-    const pageToLoad: number = page ?? this.page ?? 1;
-
-    this.service
-      .query({
-        page: pageToLoad - 1,
-        size: this.itemsPerPage,
-        sort: this.sort(),
-      })
-      .subscribe(
-        (res: HttpResponse<IRepositoryHeader[]>) => {
-          this.isLoading = false;
-          this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
-        },
-        () => {
-          this.isLoading = false;
-          this.onError();
-        }
-      ); */
-
     this.isLoading = true;
     this.isShowingResult = true;
     this.repositorys = [];
@@ -157,26 +145,12 @@ export class RepositoryDialogComponent implements OnInit {
     });
   }
 
-  /* protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
-    this.totalItems = Number(headers.get('X-Total-Count'));
-    this.page = page;
-    if (navigate) {
-      this.router.navigate(['/repository'], {
-        queryParams: {
-          page: this.page,
-          size: this.itemsPerPage,
-          sort: this.predicate + ',' + (this.ascending ? 'asc' : 'desc'),
-        },
-      });
-    }
-    this.repositorys = data ?? [];
-    this.ngbPaginationPage = this.page;
-  } */
-
   protected onSuccess(data: IRepositoryHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     this.repositorys = data ?? [];
+    this.isShowingAlert = this.repositorys.length === 0;
+    this._alertMessage = this.translateService.instant('dmsApp.repository.home.notFound');
     this.ngbPaginationPage = this.page;
   }
 

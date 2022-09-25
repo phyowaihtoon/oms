@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DocumentMappingRpt" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f3f5a3f0-dfbd-41e3-b396-6a2b47afd7dc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DocumentMappingRpt" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="770" leftMargin="36" rightMargin="36" topMargin="20" bottomMargin="20" uuid="f3f5a3f0-dfbd-41e3-b396-6a2b47afd7dc">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="design\JSONAdapter.jrdax"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
 	<parameter name="frmDate" class="java.lang.String"/>
 	<parameter name="toDate" class="java.lang.String"/>
 	<queryString language="JSON">
@@ -18,32 +19,33 @@
 		<property name="net.sf.jasperreports.json.field.expression" value="dataS2"/>
 		<fieldDescription><![CDATA[dataS2]]></fieldDescription>
 	</field>
-	<field name="dataS4" class="java.lang.String">
-		<property name="net.sf.jasperreports.json.field.expression" value="dataInt1"/>
-		<fieldDescription><![CDATA[dataS4]]></fieldDescription>
-	</field>
 	<field name="dataS3" class="java.lang.String">
 		<property name="net.sf.jasperreports.json.field.expression" value="dataS3"/>
 		<fieldDescription><![CDATA[dataS3]]></fieldDescription>
 	</field>
+	<field name="dataS4" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="dataInt1"/>
+		<fieldDescription><![CDATA[dataS4]]></fieldDescription>
+	</field>
+	<field name="dataS5" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="59" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="555" height="29" uuid="326a597b-e210-49ee-b666-663829f7af01"/>
+				<reportElement x="0" y="0" width="770" height="29" uuid="326a597b-e210-49ee-b666-663829f7af01"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Document Mapping List Report]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="29" width="555" height="30" uuid="8ebcc45c-96c7-4730-bfaa-1e29151309ce"/>
+				<reportElement x="0" y="29" width="770" height="30" uuid="8ebcc45c-96c7-4730-bfaa-1e29151309ce"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Date : "+$P{frmDate}+" - "+$P{toDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["From :  "+$P{frmDate}+"  To:  "+$P{toDate}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -65,7 +67,7 @@
 				<text><![CDATA[Sr.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="40" y="0" width="130" height="30" uuid="c162616d-c2ae-462f-bc71-4f45e2abe64d">
+				<reportElement x="120" y="0" width="165" height="30" uuid="c162616d-c2ae-462f-bc71-4f45e2abe64d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -79,7 +81,7 @@
 				<text><![CDATA[Document Template]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="370" y="0" width="100" height="30" uuid="d2a73c1c-872b-4964-b248-85d8a7cfc608">
+				<reportElement x="529" y="0" width="156" height="30" uuid="d2a73c1c-872b-4964-b248-85d8a7cfc608">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -94,7 +96,7 @@
 				<text><![CDATA[Remark]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="470" y="0" width="85" height="30" uuid="4783e03d-5011-45a7-b025-c3f043c99c6c">
+				<reportElement x="685" y="0" width="85" height="30" uuid="4783e03d-5011-45a7-b025-c3f043c99c6c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -110,7 +112,7 @@
 				<text><![CDATA[Date]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="170" y="0" width="200" height="30" uuid="10ff37e4-9971-4f85-86c3-b31dd986f7a3">
+				<reportElement x="285" y="0" width="244" height="30" uuid="10ff37e4-9971-4f85-86c3-b31dd986f7a3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -124,6 +126,21 @@
 					<font fontName="Arial" size="12"/>
 				</textElement>
 				<text><![CDATA[File Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="0" width="80" height="30" uuid="304bd0d6-c127-4fad-bef0-06b4b5c5749b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[ID]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -144,7 +161,7 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="40" y="0" width="130" height="30" uuid="24fb6ef0-e67a-4dcb-840b-6bd78b0bdabb">
+				<reportElement x="120" y="0" width="165" height="30" uuid="24fb6ef0-e67a-4dcb-840b-6bd78b0bdabb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dac73a9c-c658-478a-96ff-3e7a7a582537"/>
 				</reportElement>
 				<box leftPadding="2">
@@ -158,22 +175,22 @@
 				<textFieldExpression><![CDATA[$F{dataS1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="370" y="0" width="100" height="30" uuid="4da70981-dc1e-4590-92bd-a3702b89573e">
+				<reportElement x="529" y="0" width="156" height="30" uuid="4da70981-dc1e-4590-92bd-a3702b89573e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a9c9496b-6689-4465-bf37-3ffa6b20ff49"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<box>
+				<box leftPadding="3">
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dataS3}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="170" y="0" width="200" height="30" uuid="23410296-432e-45f9-9797-9bdd16e4c5b4">
+				<reportElement x="285" y="0" width="244" height="30" uuid="23410296-432e-45f9-9797-9bdd16e4c5b4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="60a659fb-3a39-4350-b8c9-cb16836556e5"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -189,7 +206,7 @@
 				<textFieldExpression><![CDATA[$F{dataS2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="470" y="0" width="85" height="30" uuid="2b13fe1f-b9b7-4a68-b547-7bd1a0d7d92f">
+				<reportElement x="685" y="0" width="85" height="30" uuid="2b13fe1f-b9b7-4a68-b547-7bd1a0d7d92f">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5aa7ba30-c324-4565-9ac6-28fe3f8a03b9"/>
 				</reportElement>
 				<box>
@@ -202,6 +219,20 @@
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dataS4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="80" height="30" uuid="7156d86f-2a5e-420a-98bc-b0306b07ee9f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dac73a9c-c658-478a-96ff-3e7a7a582537"/>
+				</reportElement>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataS5}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
