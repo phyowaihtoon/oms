@@ -198,16 +198,24 @@ export class DocumentUpdateComponent implements OnInit {
       const id: number = metaDataItem.id!;
       const idStr: string = id.toString();
       const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr;
+
       if (metaDataItem.isRequired === 'YES') {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl('', Validators.required));
       } else {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
       }
 
-      if (metaDataItem.fieldValue !== '') {
-        this._fieldValue = metaDataItem.fieldValue?.split('|');
-      }
+      // if (metaDataItem.fieldValue !== '') {
+      //   this._fieldValue = metaDataItem.fieldValue?.split('|');
+      // }
     });
+  }
+
+  getFieldValues(fieldValue?: string): string[] {
+    if (fieldValue !== undefined) {
+      return fieldValue.split('|');
+    }
+    return [];
   }
 
   getFieldName(group: FormGroup): string {
