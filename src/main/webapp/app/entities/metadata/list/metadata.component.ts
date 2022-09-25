@@ -10,6 +10,7 @@ import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { MetaDataService } from '../service/metadata.service';
 import { MetaDataDeleteDialogComponent } from '../delete/metadata-delete-dialog.component';
 import { FormBuilder } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-metadata',
@@ -28,6 +29,8 @@ export class MetaDataComponent {
 
   isShowingFilters = true;
   isShowingResult = false;
+  isShowingAlert = false;
+  _alertMessage = '';
 
   searchForm = this.fb.group({
     docTitle: [],
@@ -39,7 +42,8 @@ export class MetaDataComponent {
     protected service: MetaDataService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected translateService: TranslateService
   ) {}
 
   /* ngOnInit(): void {
@@ -58,27 +62,11 @@ export class MetaDataComponent {
     this.isShowingResult = !this.isShowingResult;
   }
 
+  closeAlert(): void {
+    this.isShowingAlert = false;
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
-    /* this.isLoading = true;
-    const pageToLoad: number = page ?? this.page ?? 1;
-
-    this.service
-      .query({
-        page: pageToLoad - 1,
-        size: this.itemsPerPage,
-        sort: this.sort(),
-      })
-      .subscribe(
-        (res: HttpResponse<IMetaDataHeader[]>) => {
-          this.isLoading = false;
-          this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
-        },
-        () => {
-          this.isLoading = false;
-          this.onError();
-        }
-      ); */
-
     this.isLoading = true;
     this.isShowingResult = true;
     this.metadatas = [];
@@ -146,28 +134,12 @@ export class MetaDataComponent {
     });
   }
 
-  /*
-  protected onSuccess(data: IMetaDataHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
-    this.totalItems = Number(headers.get('X-Total-Count'));
-    this.page = page;
-    if (navigate) {
-      this.router.navigate(['/metadata'], {
-        queryParams: {
-          page: this.page,
-          size: this.itemsPerPage,
-          sort: this.predicate + ',' + (this.ascending ? 'asc' : 'desc'),
-        },
-      });
-    }
-    this.metadatas = data ?? [];
-    this.ngbPaginationPage = this.page;
-  }
-  */
-
   protected onSuccess(data: IMetaDataHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     this.metadatas = data ?? [];
+    this.isShowingAlert = this.metadatas.length === 0;
+    this._alertMessage = this.translateService.instant('dmsApp.metaData.home.notFound');
     this.ngbPaginationPage = this.page;
   }
 
