@@ -19,6 +19,9 @@ public class DocumentDTO implements Serializable {
     @NotNull
     private String filePath;
 
+    @NotNull
+    private String fileName;
+
     private Long fileSize;
 
     private float version;
@@ -49,6 +52,14 @@ public class DocumentDTO implements Serializable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public Long getFileSize() {
