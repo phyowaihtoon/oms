@@ -32,6 +32,7 @@ export interface IDocument {
   id?: number;
   headerId?: number;
   filePath?: string;
+  fileName?: string;
   fileSize?: number;
   version?: number;
   remark?: string;
@@ -43,6 +44,7 @@ export class Document implements IDocument {
     public id?: number,
     public headerId?: number,
     public filePath?: string,
+    public fileName?: string,
     public fileSize?: number,
     public version?: number,
     public delFlag?: string,

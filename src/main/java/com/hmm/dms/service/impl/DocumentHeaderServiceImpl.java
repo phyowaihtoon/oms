@@ -74,7 +74,6 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
 
         for (Document document : documentList) {
             document.setHeaderId(documentHeader.getId());
-            document.setDelFlag("N");
         }
 
         log.debug("Deleteing Document Details by header ID before saving: {}");

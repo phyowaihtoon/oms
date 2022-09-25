@@ -72,8 +72,13 @@
 </div>
 
 <div id="result-container" *ngIf="isShowingResult">
-  <div class="alert alert-warning" id="no-result" *ngIf="metadatas?.length === 0">
+  <!-- <div class="alert alert-warning" id="no-result" *ngIf="metadatas?.length === 0">
     <span jhiTranslate="dmsApp.metaData.home.notFound">No MetaData found</span>
+  </div> -->
+
+  <div class="alert alert-info" *ngIf="isShowingAlert">
+    <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+    <span>{{ _alertMessage }}</span>
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="metadatas && metadatas.length > 0">
