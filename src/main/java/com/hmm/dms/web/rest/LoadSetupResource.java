@@ -1,12 +1,14 @@
 package com.hmm.dms.web.rest;
 
-import com.hmm.dms.enumeration.CommonEnum.WorkflowAuthority;
+import com.hmm.dms.enumeration.CommonEnum.DocumentStatusEnum;
+import com.hmm.dms.enumeration.CommonEnum.PriorityEnum;
+import com.hmm.dms.enumeration.CommonEnum.WorkflowAuthorityEnum;
 import com.hmm.dms.service.LoadSetupService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryInquiryDTO;
-import com.hmm.dms.service.dto.SetupDTO;
+import com.hmm.dms.service.dto.SetupEnumDTO;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -36,15 +38,39 @@ public class LoadSetupResource {
     }
 
     @GetMapping("/workflow")
-    public List<SetupDTO> loadWorkflowAuthority() {
-        List<SetupDTO> workflowAuthorityList = new ArrayList<SetupDTO>();
-        for (WorkflowAuthority data : WorkflowAuthority.values()) {
-            SetupDTO setupDTO = new SetupDTO();
-            setupDTO.setValue(data.value);
-            setupDTO.setDescription(data.description);
+    public List<SetupEnumDTO<Integer, String>> loadWorkflowAuthority() {
+        List<SetupEnumDTO<Integer, String>> workflowAuthorityList = new ArrayList<SetupEnumDTO<Integer, String>>();
+        for (WorkflowAuthorityEnum enumData : WorkflowAuthorityEnum.values()) {
+            SetupEnumDTO<Integer, String> setupDTO = new SetupEnumDTO<Integer, String>();
+            setupDTO.setValue(enumData.value);
+            setupDTO.setDescription(enumData.description);
             workflowAuthorityList.add(setupDTO);
         }
         return workflowAuthorityList;
+    }
+
+    @GetMapping("/docstatus")
+    public List<SetupEnumDTO<Integer, String>> loadDocumentStatus() {
+        List<SetupEnumDTO<Integer, String>> docStatusList = new ArrayList<SetupEnumDTO<Integer, String>>();
+        for (DocumentStatusEnum enumData : DocumentStatusEnum.values()) {
+            SetupEnumDTO<Integer, String> setupDTO = new SetupEnumDTO<Integer, String>();
+            setupDTO.setValue(enumData.value);
+            setupDTO.setDescription(enumData.description);
+            docStatusList.add(setupDTO);
+        }
+        return docStatusList;
+    }
+
+    @GetMapping("/priority")
+    public List<SetupEnumDTO<Integer, String>> loadPriority() {
+        List<SetupEnumDTO<Integer, String>> priorityList = new ArrayList<SetupEnumDTO<Integer, String>>();
+        for (PriorityEnum enumData : PriorityEnum.values()) {
+            SetupEnumDTO<Integer, String> setupDTO = new SetupEnumDTO<Integer, String>();
+            setupDTO.setValue(enumData.value);
+            setupDTO.setDescription(enumData.description);
+            priorityList.add(setupDTO);
+        }
+        return priorityList;
     }
 
     @GetMapping("/metadataheader")

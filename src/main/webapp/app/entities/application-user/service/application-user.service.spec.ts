@@ -22,9 +22,7 @@ describe('Service Tests', () => {
 
       elemDefault = {
         id: 0,
-        userRole: 'AAAAAAA',
-        workflowAuthority: 'AAAAAAA',
-        delFlag: 'AAAAAAA',
+        workflowAuthority: 0,
       };
     });
 
@@ -60,9 +58,7 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             id: 1,
-            userRole: 'BBBBBB',
-            workflowAuthority: 'BBBBBB',
-            delFlag: 'BBBBBB',
+            workflowAuthority: 1,
           },
           elemDefault
         );
@@ -79,7 +75,7 @@ describe('Service Tests', () => {
       it('should partial update a ApplicationUser', () => {
         const patchObject = Object.assign(
           {
-            userRole: 'BBBBBB',
+            workflowAuthority: 1,
           },
           new ApplicationUser()
         );
@@ -99,9 +95,7 @@ describe('Service Tests', () => {
         const returnedFromService = Object.assign(
           {
             id: 1,
-            userRole: 'BBBBBB',
-            workflowAuthority: 'BBBBBB',
-            delFlag: 'BBBBBB',
+            workflowAuthority: 1,
           },
           elemDefault
         );
@@ -153,7 +147,7 @@ describe('Service Tests', () => {
         });
 
         it('should add only unique ApplicationUser to an array', () => {
-          const applicationUserArray: IApplicationUser[] = [{ id: 123 }, { id: 456 }, { id: 31573 }];
+          const applicationUserArray: IApplicationUser[] = [{ id: 123 }, { id: 456 }, { id: 7559 }];
           const applicationUserCollection: IApplicationUser[] = [{ id: 123 }];
           expectedResult = service.addApplicationUserToCollectionIfMissing(applicationUserCollection, ...applicationUserArray);
           expect(expectedResult).toHaveLength(3);

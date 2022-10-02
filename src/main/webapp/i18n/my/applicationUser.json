@@ -18,10 +18,9 @@
         "title": "Application User"
       },
       "id": "ID",
-      "userRole": "User Role",
       "workflowAuthority": "Workflow Authority",
-      "delFlag": "Del Flag",
       "user": "User",
+      "userRole": "User Role",
       "department": "Department"
     }
   }

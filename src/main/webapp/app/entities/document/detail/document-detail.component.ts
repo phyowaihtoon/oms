@@ -89,9 +89,8 @@ export class DocumentDetailComponent implements OnInit {
     modalRef.componentInstance.messageLine2 = msg2;
   }
 
-  downloadFile(isPreview: boolean, docId?: number, filePath?: string): void {
-    if (docId !== undefined && filePath !== undefined && this.validate(isPreview, filePath)) {
-      const fileName = filePath.split('/').pop();
+  downloadFile(isPreview: boolean, docId?: number, fileName?: string): void {
+    if (docId !== undefined && fileName !== undefined && this.validate(isPreview, fileName)) {
       this.documentInquiryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {

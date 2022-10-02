@@ -12,6 +12,8 @@ import { IApplicationUser, ApplicationUser } from '../application-user.model';
 
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
+import { IUserRole } from 'app/entities/user-role/user-role.model';
+import { UserRoleService } from 'app/entities/user-role/service/user-role.service';
 import { IDepartment } from 'app/entities/department/department.model';
 import { DepartmentService } from 'app/entities/department/service/department.service';
 
@@ -24,6 +26,7 @@ describe('Component Tests', () => {
     let activatedRoute: ActivatedRoute;
     let applicationUserService: ApplicationUserService;
     let userService: UserService;
+    let userRoleService: UserRoleService;
     let departmentService: DepartmentService;
 
     beforeEach(() => {
@@ -39,6 +42,7 @@ describe('Component Tests', () => {
       activatedRoute = TestBed.inject(ActivatedRoute);
       applicationUserService = TestBed.inject(ApplicationUserService);
       userService = TestBed.inject(UserService);
+      userRoleService = TestBed.inject(UserRoleService);
       departmentService = TestBed.inject(DepartmentService);
 
       comp = fixture.componentInstance;
@@ -47,10 +51,10 @@ describe('Component Tests', () => {
     describe('ngOnInit', () => {
       it('Should call User query and add missing value', () => {
         const applicationUser: IApplicationUser = { id: 456 };
-        const user: IUser = { id: 85859 };
+        const user: IUser = { id: 43015 };
         applicationUser.user = user;
 
-        const userCollection: IUser[] = [{ id: 59207 }];
+        const userCollection: IUser[] = [{ id: 31573 }];
         spyOn(userService, 'query').and.returnValue(of(new HttpResponse({ body: userCollection })));
         const additionalUsers = [user];
         const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
@@ -62,6 +66,25 @@ describe('Component Tests', () => {
         expect(userService.query).toHaveBeenCalled();
         expect(userService.addUserToCollectionIfMissing).toHaveBeenCalledWith(userCollection, ...additionalUsers);
         expect(comp.usersSharedCollection).toEqual(expectedCollection);
+      });
+
+      it('Should call UserRole query and add missing value', () => {
+        const applicationUser: IApplicationUser = { id: 456 };
+        const userRole: IUserRole = { id: 85859 };
+        applicationUser.userRole = userRole;
+
+        const userRoleCollection: IUserRole[] = [{ id: 59207 }];
+        spyOn(userRoleService, 'query').and.returnValue(of(new HttpResponse({ body: userRoleCollection })));
+        const additionalUserRoles = [userRole];
+        const expectedCollection: IUserRole[] = [...additionalUserRoles, ...userRoleCollection];
+        spyOn(userRoleService, 'addUserRoleToCollectionIfMissing').and.returnValue(expectedCollection);
+
+        activatedRoute.data = of({ applicationUser });
+        comp.ngOnInit();
+
+        expect(userRoleService.query).toHaveBeenCalled();
+        expect(userRoleService.addUserRoleToCollectionIfMissing).toHaveBeenCalledWith(userRoleCollection, ...additionalUserRoles);
+        expect(comp.userRolesSharedCollection).toEqual(expectedCollection);
       });
 
       it('Should call Department query and add missing value', () => {
@@ -87,7 +110,9 @@ describe('Component Tests', () => {
         const applicationUser: IApplicationUser = { id: 456 };
         const user: IUser = { id: 84001 };
         applicationUser.user = user;
-        const department: IDepartment = { id: 15534 };
+        const userRole: IUserRole = { id: 15534 };
+        applicationUser.userRole = userRole;
+        const department: IDepartment = { id: 8868 };
         applicationUser.department = department;
 
         activatedRoute.data = of({ applicationUser });
@@ -95,6 +120,7 @@ describe('Component Tests', () => {
 
         expect(comp.editForm.value).toEqual(expect.objectContaining(applicationUser));
         expect(comp.usersSharedCollection).toContain(user);
+        expect(comp.userRolesSharedCollection).toContain(userRole);
         expect(comp.departmentsSharedCollection).toContain(department);
       });
     });
@@ -168,6 +194,14 @@ describe('Component Tests', () => {
         it('Should return tracked User primary key', () => {
           const entity = { id: 123 };
           const trackResult = comp.trackUserById(0, entity);
+          expect(trackResult).toEqual(entity.id);
+        });
+      });
+
+      describe('trackUserRoleById', () => {
+        it('Should return tracked UserRole primary key', () => {
+          const entity = { id: 123 };
+          const trackResult = comp.trackUserRoleById(0, entity);
           expect(trackResult).toEqual(entity.id);
         });
       });

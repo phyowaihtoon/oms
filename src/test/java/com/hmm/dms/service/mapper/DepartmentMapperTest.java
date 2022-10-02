@@ -11,6 +11,6 @@ class DepartmentMapperTest {
 
     @BeforeEach
     public void setUp() {
-        departmentMapper = new DepartmentMapperImpl();
+        //departmentMapper = new DepartmentMapperImpl();
     }
 }
