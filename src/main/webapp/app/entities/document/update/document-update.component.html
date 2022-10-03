@@ -27,7 +27,6 @@
 <div class="row">
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
     <jhi-alert-error></jhi-alert-error>
-    <jhi-alert></jhi-alert>
     <div *ngIf="fileStatus.status === 'progress'">
       <div class="progress" style="height: 15px; font-size: 12px">
         <div
@@ -54,7 +53,7 @@
     <div class="row col-12">
       <div class="form-group col-6">
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template</label>
-        <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
+        <select (change)="onDocTemplateChange($event)" class="form-control" formControlName="metaDataHeaderId">
           <option [value]="doctype.id" *ngFor="let doctype of docTypes">
             {{ doctype.docTitle }}
           </option>

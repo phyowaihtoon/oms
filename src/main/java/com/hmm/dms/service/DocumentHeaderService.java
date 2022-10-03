@@ -1,8 +1,10 @@
 package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
+import com.hmm.dms.service.dto.ReplyMessage;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Interface for managing {@link com.hmm.dms.domain.Document}.
@@ -14,7 +16,7 @@ public interface DocumentHeaderService {
      * @param documentDTO the entity to save.
      * @return the persisted entity.
      */
-    DocumentHeaderDTO save(DocumentHeaderDTO documentHeaderDTO);
+    ReplyMessage<DocumentHeaderDTO> saveAndUploadDocuments(List<MultipartFile> multipartFiles, DocumentHeaderDTO documentHeaderDTO);
 
     /**
      * Partially updates a document.
