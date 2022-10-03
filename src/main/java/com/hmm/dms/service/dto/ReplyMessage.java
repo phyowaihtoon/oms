@@ -7,7 +7,7 @@ public class ReplyMessage<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String code;
-    private String description;
+    private String message;
     private T data;
 
     public String getCode() {
@@ -18,12 +18,12 @@ public class ReplyMessage<T> implements Serializable {
         this.code = code;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMessage() {
+        return message;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public T getData() {

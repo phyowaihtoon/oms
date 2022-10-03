@@ -36,37 +36,18 @@
         </div>
 
         <div class="form-group">
-          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.userRole" for="field_userRole">User Role</label>
-          <input type="text" class="form-control" name="userRole" id="field_userRole" data-cy="userRole" formControlName="userRole" />
-          <div *ngIf="editForm.get('userRole')!.invalid && (editForm.get('userRole')!.dirty || editForm.get('userRole')!.touched)">
-            <small
-              class="form-text text-danger"
-              *ngIf="editForm.get('userRole')?.errors?.required"
-              jhiTranslate="entity.validation.required"
-            >
-              This field is required.
-            </small>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.workflowAuthority" for="field_workflowAuthority"
             >Workflow Authority</label
           >
           <select
+            type="number"
             class="form-control"
             name="workflowAuthority"
             id="field_workflowAuthority"
             data-cy="workflowAuthority"
             formControlName="workflowAuthority"
           >
-            <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                workflow.value === editForm.get('workflowAuthority')!.value?.value ? editForm.get('workflowAuthority')!.value : workflow
-              "
-              *ngFor="let workflow of workflowAuthorityCollection; trackBy: trackWorkflowByValue"
-            >
+            <option [ngValue]="workflow.value" *ngFor="let workflow of workflowAuthorityCollection">
               {{ workflow.description }}
             </option>
           </select>
@@ -84,7 +65,36 @@
             >
               This field is required.
             </small>
+            <small
+              class="form-text text-danger"
+              [hidden]="!editForm.get('workflowAuthority')?.errors?.number"
+              jhiTranslate="entity.validation.number"
+            >
+              This field should be a number.
+            </small>
           </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.userRole" for="field_userRole">User Role</label>
+          <select class="form-control" id="field_userRole" data-cy="userRole" name="userRole" formControlName="userRole">
+            <option *ngIf="!editForm.get('userRole')!.value" [ngValue]="null" selected></option>
+            <option
+              [ngValue]="userRoleOption.id === editForm.get('userRole')!.value?.id ? editForm.get('userRole')!.value : userRoleOption"
+              *ngFor="let userRoleOption of userRolesSharedCollection; trackBy: trackUserRoleById"
+            >
+              {{ userRoleOption.roleName }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="editForm.get(['userRole'])!.invalid && (editForm.get(['userRole'])!.dirty || editForm.get(['userRole'])!.touched)">
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get(['userRole'])?.errors?.required"
+            jhiTranslate="entity.validation.required"
+          >
+            This field is required.
+          </small>
         </div>
 
         <div class="form-group">

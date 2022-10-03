@@ -21,20 +21,19 @@ public class ApplicationUser implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "user_role", nullable = false)
-    private String userRole;
-
-    @NotNull
     @Column(name = "workflow_authority", nullable = false)
-    private String workflowAuthority;
+    private Integer workflowAuthority;
 
     @OneToOne(optional = false)
     @NotNull
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(unique = true)
     private User user;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    private UserRole userRole;
+
     @ManyToOne
-    @JoinColumn(name = "department_id")
     private Department department;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -51,29 +50,16 @@ public class ApplicationUser implements Serializable {
         return this;
     }
 
-    public String getUserRole() {
-        return this.userRole;
-    }
-
-    public ApplicationUser userRole(String userRole) {
-        this.userRole = userRole;
-        return this;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
-
-    public String getWorkflowAuthority() {
+    public Integer getWorkflowAuthority() {
         return this.workflowAuthority;
     }
 
-    public ApplicationUser workflowAuthority(String workflowAuthority) {
+    public ApplicationUser workflowAuthority(Integer workflowAuthority) {
         this.workflowAuthority = workflowAuthority;
         return this;
     }
 
-    public void setWorkflowAuthority(String workflowAuthority) {
+    public void setWorkflowAuthority(Integer workflowAuthority) {
         this.workflowAuthority = workflowAuthority;
     }
 
@@ -88,6 +74,19 @@ public class ApplicationUser implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public UserRole getUserRole() {
+        return this.userRole;
+    }
+
+    public ApplicationUser userRole(UserRole userRole) {
+        this.setUserRole(userRole);
+        return this;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     public Department getDepartment() {
@@ -127,8 +126,7 @@ public class ApplicationUser implements Serializable {
     public String toString() {
         return "ApplicationUser{" +
             "id=" + getId() +
-            ", userRole='" + getUserRole() + "'" +
-            ", workflowAuthority='" + getWorkflowAuthority() + "'" +
+            ", workflowAuthority=" + getWorkflowAuthority() +
             "}";
     }
 }

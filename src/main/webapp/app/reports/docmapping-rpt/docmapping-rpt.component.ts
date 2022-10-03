@@ -62,7 +62,7 @@ export class DocMappingRptComponent {
           this.isShowingAlert = true;
           this.isGenerating = false;
           this._messageCode = this._replyMessage?.code;
-          this._alertMessage = this._replyMessage?.description;
+          this._alertMessage = this._replyMessage?.message;
         }
       },
       error => {
