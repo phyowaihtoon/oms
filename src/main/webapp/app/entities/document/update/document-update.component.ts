@@ -7,7 +7,7 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { saveAs } from 'file-saver';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
+import { Document, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
@@ -43,6 +43,9 @@ export class DocumentUpdateComponent implements OnInit {
   _fileList: FileList | undefined;
   repositoryurl: string = '';
   filenames: FileInfo[] = [];
+  _saveButtonTitle: string = '';
+
+  _formData: FormData = new FormData();
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
@@ -130,6 +133,14 @@ export class DocumentUpdateComponent implements OnInit {
     return this.editForm.get('reposistory');
   }
 
+  saveBtnTitleChange(): string {
+    if (this.editForm.valid) {
+      this._saveButtonTitle = '';
+    } else {
+      this._saveButtonTitle = 'Please fill all required fields.';
+    }
+    return this._saveButtonTitle;
+  }
   // window.history.back();
   previousState(): void {
     this.editForm.controls['id']!.setValue(undefined);
@@ -138,6 +149,7 @@ export class DocumentUpdateComponent implements OnInit {
     this.editForm.controls['reposistory']!.setValue('');
     this.removeAllField();
     this.loadMetaDatabyMetadaHeaderID(0);
+    this.fileStatus = { status: '', requestType: '', percent: 0 };
   }
 
   searchRepository(): void {
@@ -204,10 +216,6 @@ export class DocumentUpdateComponent implements OnInit {
       } else {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
       }
-
-      // if (metaDataItem.fieldValue !== '') {
-      //   this._fieldValue = metaDataItem.fieldValue?.split('|');
-      // }
     });
   }
 
@@ -280,22 +288,24 @@ export class DocumentUpdateComponent implements OnInit {
   onUploadFiles(event: Event): void {
     const target = event.target as HTMLInputElement;
     this._fileList = target.files!;
+
     this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
     for (let i = 0; i < this._fileList.length; i++) {
       this.addField(this.repositoryurl, this._fileList.item(i)!.name, Math.round(this._fileList.item(i)!.size / 1024));
+      this._formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
     }
   }
 
   onUploadFilestoPath(): void {
-    const formData = new FormData();
-    this.repositoryurl = this.editForm.get(['reposistory'])!.value;
+    // const formData = new FormData();
+    //  this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
-    for (let i = 0; i < this._fileList!.length; i++) {
-      formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
-    }
+    // for (let i = 0; i < this._fileList!.length; i++) {
+    //   formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
+    // }
 
-    this.documentHeaderService.upload(formData).subscribe(
+    this.documentHeaderService.upload(this._formData!).subscribe(
       event => {
         console.log(event);
         this.resportProgress(event);
