@@ -45,7 +45,7 @@ public class DocumentInquiryResource {
     }
 
     @GetMapping("/docinquiry/{id}")
-    public DocumentHeaderDTO getAllDocuments(@PathVariable Long id) {
+    public DocumentHeaderDTO findAllDocumentsByHeaderId(@PathVariable Long id) {
         log.debug("REST request to get all Documents");
         DocumentHeaderDTO headerDTO = documentInquiryService.findAllDocumentsByHeaderId(id);
         return headerDTO;
@@ -56,13 +56,12 @@ public class DocumentInquiryResource {
         log.debug("REST request to get all Documents");
         DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
         String filePath = docDTO.getFilePath();
-        String[] directories = filePath.split("/");
-        String fileName = directories[directories.length - 1];
+        String fileName = docDTO.getFileName();
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
         ReplyMessage<ByteArrayResource> message = null;
         try {
-            message = documentInquiryService.downloadFileFromFTPServer(filePath);
+            message = documentInquiryService.downloadFileFromFTPServer(filePath + "//" + fileName);
         } catch (IOException e) {
             return ResponseEntity.status(204).build();
         } catch (Exception e) {

@@ -1,6 +1,6 @@
-<div class="modal-header dms-modal-header">
+<div [ngClass]="modalHeaderClass">
   <div class="row col-12 dms-modal-row">
-    <h4 class="modal-title col-10">Information</h4>
+    <h4 class="modal-title col-10">{{ infoTitle }}</h4>
     <div class="col-2 d-flex justify-content-end dms-modal-col">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
     </div>
@@ -9,14 +9,14 @@
 
 <div class="modal-body">
   <p>
-    <span id="dms-info-message1">{{ messageLine1 }}</span>
+    <span id="dms-info-code">{{ displayCode }}</span>
     <br />
-    <span id="dms-info-message2" [innerHTML]="messageLine2"></span>
+    <span id="dms-info-message">{{ displayMessage }}</span>
   </p>
 </div>
 
-<div class="modal-footer">
-  <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cancel()">
+<div class="modal-footer justify-content-center">
+  <button type="button" [ngClass]="modalButtonClass" data-dismiss="modal" (click)="cancel()">
     <span jhiTranslate="entity.action.ok">OK</span>
   </button>
 </div>

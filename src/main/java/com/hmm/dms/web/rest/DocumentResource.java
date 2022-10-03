@@ -1,28 +1,26 @@
 package com.hmm.dms.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hmm.dms.repository.DocumentHeaderRepository;
 import com.hmm.dms.repository.DocumentRepository;
+import com.hmm.dms.service.DocumentHeaderService;
 import com.hmm.dms.service.DocumentService;
 import com.hmm.dms.service.dto.DocumentDTO;
-import com.hmm.dms.util.FTPSessionFactory;
+import com.hmm.dms.service.dto.DocumentHeaderDTO;
+import com.hmm.dms.service.dto.ReplyMessage;
+import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.integration.ftp.session.FtpSession;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -45,28 +43,27 @@ import tech.jhipster.web.util.ResponseUtil;
 public class DocumentResource {
 
     private final Logger log = LoggerFactory.getLogger(DocumentResource.class);
-
     private static final String ENTITY_NAME = "document";
-
-    @Autowired
-    private FTPSessionFactory ftpSessionFactory;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final DocumentService documentService;
-
     private final DocumentRepository documentRepository;
+    private final DocumentHeaderService documentHeaderService;
+    private final DocumentHeaderRepository documentHeaderRepository;
+    private ObjectMapper objectMapper;
 
-    List<String> filenames = new ArrayList<>();
-
-    private int returnCode;
-
-    FTPClient ftpClient = new FTPClient();
-
-    public DocumentResource(DocumentService documentService, DocumentRepository documentRepository) {
+    public DocumentResource(
+        DocumentService documentService,
+        DocumentRepository documentRepository,
+        DocumentHeaderService documentHeaderService,
+        DocumentHeaderRepository documentHeaderRepository
+    ) {
         this.documentService = documentService;
         this.documentRepository = documentRepository;
+        this.documentHeaderService = documentHeaderService;
+        this.documentHeaderRepository = documentHeaderRepository;
     }
 
     /**
@@ -77,15 +74,32 @@ public class DocumentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/documents")
-    public ResponseEntity<DocumentDTO> createDocument(@Valid @RequestBody DocumentDTO documentDTO) throws URISyntaxException {
-        log.debug("REST request to save Document : {}", documentDTO);
-        if (documentDTO.getId() != null) {
+    public ResponseEntity<ReplyMessage<DocumentHeaderDTO>> createDocument(
+        @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles,
+        @RequestParam("documentHeaderData") String docHeaderInStr
+    ) throws URISyntaxException {
+        DocumentHeaderDTO documentHeaderDTO = null;
+        try {
+            this.objectMapper = new ObjectMapper();
+            documentHeaderDTO = this.objectMapper.readValue(docHeaderInStr, DocumentHeaderDTO.class);
+            log.debug("REST request to save Document Mapping: {}", documentHeaderDTO);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        if (documentHeaderDTO.getId() != null) {
             throw new BadRequestAlertException("A new document cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        DocumentDTO result = documentService.save(documentDTO);
+
+        ReplyMessage<DocumentHeaderDTO> result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
+        String docHeaderId = "";
+        if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
+            docHeaderId = result.getData().getId().toString();
+        }
+
         return ResponseEntity
-            .created(new URI("/api/documents/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .created(new URI("/api/documentHeader/" + docHeaderId))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
     }
 
@@ -100,26 +114,40 @@ public class DocumentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/documents/{id}")
-    public ResponseEntity<DocumentDTO> updateDocument(
+    public ResponseEntity<ReplyMessage<DocumentHeaderDTO>> updateDocument(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody DocumentDTO documentDTO
+        @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles,
+        @RequestParam("documentHeaderData") String docHeaderInStr
     ) throws URISyntaxException {
-        log.debug("REST request to update Document : {}, {}", id, documentDTO);
-        if (documentDTO.getId() == null) {
+        DocumentHeaderDTO documentHeaderDTO = null;
+        try {
+            this.objectMapper = new ObjectMapper();
+            documentHeaderDTO = this.objectMapper.readValue(docHeaderInStr, DocumentHeaderDTO.class);
+            log.debug("REST request to update Repository : {}, {}", id, documentHeaderDTO);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        if (documentHeaderDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, documentDTO.getId())) {
+        if (!Objects.equals(id, documentHeaderDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!documentRepository.existsById(id)) {
+        if (!documentHeaderRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        DocumentDTO result = documentService.save(documentDTO);
+        ReplyMessage<DocumentHeaderDTO> result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
+        String docHeaderId = "";
+        if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
+            docHeaderId = result.getData().getId().toString();
+        }
+
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, documentDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
     }
 
@@ -197,64 +225,5 @@ public class DocumentResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
-    }
-
-    // Define a method to Upload
-    @PostMapping("/documents/upload")
-    public ResponseEntity<List<String>> uploadFile(@RequestParam("files") List<MultipartFile> multipartFiles) throws IOException {
-        try {
-            FtpSession ftpSession = this.ftpSessionFactory.getSession();
-            ftpClient = ftpSession.getClientInstance();
-
-            for (MultipartFile file : multipartFiles) {
-                String[] filenameNdir = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
-
-                String filename = filenameNdir[0];
-                String[] fullDirectory = filenameNdir[1].split("//");
-                String directory = "";
-
-                for (int i = 0; i < fullDirectory.length; i++) {
-                    directory += "/" + fullDirectory[i];
-
-                    boolean isDirExists = checkDirectoryExists(directory);
-                    if (!isDirExists) {
-                        ftpClient.makeDirectory(directory);
-                    }
-                }
-                String firstRemoteFile = directory + "/" + filename;
-
-                InputStream inputStream = file.getInputStream();
-                System.out.println("Start uploading first file");
-
-                boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
-                inputStream.close();
-                if (done) {
-                    System.out.println("The first file is uploaded successfully.");
-                    filenames.add(filename);
-                }
-            }
-        } catch (IOException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
-        } finally {
-            try {
-                if (ftpClient.isConnected()) {
-                    ftpClient.logout();
-                    ftpClient.disconnect();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return ResponseEntity.ok().body(filenames);
-    }
-
-    boolean checkDirectoryExists(String dirPath) throws IOException {
-        ftpClient.changeWorkingDirectory(dirPath);
-        returnCode = ftpClient.getReplyCode();
-        if (returnCode == 550) {
-            return false;
-        }
-        return true;
     }
 }

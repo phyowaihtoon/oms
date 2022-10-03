@@ -1,13 +1,8 @@
 {
   "fields": [
     {
-      "fieldName": "userRole",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
-    },
-    {
       "fieldName": "workflowAuthority",
-      "fieldType": "String",
+      "fieldType": "Integer",
       "fieldValidateRules": ["required"]
     }
   ],
@@ -23,6 +18,13 @@
       "otherEntityRelationshipName": "applicationUser"
     },
     {
+      "relationshipName": "userRole",
+      "otherEntityName": "userRole",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "roleName"
+    },
+    {
       "relationshipName": "department",
       "otherEntityName": "department",
       "relationshipType": "many-to-one",
@@ -35,5 +37,5 @@
   "readOnly": false,
   "pagination": "pagination",
   "name": "ApplicationUser",
-  "changelogDate": "20220922061201"
+  "changelogDate": "20220930154757"
 }
