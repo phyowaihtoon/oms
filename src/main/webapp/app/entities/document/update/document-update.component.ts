@@ -11,8 +11,9 @@ import { Document, DocumentHeader, IDocument, IDocumentHeader } from '../documen
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 
 @Component({
   selector: 'jhi-document-update',
@@ -48,6 +49,7 @@ export class DocumentUpdateComponent implements OnInit {
   _formData: FormData = new FormData();
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
+  _modalRef?: NgbModalRef;
 
   editForm = this.fb.group({
     id: [],
@@ -161,23 +163,48 @@ export class DocumentUpdateComponent implements OnInit {
 
   // save the form here
   save(): void {
+    // this.isSaving = true;
+
+    // if (this._fileList !== undefined) {
+    //   this.onUploadFilestoPath();
+    // } else {
+    //   const documentHeaderdata = this.createFromForm();
+    //   console.log(JSON.stringify(documentHeaderdata));
+    //   if (documentHeaderdata.id! > 0) {
+    //     this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
+    //   } else {
+    //     this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+    //   }
+    // }
+
     this.isSaving = true;
+    this.showLoading('Saving and Uploading Documents');
+
+    const formData = new FormData();
+    this.repositoryurl = this.editForm.get(['reposistory'])!.value;
+
+    const documentHeaderdata = this.createFromForm();
+    formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
 
     if (this._fileList !== undefined) {
-      this.onUploadFilestoPath();
-    } else {
-      const documentHeaderdata = this.createFromForm();
-      console.log(JSON.stringify(documentHeaderdata));
-      if (documentHeaderdata.id! > 0) {
-        this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
-      } else {
-        this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+      for (let i = 0; i < this._fileList.length; i++) {
+        formData.append('files', this._fileList.item(i)!, this._fileList.item(i)!.name + '@' + this.repositoryurl);
       }
     }
   }
 
+  showLoading(loadingMessage?: string): void {
+    this._modalRef = this.modalService.open(LoadingPopupComponent, { size: 'sm', backdrop: 'static', centered: true });
+    this._modalRef.componentInstance.loadingMessage = loadingMessage;
+  }
+
   // change event for doc template select box
   onChange(e: any): void {
+    this.metaHeaderId = e.target.value;
+    this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
+  }
+
+  onDocTemplateChange(e: any): void {
     this.metaHeaderId = e.target.value;
     this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
   }
@@ -294,27 +321,29 @@ export class DocumentUpdateComponent implements OnInit {
     for (let i = 0; i < this._fileList.length; i++) {
       this.addField(this.repositoryurl, this._fileList.item(i)!.name, Math.round(this._fileList.item(i)!.size / 1024));
       this._formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
+      this._formData.delete;
     }
   }
 
-  onUploadFilestoPath(): void {
-    // const formData = new FormData();
-    //  this.repositoryurl = this.editForm.get(['reposistory'])!.value;
+  // onUploadFilestoPath(): void {
 
-    // for (let i = 0; i < this._fileList!.length; i++) {
-    //   formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
-    // }
+  //   // const formData = new FormData();
+  //   //  this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
-    this.documentHeaderService.upload(this._formData!).subscribe(
-      event => {
-        console.log(event);
-        this.resportProgress(event);
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    );
-  }
+  //   // for (let i = 0; i < this._fileList!.length; i++) {
+  //   //   formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
+  //   // }
+
+  //   this.documentHeaderService.upload(this._formData!).subscribe(
+  //     event => {
+  //       console.log(event);
+  //       this.resportProgress(event);
+  //     },
+  //     (error: HttpErrorResponse) => {
+  //       console.log(error);
+  //     }
+  //   );
+  // }
 
   updateStatus(loaded: number, total: number, resquestType: string): void {
     this.fileStatus.status = 'progress';
@@ -434,48 +463,48 @@ export class DocumentUpdateComponent implements OnInit {
     });
   }
 
-  private resportProgress(httpEvent: HttpEvent<string[] | Blob>): void {
-    switch (httpEvent.type) {
-      case HttpEventType.UploadProgress:
-        this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Uploading');
-        break;
-      case HttpEventType.DownloadProgress:
-        this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Downloading');
-        break;
-      case HttpEventType.ResponseHeader:
-        console.log('Header returned', httpEvent);
-        break;
-      case HttpEventType.Response:
-        if (httpEvent.body instanceof Array) {
-          for (const filename of httpEvent.body) {
-            // this.filenames.unshift(filename);
-          }
-        } else {
-          // download logic
-          saveAs(
-            new File([httpEvent.body!], httpEvent.headers.get('File-Name')!, {
-              type: `${httpEvent.headers.get('Content-Type')!};charset=utf-8`,
-            })
-          );
-        }
+  // private resportProgress(httpEvent: HttpEvent<string[] | Blob>): void {
+  //   switch (httpEvent.type) {
+  //     case HttpEventType.UploadProgress:
+  //       this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Uploading');
+  //       break;
+  //     case HttpEventType.DownloadProgress:
+  //       this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Downloading');
+  //       break;
+  //     case HttpEventType.ResponseHeader:
+  //       console.log('Header returned', httpEvent);
+  //       break;
+  //     case HttpEventType.Response:
+  //       if (httpEvent.body instanceof Array) {
+  //         for (const filename of httpEvent.body) {
+  //           // this.filenames.unshift(filename);
+  //         }
+  //       } else {
+  //         // download logic
+  //         saveAs(
+  //           new File([httpEvent.body!], httpEvent.headers.get('File-Name')!, {
+  //             type: `${httpEvent.headers.get('Content-Type')!};charset=utf-8`,
+  //           })
+  //         );
+  //       }
 
-        {
-          this.fileStatus.status = 'done';
-          this._fileList = undefined;
-          const documentHeaderdata = this.createFromForm();
-          console.log(JSON.stringify(documentHeaderdata));
-          if (documentHeaderdata.id! > 0) {
-            this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
-          } else {
-            this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
-          }
-        }
+  //       {
+  //         this.fileStatus.status = 'done';
+  //         this._fileList = undefined;
+  //         const documentHeaderdata = this.createFromForm();
+  //         console.log(JSON.stringify(documentHeaderdata));
+  //         if (documentHeaderdata.id! > 0) {
+  //           this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
+  //         } else {
+  //           this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+  //         }
+  //       }
 
-        break;
-      default: {
-        console.log(httpEvent);
-        break;
-      }
-    }
-  }
+  //       break;
+  //     default: {
+  //       console.log(httpEvent);
+  //       break;
+  //     }
+  //   }
+  // }
 }

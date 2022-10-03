@@ -26,6 +26,7 @@
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "filePath": "File Path",
+      "fileName": "File Name",
       "fileSize": "Size",
       "fileVersion": "Version",
       "remark": "Remark",

@@ -10,10 +10,12 @@ export type MeataDataHeaderSetupArray = HttpResponse<IMetaDataHeader[]>;
 export type MetaDataSetupArray = HttpResponse<IMetaData[]>;
 export type RepositoryHeaderArrayType = HttpResponse<IRepositoryHeader[]>;
 export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
+export type DocumentStatusArrayType = HttpResponse<IDocumentStatus[]>;
+export type PriorityArrayType = HttpResponse<IPriority[]>;
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
-import { IWorkflowAuthority } from './setup.model';
+import { IDocumentStatus, IPriority, IWorkflowAuthority } from './setup.model';
 
 @Injectable({
   providedIn: 'root',
@@ -51,5 +53,15 @@ export class LoadSetupService {
   loadWorkflowAuthority(): Observable<WorkflowAuthorityArrayType> {
     const childURL = '/workflow';
     return this.http.get<IWorkflowAuthority[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadDocumentStatus(): Observable<DocumentStatusArrayType> {
+    const childURL = '/docstatus';
+    return this.http.get<IDocumentStatus[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadPriority(): Observable<PriorityArrayType> {
+    const childURL = '/priority';
+    return this.http.get<IPriority[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }

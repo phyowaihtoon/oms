@@ -33,14 +33,14 @@
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="userRole">
-            <span jhiTranslate="dmsApp.applicationUser.userRole">User Role</span> <fa-icon icon="sort"></fa-icon>
-          </th>
           <th scope="col" jhiSortBy="workflowAuthority">
             <span jhiTranslate="dmsApp.applicationUser.workflowAuthority">Workflow Authority</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col" jhiSortBy="user.login">
             <span jhiTranslate="dmsApp.applicationUser.user">User</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th scope="col" jhiSortBy="userRole.roleName">
+            <span jhiTranslate="dmsApp.applicationUser.userRole">User Role</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col" jhiSortBy="department.departmentName">
             <span jhiTranslate="dmsApp.applicationUser.department">Department</span> <fa-icon icon="sort"></fa-icon>
@@ -53,10 +53,14 @@
           <td>
             <a [routerLink]="['/application-user', applicationUser.id, 'view']">{{ applicationUser.id }}</a>
           </td>
-          <td>{{ applicationUser.userRole }}</td>
           <td>{{ applicationUser.workflowAuthority }}</td>
           <td>
             {{ applicationUser.user?.login }}
+          </td>
+          <td>
+            <div *ngIf="applicationUser.userRole">
+              <a [routerLink]="['/user-role', applicationUser.userRole?.id, 'view']">{{ applicationUser.userRole?.roleName }}</a>
+            </div>
           </td>
           <td>
             <div *ngIf="applicationUser.department">

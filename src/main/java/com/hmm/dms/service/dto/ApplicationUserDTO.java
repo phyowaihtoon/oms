@@ -9,17 +9,14 @@ import javax.validation.constraints.*;
  */
 public class ApplicationUserDTO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     private Long id;
 
     @NotNull
-    private String userRole;
-
-    @NotNull
-    private String workflowAuthority;
+    private Integer workflowAuthority;
 
     private UserDTO user;
+
+    private UserRoleDTO userRole;
 
     private DepartmentDTO department;
 
@@ -31,19 +28,11 @@ public class ApplicationUserDTO implements Serializable {
         this.id = id;
     }
 
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
-
-    public String getWorkflowAuthority() {
+    public Integer getWorkflowAuthority() {
         return workflowAuthority;
     }
 
-    public void setWorkflowAuthority(String workflowAuthority) {
+    public void setWorkflowAuthority(Integer workflowAuthority) {
         this.workflowAuthority = workflowAuthority;
     }
 
@@ -53,6 +42,14 @@ public class ApplicationUserDTO implements Serializable {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public UserRoleDTO getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRoleDTO userRole) {
+        this.userRole = userRole;
     }
 
     public DepartmentDTO getDepartment() {
@@ -89,9 +86,9 @@ public class ApplicationUserDTO implements Serializable {
     public String toString() {
         return "ApplicationUserDTO{" +
             "id=" + getId() +
-            ", userRole='" + getUserRole() + "'" +
-            ", workflowAuthority='" + getWorkflowAuthority() + "'" +
+            ", workflowAuthority=" + getWorkflowAuthority() +
             ", user=" + getUser() +
+            ", userRole=" + getUserRole() +
             ", department=" + getDepartment() +
             "}";
     }

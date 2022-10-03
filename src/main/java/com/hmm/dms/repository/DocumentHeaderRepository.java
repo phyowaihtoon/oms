@@ -30,4 +30,7 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         nativeQuery = true
     )
     Page<DocumentHeader> findAllByDate(Long id, String fieldValues, String createdDate, String repURL, Pageable pageable);
+
+    @Query(value = "SELECT dh FROM DocumentHeader dh where dh.id=?1")
+    DocumentHeader findDocumentHeaderById(Long id);
 }

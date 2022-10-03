@@ -47,4 +47,6 @@ public interface ApplicationUserService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    ApplicationUserDTO findOneByUserID(Long id);
 }
