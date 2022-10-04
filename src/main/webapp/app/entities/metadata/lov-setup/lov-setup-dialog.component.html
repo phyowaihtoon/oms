@@ -20,6 +20,29 @@
               <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
                 <td>
                   <input type="text" class="col-12 form-control" placeholder="LOV Value" formControlName="lovValue" />
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('lovValue')!.invalid &&
+                      (fieldList().controls[i].get('lovValue')!.dirty || fieldList().controls[i].get('lovValue')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('lovValue')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('lovValue')?.errors?.maxlength"
+                      jhiTranslate="entity.validation.maxlength"
+                      [translateValues]="{ max: 50 }"
+                    >
+                      This field cannot be longer than 50 characters.
+                    </small>
+                  </div>
                 </td>
                 <td>
                   <span title="Remove" (click)="removeField(i)">
@@ -43,5 +66,7 @@
     <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
   </button>
 
-  <button type="button" class="btn btn-primary btn-sm" (click)="add()"><fa-icon icon="plus"></fa-icon>&nbsp;<span>Add</span></button>
+  <button [disabled]="editForm.invalid" type="button" class="btn btn-primary btn-sm" (click)="add()">
+    <fa-icon icon="plus"></fa-icon>&nbsp;<span>Add</span>
+  </button>
 </div>

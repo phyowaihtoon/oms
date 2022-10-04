@@ -121,6 +121,7 @@
       "required": "ဖြည့်စွက်ရန်လိုအပ်ပါသည်။",
       "minlength": "အနည်းဆုံးအက္ခရာ {{ min }} လုံးပါရှိရမည်။",
       "maxlength": "အက္ခရာအလုံး {{ max }} ထက်မပိုရပါ။",
+      "fixlength": "အက္ခရာအလုံး {{ max }} ဖြစ်ရပါမည်။",
       "min": "အနည်းဆုံး {{ min }} ဖြစ်ရပါမည်။",
       "max": "အများဆုံး {{ max }} ဖြစ်ရပါမည်။",
       "minbytes": "အနည်းဆုံး {{ min }} bytes ရှိရမည်။",
@@ -128,7 +129,16 @@
       "pattern": "ဤ {{ pattern }} ပုံစံကို လိုက်နာရပါမည်။",
       "number": "ဂဏန်းဖြစ်ရပါမည်။",
       "datetimelocal": "နေ့စွဲနှင့်အချိန် ဖြစ်ရပါမည်။",
-      "patternLogin": "အက္ခရာများ၊ ဂဏန်းနှင့်အီးမေးလ်လိပ်စာများသာပါဝင်ရပါမည်။"
+      "patternLogin": "အက္ခရာများ၊ ဂဏန်းနှင့်အီးမေးလ်လိပ်စာများသာ ပါဝင်ရပါမည်။",
+      "patternNumber": "ဂဏန်းများသာ ပါဝင်ရပါမည်။",
+      "patternLetter": "အက္ခရာများသာ ပါဝင်ရပါမည်။",
+      "minlengthNumber": "ဂဏန်းအနည်းဆုံး {{ min }} လုံးပါရှိရမည်။",
+      "maxlengthNumber": "ဂဏန်းအလုံး {{ max }} ထက်မပိုရပါ။",
+      "exactlengthNumber": "ဂဏန်း {{ max }} လုံးပါရှိရမည်။",
+      "exactlengthCharacter": "အက္ခရာအလုံး {{ max }} လုံးပါရှိရမည်။",
+      "invalidFileFormat": "ရွေးချယ်ထားသော ဖိုင်အမျိုးအစားကို မထောက်ပံ့ပါ။",
+      "invalidFileSize": "ရွေးချယ်ထားသော ဖိုင်အရွယ်အစား အရမ်းကြီးနေပါသည်။",
+      "invalidInputCharacter": "This field can only contain a to z, A to Z, space and under scroll(_)"
     }
   },
   "error": {
