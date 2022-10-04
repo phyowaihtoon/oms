@@ -101,11 +101,11 @@ export class DocumentDetailComponent implements OnInit {
               FileSaver.saveAs(res.body, fileName);
             }
           } else if (res.status === 204) {
-            const code = ResponseCode.WARNING_CODE;
+            const code = ResponseCode.WARNING;
             const message = 'This file does not exist on file server.';
             this.showAlertMessage(code, message);
           } else {
-            const code = ResponseCode.WARNING_CODE;
+            const code = ResponseCode.WARNING;
             const message = 'failed to connect FTP Server. Please, check network connection with FTP Server.';
             this.showAlertMessage(code, message);
           }
