@@ -42,9 +42,12 @@ export class DocumentUpdateComponent implements OnInit {
 
   // filenames: string[] = [];
   fileStatus = { status: '', requestType: '', percent: 0 };
-  _fileList: FileList | undefined;
+  _fileList: File[] = [];
+  _tempFileList: File[] = [];
   repositoryurl: string = '';
   filenames: FileInfo[] = [];
+  _saveButtonTitle: string = '';
+  _listOfFiles: any[] = [];
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
@@ -72,19 +75,19 @@ export class DocumentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ docHeader }) => {
-      this._documentHeader = docHeader;
-      this._documentDetails = this._documentHeader?.docList;
-      if (this._documentHeader !== undefined) {
-        if (this._documentHeader.id !== undefined && docHeader.id !== null) {
-          this.removeAllField();
-        }
-        this.updateForm(docHeader);
-      }
-    });
-
     this.loadSetupService.loadAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
       this.docTypes = res.body;
+
+      this.activatedRoute.data.subscribe(({ docHeader }) => {
+        this._documentHeader = docHeader;
+        this._documentDetails = this._documentHeader?.docList;
+        if (this._documentHeader !== undefined) {
+          if (this._documentHeader.id !== undefined && docHeader.id !== null) {
+            this.removeAllField();
+          }
+          this.updateForm(docHeader);
+        }
+      });
     });
   }
 
@@ -113,6 +116,7 @@ export class DocumentUpdateComponent implements OnInit {
   removeField(i: number): void {
     if (this.docList1().length > 0) {
       this.docList1().removeAt(i);
+      this._fileList.splice(i, 1);
       this.myInputVariable!.nativeElement.value = '';
     }
   }
@@ -162,9 +166,9 @@ export class DocumentUpdateComponent implements OnInit {
     const documentHeaderdata = this.createFromForm();
     formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
 
-    if (this._fileList !== undefined) {
+    if (this._fileList.length > 0) {
       for (let i = 0; i < this._fileList.length; i++) {
-        formData.append('files', this._fileList.item(i)!, this._fileList.item(i)!.name + '@' + this.repositoryurl);
+        formData.append('files', this._fileList[i], this._fileList[i].name + '@' + this.getRepositoryURL(documentHeaderdata.docList, i));
       }
     }
 
@@ -184,17 +188,12 @@ export class DocumentUpdateComponent implements OnInit {
 
   // load metadata by metadaheader ID
   loadMetaDatabyMetadaHeaderID(metaDataHeaderId: number): void {
-    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(metaDataHeaderId).subscribe(
-      (res: HttpResponse<IMetaData[]>) => {
-        if (res.body) {
-          this.metaData = res.body;
-        }
+    this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+      if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
+        this.metaData = metaDataHeaderItem.metaDataDetails;
         this.forControlBind();
-      },
-      () => {
-        console.log('error');
       }
-    );
+    });
   }
 
   forControlBind(): void {
@@ -216,10 +215,6 @@ export class DocumentUpdateComponent implements OnInit {
       } else {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
       }
-
-      // if (metaDataItem.fieldValue !== '') {
-      //   this._fieldValue = metaDataItem.fieldValue?.split('|');
-      // }
     });
   }
 
@@ -300,12 +295,34 @@ export class DocumentUpdateComponent implements OnInit {
   // define a function to upload files
   onUploadFiles(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this._fileList = target.files!;
+
+    for (let i = 0; i <= target.files!.length - 1; i++) {
+      const selectedFile = target.files![i];
+      this._tempFileList.push(selectedFile);
+    }
+
     this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
-    for (let i = 0; i < this._fileList.length; i++) {
-      this.addField(this.repositoryurl, this._fileList.item(i)!.name, Math.round(this._fileList.item(i)!.size / 1024));
+    for (let i = 0; i < this._tempFileList.length; i++) {
+      this.addField(this.repositoryurl, this._tempFileList[i].name, Math.round(this._tempFileList[i].size / 1024));
+      this._fileList.push(this._tempFileList[i]);
     }
+
+    this._tempFileList = [];
+    this.myInputVariable!.nativeElement.value = '';
+  }
+
+  getRepositoryURL(iDocument: IDocument[] | undefined, i: number): string {
+    return iDocument![i].filePath!;
+  }
+
+  saveBtnTitleChange(): string {
+    if (this.editForm.valid) {
+      this._saveButtonTitle = '';
+    } else {
+      this._saveButtonTitle = 'Please fill all required fields.';
+    }
+    return this._saveButtonTitle;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
@@ -320,7 +337,7 @@ export class DocumentUpdateComponent implements OnInit {
 
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
-        this._fileList = undefined;
+        this._fileList = [];
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
@@ -400,26 +417,23 @@ export class DocumentUpdateComponent implements OnInit {
     const fn = fieldName.split('|');
     const fv = fieldValue.split('|');
 
-    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(metaDataHeaderId).subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.metaDataUpdate = res.body;
-
-        this.metaDataUpdate?.forEach(metaDataItem => {
-          const id: number = metaDataItem.id!;
-          const idStr: string = id.toString();
-          const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr + '_fieldName';
-
-          for (let i = 0; i < fn.length; i++) {
-            if (fn[i].includes(metaDataItem.fieldName!)) {
-              this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
-            }
-          }
-        });
-      },
-      () => {
-        console.log('error');
+    this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+      if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
+        this.metaDataUpdate = metaDataHeaderItem.metaDataDetails!;
       }
-    );
+
+      this.metaDataUpdate?.forEach(metaDataItem => {
+        const id: number = metaDataItem.id!;
+        const idStr: string = id.toString();
+        const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr + '_fieldName';
+
+        for (let i = 0; i < fn.length; i++) {
+          if (fn[i].includes(metaDataItem.fieldName!)) {
+            this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
+          }
+        }
+      });
+    });
   }
 
   protected updateDocumentDataDetails(docList: IDocument[] | undefined): void {
@@ -431,7 +445,6 @@ export class DocumentUpdateComponent implements OnInit {
       this.docList1().controls[index].get(['fileSize'])!.setValue(data.fileSize);
       this.docList1().controls[index].get(['remark'])!.setValue(data.remark);
       this.docList1().controls[index].get(['version'])!.setValue(data.version);
-      // this.onFieldTypeChange(index);
       index = index + 1;
     });
   }

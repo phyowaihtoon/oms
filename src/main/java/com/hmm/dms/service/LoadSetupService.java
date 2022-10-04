@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 public interface LoadSetupService {
     public List<MetaDataHeaderDTO> getAllMetaDataHeader();
 
+    public List<MetaDataDTO> getAllMetaData();
+
     public List<MetaDataDTO> getMetaDatabyHeaderId(Long id);
 
     public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryDTO dto, Pageable pageable);
