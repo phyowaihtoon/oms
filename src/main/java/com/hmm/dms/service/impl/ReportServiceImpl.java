@@ -61,18 +61,18 @@ public class ReportServiceImpl implements ReportService {
             parameters.put("toDate", rptPara.getRptPS2());
             String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
             if (rptFilePath == null || rptFilePath.equals("")) {
-                replyMessage.setCode(ResponseCode.ERROR);
+                replyMessage.setCode(ResponseCode.ERROR_E00);
                 replyMessage.setMessage("Report File cannot be generated");
                 return replyMessage;
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage("Report columns do not match." + ex.getMessage());
             return replyMessage;
         } catch (Exception ex) {
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
             return replyMessage;
         }

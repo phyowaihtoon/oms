@@ -35,17 +35,17 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
     const warningHeader = ['modal-header', 'dms-modal-header', 'bg-warning', 'text-white'];
     const infoHeader = ['modal-header', 'dms-modal-header', 'bg-info', 'text-white'];
 
-    if (this.code === ResponseCode.SUCCESS_CODE) {
+    if (this.code === ResponseCode.SUCCESS) {
       this.modalHeaderClass = successHeader;
       this.infoTitle = ResponseCode.SUCCESS_MSG;
       this.displayCode = 'Code : '.concat(this.code);
       this.displayMessage = 'Message : '.concat(this.message ? this.message : '');
-    } else if (this.code === ResponseCode.ERROR_CODE) {
+    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.ERROR_E01) {
       this.modalHeaderClass = errorHeader;
       this.infoTitle = ResponseCode.ERROR_MSG;
       this.displayCode = 'Code : '.concat(this.code);
       this.displayMessage = 'Message : '.concat(this.message ? this.message : '');
-    } else if (this.code === ResponseCode.WARNING_CODE) {
+    } else if (this.code === ResponseCode.WARNING) {
       this.modalHeaderClass = warningHeader;
       this.infoTitle = ResponseCode.WARNING_MSG;
       this.displayCode = 'Code : '.concat(this.code);
@@ -69,11 +69,11 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
     const btnWarning = ['btn', 'btn-warning'];
     const btnInfo = ['btn', 'btn-info'];
 
-    if (this.code === ResponseCode.SUCCESS_CODE) {
+    if (this.code === ResponseCode.SUCCESS) {
       this.modalButtonClass = btnSuccess;
-    } else if (this.code === ResponseCode.ERROR_CODE) {
+    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.ERROR_E01) {
       this.modalButtonClass = btnDanger;
-    } else if (this.code === ResponseCode.WARNING_CODE) {
+    } else if (this.code === ResponseCode.WARNING) {
       this.modalButtonClass = btnWarning;
     } else if (this.code === ResponseCode.RESPONSE_FAILED_CODE) {
       this.modalButtonClass = btnDanger;

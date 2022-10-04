@@ -336,8 +336,7 @@ export class DocumentUpdateComponent implements OnInit {
     const replyMessage: IReplyMessage | null = result.body;
 
     if (replyMessage !== null) {
-      if (replyMessage.code === ResponseCode.SUCCESS_CODE) {
-        // this._fileList = undefined;
+      if (replyMessage.code === ResponseCode.SUCCESS) {
         this._fileList = [];
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
         const replyCode = replyMessage.code;
