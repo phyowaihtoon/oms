@@ -53,11 +53,8 @@
 
     <div class="row col-12">
       <div class="form-group col-6">
-        <!-- <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template </label
-        ><span style="color: red">&nbsp;*</span>
-        <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId"> -->
-
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template</label>
+        <span style="color: red">*</span>
         <select (change)="onDocTemplateChange($event)" class="form-control" formControlName="metaDataHeaderId">
           <option [value]="doctype.id" *ngFor="let doctype of docTypes">
             {{ doctype.docTitle }}

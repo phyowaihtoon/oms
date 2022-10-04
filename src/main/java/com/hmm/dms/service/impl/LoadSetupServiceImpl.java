@@ -118,4 +118,10 @@ public class LoadSetupServiceImpl implements LoadSetupService {
 
         return data;
     }
+
+    @Override
+    public List<MetaDataDTO> getAllMetaData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
