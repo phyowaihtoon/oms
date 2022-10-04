@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.hmm.dms.IntegrationTest;
 import com.hmm.dms.domain.ApplicationUser;
 import com.hmm.dms.domain.User;
+import com.hmm.dms.domain.UserRole;
 import com.hmm.dms.repository.ApplicationUserRepository;
 import com.hmm.dms.service.dto.ApplicationUserDTO;
 import com.hmm.dms.service.mapper.ApplicationUserMapper;
@@ -32,13 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class ApplicationUserResourceIT {
 
-    private static final String DEFAULT_USER_ROLE = "AAAAAAAAAA";
-    private static final String UPDATED_USER_ROLE = "BBBBBBBBBB";
-
-    private static final String DEFAULT_WORKFLOW_AUTHORITY = "AAAAAAAAAA";
-    private static final String UPDATED_WORKFLOW_AUTHORITY = "BBBBBBBBBB";
-
-    private static final String DEFAULT_DEL_FLAG = "A";
+    private static final Integer DEFAULT_WORKFLOW_AUTHORITY = 1;
+    private static final Integer UPDATED_WORKFLOW_AUTHORITY = 2;
 
     private static final String ENTITY_API_URL = "/api/application-users";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -67,12 +63,22 @@ class ApplicationUserResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ApplicationUser createEntity(EntityManager em) {
-        ApplicationUser applicationUser = new ApplicationUser().userRole(DEFAULT_USER_ROLE).workflowAuthority(DEFAULT_WORKFLOW_AUTHORITY);
+        ApplicationUser applicationUser = new ApplicationUser().workflowAuthority(DEFAULT_WORKFLOW_AUTHORITY);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
         em.flush();
         applicationUser.setUser(user);
+        // Add required entity
+        UserRole userRole;
+        if (TestUtil.findAll(em, UserRole.class).isEmpty()) {
+            userRole = UserRoleResourceIT.createEntity(em);
+            em.persist(userRole);
+            em.flush();
+        } else {
+            userRole = TestUtil.findAll(em, UserRole.class).get(0);
+        }
+        applicationUser.setUserRole(userRole);
         return applicationUser;
     }
 
@@ -83,12 +89,22 @@ class ApplicationUserResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ApplicationUser createUpdatedEntity(EntityManager em) {
-        ApplicationUser applicationUser = new ApplicationUser().userRole(UPDATED_USER_ROLE).workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
+        ApplicationUser applicationUser = new ApplicationUser().workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
         // Add required entity
         User user = UserResourceIT.createEntity(em);
         em.persist(user);
         em.flush();
         applicationUser.setUser(user);
+        // Add required entity
+        UserRole userRole;
+        if (TestUtil.findAll(em, UserRole.class).isEmpty()) {
+            userRole = UserRoleResourceIT.createUpdatedEntity(em);
+            em.persist(userRole);
+            em.flush();
+        } else {
+            userRole = TestUtil.findAll(em, UserRole.class).get(0);
+        }
+        applicationUser.setUserRole(userRole);
         return applicationUser;
     }
 
@@ -113,7 +129,6 @@ class ApplicationUserResourceIT {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         assertThat(applicationUserList).hasSize(databaseSizeBeforeCreate + 1);
         ApplicationUser testApplicationUser = applicationUserList.get(applicationUserList.size() - 1);
-        assertThat(testApplicationUser.getUserRole()).isEqualTo(DEFAULT_USER_ROLE);
         assertThat(testApplicationUser.getWorkflowAuthority()).isEqualTo(DEFAULT_WORKFLOW_AUTHORITY);
     }
 
@@ -136,26 +151,6 @@ class ApplicationUserResourceIT {
         // Validate the ApplicationUser in the database
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         assertThat(applicationUserList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    void checkUserRoleIsRequired() throws Exception {
-        int databaseSizeBeforeTest = applicationUserRepository.findAll().size();
-        // set the field null
-        applicationUser.setUserRole(null);
-
-        // Create the ApplicationUser, which fails.
-        ApplicationUserDTO applicationUserDTO = applicationUserMapper.toDto(applicationUser);
-
-        restApplicationUserMockMvc
-            .perform(
-                post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(applicationUserDTO))
-            )
-            .andExpect(status().isBadRequest());
-
-        List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
-        assertThat(applicationUserList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -190,9 +185,7 @@ class ApplicationUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(applicationUser.getId().intValue())))
-            .andExpect(jsonPath("$.[*].userRole").value(hasItem(DEFAULT_USER_ROLE)))
-            .andExpect(jsonPath("$.[*].workflowAuthority").value(hasItem(DEFAULT_WORKFLOW_AUTHORITY)))
-            .andExpect(jsonPath("$.[*].delFlag").value(hasItem(DEFAULT_DEL_FLAG)));
+            .andExpect(jsonPath("$.[*].workflowAuthority").value(hasItem(DEFAULT_WORKFLOW_AUTHORITY)));
     }
 
     @Test
@@ -207,9 +200,7 @@ class ApplicationUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(applicationUser.getId().intValue()))
-            .andExpect(jsonPath("$.userRole").value(DEFAULT_USER_ROLE))
-            .andExpect(jsonPath("$.workflowAuthority").value(DEFAULT_WORKFLOW_AUTHORITY))
-            .andExpect(jsonPath("$.delFlag").value(DEFAULT_DEL_FLAG));
+            .andExpect(jsonPath("$.workflowAuthority").value(DEFAULT_WORKFLOW_AUTHORITY));
     }
 
     @Test
@@ -231,7 +222,7 @@ class ApplicationUserResourceIT {
         ApplicationUser updatedApplicationUser = applicationUserRepository.findById(applicationUser.getId()).get();
         // Disconnect from session so that the updates on updatedApplicationUser are not directly saved in db
         em.detach(updatedApplicationUser);
-        updatedApplicationUser.userRole(UPDATED_USER_ROLE).workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
+        updatedApplicationUser.workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
         ApplicationUserDTO applicationUserDTO = applicationUserMapper.toDto(updatedApplicationUser);
 
         restApplicationUserMockMvc
@@ -246,7 +237,6 @@ class ApplicationUserResourceIT {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         assertThat(applicationUserList).hasSize(databaseSizeBeforeUpdate);
         ApplicationUser testApplicationUser = applicationUserList.get(applicationUserList.size() - 1);
-        assertThat(testApplicationUser.getUserRole()).isEqualTo(UPDATED_USER_ROLE);
         assertThat(testApplicationUser.getWorkflowAuthority()).isEqualTo(UPDATED_WORKFLOW_AUTHORITY);
     }
 
@@ -329,7 +319,7 @@ class ApplicationUserResourceIT {
         ApplicationUser partialUpdatedApplicationUser = new ApplicationUser();
         partialUpdatedApplicationUser.setId(applicationUser.getId());
 
-        partialUpdatedApplicationUser.userRole(UPDATED_USER_ROLE);
+        partialUpdatedApplicationUser.workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
 
         restApplicationUserMockMvc
             .perform(
@@ -343,8 +333,7 @@ class ApplicationUserResourceIT {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         assertThat(applicationUserList).hasSize(databaseSizeBeforeUpdate);
         ApplicationUser testApplicationUser = applicationUserList.get(applicationUserList.size() - 1);
-        assertThat(testApplicationUser.getUserRole()).isEqualTo(UPDATED_USER_ROLE);
-        assertThat(testApplicationUser.getWorkflowAuthority()).isEqualTo(DEFAULT_WORKFLOW_AUTHORITY);
+        assertThat(testApplicationUser.getWorkflowAuthority()).isEqualTo(UPDATED_WORKFLOW_AUTHORITY);
     }
 
     @Test
@@ -359,7 +348,7 @@ class ApplicationUserResourceIT {
         ApplicationUser partialUpdatedApplicationUser = new ApplicationUser();
         partialUpdatedApplicationUser.setId(applicationUser.getId());
 
-        partialUpdatedApplicationUser.userRole(UPDATED_USER_ROLE).workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
+        partialUpdatedApplicationUser.workflowAuthority(UPDATED_WORKFLOW_AUTHORITY);
 
         restApplicationUserMockMvc
             .perform(
@@ -373,7 +362,6 @@ class ApplicationUserResourceIT {
         List<ApplicationUser> applicationUserList = applicationUserRepository.findAll();
         assertThat(applicationUserList).hasSize(databaseSizeBeforeUpdate);
         ApplicationUser testApplicationUser = applicationUserList.get(applicationUserList.size() - 1);
-        assertThat(testApplicationUser.getUserRole()).isEqualTo(UPDATED_USER_ROLE);
         assertThat(testApplicationUser.getWorkflowAuthority()).isEqualTo(UPDATED_WORKFLOW_AUTHORITY);
     }
 

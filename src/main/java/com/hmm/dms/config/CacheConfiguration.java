@@ -56,6 +56,7 @@ public class CacheConfiguration {
             createCache(cm, com.hmm.dms.domain.RoleMenuMap.class.getName());
             createCache(cm, com.hmm.dms.domain.Department.class.getName());
             createCache(cm, com.hmm.dms.domain.ApplicationUser.class.getName());
+            createCache(cm, com.hmm.dms.domain.UserRole.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

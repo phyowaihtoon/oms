@@ -5,6 +5,7 @@ import com.hmm.dms.service.dto.ReplyMessage;
 import com.hmm.dms.service.dto.RptDataDTO;
 import com.hmm.dms.service.dto.RptParamsDTO;
 import com.hmm.dms.util.ReportPrint;
+import com.hmm.dms.util.ResponseCode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +38,8 @@ public class ReportServiceImpl implements ReportService {
             query.setParameter("toDate", rptPara.getRptPS2());
             List<Object[]> resultList = query.getResultList();
             if (resultList == null || resultList.size() == 0) {
-                replyMessage.setCode("R001");
-                replyMessage.setDescription("NO DATA FOUND");
+                replyMessage.setCode(ResponseCode.WARNING);
+                replyMessage.setMessage("NO DATA FOUND");
                 return replyMessage;
             }
             List<RptDataDTO> documentList = null;
@@ -60,24 +61,24 @@ public class ReportServiceImpl implements ReportService {
             parameters.put("toDate", rptPara.getRptPS2());
             String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
             if (rptFilePath == null || rptFilePath.equals("")) {
-                replyMessage.setCode("R002");
-                replyMessage.setDescription("Report File cannot be generated");
+                replyMessage.setCode(ResponseCode.ERROR);
+                replyMessage.setMessage("Report File cannot be generated");
                 return replyMessage;
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            replyMessage.setCode("R003");
-            replyMessage.setDescription("Report columns do not match.");
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setMessage("Report columns do not match." + ex.getMessage());
             return replyMessage;
-        } catch (Exception e) {
-            e.printStackTrace();
-            replyMessage.setCode("R004");
-            replyMessage.setDescription("Report generation failed");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setMessage(ex.getMessage());
             return replyMessage;
         }
 
-        replyMessage.setCode("000");
-        replyMessage.setDescription("Report is successfully generated");
+        replyMessage.setCode(ResponseCode.SUCCESS);
+        replyMessage.setMessage("Report is successfully generated");
         replyMessage.setData(rptPara);
         return replyMessage;
     }

@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -7,12 +7,14 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { saveAs } from 'file-saver';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
+import { Document, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
+import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 
 @Component({
   selector: 'jhi-document-update',
@@ -45,6 +47,8 @@ export class DocumentUpdateComponent implements OnInit {
   filenames: FileInfo[] = [];
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
+
+  _modalRef?: NgbModalRef;
 
   editForm = this.fb.group({
     id: [],
@@ -150,22 +154,30 @@ export class DocumentUpdateComponent implements OnInit {
   // save the form here
   save(): void {
     this.isSaving = true;
+    this.showLoading('Saving and Uploading Documents');
+
+    const formData = new FormData();
+    this.repositoryurl = this.editForm.get(['reposistory'])!.value;
+
+    const documentHeaderdata = this.createFromForm();
+    formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
 
     if (this._fileList !== undefined) {
-      this.onUploadFilestoPath();
-    } else {
-      const documentHeaderdata = this.createFromForm();
-      console.log(JSON.stringify(documentHeaderdata));
-      if (documentHeaderdata.id! > 0) {
-        this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
-      } else {
-        this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
+      for (let i = 0; i < this._fileList.length; i++) {
+        formData.append('files', this._fileList.item(i)!, this._fileList.item(i)!.name + '@' + this.repositoryurl);
       }
+    }
+
+    const docHeaderID = documentHeaderdata.id ?? undefined;
+    if (docHeaderID !== undefined) {
+      this.subscribeToSaveResponse(this.documentHeaderService.updateAndUploadDocuments(formData, docHeaderID));
+    } else {
+      this.subscribeToSaveResponse(this.documentHeaderService.createAndUploadDocuments(formData));
     }
   }
 
   // change event for doc template select box
-  onChange(e: any): void {
+  onDocTemplateChange(e: any): void {
     this.metaHeaderId = e.target.value;
     this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
   }
@@ -198,16 +210,24 @@ export class DocumentUpdateComponent implements OnInit {
       const id: number = metaDataItem.id!;
       const idStr: string = id.toString();
       const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr;
+
       if (metaDataItem.isRequired === 'YES') {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl('', Validators.required));
       } else {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
       }
 
-      if (metaDataItem.fieldValue !== '') {
-        this._fieldValue = metaDataItem.fieldValue?.split('|');
-      }
+      // if (metaDataItem.fieldValue !== '') {
+      //   this._fieldValue = metaDataItem.fieldValue?.split('|');
+      // }
     });
+  }
+
+  getFieldValues(fieldValue?: string): string[] {
+    if (fieldValue !== undefined) {
+      return fieldValue.split('|');
+    }
+    return [];
   }
 
   getFieldName(group: FormGroup): string {
@@ -248,10 +268,19 @@ export class DocumentUpdateComponent implements OnInit {
     return this.fValue.slice(0, -1);
   }
 
-  showInfoMessage(msg1: string, msg2?: string): void {
+  showAlertMessage(msg1: string, msg2?: string): void {
     const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
-    modalRef.componentInstance.messageLine1 = msg1;
-    modalRef.componentInstance.messageLine2 = msg2;
+    modalRef.componentInstance.code = msg1;
+    modalRef.componentInstance.message = msg2;
+  }
+
+  showLoading(loadingMessage?: string): void {
+    this._modalRef = this.modalService.open(LoadingPopupComponent, { size: 'sm', backdrop: 'static', centered: true });
+    this._modalRef.componentInstance.loadingMessage = loadingMessage;
+  }
+
+  hideLoading(): void {
+    this._modalRef?.close();
   }
 
   checkRepositoryURL(inputFileElement: HTMLInputElement): void {
@@ -260,9 +289,9 @@ export class DocumentUpdateComponent implements OnInit {
       this.editForm.get(['reposistory'])!.value === undefined ||
       this.editForm.get(['reposistory'])!.value.length === 0
     ) {
-      const message1 = 'Please, select repository URL (File Directory) first!';
+      const message1 = 'Please, select Repository URL first!';
       const message2 = 'Before choosing attached files, you need to select the repository location where your files will be uploaded.';
-      this.showInfoMessage(message1, message2);
+      this.showAlertMessage(message1, message2);
     } else {
       inputFileElement.click();
     }
@@ -279,50 +308,42 @@ export class DocumentUpdateComponent implements OnInit {
     }
   }
 
-  onUploadFilestoPath(): void {
-    const formData = new FormData();
-    this.repositoryurl = this.editForm.get(['reposistory'])!.value;
-
-    for (let i = 0; i < this._fileList!.length; i++) {
-      formData.append('files', this._fileList!.item(i)!, this._fileList!.item(i)!.name + '@' + this.repositoryurl);
-    }
-
-    this.documentHeaderService.upload(formData).subscribe(
-      event => {
-        console.log(event);
-        this.resportProgress(event);
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    );
-  }
-
-  updateStatus(loaded: number, total: number, resquestType: string): void {
-    this.fileStatus.status = 'progress';
-    this.fileStatus.requestType = resquestType;
-    this.fileStatus.percent = Math.round((100 * loaded) / total);
-  }
-
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<IDocumentHeader>>): void {
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
       () => this.onSaveError()
     );
   }
 
-  protected onSaveSuccess(result: HttpResponse<IDocumentHeader>): void {
-    this.editForm.get(['id'])?.setValue(result.body?.id);
-    const message1 = 'Document Mapping is saved successfully';
-    this.showInfoMessage(message1);
+  protected onSaveSuccess(result: HttpResponse<IReplyMessage>): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.SUCCESS_CODE) {
+        this._fileList = undefined;
+        this.editForm.get(['id'])?.setValue(replyMessage.data.id);
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      } else {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    } else {
+      this.onSaveError();
+    }
   }
 
   protected onSaveError(): void {
-    console.log('error');
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
   }
 
   protected onSaveFinalize(): void {
     this.isSaving = false;
+    this.hideLoading();
   }
 
   protected createFromForm(): IDocumentHeader {
@@ -348,7 +369,6 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   protected createFileListDetail(data: any): IDocument {
-    const reposistory = this.editForm.get(['reposistory'])!.value;
     return {
       ...new Document(),
       id: undefined,
@@ -414,50 +434,5 @@ export class DocumentUpdateComponent implements OnInit {
       // this.onFieldTypeChange(index);
       index = index + 1;
     });
-  }
-
-  private resportProgress(httpEvent: HttpEvent<string[] | Blob>): void {
-    switch (httpEvent.type) {
-      case HttpEventType.UploadProgress:
-        this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Uploading');
-        break;
-      case HttpEventType.DownloadProgress:
-        this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Downloading');
-        break;
-      case HttpEventType.ResponseHeader:
-        console.log('Header returned', httpEvent);
-        break;
-      case HttpEventType.Response:
-        if (httpEvent.body instanceof Array) {
-          for (const filename of httpEvent.body) {
-            // this.filenames.unshift(filename);
-          }
-        } else {
-          // download logic
-          saveAs(
-            new File([httpEvent.body!], httpEvent.headers.get('File-Name')!, {
-              type: `${httpEvent.headers.get('Content-Type')!};charset=utf-8`,
-            })
-          );
-        }
-
-        {
-          this.fileStatus.status = 'done';
-          this._fileList = undefined;
-          const documentHeaderdata = this.createFromForm();
-          console.log(JSON.stringify(documentHeaderdata));
-          if (documentHeaderdata.id! > 0) {
-            this.subscribeToSaveResponse(this.documentHeaderService.update(documentHeaderdata));
-          } else {
-            this.subscribeToSaveResponse(this.documentHeaderService.create(documentHeaderdata));
-          }
-        }
-
-        break;
-      default: {
-        console.log(httpEvent);
-        break;
-      }
-    }
   }
 }

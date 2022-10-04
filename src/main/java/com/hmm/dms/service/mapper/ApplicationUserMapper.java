@@ -7,9 +7,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link ApplicationUser} and its DTO {@link ApplicationUserDTO}.
  */
-@Mapper(componentModel = "spring", uses = { UserMapper.class, DepartmentMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class, UserRoleMapper.class, DepartmentMapper.class })
 public interface ApplicationUserMapper extends EntityMapper<ApplicationUserDTO, ApplicationUser> {
     @Mapping(target = "user", source = "user", qualifiedByName = "login")
+    @Mapping(target = "userRole", source = "userRole")
     @Mapping(target = "department", source = "department")
     ApplicationUserDTO toDto(ApplicationUser s);
 }

@@ -14,10 +14,6 @@
         <dd>
           <span>{{ applicationUser.id }}</span>
         </dd>
-        <dt><span jhiTranslate="dmsApp.applicationUser.userRole">User Role</span></dt>
-        <dd>
-          <span>{{ applicationUser.userRole }}</span>
-        </dd>
         <dt><span jhiTranslate="dmsApp.applicationUser.workflowAuthority">Workflow Authority</span></dt>
         <dd>
           <span>{{ applicationUser.workflowAuthority }}</span>
@@ -25,6 +21,12 @@
         <dt><span jhiTranslate="dmsApp.applicationUser.user">User</span></dt>
         <dd>
           <span>{{ applicationUser.user?.login }}</span>
+        </dd>
+        <dt><span jhiTranslate="dmsApp.applicationUser.userRole">User Role</span></dt>
+        <dd>
+          <div *ngIf="applicationUser.userRole">
+            <a [routerLink]="['/user-role', applicationUser.userRole?.id, 'view']">{{ applicationUser.userRole?.roleName }}</a>
+          </div>
         </dd>
         <dt><span jhiTranslate="dmsApp.applicationUser.department">Department</span></dt>
         <dd>
