@@ -150,6 +150,7 @@
       "required": "This field is required.",
       "minlength": "This field is required to be at least {{ min }} characters.",
       "maxlength": "This field cannot be longer than {{ max }} characters.",
+      "fixlength": "This field must be {{max}} characters.",
       "min": "This field should be at least {{ min }}.",
       "max": "This field cannot be more than {{ max }}.",
       "minbytes": "This field should be at least {{ min }} bytes.",
@@ -157,7 +158,16 @@
       "pattern": "This field should follow pattern for {{ pattern }}.",
       "number": "This field should be a number.",
       "datetimelocal": "This field should be a date and time.",
-      "patternLogin": "This field can only contain letters, digits and e-mail addresses."
+      "patternLogin": "This field can only contain letters, digits and e-mail addresses.",
+      "patternNumber": "This field can only contain digits.",
+      "patternLetter": "This field can only contain letters.",
+      "minlengthNumber": "This field is required to be at least {{ min }} digits.",
+      "maxlengthNumber": "This field cannot be longer than {{ max }} digits.",
+      "exactlengthNumber": "This field must be {{ max }} digits.",
+      "exactlengthCharacter": "This field must be {{ max }} characters.",
+      "invalidFileFormat": "Selected file format is not supported.",
+      "invalidFileSize": "File size is too big.",
+      "invalidInputCharacter": "This field can only contain a to z, A to Z, space and under scroll(_)"
     }
   },
   "error": {

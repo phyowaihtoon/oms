@@ -23,7 +23,13 @@
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "search": "SEARCH",
-      "result": "SEARCH RESULT"
+      "result": "SEARCH RESULT",
+      "fieldName": "Field Name",
+      "fieldType": "Field Type",
+      "fieldValue": "Field Value",
+      "fieldMandatory": "Field Mandatory",
+      "fieldOrder": "Field Order",
+      "fieldAction": "Add/ Remove"
     }
   }
 }
