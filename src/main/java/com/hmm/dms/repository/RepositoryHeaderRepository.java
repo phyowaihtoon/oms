@@ -1,6 +1,5 @@
 package com.hmm.dms.repository;
 
-import com.hmm.dms.domain.RepositoryDomain;
 import com.hmm.dms.domain.RepositoryHeader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

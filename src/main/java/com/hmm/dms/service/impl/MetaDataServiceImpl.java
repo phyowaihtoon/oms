@@ -113,7 +113,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 
     @Override
     public Page<MetaDataHeaderDTO> findAll(Pageable pageable) {
-        log.debug("Requesting to get all Categories");
+        log.debug("Requesting to get all Metadata");
         return metaDataHeaderRepository.findAll(pageable).map(metaDataHeaderMapper::toDto);
     }
 
@@ -122,6 +122,7 @@ public class MetaDataServiceImpl implements MetaDataService {
         String docTitle = dto.getDocTitle();
         if (docTitle == null || docTitle.equals("null") || docTitle.isEmpty()) docTitle = ""; else docTitle = docTitle.trim();
 
+        log.debug("Requesting to get all Metadata__" + docTitle);
         if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitleAndDate(docTitle, createdDate, pageable);

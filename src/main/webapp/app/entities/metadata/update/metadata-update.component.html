@@ -39,8 +39,24 @@
 
     <div class="form-group">
       <div class="form-group col-6">
-        <label class="form-control-label" jhiTranslate="dmsApp.metaData.docTitle" for="field_docTitle">Document Title</label>
+        <label class="form-control-label" for="field_docTitle"
+          >{{ 'dmsApp.metaData.docTitle' | translate }}<span class="required-field">*</span></label
+        >
         <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
+        <div *ngIf="editForm.get('docTitle')!.invalid && (editForm.get('docTitle')!.dirty || editForm.get('docTitle')!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get('docTitle')?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('docTitle')?.errors?.maxlength"
+            jhiTranslate="entity.validation.maxlength"
+            [translateValues]="{ max: 100 }"
+          >
+            This field cannot be longer than 100 characters.
+          </small>
+        </div>
       </div>
     </div>
 
@@ -51,23 +67,78 @@
           <table class="table" formArrayName="fieldList">
             <thead>
               <tr>
-                <th class="text-center" style="width: 25%">Field Name</th>
-                <th class="text-center" style="width: 10%">Field Type</th>
-                <th class="text-center" style="width: 25%">Field Value</th>
-                <th class="text-center" style="width: 10%">Field Mandatory</th>
-                <th class="text-center" style="width: 15%">Field Order</th>
-                <th class="text-center" style="width: 10%">Add/ Remove</th>
+                <th class="text-center" style="width: 25%">
+                  {{ 'dmsApp.metaData.fieldName' | translate }}<span class="required-field">*</span>
+                </th>
+                <th class="text-center" style="width: 10%">
+                  {{ 'dmsApp.metaData.fieldType' | translate }}<span class="required-field">*</span>
+                </th>
+                <th class="text-center" style="width: 25%">
+                  {{ 'dmsApp.metaData.fieldValue' | translate }}<span class="required-field">*</span>
+                </th>
+                <th class="text-center" style="width: 10%">
+                  {{ 'dmsApp.metaData.fieldMandatory' | translate }}<span class="required-field">*</span>
+                </th>
+                <th class="text-center" style="width: 15%">
+                  {{ 'dmsApp.metaData.fieldOrder' | translate }}<span class="required-field">*</span>
+                </th>
+                <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
                 <td>
                   <input type="text" class="col-12 form-control" placeholder="Field Name" formControlName="fieldName" />
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('fieldName')!.invalid &&
+                      (fieldList().controls[i].get('fieldName')!.dirty || fieldList().controls[i].get('fieldName')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('fieldName')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('fieldName')?.errors?.pattern"
+                      jhiTranslate="entity.validation.patternLetter"
+                    >
+                      This field can only contain letters.
+                    </small>
+
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('fieldName')?.errors?.maxlength"
+                      jhiTranslate="entity.validation.maxlength"
+                      [translateValues]="{ max: 50 }"
+                    >
+                      This field cannot be longer than 50 characters.
+                    </small>
+                  </div>
                 </td>
                 <td>
                   <select class="form-control" name="fieldType" formControlName="fieldType" (change)="onFieldTypeChange(i)">
                     <option [value]="data.value" *ngFor="let data of fieldTyepList">{{ data.caption }}</option>
                   </select>
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('fieldType')!.invalid &&
+                      (fieldList().controls[i].get('fieldType')!.dirty || fieldList().controls[i].get('fieldType')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('fieldType')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+                  </div>
                 </td>
 
                 <td>
@@ -99,16 +170,61 @@
                       </span>
                     </div>
                   </div>
+
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('fieldType')?.value === 'LOV' &&
+                      fieldList().controls[i].get('fieldValue')!.invalid &&
+                      (fieldList().controls[i].get('fieldValue')!.dirty || fieldList().controls[i].get('fieldValue')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('fieldValue')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+                  </div>
                 </td>
 
                 <td>
                   <select class="form-control" name="isRequired" formControlName="isRequired">
                     <option [value]="data.value" *ngFor="let data of mendatoryList">{{ data.caption }}</option>
                   </select>
+
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('isRequired')!.invalid &&
+                      (fieldList().controls[i].get('isRequired')!.dirty || fieldList().controls[i].get('isRequired')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('isRequired')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+                  </div>
                 </td>
 
                 <td>
                   <input type="number" class="col-12 form-control" readonly placeholder="Field Order" formControlName="fieldOrder" />
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('fieldOrder')!.invalid &&
+                      (fieldList().controls[i].get('fieldOrder')!.dirty || fieldList().controls[i].get('fieldOrder')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('fieldOrder')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+                  </div>
                 </td>
 
                 <td>
