@@ -74,4 +74,10 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
         log.debug("Request to delete ApplicationUser : {}", id);
         applicationUserRepository.deleteById(id);
     }
+
+    @Override
+    public ApplicationUserDTO findOneByUserID(Long id) {
+        ApplicationUser entity = applicationUserRepository.findOneByUserID(id);
+        return applicationUserMapper.toDto(entity);
+    }
 }

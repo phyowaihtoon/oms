@@ -73,8 +73,8 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
 
     @Override
     public DocumentHeaderDTO findAllDocumentsByHeaderId(Long id) {
-        Optional<DocumentHeader> docHeader = this.documentHeaderRepository.findById(id);
-        DocumentHeaderDTO docHeaderDTO = this.documentHeaderMapper.toDto(docHeader.get());
+        DocumentHeader docHeaderEntity = this.documentHeaderRepository.findDocumentHeaderById(id);
+        DocumentHeaderDTO docHeaderDTO = this.documentHeaderMapper.toDto(docHeaderEntity);
         List<Document> docList = this.documentRepository.findAllByHeaderId(docHeaderDTO.getId());
         List<DocumentDTO> docDTOList = this.documentMapper.toDto(docList);
         docHeaderDTO.setDocList(docDTOList);

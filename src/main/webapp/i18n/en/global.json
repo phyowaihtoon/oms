@@ -17,6 +17,7 @@
         "roleMenuMap": "Role Menu Map",
         "repository": "Repository",
         "applicationUser": "Application User",
+        "userRole": "User Role",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "modules": {

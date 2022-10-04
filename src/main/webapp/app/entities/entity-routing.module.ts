@@ -59,6 +59,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'dmsApp.applicationUser.home.title' },
         loadChildren: () => import('./application-user/application-user.module').then(m => m.ApplicationUserModule),
       },
+      {
+        path: 'user-role',
+        data: { pageTitle: 'dmsApp.userRole.home.title' },
+        loadChildren: () => import('./user-role/user-role.module').then(m => m.UserRoleModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

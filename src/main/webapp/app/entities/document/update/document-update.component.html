@@ -27,7 +27,6 @@
 <div class="row">
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
     <jhi-alert-error></jhi-alert-error>
-    <jhi-alert></jhi-alert>
     <div *ngIf="fileStatus.status === 'progress'">
       <div class="progress" style="height: 15px; font-size: 12px">
         <div
@@ -54,7 +53,7 @@
     <div class="row col-12">
       <div class="form-group col-6">
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template</label>
-        <select (change)="onChange($event)" class="form-control" formControlName="metaDataHeaderId">
+        <select (change)="onDocTemplateChange($event)" class="form-control" formControlName="metaDataHeaderId">
           <option [value]="doctype.id" *ngFor="let doctype of docTypes">
             {{ doctype.docTitle }}
           </option>
@@ -101,7 +100,7 @@
       <div class="form-group col-6" *ngIf="metaitem.fieldType == 'LOV'">
         <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
         <select class="form-control" [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'">
-          <option [value]="f_value" *ngFor="let f_value of _fieldValue">
+          <option [value]="f_value" *ngFor="let f_value of getFieldValues(metaitem.fieldValue)">
             {{ f_value }}
           </option>
         </select>
@@ -126,12 +125,12 @@
 
     <div class="row col-12">
       <div class="form-group col-6">
-        <label class="form-control-label" jhiTranslate="dmsApp.document.repositoryURL" for="text"> Reposistory URL </label>
+        <label class="form-control-label" jhiTranslate="dmsApp.document.repositoryURL" for="text"> Repository URL </label>
         <div class="input-group col-12" style="padding: 0px !important">
           <input
             type="text"
             readonly
-            placeholder="Reposistory"
+            placeholder="Repository"
             formControlName="reposistory"
             class="form-control input-sm"
             style="background: white"
@@ -182,7 +181,7 @@
               <input type="text" class="col-12 form-control" placeholder="fileName" formControlName="fileName" readonly />
             </td>
             <td>
-              <input type="number" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" />
+              <input type="number" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" readonly />
             </td>
             <td>
               <input type="number" class="col-12 form-control" placeholder="version" formControlName="version" />

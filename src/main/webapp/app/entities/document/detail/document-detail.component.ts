@@ -5,7 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { IReplyMessage } from 'app/entities/util/reply-message.model';
+import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
 import { DocumentInquiryService } from '../service/document-inquiry.service';
@@ -75,7 +75,7 @@ export class DocumentDetailComponent implements OnInit {
       }
 
       if (message1.length > 0) {
-        this.showInfoMessage(message1, message2);
+        this.showAlertMessage(message1, message2);
         return false;
       }
     }
@@ -83,15 +83,14 @@ export class DocumentDetailComponent implements OnInit {
     return true;
   }
 
-  showInfoMessage(msg1: string, msg2: string): void {
+  showAlertMessage(msg1: string, msg2: string): void {
     const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
-    modalRef.componentInstance.messageLine1 = msg1;
-    modalRef.componentInstance.messageLine2 = msg2;
+    modalRef.componentInstance.code = msg1;
+    modalRef.componentInstance.message = msg2;
   }
 
-  downloadFile(isPreview: boolean, docId?: number, filePath?: string): void {
-    if (docId !== undefined && filePath !== undefined && this.validate(isPreview, filePath)) {
-      const fileName = filePath.split('/').pop();
+  downloadFile(isPreview: boolean, docId?: number, fileName?: string): void {
+    if (docId !== undefined && fileName !== undefined && this.validate(isPreview, fileName)) {
       this.documentInquiryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
@@ -102,19 +101,19 @@ export class DocumentDetailComponent implements OnInit {
               FileSaver.saveAs(res.body, fileName);
             }
           } else if (res.status === 204) {
-            const msg1 = 'This file does not exist in server.';
-            const msg2 = '';
-            this.showInfoMessage(msg1, msg2);
+            const code = ResponseCode.WARNING_CODE;
+            const message = 'This file does not exist on file server.';
+            this.showAlertMessage(code, message);
           } else {
-            const msg1 = 'Connection failed to FTP Server. Please, check network connection to FTP Server.';
-            const msg2 = '';
-            this.showInfoMessage(msg1, msg2);
+            const code = ResponseCode.WARNING_CODE;
+            const message = 'failed to connect FTP Server. Please, check network connection with FTP Server.';
+            this.showAlertMessage(code, message);
           }
         },
         error => {
-          const msg1 = 'Connection is not available. Please, check network connection to application server.';
-          const msg2 = '';
-          this.showInfoMessage(msg1, msg2);
+          const code = ResponseCode.RESPONSE_FAILED_CODE;
+          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          this.showAlertMessage(code, message);
         }
       );
     }

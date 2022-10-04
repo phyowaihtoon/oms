@@ -9,6 +9,8 @@ import { IApplicationUser, ApplicationUser } from '../application-user.model';
 import { ApplicationUserService } from '../service/application-user.service';
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
+import { IUserRole } from 'app/entities/user-role/user-role.model';
+import { UserRoleService } from 'app/entities/user-role/service/user-role.service';
 import { IDepartment } from 'app/entities/department/department.model';
 import { DepartmentService } from 'app/entities/department/service/department.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
@@ -22,20 +24,22 @@ export class ApplicationUserUpdateComponent implements OnInit {
   isSaving = false;
 
   usersSharedCollection: IUser[] = [];
-  departmentsSharedCollection: IDepartment[] = [];
   workflowAuthorityCollection: IWorkflowAuthority[] = [];
+  userRolesSharedCollection: IUserRole[] = [];
+  departmentsSharedCollection: IDepartment[] = [];
 
   editForm = this.fb.group({
     id: [],
-    userRole: [null, [Validators.required]],
     workflowAuthority: [null, [Validators.required]],
     user: [null, Validators.required],
+    userRole: [null, Validators.required],
     department: [],
   });
 
   constructor(
     protected applicationUserService: ApplicationUserService,
     protected userService: UserService,
+    protected userRoleService: UserRoleService,
     protected departmentService: DepartmentService,
     protected loadSetupService: LoadSetupService,
     protected activatedRoute: ActivatedRoute,
@@ -57,8 +61,6 @@ export class ApplicationUserUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const applicationUser = this.createFromForm();
-    console.log(' Workflow Value : ', applicationUser.workflowAuthority);
-    console.log(' User Value : ', applicationUser.user);
     if (applicationUser.id !== undefined) {
       this.subscribeToSaveResponse(this.applicationUserService.update(applicationUser));
     } else {
@@ -70,12 +72,12 @@ export class ApplicationUserUpdateComponent implements OnInit {
     return item.id!;
   }
 
-  trackDepartmentById(index: number, item: IDepartment): number {
+  trackUserRoleById(index: number, item: IUserRole): number {
     return item.id!;
   }
 
-  trackWorkflowByValue(index: number, item: IWorkflowAuthority): string {
-    return item.value;
+  trackDepartmentById(index: number, item: IDepartment): number {
+    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IApplicationUser>>): void {
@@ -100,13 +102,17 @@ export class ApplicationUserUpdateComponent implements OnInit {
   protected updateForm(applicationUser: IApplicationUser): void {
     this.editForm.patchValue({
       id: applicationUser.id,
-      userRole: applicationUser.userRole,
       workflowAuthority: applicationUser.workflowAuthority,
       user: applicationUser.user,
+      userRole: applicationUser.userRole,
       department: applicationUser.department,
     });
 
     this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, applicationUser.user);
+    this.userRolesSharedCollection = this.userRoleService.addUserRoleToCollectionIfMissing(
+      this.userRolesSharedCollection,
+      applicationUser.userRole
+    );
     this.departmentsSharedCollection = this.departmentService.addDepartmentToCollectionIfMissing(
       this.departmentsSharedCollection,
       applicationUser.department
@@ -120,13 +126,15 @@ export class ApplicationUserUpdateComponent implements OnInit {
       .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('user')!.value)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
-    this.loadSetupService
-      .loadWorkflowAuthority()
-      .pipe(map((res: HttpResponse<IWorkflowAuthority[]>) => res.body ?? []))
-      .subscribe((data: IWorkflowAuthority[]) => {
-        console.log('Workflow Authority List : ', data);
-        this.workflowAuthorityCollection = data;
-      });
+    this.userRoleService
+      .query()
+      .pipe(map((res: HttpResponse<IUserRole[]>) => res.body ?? []))
+      .pipe(
+        map((userRoles: IUserRole[]) =>
+          this.userRoleService.addUserRoleToCollectionIfMissing(userRoles, this.editForm.get('userRole')!.value)
+        )
+      )
+      .subscribe((userRoles: IUserRole[]) => (this.userRolesSharedCollection = userRoles));
 
     this.departmentService
       .query()
@@ -137,15 +145,21 @@ export class ApplicationUserUpdateComponent implements OnInit {
         )
       )
       .subscribe((departments: IDepartment[]) => (this.departmentsSharedCollection = departments));
+
+    this.loadSetupService.loadWorkflowAuthority().subscribe(res => {
+      if (res.body) {
+        this.workflowAuthorityCollection = res.body;
+      }
+    });
   }
 
   protected createFromForm(): IApplicationUser {
     return {
       ...new ApplicationUser(),
       id: this.editForm.get(['id'])!.value,
-      userRole: this.editForm.get(['userRole'])!.value,
-      workflowAuthority: this.editForm.get(['workflowAuthority'])!.value.value,
+      workflowAuthority: this.editForm.get(['workflowAuthority'])!.value,
       user: this.editForm.get(['user'])!.value,
+      userRole: this.editForm.get(['userRole'])!.value,
       department: this.editForm.get(['department'])!.value,
     };
   }
