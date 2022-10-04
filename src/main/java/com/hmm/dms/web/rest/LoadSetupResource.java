@@ -78,6 +78,11 @@ public class LoadSetupResource {
         return this.loadSetupService.getAllMetaDataHeader();
     }
 
+    @GetMapping("/metadata")
+    public List<MetaDataHeaderDTO> loadAllMetaData() {
+        return null; //this.loadSetupService.getAllMetaData();
+    }
+
     @GetMapping("/metadata/{id}")
     public List<MetaDataDTO> loadAllMetaDatabyHeaderId(@PathVariable Long id) {
         log.debug("REST request to get meta : {}", id);

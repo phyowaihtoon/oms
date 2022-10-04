@@ -11,6 +11,7 @@
       data-cy="entityCreateSaveButton"
       class="btn btn-primary btn-sm"
       [disabled]="editForm.invalid || isSaving"
+      [title]="saveBtnTitleChange()"
       (click)="save()"
     >
       <fa-icon icon="save"></fa-icon>
@@ -53,6 +54,7 @@
     <div class="row col-12">
       <div class="form-group col-6">
         <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template</label>
+        <span style="color: red">*</span>
         <select (change)="onDocTemplateChange($event)" class="form-control" formControlName="metaDataHeaderId">
           <option [value]="doctype.id" *ngFor="let doctype of docTypes">
             {{ doctype.docTitle }}
@@ -74,6 +76,7 @@
     <div class="row col-12" *ngFor="let metaitem of metaData">
       <div class="form-group col-6" *ngIf="metaitem.fieldType == 'String'">
         <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span>
 
         <input
           type="text"
@@ -86,7 +89,9 @@
 
     <div class="row col-12" *ngFor="let metaitem of metaData">
       <div class="form-group col-6" *ngIf="metaitem.fieldType == 'Number'">
-        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <label class="form-control-label" for="text">
+          {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
+        >
         <input
           type="number"
           class="form-control"
@@ -98,7 +103,9 @@
 
     <div class="row col-12" *ngFor="let metaitem of metaData">
       <div class="form-group col-6" *ngIf="metaitem.fieldType == 'LOV'">
-        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <label class="form-control-label" for="text">
+          {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
+        >
         <select class="form-control" [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'">
           <option [value]="f_value" *ngFor="let f_value of getFieldValues(metaitem.fieldValue)">
             {{ f_value }}
@@ -109,7 +116,9 @@
 
     <div class="row col-12" *ngFor="let metaitem of metaData">
       <div class="form-group col-6" *ngIf="metaitem.fieldType == 'Date'">
-        <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
+        <label class="form-control-label" for="text">
+          {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
+        >
         <input
           type="date"
           class="form-control"
@@ -167,7 +176,7 @@
             <th class="text-center" style="width: 25%">Repository URL</th>
             <th class="text-center" style="width: 20%">File Name</th>
             <th class="text-center" style="width: 10%">File Size (KB)</th>
-            <th class="text-center" style="width: 5%">Version</th>
+            <th class="text-center" style="width: 5%">Version<span style="color: red">&nbsp;*</span></th>
             <th class="text-center" style="width: 30%">Remark</th>
             <th class="text-center" style="width: 5%">Remove</th>
           </tr>
@@ -193,6 +202,7 @@
               <span title="Remove" (click)="removeField(i)">
                 <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
               </span>
+
               <!-- <span *ngIf="isLast" title="Add" (click)="addField()">
                     <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
                   </span> -->
