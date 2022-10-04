@@ -19,7 +19,7 @@ export class MetadataUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    docTitle: ['', [Validators.required]],
+    docTitle: ['', [Validators.required, Validators.maxLength(100)]],
     fieldList: this.fb.array([]),
   });
 
@@ -58,6 +58,7 @@ export class MetadataUpdateComponent implements OnInit {
     // window.history.back();
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['docTitle']!.setValue('');
+    this.editForm.reset();
     this.removeAllField();
     this.addField();
   }
@@ -68,11 +69,11 @@ export class MetadataUpdateComponent implements OnInit {
 
   newField(): FormGroup {
     return this.fb.group({
-      fieldName: ['', [Validators.required]],
+      fieldName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z ]*$')]],
       fieldType: ['String', [Validators.required]],
       fieldValue: [{ value: '', disabled: true }, Validators.required],
       isRequired: ['YES', [Validators.required]],
-      fieldOrder: [this.fieldList().controls.length + 1, [Validators.required]],
+      fieldOrder: [this.fieldList().controls.length + 1, [Validators.required, Validators.pattern('^[0-9]*$')]],
     });
   }
 
