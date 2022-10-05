@@ -183,6 +183,8 @@ export class DocumentUpdateComponent implements OnInit {
     const documentHeaderdata = this.createFromForm();
     formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
 
+    console.log(JSON.stringify(documentHeaderdata));
+
     if (this._fileList.length > 0) {
       for (let i = 0; i < this._fileList.length; i++) {
         formData.append('files', this._fileList[i], this._fileList[i].name + '@' + this.getRepositoryURL(documentHeaderdata.docList, i));
@@ -205,12 +207,17 @@ export class DocumentUpdateComponent implements OnInit {
 
   // load metadata by metadaheader ID
   loadMetaDatabyMetadaHeaderID(metaDataHeaderId: number): void {
-    this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
-      if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
-        this.metaData = metaDataHeaderItem.metaDataDetails;
-        this.forControlBind();
-      }
-    });
+    if (metaDataHeaderId === 0) {
+      this.metaData = [];
+      this.forControlBind();
+    } else {
+      this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+        if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
+          this.metaData = metaDataHeaderItem.metaDataDetails;
+          this.forControlBind();
+        }
+      });
+    }
   }
 
   forControlBind(): void {

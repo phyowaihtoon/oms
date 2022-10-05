@@ -31,15 +31,15 @@
     <div class="row">
       <div class="col-2">
         <div *ngIf="isDocMap" class="tab-header" (click)="showDocMap()">
-          <fa-icon icon="angle-down" (click)="showDocMap()"></fa-icon>&nbsp;<span>Document Template</span>
+          <fa-icon icon="angle-down" (click)="showDocMap()"></fa-icon>&nbsp;<span>Meta Data Information</span>
         </div>
 
         <div *ngIf="!isDocMap" class="tab-header" (click)="showDocMap()">
-          <fa-icon icon="angle-right" (click)="showDocMap()"></fa-icon>&nbsp;<span>Document Template</span>
+          <fa-icon icon="angle-right" (click)="showDocMap()"></fa-icon>&nbsp;<span>Meta Data Information</span>
         </div>
       </div>
 
-      <div class="col-2">
+      <div class="col-4">
         <div class="div-tab" *ngIf="isUploadDetail" class="tab-header" (click)="showUploadDetails()">
           <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;<span>Document Upload Details</span>
         </div>
@@ -70,22 +70,11 @@
                 {{ doctype.docTitle }}
               </option>
             </select>
-            <div
-              class="form-group col-6"
-              *ngIf="metaDataHeaderId && metaDataHeaderId.touched && metaDataHeaderId.invalid"
-              style="color: red"
-            >
-              This field is required.
-            </div>
           </div>
 
           <div class="form-group col-6">
             <label class="form-control-label" jhiTranslate="dmsApp.document.message" for="text">Message </label>
-
             <input type="text" class="form-control" name="message" formControlName="message" />
-            <div class="form-group col-6" *ngIf="message && message.touched && message.invalid" style="color: red">
-              This field is required.
-            </div>
           </div>
         </div>
 
@@ -130,7 +119,7 @@
           </div>
         </div>
 
-        <div class="row col-12" *ngFor="let metaitem of metaData">
+        <div class="row col-6" *ngFor="let metaitem of metaData">
           <div class="form-group col-6" *ngIf="metaitem.fieldType == 'Date'">
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
@@ -148,10 +137,6 @@
 
     <div id="uploadDetail">
       <div id="search-area" *ngIf="isUploadDetail" class="col-12">
-        <!-- <div class="col-12">
-            <span style="text-decoration: underline; font-weight: bold">Document Upload Details</span>
-          </div> -->
-
         <div class="row col-12">
           <div class="form-group col-6">
             <label class="form-control-label" jhiTranslate="dmsApp.document.repositoryURL" for="text"> Repository URL </label>
