@@ -80,3 +80,29 @@ form {
 input[type='file'] {
   display: none;
 }
+
+#page-heading {
+  font-size: 13pt;
+  padding-top: 10px;
+}
+
+#search-area {
+  border: 0.5pt solid grey;
+  padding: 10pt 10pt;
+}
+
+.tab-header {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+}
+
+.dms-icon-btn {
+  padding: 2px;
+  height: 1.5rem;
+}
+
+.div-tab {
+  background-color: rgb(151, 175, 253);
+  border-radius: 5px;
+}
