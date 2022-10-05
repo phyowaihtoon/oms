@@ -376,6 +376,8 @@ export class DocumentUpdateComponent implements OnInit {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
+        this.isDocMap = true;
+        this.isUploadDetail = false;
         this.showAlertMessage(replyCode, replyMsg);
       } else {
         const replyCode = replyMessage.code;
