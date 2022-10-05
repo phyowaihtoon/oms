@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.ftp.session.FtpSession;
@@ -41,7 +42,6 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
     private final DocumentHeaderMapper documentHeaderMapper;
     private final DocumentRepository documentRepository;
     private final DocumentMapper documentMapper;
-    private FTPClient ftpClient;
     private ReplyMessage<DocumentHeaderDTO> replyMessage;
 
     public DocumentHeaderServiceImpl(
@@ -68,7 +68,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         }
 
         if (documentHeaderDTO != null && documentHeaderDTO.getDocList() != null && documentHeaderDTO.getDocList().size() == 0) {
-            replyMessage.setCode(ResponseCode.WARNING);
+            replyMessage.setCode(ResponseCode.ERROR_E00);
             replyMessage.setMessage("There is no attached documents.");
             return replyMessage;
         }
@@ -103,7 +103,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
             replyMessage.setData(docHeaderDTO);
         } catch (Exception ex) {
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
         }
 
@@ -154,7 +154,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         List<String> uploadedFileList = new ArrayList<>();
         try {
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
-            ftpClient = ftpSession.getClientInstance();
+            System.out.println("Connected successfully to FTP Server");
 
             for (MultipartFile file : multipartFiles) {
                 String[] filenameNdir = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
@@ -166,76 +166,74 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                 for (int i = 0; i < fullDirectory.length; i++) {
                     directory += "/" + fullDirectory[i];
 
-                    boolean isDirExists = checkDirectoryExists(directory);
-                    if (!isDirExists) {
-                        ftpClient.makeDirectory(directory);
+                    boolean isPathExists = ftpSession.exists(directory);
+
+                    if (!isPathExists) {
+                        boolean isCreated = ftpSession.mkdir(directory);
+                        if (!isCreated) {
+                            String forbiddenCharacters = "\\/:*?\"<>|";
+                            replyMessage.setCode(ResponseCode.ERROR_E00);
+                            replyMessage.setMessage(
+                                "Failed to create directory in FTP Server. Repository URL cannot include these characters : " +
+                                forbiddenCharacters
+                            );
+                            return false;
+                        }
                     }
                 }
                 String firstRemoteFile = directory + "/" + filename;
 
                 InputStream inputStream = file.getInputStream();
-                System.out.println("Start uploading file:" + firstRemoteFile);
+                System.out.println("Start uploading file: [" + firstRemoteFile + "]");
 
-                boolean isUploaded = ftpClient.storeFile(firstRemoteFile, inputStream);
-                inputStream.close();
-                if (isUploaded) {
-                    System.out.println(firstRemoteFile + " is successfully uploaded.");
+                try {
+                    ftpSession.write(inputStream, firstRemoteFile);
+                    inputStream.close();
+                    System.out.println("Uploaded successfully: [" + firstRemoteFile + "]");
                     uploadedFileList.add(firstRemoteFile);
-                }
-                if (!isUploaded) {
-                    System.out.println("Failed to upload file :" + firstRemoteFile);
-                    replyMessage.setCode(ResponseCode.ERROR);
-                    replyMessage.setMessage("Failed to upload file :" + filename);
-                    if (uploadedFileList != null && uploadedFileList.size() > 0) {
-                        //Removing previous uploaded files from FTP Server if failed to upload one file
-                        removePreviousFiles(uploadedFileList);
-                    }
+                } catch (IOException ex) {
+                    System.out.println("Failed to upload file : [" + firstRemoteFile + "]");
+                    ex.printStackTrace();
+                    replyMessage.setCode(ResponseCode.ERROR_E01);
+                    replyMessage.setMessage("Failed to upload file :" + filename + " " + ex.getMessage());
+                    //Removing previous uploaded files from FTP Server if failed to upload one file
+                    if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
                     return false;
                 }
             }
+        } catch (IllegalStateException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
+            return false;
         } catch (IOException ex) {
             System.out.println("Error: " + ex.getMessage());
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
             return false;
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR);
+            replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
             return false;
-        } finally {
-            try {
-                if (ftpClient != null && ftpClient.isConnected()) {
-                    ftpClient.logout();
-                    ftpClient.disconnect();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
 
         return true;
     }
 
-    private void removePreviousFiles(List<String> uploadedFileList) {
+    private void removePreviousFiles(List<String> uploadedFileList, FtpSession ftpSession) {
+        System.out.println("Removing previous uploaded files if failed to upload one file");
         for (String filePath : uploadedFileList) {
-            System.out.println("Removing previous uploaded files if failed to upload one file");
             try {
-                ftpClient.deleteFile(filePath);
+                ftpSession.remove(filePath);
+                System.out.println("Removed successfully : " + filePath);
             } catch (Exception ex) {
+                System.out.println("Failed to remove : " + filePath);
                 ex.printStackTrace();
             }
         }
-    }
-
-    private boolean checkDirectoryExists(String dirPath) throws IOException {
-        ftpClient.changeWorkingDirectory(dirPath);
-        int returnCode = ftpClient.getReplyCode();
-        if (returnCode == 550) {
-            return false;
-        }
-        return true;
     }
 }

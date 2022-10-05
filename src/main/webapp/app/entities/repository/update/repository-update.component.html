@@ -48,6 +48,37 @@
           data-cy="repositoryName"
           formControlName="repositoryName"
         />
+
+        <div
+          *ngIf="
+            editForm.get('repositoryName')!.invalid && (editForm.get('repositoryName')!.dirty || editForm.get('repositoryName')!.touched)
+          "
+        >
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('repositoryName')?.errors?.required"
+            jhiTranslate="entity.validation.required"
+          >
+            This field is required.
+          </small>
+
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('repositoryName')?.errors?.pattern"
+            jhiTranslate="entity.validation.invalidInputCharacter"
+          >
+            This field can only contain a to z, A to Z, space and under scroll(_)
+          </small>
+
+          <small
+            class="form-text text-danger"
+            *ngIf="editForm.get('repositoryName')?.errors?.maxlength"
+            jhiTranslate="entity.validation.maxlength"
+            [translateValues]="{ max: 50 }"
+          >
+            This field cannot be longer than 50 characters.
+          </small>
+        </div>
       </div>
     </div>
 
@@ -70,6 +101,38 @@
                       <fa-icon icon="folder" class="folder-theme"></fa-icon>
                     </span>
                     <input type="text" class="col-12 form-control" placeholder="Folder Name" formControlName="folderName" />
+                  </div>
+
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('folderName')!.invalid &&
+                      (fieldList().controls[i].get('folderName')!.dirty || fieldList().controls[i].get('folderName')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('folderName')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('folderName')?.errors?.pattern"
+                      jhiTranslate="entity.validation.invalidInputCharacter"
+                    >
+                      This field can only contain a to z, A to Z, space and under scroll(_)
+                    </small>
+
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('folderName')?.errors?.maxlength"
+                      jhiTranslate="entity.validation.maxlength"
+                      [translateValues]="{ max: 50 }"
+                    >
+                      This field cannot be longer than 50 characters.
+                    </small>
                   </div>
                 </td>
               </tr>

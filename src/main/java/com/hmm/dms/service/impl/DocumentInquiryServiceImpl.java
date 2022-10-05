@@ -12,6 +12,7 @@ import com.hmm.dms.service.dto.ReplyMessage;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
 import com.hmm.dms.util.FTPSessionFactory;
+import com.hmm.dms.util.ResponseCode;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -96,7 +97,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ftpSession.read(filePath, out);
         ByteArrayResource resource = new ByteArrayResource(out.toByteArray());
-        replyMessage.setCode("000");
+        replyMessage.setCode(ResponseCode.SUCCESS);
         replyMessage.setData(resource);
         ftpSession.close();
         return replyMessage;

@@ -17,7 +17,7 @@ export class RepositoryUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    repositoryName: ['', [Validators.required]],
+    repositoryName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z0-9 _]*$')]],
     fieldList: this.fb.array([]),
   });
 
@@ -39,6 +39,7 @@ export class RepositoryUpdateComponent implements OnInit {
     // window.history.back();
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['repositoryName']!.setValue('');
+    this.editForm.reset();
     this.removeAllField();
     this.addField();
   }
@@ -53,7 +54,7 @@ export class RepositoryUpdateComponent implements OnInit {
 
   newField(): FormGroup {
     return this.fb.group({
-      folderName: ['', [Validators.required]],
+      folderName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z0-9 _]*$')]],
       folderOrder: [''],
     });
   }
@@ -63,8 +64,11 @@ export class RepositoryUpdateComponent implements OnInit {
   }
 
   removeField(i: number): void {
-    if (this.fieldList().length > 1) {
-      this.fieldList().controls.splice(i);
+    if (this.fieldList().length > 1 && i !== 0) {
+      console.log('remove List>>>>' + String(this.fieldList().length) + 'asdfasfd___' + String(i));
+      while (this.fieldList().length > i) {
+        this.fieldList().removeAt(this.fieldList().length - 1);
+      }
     }
   }
 

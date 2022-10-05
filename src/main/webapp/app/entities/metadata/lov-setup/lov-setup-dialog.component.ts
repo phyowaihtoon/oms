@@ -67,7 +67,7 @@ export class LovSetupDialogComponent implements OnInit {
 
   newField(): FormGroup {
     return this.fb.group({
-      lovValue: ['', [Validators.required]],
+      lovValue: ['', [Validators.required, Validators.maxLength(50)]],
     });
   }
 

@@ -201,7 +201,7 @@ public class RepositoryResource {
     }
 
     @PostMapping("/repository/search")
-    public ResponseEntity<List<RepositoryHeaderDTO>> getAllMetaData(@RequestBody RepositoryInquiryDTO dto, Pageable pageable) {
+    public ResponseEntity<List<RepositoryHeaderDTO>> getAllRepositoryData(@RequestBody RepositoryInquiryDTO dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
         Page<RepositoryHeaderDTO> page = repositoryService.getAllRepositoryData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
