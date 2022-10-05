@@ -87,15 +87,21 @@ input[type='file'] {
 }
 
 #search-area {
-  border: 0.5pt solid grey;
-  padding: 10pt 10pt;
+  border: 0.5pt solid gray;
+  padding: 10pt;
+}
+
+.tab-header-select {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
 .tab-header {
   padding-top: 5px;
   padding-bottom: 5px;
   border-radius: 5px;
-  cursor: pointer;
 }
 
 .dms-icon-btn {
