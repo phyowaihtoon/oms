@@ -47,7 +47,9 @@ export class DocumentUpdateComponent implements OnInit {
   repositoryurl: string = '';
   filenames: FileInfo[] = [];
   _saveButtonTitle: string = '';
-  _listOfFiles: any[] = [];
+
+  isDocMap = true;
+  isUploadDetail = false;
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
@@ -124,6 +126,21 @@ export class DocumentUpdateComponent implements OnInit {
   // remove all Field of document table
   removeAllField(): void {
     this.docList1().clear();
+  }
+
+  showDocMap(): void {
+    if (this.isDocMap === false) {
+      this.isDocMap = !this.isDocMap;
+    }
+
+    this.isUploadDetail = false;
+  }
+
+  showUploadDetails(): void {
+    if (this.isUploadDetail === false) {
+      this.isUploadDetail = !this.isUploadDetail;
+    }
+    this.isDocMap = false;
   }
 
   get metaDataHeaderId(): any {
