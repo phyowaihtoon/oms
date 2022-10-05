@@ -163,6 +163,8 @@ export class DocumentUpdateComponent implements OnInit {
     this.editForm.controls['reposistory']!.setValue('');
     this.removeAllField();
     this.loadMetaDatabyMetadaHeaderID(0);
+    this.isDocMap = true;
+    this.isUploadDetail = false;
   }
 
   searchRepository(): void {
@@ -187,7 +189,11 @@ export class DocumentUpdateComponent implements OnInit {
 
     if (this._fileList.length > 0) {
       for (let i = 0; i < this._fileList.length; i++) {
-        formData.append('files', this._fileList[i], this._fileList[i].name + '@' + this.getRepositoryURL(documentHeaderdata.docList, i));
+        formData.append(
+          'files',
+          this._fileList[i],
+          this._fileList[i].name + '@' + this.getRepositoryURL(documentHeaderdata.docList, this._fileList[i].name)
+        );
       }
     }
 
@@ -336,8 +342,13 @@ export class DocumentUpdateComponent implements OnInit {
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  getRepositoryURL(iDocument: IDocument[] | undefined, i: number): string {
-    return iDocument![i].filePath!;
+  getRepositoryURL(iDocument: IDocument[] | undefined, fileName: string): string {
+    for (let i = 0; i < iDocument!.length; i++) {
+      if (iDocument![i].fileName === fileName) {
+        return iDocument![i].filePath!;
+      }
+    }
+    return '';
   }
 
   saveBtnTitleChange(): string {

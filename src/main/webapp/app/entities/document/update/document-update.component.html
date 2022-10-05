@@ -25,12 +25,12 @@
   </div>
 </div>
 
-<div id="page-heading">
+<div id="page-heading" style="padding-bottom: 10px">
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
     <jhi-alert-error></jhi-alert-error>
     <div class="row">
       <div class="col-2">
-        <div *ngIf="isDocMap" class="tab-header" (click)="showDocMap()">
+        <div *ngIf="isDocMap" class="tab-header-select" (click)="showDocMap()">
           <fa-icon icon="angle-down" (click)="showDocMap()"></fa-icon>&nbsp;<span>Meta Data Information</span>
         </div>
 
@@ -40,7 +40,7 @@
       </div>
 
       <div class="col-4">
-        <div class="div-tab" *ngIf="isUploadDetail" class="tab-header" (click)="showUploadDetails()">
+        <div class="div-tab" *ngIf="isUploadDetail" class="tab-header-select" (click)="showUploadDetails()">
           <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;<span>Document Upload Details</span>
         </div>
 
@@ -90,9 +90,7 @@
               [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'"
             />
           </div>
-        </div>
 
-        <div class="row col-12" *ngFor="let metaitem of metaData">
           <div class="form-group col-6" *ngIf="metaitem.fieldType == 'Number'">
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
@@ -104,9 +102,7 @@
               [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'"
             />
           </div>
-        </div>
 
-        <div class="row col-12" *ngFor="let metaitem of metaData">
           <div class="form-group col-6" *ngIf="metaitem.fieldType == 'LOV'">
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
@@ -117,10 +113,8 @@
               </option>
             </select>
           </div>
-        </div>
 
-        <div class="row col-6" *ngFor="let metaitem of metaData">
-          <div class="form-group col-6" *ngIf="metaitem.fieldType == 'Date'">
+          <div class="form-group col-3" *ngIf="metaitem.fieldType == 'Date'">
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" style="color: red">*</span></label
             >
