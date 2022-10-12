@@ -29,7 +29,7 @@
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
     <jhi-alert-error></jhi-alert-error>
     <div class="row">
-      <div class="col-2">
+      <div class="col-3">
         <div *ngIf="isDocMap" class="tab-header-select" (click)="showDocMap()">
           <fa-icon icon="angle-down" (click)="showDocMap()"></fa-icon>&nbsp;<span>Meta Data Information</span>
         </div>
@@ -186,7 +186,13 @@
                   <input type="text" class="col-12 form-control" placeholder="filePath" formControlName="filePath" readonly />
                 </td>
                 <td>
-                  <input type="text" class="col-12 form-control" placeholder="fileName" formControlName="fileName" readonly />
+                  <input
+                    type="text"
+                    class="col-12 form-control"
+                    placeholder="fileName"
+                    formControlName="fileName"
+                    [readonly]="item.get(['id'])!.value != null"
+                  />
                 </td>
                 <td>
                   <input type="number" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" readonly />

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { IDocument, Document } from '../document.model';
+import { IDocument, DMSDocument } from '../document.model';
 
 import { DocumentService } from './document.service';
 
@@ -48,7 +48,7 @@ describe('Service Tests', () => {
 
         const expected = Object.assign({}, returnedFromService);
 
-        service.create(new Document()).subscribe(resp => (expectedResult = resp.body));
+        service.create(new DMSDocument()).subscribe(resp => (expectedResult = resp.body));
 
         const req = httpMock.expectOne({ method: 'POST' });
         req.flush(returnedFromService);
@@ -79,7 +79,7 @@ describe('Service Tests', () => {
           {
             filePath: 'BBBBBB',
           },
-          new Document()
+          new DMSDocument()
         );
 
         const returnedFromService = Object.assign(patchObject, elemDefault);
