@@ -1,13 +1,14 @@
-<div class="modal-header">
-  <div class="col-10">
-    <span>Repository</span>
-    <span> >> Repository Inquiry</span>
+<div class="modal-header bg-info text-white">
+  <div class="col-10" id="dms-modal-title">
+    <span>Repository >> Repository Inquiry</span>
   </div>
-  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+  <div class="col-2">
+    <span class="close" style="cursor: pointer" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</span>
+  </div>
 </div>
 
 <div class="modal-body">
-  <div id="page-heading" class="row">
+  <div class="row">
     <div class="col-12 d-flex justify-content-end">
       <button class="btn btn-primary btn-sm" (click)="loadPage(1)" [disabled]="isLoading">
         <fa-icon icon="search"></fa-icon>
@@ -107,22 +108,18 @@
             <th scope="col"></th>
             <th scope="col" jhiSortBy="repositoryName">
               <span jhiTranslate="dmsApp.repository.repositoryName">Repository Name</span>
-              <!-- <fa-icon icon="sort"></fa-icon> -->
             </th>
 
             <th scope="col" jhiSortBy="repositoryPath">
               <span jhiTranslate="dmsApp.repository.repositoryPath">Repository Path</span>
-              <!-- <fa-icon icon="sort"></fa-icon> -->
             </th>
 
             <th scope="col" jhiSortBy="createdDate">
               <span jhiTranslate="dmsApp.repository.createdDate">Created Date</span>
-              <!-- <fa-icon icon="sort"></fa-icon> -->
             </th>
 
             <th scope="col" jhiSortBy="createdBy">
               <span jhiTranslate="dmsApp.repository.createdBy">Created By</span>
-              <!-- <fa-icon icon="sort"></fa-icon> -->
             </th>
           </tr>
         </thead>
@@ -130,7 +127,6 @@
           <tr *ngFor="let repository of repositorys; trackBy: trackId" data-cy="entityTable">
             <td>
               <button type="button" class="btn btn-primary btn-sm" data-cy="entitySelectButton" (click)="selectRepo(repository)">
-                <!-- <fa-icon icon="pencil-alt"></fa-icon> -->
                 <span class="d-none d-md-inline">Select</span>
               </button>
             </td>
