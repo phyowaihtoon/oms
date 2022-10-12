@@ -24,12 +24,14 @@ a {
   background-color: #691c31 !important;
 }
 
+/*
 th {
   color: white;
   border: 1px solid #716f6f;
   padding: 5px;
   background-color: #056e7c;
 }
+*/
 
 td {
   border: none !important;
@@ -86,9 +88,10 @@ form {
   vertical-align: middle;
 }
 
-#page-heading {
+#dms-modal-title {
   font-size: 13pt;
-  padding-top: 10px;
+  font-weight: bold;
+  padding-left: 0px;
 }
 
 #search-area {
