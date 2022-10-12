@@ -37,9 +37,10 @@ export interface IDocument {
   version?: number;
   remark?: string;
   delFlag?: string;
+  fileData?: File; // This filed data is not needed to pass to server side, only used in client side
 }
 
-export class Document implements IDocument {
+export class DMSDocument implements IDocument {
   constructor(
     public id?: number,
     public headerId?: number,
@@ -48,7 +49,8 @@ export class Document implements IDocument {
     public fileSize?: number,
     public version?: number,
     public delFlag?: string,
-    public remark?: string
+    public remark?: string,
+    public fileData?: File
   ) {}
 }
 

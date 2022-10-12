@@ -1,13 +1,12 @@
-import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { IMetaData, IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { saveAs } from 'file-saver';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { Document, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
+import { DMSDocument, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
@@ -42,7 +41,6 @@ export class DocumentUpdateComponent implements OnInit {
 
   // filenames: string[] = [];
   fileStatus = { status: '', requestType: '', percent: 0 };
-  _fileList: File[] = [];
   _tempFileList: File[] = [];
   repositoryurl: string = '';
   filenames: FileInfo[] = [];
@@ -99,26 +97,27 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   // create new field dynamically
-  newField(filePath: string, fileName: string, fileSize: number): FormGroup {
+  newField(filePath: string, fileName: string, fileSize: number, fileData?: File): FormGroup {
     return this.fb.group({
+      id: [],
       filePath: [filePath, [Validators.required]],
       fileName: [fileName, [Validators.required]],
       fileSize: [fileSize, [Validators.required]],
       version: ['', [Validators.required]],
       remark: [''],
+      fileData: [fileData],
     });
   }
 
   // add new field dynamically
-  addField(filePath: string, fileName: string, fileSize: number): void {
-    this.docList1().push(this.newField(filePath, fileName, fileSize));
+  addField(filePath: string, fileName: string, fileSize: number, fileData?: File): void {
+    this.docList1().push(this.newField(filePath, fileName, fileSize, fileData));
   }
 
   // remove field by given row id
   removeField(i: number): void {
     if (this.docList1().length > 0) {
       this.docList1().removeAt(i);
-      this._fileList.splice(i, 1);
       this.myInputVariable!.nativeElement.value = '';
     }
   }
@@ -141,18 +140,6 @@ export class DocumentUpdateComponent implements OnInit {
       this.isUploadDetail = !this.isUploadDetail;
     }
     this.isDocMap = false;
-  }
-
-  get metaDataHeaderId(): any {
-    return this.editForm.get('metaDataHeaderId');
-  }
-
-  get message(): any {
-    return this.editForm.get('message');
-  }
-
-  get reposistory(): any {
-    return this.editForm.get('reposistory');
   }
 
   // window.history.back();
@@ -180,22 +167,31 @@ export class DocumentUpdateComponent implements OnInit {
     this.showLoading('Saving and Uploading Documents');
 
     const formData = new FormData();
-    this.repositoryurl = this.editForm.get(['reposistory'])!.value;
+    const attachedFileList = [];
 
     const documentHeaderdata = this.createFromForm();
-    formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
-
-    console.log(JSON.stringify(documentHeaderdata));
-
-    if (this._fileList.length > 0) {
-      for (let i = 0; i < this._fileList.length; i++) {
-        formData.append(
-          'files',
-          this._fileList[i],
-          this._fileList[i].name + '@' + this.getRepositoryURL(documentHeaderdata.docList, this._fileList[i].name)
-        );
+    const docList = documentHeaderdata.docList ?? [];
+    if (docList.length > 0) {
+      for (const dmsDoc of docList) {
+        const docDetailID = dmsDoc.id ?? undefined;
+        if (docDetailID === undefined && dmsDoc.fileData !== undefined) {
+          const orgFileName = dmsDoc.fileData.name;
+          const orgFileExtension = orgFileName.split('.').pop();
+          let editedFileName = dmsDoc.fileName;
+          if (editedFileName?.lastIndexOf('.') === -1) {
+            // If file extension is missing, original file extension is added
+            editedFileName = editedFileName.concat('.').concat(orgFileExtension!);
+            dmsDoc.fileName = editedFileName;
+          }
+          formData.append('files', dmsDoc.fileData, editedFileName?.concat('@').concat(dmsDoc.filePath ?? ''));
+        }
+        delete dmsDoc['fileData'];
+        attachedFileList.push(dmsDoc);
       }
     }
+
+    documentHeaderdata.docList = attachedFileList;
+    formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
 
     const docHeaderID = documentHeaderdata.id ?? undefined;
     if (docHeaderID !== undefined) {
@@ -228,7 +224,6 @@ export class DocumentUpdateComponent implements OnInit {
 
   forControlBind(): void {
     Object.keys(this.editForm.controls).forEach((key: string) => {
-      const abstractControl = this.editForm.get(key);
       if (key.includes('_fieldName')) {
         const fieldName: string = key;
         this.editForm.removeControl(fieldName);
@@ -334,21 +329,12 @@ export class DocumentUpdateComponent implements OnInit {
     this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
     for (let i = 0; i < this._tempFileList.length; i++) {
-      this.addField(this.repositoryurl, this._tempFileList[i].name, Math.round(this._tempFileList[i].size / 1024));
-      this._fileList.push(this._tempFileList[i]);
+      const tempFile = this._tempFileList[i];
+      this.addField(this.repositoryurl, tempFile.name, Math.round(tempFile.size / 1024), tempFile);
     }
 
     this._tempFileList = [];
     this.myInputVariable!.nativeElement.value = '';
-  }
-
-  getRepositoryURL(iDocument: IDocument[] | undefined, fileName: string): string {
-    for (let i = 0; i < iDocument!.length; i++) {
-      if (iDocument![i].fileName === fileName) {
-        return iDocument![i].filePath!;
-      }
-    }
-    return '';
   }
 
   saveBtnTitleChange(): string {
@@ -372,7 +358,6 @@ export class DocumentUpdateComponent implements OnInit {
 
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
-        this._fileList = [];
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
@@ -424,8 +409,8 @@ export class DocumentUpdateComponent implements OnInit {
 
   protected createFileListDetail(data: any): IDocument {
     return {
-      ...new Document(),
-      id: undefined,
+      ...new DMSDocument(),
+      id: data.get(['id'])!.value,
       headerId: undefined,
       filePath: data.get(['filePath'])!.value,
       fileName: data.get(['fileName'])!.value,
@@ -433,6 +418,7 @@ export class DocumentUpdateComponent implements OnInit {
       version: data.get(['version'])!.value,
       remark: data.get(['remark'])!.value,
       delFlag: 'N',
+      fileData: data.get(['fileData'])!.value,
     };
   }
 
@@ -477,6 +463,7 @@ export class DocumentUpdateComponent implements OnInit {
     let index = 0;
     docList?.forEach(data => {
       this.addField('', '', 0);
+      this.docList1().controls[index].get(['id'])!.setValue(data.id);
       this.docList1().controls[index].get(['filePath'])!.setValue(data.filePath);
       this.docList1().controls[index].get(['fileName'])!.setValue(data.fileName);
       this.docList1().controls[index].get(['fileSize'])!.setValue(data.fileSize);

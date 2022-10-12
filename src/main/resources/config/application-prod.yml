@@ -33,7 +33,7 @@ spring:
       enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/dms?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/dms?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
     password: admin@123
     hikari:
@@ -84,7 +84,7 @@ server:
     min-response-size: 1024
 
 ftpserver:
-  host: 192.168.1.9
+  host: localhost
   port: 21
   username: ftp-user1
   password: ftp@user
