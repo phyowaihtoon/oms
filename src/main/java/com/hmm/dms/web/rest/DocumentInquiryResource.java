@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,19 +54,25 @@ public class DocumentInquiryResource {
 
     @GetMapping("/docinquiry/download/{docId}")
     public ResponseEntity<?> downloadFile(@PathVariable Long docId) {
-        log.debug("REST request to get all Documents");
+        log.debug("REST request to download file");
+
         DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
         String filePath = docDTO.getFilePath();
         String fileName = docDTO.getFileName();
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
+        if (extension == null || extension.isEmpty()) {
+            System.out.println("Invalid file extension while downloading file");
+            return ResponseEntity.status(205).build();
+        }
+
         ReplyMessage<ByteArrayResource> message = null;
         try {
             message = documentInquiryService.downloadFileFromFTPServer(filePath + "//" + fileName);
-        } catch (IOException e) {
+        } catch (IOException ex) {
             return ResponseEntity.status(204).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(205).build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(206).build();
         }
 
         HttpHeaders header = new HttpHeaders();

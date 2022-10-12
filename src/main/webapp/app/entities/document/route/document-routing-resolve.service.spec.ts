@@ -6,7 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { of } from 'rxjs';
 
-import { IDocument, Document } from '../document.model';
+import { IDocument, DMSDocument } from '../document.model';
 import { DocumentService } from '../service/document.service';
 
 import { DocumentRoutingResolveService } from './document-routing-resolve.service';
@@ -59,7 +59,7 @@ describe('Service Tests', () => {
 
         // THEN
         expect(service.find).not.toBeCalled();
-        expect(resultDocument).toEqual(new Document());
+        expect(resultDocument).toEqual(new DMSDocument());
       });
 
       it('should route to 404 page if data not found in server', () => {

@@ -134,9 +134,9 @@ export class RepositoryDialogComponent implements OnInit {
     combineLatest([this.activatedRoute.data, this.activatedRoute.queryParamMap]).subscribe(([data, params]) => {
       const page = params.get('page');
       const pageNumber = page !== null ? +page : 1;
-      const sort = (params.get('sort') ?? data['defaultSort']).split(',');
-      const predicate = sort[0];
-      const ascending = sort[1] === 'asc';
+      const sort = (params.get('sort') ?? data['defaultSort'])?.split(',');
+      const predicate = sort?.length > 0 ? sort[0] : '';
+      const ascending = sort?.length > 1 ? sort[1] === 'asc' : false;
       if (pageNumber !== this.page || predicate !== this.predicate || ascending !== this.ascending) {
         this.predicate = predicate;
         this.ascending = ascending;
