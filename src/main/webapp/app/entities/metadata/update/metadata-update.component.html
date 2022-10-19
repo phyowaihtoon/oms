@@ -25,7 +25,7 @@
 </div>
 
 <div id="page-heading" class="row">
-  <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+  <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" autocomplete="off">
     <jhi-alert-error></jhi-alert-error>
 
     <jhi-alert></jhi-alert>
@@ -40,7 +40,7 @@
     <div class="form-group">
       <div class="form-group col-6">
         <label class="form-control-label" for="field_docTitle"
-          >{{ 'dmsApp.metaData.docTitle' | translate }}<span class="required-field">*</span></label
+          >{{ 'dmsApp.metaData.docTitle' | translate }}<span class="text-danger required-field">*</span></label
         >
         <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
         <div *ngIf="editForm.get('docTitle')!.invalid && (editForm.get('docTitle')!.dirty || editForm.get('docTitle')!.touched)">
@@ -73,13 +73,13 @@
                 <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldType' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center" style="width: 25%">
+                <th class="text-center" style="width: 30%">
                   {{ 'dmsApp.metaData.fieldValue' | translate }}<span class="required-field">*</span>
                 </th>
                 <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldMandatory' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center" style="width: 15%">
+                <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldOrder' | translate }}<span class="required-field">*</span>
                 </th>
                 <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
