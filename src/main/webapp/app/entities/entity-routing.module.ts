@@ -54,6 +54,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'dmsApp.userRole.home.title' },
         loadChildren: () => import('./user-role/user-role.module').then(m => m.UserRoleModule),
       },
+      {
+        path: 'service-queue',
+        data: { pageTitle: 'dmsApp.userRole.home.title' },
+        loadChildren: () => import('./servicequeue/service-queue.module').then(m => m.ServiceQueueModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],
