@@ -18,3 +18,10 @@ export class ResponseCode {
   static readonly RESPONSE_FAILED_CODE: string = 'R00';
   static readonly RESPONSE_FAILED_MSG: string = 'CONNECTION TIMEOUT';
 }
+
+export interface IHeaderDetailsMessage {
+  code?: string;
+  message?: string;
+  header?: any;
+  details?: any;
+}

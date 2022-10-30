@@ -7,9 +7,9 @@ import com.hmm.dms.repository.RepositoryHeaderRepository;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
-import com.hmm.dms.service.dto.RepositoryInquiryDTO;
 import com.hmm.dms.service.mapper.RepositoryHeaderMapper;
 import com.hmm.dms.service.mapper.RepositoryMapper;
+import com.hmm.dms.service.message.RepositoryInquiryMessage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -122,12 +122,12 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryDTO dto, Pageable pageable) {
-        String repoName = dto.getRepositoryName();
+    public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryMessage message, Pageable pageable) {
+        String repoName = message.getRepositoryName();
         if (repoName == null || repoName.equals("null") || repoName.isEmpty()) repoName = ""; else repoName = repoName.trim();
 
-        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
-            String createdDate = dto.getCreatedDate();
+        if (message.getCreatedDate() != null && message.getCreatedDate().trim().length() > 0) {
+            String createdDate = message.getCreatedDate();
             Page<RepositoryHeader> pageWithEntity =
                 this.repositoryHeaderRepository.findAllByRepositoryNameAndDate(repoName, createdDate, pageable);
             Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);

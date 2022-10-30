@@ -3,8 +3,8 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import com.hmm.dms.service.dto.DocumentInquiryDTO;
-import com.hmm.dms.service.dto.ReplyMessage;
+import com.hmm.dms.service.message.DocumentInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +37,7 @@ public class DocumentInquiryResource {
     }
 
     @PostMapping("/docinquiry")
-    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentInquiryDTO dto, Pageable pageable) {
+    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentInquiryMessage dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
         Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentHeaderByMetaData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -70,8 +69,10 @@ public class DocumentInquiryResource {
         try {
             message = documentInquiryService.downloadFileFromFTPServer(filePath + "//" + fileName);
         } catch (IOException ex) {
+            System.out.println("Failed to download: [" + ex.getMessage() + "]");
             return ResponseEntity.status(204).build();
         } catch (Exception ex) {
+            System.out.println("Failed to download: [" + ex.getMessage() + "]");
             return ResponseEntity.status(206).build();
         }
 

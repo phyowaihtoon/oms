@@ -8,7 +8,7 @@ import com.hmm.dms.service.DocumentHeaderService;
 import com.hmm.dms.service.DocumentService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import com.hmm.dms.service.dto.ReplyMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;

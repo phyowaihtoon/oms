@@ -5,23 +5,31 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IUserRole, getUserRoleIdentifier } from '../user-role.model';
+import { IUserRole, getUserRoleIdentifier, IRoleMenuAccess } from '../user-role.model';
+import { IHeaderDetailsMessage } from 'app/entities/util/reply-message.model';
 
 export type EntityResponseType = HttpResponse<IUserRole>;
 export type EntityArrayResponseType = HttpResponse<IUserRole[]>;
+export type MenuAccessResponseType = HttpResponse<IRoleMenuAccess[]>;
+export type HeaderDetailsResponseType = HttpResponse<IHeaderDetailsMessage>;
 
 @Injectable({ providedIn: 'root' })
 export class UserRoleService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/user-roles');
+  public menuAccessResourceUrl = this.applicationConfigService.getEndpointFor('api/menu-item');
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  create(userRole: IUserRole): Observable<EntityResponseType> {
-    return this.http.post<IUserRole>(this.resourceUrl, userRole, { observe: 'response' });
+  create(headerDetailsMessage: IHeaderDetailsMessage): Observable<HeaderDetailsResponseType> {
+    return this.http.post<IHeaderDetailsMessage>(this.resourceUrl, headerDetailsMessage, { observe: 'response' });
   }
 
-  update(userRole: IUserRole): Observable<EntityResponseType> {
-    return this.http.put<IUserRole>(`${this.resourceUrl}/${getUserRoleIdentifier(userRole) as number}`, userRole, { observe: 'response' });
+  update(headerDetailsMessage: IHeaderDetailsMessage): Observable<HeaderDetailsResponseType> {
+    return this.http.put<IHeaderDetailsMessage>(
+      `${this.resourceUrl}/${getUserRoleIdentifier(headerDetailsMessage.header) as number}`,
+      headerDetailsMessage,
+      { observe: 'response' }
+    );
   }
 
   partialUpdate(userRole: IUserRole): Observable<EntityResponseType> {
@@ -30,8 +38,8 @@ export class UserRoleService {
     });
   }
 
-  find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IUserRole>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  find(id: number): Observable<HeaderDetailsResponseType> {
+    return this.http.get<IHeaderDetailsMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
@@ -58,5 +66,9 @@ export class UserRoleService {
       return [...userRolesToAdd, ...userRoleCollection];
     }
     return userRoleCollection;
+  }
+
+  getAllMenuItems(): Observable<MenuAccessResponseType> {
+    return this.http.get<IRoleMenuAccess[]>(this.menuAccessResourceUrl, { observe: 'response' });
   }
 }

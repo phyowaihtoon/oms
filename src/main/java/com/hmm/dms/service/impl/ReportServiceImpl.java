@@ -1,9 +1,9 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.service.ReportService;
-import com.hmm.dms.service.dto.ReplyMessage;
-import com.hmm.dms.service.dto.RptDataDTO;
-import com.hmm.dms.service.dto.RptParamsDTO;
+import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.service.message.RptDataMessage;
+import com.hmm.dms.service.message.RptParamsMessage;
 import com.hmm.dms.util.ReportPrint;
 import com.hmm.dms.util.ResponseCode;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class ReportServiceImpl implements ReportService {
     public ReportServiceImpl() {}
 
     @Override
-    public ReplyMessage<RptParamsDTO> generateDocumentListRpt(RptParamsDTO rptPara) {
-        ReplyMessage<RptParamsDTO> replyMessage = new ReplyMessage<RptParamsDTO>();
+    public ReplyMessage<RptParamsMessage> generateDocumentListRpt(RptParamsMessage rptPara) {
+        ReplyMessage<RptParamsMessage> replyMessage = new ReplyMessage<RptParamsMessage>();
 
         try {
             StoredProcedureQuery query = em.createStoredProcedureQuery("SP_DOCMAPPING_RPT");
@@ -42,11 +42,11 @@ public class ReportServiceImpl implements ReportService {
                 replyMessage.setMessage("NO DATA FOUND");
                 return replyMessage;
             }
-            List<RptDataDTO> documentList = null;
+            List<RptDataMessage> documentList = null;
             if (resultList != null) {
-                documentList = new ArrayList<RptDataDTO>();
+                documentList = new ArrayList<RptDataMessage>();
                 for (Object[] arr : resultList) {
-                    RptDataDTO dto = new RptDataDTO();
+                    RptDataMessage dto = new RptDataMessage();
                     dto.setDataS1(String.valueOf(arr[0]));
                     dto.setDataS2(String.valueOf(arr[1]));
                     dto.setDataS3(String.valueOf(arr[2]));

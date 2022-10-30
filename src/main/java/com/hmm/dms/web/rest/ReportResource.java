@@ -3,8 +3,8 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.domain.User;
 import com.hmm.dms.service.ReportService;
 import com.hmm.dms.service.UserService;
-import com.hmm.dms.service.dto.ReplyMessage;
-import com.hmm.dms.service.dto.RptParamsDTO;
+import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.service.message.RptParamsMessage;
 import com.hmm.dms.util.SharedUtils;
 import java.io.File;
 import java.nio.file.Files;
@@ -76,7 +76,7 @@ public class ReportResource {
     }
 
     @PostMapping("/docmap-rpt")
-    public ReplyMessage<RptParamsDTO> generateDocumentListRpt(@Valid @RequestBody RptParamsDTO rptParams) {
+    public ReplyMessage<RptParamsMessage> generateDocumentListRpt(@Valid @RequestBody RptParamsMessage rptParams) {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
         String rptOutputPath = rptOutFolder + "\\" + loginUser.getLogin() + "\\";
@@ -85,7 +85,7 @@ public class ReportResource {
         rptParams.setRptOutputPath(rptOutputPath);
         rptParams.setRptJrxml("DocumentMappingRpt.jrxml");
         rptParams.setRptJasper("DocumentMappingRpt.jrxml");
-        ReplyMessage<RptParamsDTO> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
+        ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
         return replyMessage;
     }
 }

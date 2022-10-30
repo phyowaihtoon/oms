@@ -4,7 +4,7 @@ import com.hmm.dms.repository.RepositoryHeaderRepository;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
-import com.hmm.dms.service.dto.RepositoryInquiryDTO;
+import com.hmm.dms.service.message.RepositoryInquiryMessage;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -201,9 +201,12 @@ public class RepositoryResource {
     }
 
     @PostMapping("/repository/search")
-    public ResponseEntity<List<RepositoryHeaderDTO>> getAllRepositoryData(@RequestBody RepositoryInquiryDTO dto, Pageable pageable) {
+    public ResponseEntity<List<RepositoryHeaderDTO>> getAllRepositoryData(
+        @RequestBody RepositoryInquiryMessage message,
+        Pageable pageable
+    ) {
         log.debug("REST request to get all Documents");
-        Page<RepositoryHeaderDTO> page = repositoryService.getAllRepositoryData(dto, pageable);
+        Page<RepositoryHeaderDTO> page = repositoryService.getAllRepositoryData(message, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
