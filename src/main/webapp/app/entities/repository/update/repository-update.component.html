@@ -25,7 +25,7 @@
 </div>
 
 <div id="page-heading" class="row">
-  <form name="editForm" role="form" novalidate [formGroup]="editForm">
+  <form name="editForm" role="form" novalidate [formGroup]="editForm" autocomplete="off">
     <jhi-alert-error></jhi-alert-error>
 
     <jhi-alert></jhi-alert>
@@ -39,7 +39,9 @@
 
     <div class="form-group">
       <div class="form-group col-6">
-        <label class="form-control-label" jhiTranslate="dmsApp.repository.repositoryName" for="field_repositoryName">Repository Name</label>
+        <label class="form-control-label" for="field_repositoryName"
+          >{{ 'dmsApp.repository.repositoryName' | translate }}<span class="text-danger required-field">*</span></label
+        >
         <input
           type="text"
           class="form-control"

@@ -11,11 +11,11 @@ import com.hmm.dms.service.LoadSetupService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
-import com.hmm.dms.service.dto.RepositoryInquiryDTO;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import com.hmm.dms.service.mapper.RepositoryHeaderMapper;
 import com.hmm.dms.service.mapper.RepositoryMapper;
+import com.hmm.dms.service.message.RepositoryInquiryMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -78,7 +78,7 @@ public class LoadSetupServiceImpl implements LoadSetupService {
     }
 
     @Override
-    public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryDTO dto, Pageable pageable) {
+    public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryMessage dto, Pageable pageable) {
         String repoName = dto.getRepositoryName();
         if (repoName == null || repoName.equals("null") || repoName.isEmpty()) repoName = ""; else repoName = repoName.trim();
 

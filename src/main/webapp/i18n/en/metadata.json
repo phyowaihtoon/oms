@@ -27,7 +27,7 @@
       "fieldName": "Field Name",
       "fieldType": "Field Type",
       "fieldValue": "Field Value",
-      "fieldMandatory": "Field Mandatory",
+      "fieldMandatory": "Mandatory",
       "fieldOrder": "Field Order",
       "fieldAction": "Add/ Remove"
     }

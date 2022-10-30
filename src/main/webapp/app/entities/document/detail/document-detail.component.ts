@@ -72,7 +72,7 @@ export class DocumentDetailComponent implements OnInit {
         message1 = 'Invalid File Type.';
       }
 
-      if (fileExtension !== 'pdf') {
+      if (fileExtension?.toLowerCase() !== 'pdf') {
         message1 = 'Preview is only available for PDF documents.';
         message2 = 'You can download the file and view it.';
       }

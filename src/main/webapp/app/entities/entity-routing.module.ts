@@ -20,11 +20,6 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./document/document.module').then(m => m.DocumentModule),
       },
       {
-        path: 'menurole',
-        data: { pageTitle: 'dmsApp.menurole.home.title' },
-        loadChildren: () => import('./menurole/role-menu-map.module').then(m => m.RoleMenuMapModule),
-      },
-      {
         path: 'repository',
         data: { pageTitle: 'dmsApp.repository.home.title' },
         loadChildren: () => import('./repository/repository.module').then(m => m.RepositoryModule),
@@ -48,11 +43,6 @@ import { RouterModule } from '@angular/router';
         path: 'document-header',
         data: { pageTitle: 'dmsApp.documentHeader.home.title' },
         loadChildren: () => import('./document-header/document-header.module').then(m => m.DocumentHeaderModule),
-      },
-      {
-        path: 'role-menu-map',
-        data: { pageTitle: 'dmsApp.roleMenuMap.home.title' },
-        loadChildren: () => import('./role-menu-map/role-menu-map.module').then(m => m.RoleMenuMapModule),
       },
       {
         path: 'application-user',

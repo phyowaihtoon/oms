@@ -1,6 +1,8 @@
 package com.hmm.dms.service;
 
+import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.message.HeaderDetailsMessage;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,7 @@ public interface UserRoleService {
      * @param userRoleDTO the entity to save.
      * @return the persisted entity.
      */
-    UserRoleDTO save(UserRoleDTO userRoleDTO);
+    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> save(HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message);
 
     /**
      * Partially updates a userRole.
