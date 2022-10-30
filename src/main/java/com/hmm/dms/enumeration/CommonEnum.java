@@ -18,10 +18,11 @@ public class CommonEnum {
 
     public enum DocumentStatusEnum {
         NEW(1, "New"),
-        CANCEL(2, "Canceled"),
-        AMEND(3, "Pending for Amendment"),
-        APPROVE(4, "Approved"),
-        REJECT(5, "Rejected");
+        SEND(2, "Sent for Approval"),
+        CANCEL(3, "Canceled"),
+        AMEND(4, "Sent for Amendment"),
+        APPROVE(5, "Approved"),
+        REJECT(6, "Rejected");
 
         public int value;
         public String description;

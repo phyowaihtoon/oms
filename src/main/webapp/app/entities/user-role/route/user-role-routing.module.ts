@@ -20,7 +20,7 @@ const userRoleRoute: Routes = [
     path: ':id/view',
     component: UserRoleDetailComponent,
     resolve: {
-      userRole: UserRoleRoutingResolveService,
+      headerDetailsMessage: UserRoleRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -28,7 +28,7 @@ const userRoleRoute: Routes = [
     path: 'new',
     component: UserRoleUpdateComponent,
     resolve: {
-      userRole: UserRoleRoutingResolveService,
+      headerDetailsMessage: UserRoleRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -36,7 +36,7 @@ const userRoleRoute: Routes = [
     path: ':id/edit',
     component: UserRoleUpdateComponent,
     resolve: {
-      userRole: UserRoleRoutingResolveService,
+      headerDetailsMessage: UserRoleRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

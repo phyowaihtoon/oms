@@ -7,9 +7,9 @@ import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
-import com.hmm.dms.service.dto.MetaDataInquiryDTO;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
+import com.hmm.dms.service.message.MetaDataInquiryMessage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -118,13 +118,13 @@ public class MetaDataServiceImpl implements MetaDataService {
     }
 
     @Override
-    public Page<MetaDataHeaderDTO> getAllMetaData(MetaDataInquiryDTO dto, Pageable pageable) {
-        String docTitle = dto.getDocTitle();
+    public Page<MetaDataHeaderDTO> getAllMetaData(MetaDataInquiryMessage message, Pageable pageable) {
+        String docTitle = message.getDocTitle();
         if (docTitle == null || docTitle.equals("null") || docTitle.isEmpty()) docTitle = ""; else docTitle = docTitle.trim();
 
         log.debug("Requesting to get all Metadata__" + docTitle);
-        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
-            String createdDate = dto.getCreatedDate();
+        if (message.getCreatedDate() != null && message.getCreatedDate().trim().length() > 0) {
+            String createdDate = message.getCreatedDate();
             Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitleAndDate(docTitle, createdDate, pageable);
             return pageWithEntity.map(metaDataHeaderMapper::toDto);
         }

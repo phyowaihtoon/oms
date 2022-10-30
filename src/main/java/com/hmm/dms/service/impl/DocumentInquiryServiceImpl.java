@@ -7,10 +7,10 @@ import com.hmm.dms.repository.DocumentRepository;
 import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import com.hmm.dms.service.dto.DocumentInquiryDTO;
-import com.hmm.dms.service.dto.ReplyMessage;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
+import com.hmm.dms.service.message.DocumentInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.util.ResponseCode;
 import java.io.ByteArrayOutputStream;
@@ -55,7 +55,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     }
 
     @Override
-    public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryDTO dto, Pageable pageable) {
+    public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
         String repURL = dto.getRepositoryURL();
         String fValues = dto.getFieldValues();
         if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = ""; else repURL = repURL.trim();
@@ -93,6 +93,8 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) throws IOException, Exception {
         ReplyMessage<ByteArrayResource> replyMessage = new ReplyMessage<ByteArrayResource>();
         FtpSession ftpSession = this.ftpSessionFactory.getSession();
+        System.out.println("Connected successfully to FTP Server");
+        System.out.println("Start downloading file: [" + filePath + "]");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ftpSession.read(filePath, out);
@@ -100,6 +102,9 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         replyMessage.setCode(ResponseCode.SUCCESS);
         replyMessage.setData(resource);
         ftpSession.close();
+
+        System.out.println("Downloaded Successfully: [" + filePath + "]");
+
         return replyMessage;
     }
 }

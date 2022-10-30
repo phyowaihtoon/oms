@@ -1,8 +1,8 @@
 package com.hmm.dms.service;
 
-import com.hmm.dms.service.dto.ReplyMessage;
-import com.hmm.dms.service.dto.RptParamsDTO;
+import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.service.message.RptParamsMessage;
 
 public interface ReportService {
-    public ReplyMessage<RptParamsDTO> generateDocumentListRpt(RptParamsDTO rptPara);
+    public ReplyMessage<RptParamsMessage> generateDocumentListRpt(RptParamsMessage rptPara);
 }
