@@ -1,7 +1,7 @@
 package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import com.hmm.dms.service.dto.ReplyMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;

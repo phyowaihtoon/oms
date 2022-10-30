@@ -1,6 +1,6 @@
 package com.hmm.dms.util;
 
-import com.hmm.dms.service.dto.RptParamsDTO;
+import com.hmm.dms.service.message.RptParamsMessage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -21,7 +21,7 @@ import org.springframework.util.ResourceUtils;
 
 public class ReportPrint {
 
-    public static String print(List<?> rptData, RptParamsDTO rptPara, Map<String, Object> parameters) {
+    public static String print(List<?> rptData, RptParamsMessage rptPara, Map<String, Object> parameters) {
         Logger log = LoggerFactory.getLogger(ReportPrint.class);
         log.debug("ReportPrint:print() Step1");
         log.debug("Report Output Path:" + rptPara.getRptOutputPath());
@@ -64,7 +64,7 @@ public class ReportPrint {
         return rptFilePath;
     }
 
-    private static String export(RptParamsDTO rptPara, JasperPrint jasperPrint) throws JRException {
+    private static String export(RptParamsMessage rptPara, JasperPrint jasperPrint) throws JRException {
         String rptFilePath;
 
         // Export HTML file

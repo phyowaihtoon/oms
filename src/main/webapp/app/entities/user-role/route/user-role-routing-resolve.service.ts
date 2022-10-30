@@ -3,19 +3,19 @@ import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
-import { IUserRole, UserRole } from '../user-role.model';
+import { UserRole } from '../user-role.model';
 import { UserRoleService } from '../service/user-role.service';
+import { IHeaderDetailsMessage } from 'app/entities/util/reply-message.model';
 
 @Injectable({ providedIn: 'root' })
-export class UserRoleRoutingResolveService implements Resolve<IUserRole> {
+export class UserRoleRoutingResolveService implements Resolve<IHeaderDetailsMessage> {
   constructor(protected service: UserRoleService, protected router: Router) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<IUserRole> | Observable<never> {
+  resolve(route: ActivatedRouteSnapshot): Observable<IHeaderDetailsMessage> | Observable<never> {
     const id = route.params['id'];
     if (id) {
       return this.service.find(id).pipe(
-        mergeMap((userRole: HttpResponse<UserRole>) => {
+        mergeMap((userRole: HttpResponse<IHeaderDetailsMessage>) => {
           if (userRole.body) {
             return of(userRole.body);
           } else {
@@ -25,6 +25,7 @@ export class UserRoleRoutingResolveService implements Resolve<IUserRole> {
         })
       );
     }
-    return of(new UserRole());
+    const message: IHeaderDetailsMessage = { header: new UserRole(), details: [] };
+    return of(message);
   }
 }

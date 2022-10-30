@@ -1,8 +1,11 @@
 package com.hmm.dms.web.rest;
 
 import com.hmm.dms.repository.UserRoleRepository;
+import com.hmm.dms.service.RoleMenuAccessService;
 import com.hmm.dms.service.UserRoleService;
+import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.message.HeaderDetailsMessage;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,9 +20,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -41,11 +51,18 @@ public class UserRoleResource {
 
     private final UserRoleService userRoleService;
 
+    private final RoleMenuAccessService roleMenuAccessService;
+
     private final UserRoleRepository userRoleRepository;
 
-    public UserRoleResource(UserRoleService userRoleService, UserRoleRepository userRoleRepository) {
+    public UserRoleResource(
+        UserRoleService userRoleService,
+        UserRoleRepository userRoleRepository,
+        RoleMenuAccessService roleMenuAccessService
+    ) {
         this.userRoleService = userRoleService;
         this.userRoleRepository = userRoleRepository;
+        this.roleMenuAccessService = roleMenuAccessService;
     }
 
     /**
@@ -56,15 +73,17 @@ public class UserRoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/user-roles")
-    public ResponseEntity<UserRoleDTO> createUserRole(@Valid @RequestBody UserRoleDTO userRoleDTO) throws URISyntaxException {
-        log.debug("REST request to save UserRole : {}", userRoleDTO);
-        if (userRoleDTO.getId() != null) {
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>> createUserRole(
+        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message
+    ) throws URISyntaxException {
+        log.debug("REST request to save UserRole : {}", message.getHeader());
+        if (message.getHeader().getId() != null) {
             throw new BadRequestAlertException("A new userRole cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        UserRoleDTO result = userRoleService.save(userRoleDTO);
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> result = userRoleService.save(message);
         return ResponseEntity
-            .created(new URI("/api/user-roles/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .created(new URI("/api/user-roles/" + result.getHeader().getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getHeader().getId().toString()))
             .body(result);
     }
 
@@ -79,15 +98,15 @@ public class UserRoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/user-roles/{id}")
-    public ResponseEntity<UserRoleDTO> updateUserRole(
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>> updateUserRole(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody UserRoleDTO userRoleDTO
+        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message
     ) throws URISyntaxException {
-        log.debug("REST request to update UserRole : {}, {}", id, userRoleDTO);
-        if (userRoleDTO.getId() == null) {
+        log.debug("REST request to update UserRole : {}, {}", id, message);
+        if (message.getHeader().getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, userRoleDTO.getId())) {
+        if (!Objects.equals(id, message.getHeader().getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -95,10 +114,10 @@ public class UserRoleResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        UserRoleDTO result = userRoleService.save(userRoleDTO);
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> result = userRoleService.save(message);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, userRoleDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, message.getHeader().getId().toString()))
             .body(result);
     }
 
@@ -159,10 +178,15 @@ public class UserRoleResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userRoleDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/user-roles/{id}")
-    public ResponseEntity<UserRoleDTO> getUserRole(@PathVariable Long id) {
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>> getUserRole(@PathVariable Long id) {
         log.debug("REST request to get UserRole : {}", id);
         Optional<UserRoleDTO> userRoleDTO = userRoleService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(userRoleDTO);
+        List<RoleMenuAccessDTO> menuAccessList = roleMenuAccessService.getAllMenuAccessByRole(id);
+
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> replyMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>();
+        replyMessage.setHeader(userRoleDTO.get());
+        replyMessage.setDetails(menuAccessList);
+        return ResponseEntity.ok().body(replyMessage);
     }
 
     /**
