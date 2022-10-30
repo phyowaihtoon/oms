@@ -17,6 +17,7 @@ public class CommonEnum {
     }
 
     public enum DocumentStatusEnum {
+        NA(0, "NA"),
         NEW(1, "New"),
         SEND(2, "Sent for Approval"),
         CANCEL(3, "Canceled"),
