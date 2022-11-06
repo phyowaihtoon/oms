@@ -34,6 +34,9 @@ public class MenuItem implements Serializable {
     @Column(name = "order_no")
     private int orderNo;
 
+    @Column(name = "fa_icon")
+    private String faIcon;
+
     @ManyToOne
     @NotNull
     private MenuGroup menuGroup;
@@ -84,6 +87,14 @@ public class MenuItem implements Serializable {
 
     public void setOrderNo(int orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public String getFaIcon() {
+        return faIcon;
+    }
+
+    public void setFaIcon(String faIcon) {
+        this.faIcon = faIcon;
     }
 
     public MenuGroup getMenuGroup() {

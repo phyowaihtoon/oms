@@ -14,6 +14,8 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
+import { IMenuItem } from 'app/entities/util/setup.model';
+import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
   selector: 'jhi-document-update',
@@ -38,6 +40,8 @@ export class DocumentUpdateComponent implements OnInit {
   fValue: string = '';
 
   isSaving = false;
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   // filenames: string[] = [];
   fileStatus = { status: '', requestType: '', percent: 0 };
@@ -78,7 +82,10 @@ export class DocumentUpdateComponent implements OnInit {
     this.loadSetupService.loadAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
       this.docTypes = res.body;
 
-      this.activatedRoute.data.subscribe(({ docHeader }) => {
+      this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
+        this._userAuthority = userAuthority;
+        this._activeMenuItem = userAuthority.activeMenu.menuItem;
+
         this._documentHeader = docHeader;
         this._documentDetails = this._documentHeader?.docList;
         if (this._documentHeader !== undefined) {

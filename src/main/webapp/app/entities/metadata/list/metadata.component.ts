@@ -11,13 +11,15 @@ import { MetaDataService } from '../service/metadata.service';
 import { MetaDataDeleteDialogComponent } from '../delete/metadata-delete-dialog.component';
 import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-metadata',
   templateUrl: './metadata.component.html',
   styleUrls: ['./metadata.component.scss'],
 })
-export class MetaDataComponent {
+export class MetaDataComponent implements OnInit {
   metadatas?: IMetaDataHeader[];
   isLoading = false;
   totalItems = 0;
@@ -31,6 +33,9 @@ export class MetaDataComponent {
   isShowingResult = false;
   isShowingAlert = false;
   _alertMessage = '';
+
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   searchForm = this.fb.group({
     docTitle: [],
@@ -46,9 +51,12 @@ export class MetaDataComponent {
     protected translateService: TranslateService
   ) {}
 
-  /* ngOnInit(): void {
-    //this.handleNavigation();
-  } */
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
+  }
 
   trackId(index: number, item: IMetaDataHeader): number {
     return item.id!;

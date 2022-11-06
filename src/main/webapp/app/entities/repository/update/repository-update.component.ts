@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { RepositoryService } from '../service/repository.service';
 import { ActivatedRoute } from '@angular/router';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-repository-update',
@@ -14,6 +16,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class RepositoryUpdateComponent implements OnInit {
   isSaving = false;
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   editForm = this.fb.group({
     id: [],
@@ -25,7 +29,10 @@ export class RepositoryUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.addField();
-    this.activatedRoute.data.subscribe(({ repository }) => {
+    this.activatedRoute.data.subscribe(({ repository, userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+
       if (repository !== null) {
         if (repository.id !== null && repository.id !== undefined) {
           this.removeAllField();
@@ -80,7 +87,8 @@ export class RepositoryUpdateComponent implements OnInit {
     this.isSaving = true;
     const repository = this.createFromForm();
     console.log(JSON.stringify(repository));
-    if (repository.id !== undefined) {
+    const repositoryID = repository.id ?? undefined;
+    if (repositoryID !== undefined) {
       this.subscribeToSaveResponse(this.service.update(repository));
     } else {
       this.subscribeToSaveResponse(this.service.create(repository));

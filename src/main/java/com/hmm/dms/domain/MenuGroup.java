@@ -26,6 +26,9 @@ public class MenuGroup implements Serializable {
     @Column(name = "order_no")
     private int orderNo;
 
+    @Column(name = "fa_icon")
+    private String faIcon;
+
     public Long getId() {
         return id;
     }
@@ -56,6 +59,14 @@ public class MenuGroup implements Serializable {
 
     public void setOrderNo(int orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public String getFaIcon() {
+        return faIcon;
+    }
+
+    public void setFaIcon(String faIcon) {
+        this.faIcon = faIcon;
     }
 
     @Override

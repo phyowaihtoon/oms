@@ -14,6 +14,8 @@ public class MenuItemDTO {
 
     private int orderNo;
 
+    private String faIcon;
+
     private MenuGroupDTO menuGroup;
 
     public Long getId() {
@@ -64,11 +66,47 @@ public class MenuItemDTO {
         this.orderNo = orderNo;
     }
 
+    public String getFaIcon() {
+        return faIcon;
+    }
+
+    public void setFaIcon(String faIcon) {
+        this.faIcon = faIcon;
+    }
+
     public MenuGroupDTO getMenuGroup() {
         return menuGroup;
     }
 
     public void setMenuGroup(MenuGroupDTO menuGroup) {
         this.menuGroup = menuGroup;
+    }
+
+    @Override
+    public String toString() {
+        return (
+            "MenuItemDTO{" +
+            "id=" +
+            getId() +
+            ", name='" +
+            getName() +
+            "'" +
+            ",translateKey='" +
+            getTranslateKey() +
+            "'" +
+            ",menuCode='" +
+            getMenuCode() +
+            "'" +
+            ",routerLink='" +
+            getRouterLink() +
+            "'" +
+            ",orderNo='" +
+            getOrderNo() +
+            "'" +
+            ",faIcon='" +
+            getFaIcon() +
+            "'" +
+            "}"
+        );
     }
 }

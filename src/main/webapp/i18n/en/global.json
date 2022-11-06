@@ -14,14 +14,14 @@
         "metaData": "Meta Data",
         "documentHeader": "Document Header",
         "document": "Document",
-        "roleMenuMap": "Role Menu Map",
         "repository": "Repository",
-        "applicationUser": "Application User",
-        "userRole": "User Role",
+        "applicationUser": "User Authority",
+        "userRole": "Role Menu Access",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
-      "modules": {
-        "report": "Report"
+      "report": {
+        "title": "Report",
+        "docmaprpt": "Document Mapping Report"
       },
       "metadata": {
         "title": "MetaData",
@@ -39,11 +39,9 @@
         "update": "Document Mapping",
         "search": "Document Inquiry"
       },
-      "menurole": {
-        "title": "Role & Menu Mapping"
-      },
-      "reports": {
-        "docmaprpt": "Document Mapping Report"
+      "queue": {
+        "title": "Service Queue",
+        "docmentQueue": "Document Queue"
       },
       "account": {
         "main": "Account",
@@ -56,7 +54,7 @@
       },
       "admin": {
         "main": "Administration",
-        "userManagement": "User management",
+        "userManagement": "User Management",
         "tracker": "User tracker",
         "metrics": "Metrics",
         "health": "Health",
@@ -134,10 +132,10 @@
       "open": "Open",
       "save": "Save",
       "view": "View",
+      "new": "New",
       "search": "Search",
       "clear": "Clear",
-      "ok": "OK",
-      "new": "New"
+      "ok": "OK"
     },
     "detail": {
       "field": "Field",

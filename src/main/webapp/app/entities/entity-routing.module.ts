@@ -30,21 +30,6 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./department/department.module').then(m => m.DepartmentModule),
       },
       {
-        path: 'meta-data-header',
-        data: { pageTitle: 'dmsApp.metaDataHeader.home.title' },
-        loadChildren: () => import('./meta-data-header/meta-data-header.module').then(m => m.MetaDataHeaderModule),
-      },
-      {
-        path: 'meta-data',
-        data: { pageTitle: 'dmsApp.metaData.home.title' },
-        loadChildren: () => import('./meta-data/meta-data.module').then(m => m.MetaDataModule),
-      },
-      {
-        path: 'document-header',
-        data: { pageTitle: 'dmsApp.documentHeader.home.title' },
-        loadChildren: () => import('./document-header/document-header.module').then(m => m.DocumentHeaderModule),
-      },
-      {
         path: 'application-user',
         data: { pageTitle: 'dmsApp.applicationUser.home.title' },
         loadChildren: () => import('./application-user/application-user.module').then(m => m.ApplicationUserModule),
