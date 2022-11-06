@@ -110,7 +110,7 @@ public class RoleMenuAccessDTO implements Serializable {
             ", isWrite='" + getIsWrite() + "'" +
             ", isDelete='" + getIsDelete() + "'" +
             ", menuItem ["+getMenuItem().toString()+"]"+
-            ", userRole ["+getUserRole() !=null ? getUserRole().toString():""+"]"+
+            ", userRole ["+(getUserRole() ==null ? "":getUserRole().toString())+"]"+
             "}";
     }
 }

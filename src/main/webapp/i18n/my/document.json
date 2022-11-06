@@ -18,8 +18,25 @@
         "title": "Document"
       },
       "id": "ID",
-      "headerId": "Header Id",
-      "filePath": "File Path"
+      "no": "No.",
+      "docTitle": "Document Template",
+      "message": "Message",
+      "repositoryURL": "Repository URL",
+      "createdDate": "Created Date",
+      "createdBy": "Created By",
+      "filePath": "File Path",
+      "fileName": "File Name",
+      "fileSize": "Size",
+      "fileVersion": "Version",
+      "remark": "Remark",
+      "fileType": "File Type",
+      "preview": "Preview",
+      "download": "Download",
+      "otherMetaData": "Other MetaData",
+      "search": "ရှာဖွေလိုသော အချက်အလက်",
+      "result": "ရှာဖွေမှုရလဒ်",
+      "metadataLabel": "မက်တာဒေတာ အချက်အလက်များ",
+      "docDetailLabel": "စာရွက်စာတမ်း သိမ်းဆည်းရန် အသေးစိတ်အချက်အလက်များ"
     }
   }
 }

@@ -10,6 +10,8 @@ public class MenuGroupDTO {
 
     private int orderNo;
 
+    private String faIcon;
+
     public Long getId() {
         return id;
     }
@@ -40,5 +42,13 @@ public class MenuGroupDTO {
 
     public void setOrderNo(int orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public String getFaIcon() {
+        return faIcon;
+    }
+
+    public void setFaIcon(String faIcon) {
+        this.faIcon = faIcon;
     }
 }

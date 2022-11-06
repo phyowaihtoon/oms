@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
+import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 import { DocumentDetailComponent } from '../detail/document-detail.component';
 import { DocumentComponent } from '../list/document.component';
 import { DocumentUpdateComponent } from '../update/document-update.component';
@@ -10,10 +11,22 @@ const metadataRoute: Routes = [
   {
     path: 'new',
     component: DocumentUpdateComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      menuCode: 'DOCMC',
+    },
   },
   {
     path: 'list',
     component: DocumentComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      menuCode: 'DOCMI',
+    },
   },
   {
     path: ':id/view',
@@ -28,6 +41,10 @@ const metadataRoute: Routes = [
     component: DocumentUpdateComponent,
     resolve: {
       docHeader: DocumentRoutingResolveService,
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      menuCode: 'DOCMC',
     },
     canActivate: [UserRouteAccessService],
   },

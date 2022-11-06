@@ -8,6 +8,8 @@ import { MetaDataService } from '../service/metadata.service';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LovSetupDialogComponent } from '../lov-setup/lov-setup-dialog.component';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-metadata-update',
@@ -16,6 +18,8 @@ import { LovSetupDialogComponent } from '../lov-setup/lov-setup-dialog.component
 })
 export class MetadataUpdateComponent implements OnInit {
   isSaving = false;
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   editForm = this.fb.group({
     id: [],
@@ -44,7 +48,10 @@ export class MetadataUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.addField();
-    this.activatedRoute.data.subscribe(({ metadata }) => {
+    this.activatedRoute.data.subscribe(({ metadata, userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+
       if (metadata !== null) {
         if (metadata.id !== null && metadata.id !== undefined) {
           this.removeAllField();
@@ -125,7 +132,8 @@ export class MetadataUpdateComponent implements OnInit {
     this.isSaving = true;
     const metadata = this.createForm();
     console.log(JSON.stringify(metadata));
-    if (metadata.id !== undefined) {
+    const metadataID = metadata.id ?? undefined;
+    if (metadataID !== undefined) {
       this.subscribeToSaveResponse(this.service.update(metadata));
     } else {
       this.subscribeToSaveResponse(this.service.create(metadata));

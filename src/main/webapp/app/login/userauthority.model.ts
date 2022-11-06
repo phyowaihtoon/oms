@@ -1,4 +1,4 @@
-import { IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
+import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
 
 export interface IUserAuthority {
   userID: string;
@@ -6,5 +6,6 @@ export interface IUserAuthority {
   departmentName?: string;
   roleName: string;
   workflowAuthority: number;
-  menuGroups: IRoleMenuAccess[];
+  menuGroups: IMenuGroupMessage[];
+  activeMenu: IRoleMenuAccess;
 }

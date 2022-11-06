@@ -39,6 +39,7 @@ export interface IMenuGroupMessage {
   id?: number;
   name?: string;
   translateKey?: string;
+  faIcon?: string;
   orderNo?: number;
   subMenuItems?: IRoleMenuAccess[];
 }

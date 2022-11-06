@@ -11,6 +11,8 @@ public class MenuGroupMessage {
 
     private String translateKey;
 
+    private String faIcon;
+
     private int orderNo;
 
     private List<RoleMenuAccessDTO> subMenuItems;
@@ -37,6 +39,14 @@ public class MenuGroupMessage {
 
     public void setTranslateKey(String translateKey) {
         this.translateKey = translateKey;
+    }
+
+    public String getFaIcon() {
+        return faIcon;
+    }
+
+    public void setFaIcon(String faIcon) {
+        this.faIcon = faIcon;
     }
 
     public int getOrderNo() {
