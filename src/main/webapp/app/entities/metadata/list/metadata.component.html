@@ -1,8 +1,13 @@
 <div id="page-heading" class="row">
   <div class="col-10">
-    <span>MetaData</span>
-    <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
-    <span> >> MetaData Inquiry</span>
+    <span>{{
+      _activeMenuItem && _activeMenuItem.menuGroup.translateKey
+        ? (_activeMenuItem.menuGroup.translateKey | translate)
+        : _activeMenuItem?.menuGroup?.name
+    }}</span>
+    <span>
+      >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
+    >
   </div>
 
   <div class="col-2 d-flex justify-content-end">
@@ -117,6 +122,7 @@
           <td class="text-right">
             <div class="btn-group">
               <button
+                *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
                 type="submit"
                 [routerLink]="['/metadata', metadata.id, 'edit']"
                 class="btn btn-primary btn-sm"
@@ -126,7 +132,13 @@
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(metadata)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *ngIf="_userAuthority && _userAuthority.activeMenu.isDelete === 1"
+                type="submit"
+                (click)="delete(metadata)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
               </button>

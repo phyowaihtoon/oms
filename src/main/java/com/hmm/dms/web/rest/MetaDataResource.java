@@ -93,6 +93,7 @@ public class MetaDataResource {
         @Valid @RequestBody MetaDataHeaderDTO metaDataDTO
     ) throws URISyntaxException {
         log.debug("REST request to update MetaData : {}, {}", id, metaDataDTO);
+
         if (metaDataDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }

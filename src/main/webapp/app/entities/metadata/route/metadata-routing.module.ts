@@ -5,13 +5,18 @@ import { MetaDataComponent } from '../list/metadata.component';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { MetaDataRoutingResolveService } from './metadata-routing-resolve.service';
 import { MetaDataDetailComponent } from '../detail/metadata-detail.component';
+import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 
 const metadataRoute: Routes = [
   {
     path: '',
     component: MetaDataComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
     data: {
       defaultSort: 'id,asc',
+      menuCode: 'METADI',
     },
     canActivate: [UserRouteAccessService],
   },
@@ -28,6 +33,10 @@ const metadataRoute: Routes = [
     component: MetadataUpdateComponent,
     resolve: {
       metadata: MetaDataRoutingResolveService,
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      menuCode: 'METADC',
     },
     canActivate: [UserRouteAccessService],
   },
@@ -36,6 +45,10 @@ const metadataRoute: Routes = [
     component: MetadataUpdateComponent,
     resolve: {
       metadata: MetaDataRoutingResolveService,
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      menuCode: 'METADC',
     },
     canActivate: [UserRouteAccessService],
   },

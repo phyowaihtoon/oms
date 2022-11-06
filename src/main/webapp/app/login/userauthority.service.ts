@@ -35,6 +35,10 @@ export class UserAuthorityService {
     return userAuthority;
   }
 
+  clearUserAuthority(): void {
+    this.$sessionStorage.clear('UserAuthority');
+  }
+
   private storeUserAuthority(userAuthority: IUserAuthority): void {
     this.$sessionStorage.store('UserAuthority', userAuthority);
   }

@@ -1,11 +1,18 @@
 <div id="page-heading" class="row">
   <div class="col-10">
-    <span>Document</span>
-    <span> >> Document Mapping <small></small></span>
+    <span>{{
+      _activeMenuItem && _activeMenuItem.menuGroup.translateKey
+        ? (_activeMenuItem.menuGroup.translateKey | translate)
+        : _activeMenuItem?.menuGroup?.name
+    }}</span>
+    <span>
+      >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
+    >
   </div>
 
   <div class="col-2 d-flex justify-content-end">
     <button
+      *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
       type="button"
       id="save-entity"
       data-cy="entityCreateSaveButton"
@@ -20,7 +27,7 @@
     <span style="width: 5px"></span>
     <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="previousState()">
       <fa-icon icon="plus"></fa-icon>
-      <span class="d-none d-md-inline">New</span>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
     </button>
   </div>
 </div>
@@ -31,21 +38,25 @@
     <div class="row">
       <div class="col-3">
         <div *ngIf="isDocMap" class="tab-header-select" (click)="showDocMap()">
-          <fa-icon icon="angle-down" (click)="showDocMap()"></fa-icon>&nbsp;<span>Meta Data Information</span>
+          <fa-icon icon="angle-down" (click)="showDocMap()"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span>
         </div>
 
         <div *ngIf="!isDocMap" class="tab-header" (click)="showDocMap()">
-          <fa-icon icon="angle-right" (click)="showDocMap()"></fa-icon>&nbsp;<span>Meta Data Information</span>
+          <fa-icon icon="angle-right" (click)="showDocMap()"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span>
         </div>
       </div>
 
-      <div class="col-4">
+      <div class="col-6">
         <div class="div-tab" *ngIf="isUploadDetail" class="tab-header-select" (click)="showUploadDetails()">
-          <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;<span>Document Upload Details</span>
+          <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.document.docDetailLabel">Document Upload Details</span>
         </div>
 
         <div *ngIf="!isUploadDetail" class="tab-header" (click)="showUploadDetails()">
-          <fa-icon icon="angle-right" (click)="showUploadDetails()"></fa-icon>&nbsp;<span>Document Upload Details</span>
+          <fa-icon icon="angle-right" (click)="showUploadDetails()"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.document.docDetailLabel">Document Upload Details</span>
         </div>
       </div>
     </div>
@@ -53,7 +64,7 @@
     <div id="docMapping">
       <div *ngIf="isDocMap" id="search-area" class="col-12">
         <div class="form-group row col-6" [hidden]="editForm.get('id')!.value == null">
-          <div class="col-1">
+          <div class="col-2">
             <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           </div>
           <div class="col-4">

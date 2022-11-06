@@ -1,11 +1,18 @@
 <div id="page-heading" class="row">
   <div class="col-10">
-    <span>Repository</span>
-    <span> >> Repository Creation</span>
+    <span>{{
+      _activeMenuItem && _activeMenuItem.menuGroup.translateKey
+        ? (_activeMenuItem.menuGroup.translateKey | translate)
+        : _activeMenuItem?.menuGroup?.name
+    }}</span>
+    <span>
+      >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
+    >
   </div>
 
   <div class="col-2 d-flex justify-content-end">
     <button
+      *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
       type="button"
       id="save-entity"
       data-cy="entityCreateSaveButton"

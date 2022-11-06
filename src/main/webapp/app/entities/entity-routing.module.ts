@@ -30,11 +30,6 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./department/department.module').then(m => m.DepartmentModule),
       },
       {
-        path: 'document-header',
-        data: { pageTitle: 'dmsApp.documentHeader.home.title' },
-        loadChildren: () => import('./document-header/document-header.module').then(m => m.DocumentHeaderModule),
-      },
-      {
         path: 'application-user',
         data: { pageTitle: 'dmsApp.applicationUser.home.title' },
         loadChildren: () => import('./application-user/application-user.module').then(m => m.ApplicationUserModule),

@@ -7,10 +7,8 @@ import com.hmm.dms.repository.MenuGroupRepository;
 import com.hmm.dms.repository.MenuItemRepository;
 import com.hmm.dms.repository.RoleMenuAccessRepository;
 import com.hmm.dms.service.RoleMenuAccessService;
-import com.hmm.dms.service.dto.MenuGroupDTO;
 import com.hmm.dms.service.dto.MenuItemDTO;
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
-import com.hmm.dms.service.mapper.MenuGroupMapper;
 import com.hmm.dms.service.mapper.MenuItemMapper;
 import com.hmm.dms.service.mapper.RoleMenuAccessMapper;
 import com.hmm.dms.service.message.MenuGroupMessage;
@@ -66,7 +64,7 @@ public class RoleMenuAccessServiceImpl implements RoleMenuAccessService {
     @Override
     public List<RoleMenuAccessDTO> getAllMenuItems() {
         List<RoleMenuAccessDTO> dtoList = null;
-        List<MenuItem> menuItemEntityList = this.menuItemRepository.findAll();
+        List<MenuItem> menuItemEntityList = this.menuItemRepository.findAllOrderByMenuGroup();
         List<MenuItemDTO> menuItemDTOList = this.menuItemMapper.toDto(menuItemEntityList);
         if (menuItemDTOList != null && menuItemDTOList.size() > 0) {
             dtoList = new ArrayList<RoleMenuAccessDTO>();
@@ -83,7 +81,7 @@ public class RoleMenuAccessServiceImpl implements RoleMenuAccessService {
     @Override
     public List<MenuGroupMessage> getAllMenuGroupByRole(Long roleId) {
         List<MenuGroupMessage> menuGroupMessageList = null;
-        List<MenuGroup> menuGroupEnityList = this.menuGroupRepository.findAllByRole(roleId);
+        List<MenuGroup> menuGroupEnityList = this.menuGroupRepository.findAllMenuGroupByRoleId(roleId);
         if (menuGroupEnityList != null && menuGroupEnityList.size() > 0) {
             menuGroupMessageList = new ArrayList<MenuGroupMessage>();
             for (MenuGroup data : menuGroupEnityList) {
@@ -94,6 +92,7 @@ public class RoleMenuAccessServiceImpl implements RoleMenuAccessService {
                 message.setId(data.getId());
                 message.setName(data.getName());
                 message.setTranslateKey(data.getTranslateKey());
+                message.setFaIcon(data.getFaIcon());
                 message.setOrderNo(data.getOrderNo());
                 message.setSubMenuItems(roleMenuAccessList);
 

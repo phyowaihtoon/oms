@@ -8,6 +8,8 @@ import { LANGUAGES } from 'app/config/language.constants';
 import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
+import { UserAuthorityService } from 'app/login/userauthority.service';
+import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
 
 @Component({
   selector: 'jhi-navbar',
@@ -24,9 +26,10 @@ export class NavbarComponent implements OnInit {
   constructor(
     private loginService: LoginService,
     private translateService: TranslateService,
-    private sessionStorage: SessionStorageService,
+    private $sessionStorage: SessionStorageService,
     private accountService: AccountService,
     private profileService: ProfileService,
+    private userAuthorityService: UserAuthorityService,
     private router: Router
   ) {
     if (VERSION) {
@@ -42,7 +45,7 @@ export class NavbarComponent implements OnInit {
   }
 
   changeLanguage(languageKey: string): void {
-    this.sessionStorage.store('locale', languageKey);
+    this.$sessionStorage.store('locale', languageKey);
     this.translateService.use(languageKey);
   }
 
@@ -54,12 +57,22 @@ export class NavbarComponent implements OnInit {
     return this.accountService.isAuthenticated();
   }
 
+  getMenus(): IMenuGroupMessage[] {
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    console.log('User Authority : ', userAuthority);
+    if (userAuthority?.menuGroups) {
+      return userAuthority.menuGroups;
+    }
+    return [];
+  }
+
   login(): void {
     this.router.navigate(['/login']);
   }
 
   logout(): void {
     this.collapseNavbar();
+    this.userAuthorityService.clearUserAuthority();
     this.loginService.logout();
     this.router.navigate(['']);
   }
