@@ -7,8 +7,8 @@ import com.hmm.dms.service.LoadSetupService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
-import com.hmm.dms.service.dto.RepositoryInquiryDTO;
-import com.hmm.dms.service.dto.SetupEnumDTO;
+import com.hmm.dms.service.message.RepositoryInquiryMessage;
+import com.hmm.dms.service.message.SetupEnumMessage;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -38,10 +38,10 @@ public class LoadSetupResource {
     }
 
     @GetMapping("/workflow")
-    public List<SetupEnumDTO<Integer, String>> loadWorkflowAuthority() {
-        List<SetupEnumDTO<Integer, String>> workflowAuthorityList = new ArrayList<SetupEnumDTO<Integer, String>>();
+    public List<SetupEnumMessage<Integer, String>> loadWorkflowAuthority() {
+        List<SetupEnumMessage<Integer, String>> workflowAuthorityList = new ArrayList<SetupEnumMessage<Integer, String>>();
         for (WorkflowAuthorityEnum enumData : WorkflowAuthorityEnum.values()) {
-            SetupEnumDTO<Integer, String> setupDTO = new SetupEnumDTO<Integer, String>();
+            SetupEnumMessage<Integer, String> setupDTO = new SetupEnumMessage<Integer, String>();
             setupDTO.setValue(enumData.value);
             setupDTO.setDescription(enumData.description);
             workflowAuthorityList.add(setupDTO);
@@ -50,10 +50,10 @@ public class LoadSetupResource {
     }
 
     @GetMapping("/docstatus")
-    public List<SetupEnumDTO<Integer, String>> loadDocumentStatus() {
-        List<SetupEnumDTO<Integer, String>> docStatusList = new ArrayList<SetupEnumDTO<Integer, String>>();
+    public List<SetupEnumMessage<Integer, String>> loadDocumentStatus() {
+        List<SetupEnumMessage<Integer, String>> docStatusList = new ArrayList<SetupEnumMessage<Integer, String>>();
         for (DocumentStatusEnum enumData : DocumentStatusEnum.values()) {
-            SetupEnumDTO<Integer, String> setupDTO = new SetupEnumDTO<Integer, String>();
+            SetupEnumMessage<Integer, String> setupDTO = new SetupEnumMessage<Integer, String>();
             setupDTO.setValue(enumData.value);
             setupDTO.setDescription(enumData.description);
             docStatusList.add(setupDTO);
@@ -62,10 +62,10 @@ public class LoadSetupResource {
     }
 
     @GetMapping("/priority")
-    public List<SetupEnumDTO<Integer, String>> loadPriority() {
-        List<SetupEnumDTO<Integer, String>> priorityList = new ArrayList<SetupEnumDTO<Integer, String>>();
+    public List<SetupEnumMessage<Integer, String>> loadPriority() {
+        List<SetupEnumMessage<Integer, String>> priorityList = new ArrayList<SetupEnumMessage<Integer, String>>();
         for (PriorityEnum enumData : PriorityEnum.values()) {
-            SetupEnumDTO<Integer, String> setupDTO = new SetupEnumDTO<Integer, String>();
+            SetupEnumMessage<Integer, String> setupDTO = new SetupEnumMessage<Integer, String>();
             setupDTO.setValue(enumData.value);
             setupDTO.setDescription(enumData.description);
             priorityList.add(setupDTO);
@@ -78,6 +78,11 @@ public class LoadSetupResource {
         return this.loadSetupService.getAllMetaDataHeader();
     }
 
+    @GetMapping("/metadata")
+    public List<MetaDataHeaderDTO> loadAllMetaData() {
+        return null; //this.loadSetupService.getAllMetaData();
+    }
+
     @GetMapping("/metadata/{id}")
     public List<MetaDataDTO> loadAllMetaDatabyHeaderId(@PathVariable Long id) {
         log.debug("REST request to get meta : {}", id);
@@ -85,7 +90,7 @@ public class LoadSetupResource {
     }
 
     @PostMapping("/repository")
-    public ResponseEntity<List<RepositoryHeaderDTO>> getAllMetaData(@RequestBody RepositoryInquiryDTO dto, Pageable pageable) {
+    public ResponseEntity<List<RepositoryHeaderDTO>> getAllMetaData(@RequestBody RepositoryInquiryMessage dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
         Page<RepositoryHeaderDTO> page = loadSetupService.getAllRepositoryData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

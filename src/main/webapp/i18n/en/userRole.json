@@ -18,7 +18,15 @@
         "title": "User Role"
       },
       "id": "ID",
-      "roleName": "Role Name"
+      "roleName": "Role Name",
+      "menuAccess": "Menu Access",
+      "menuGroup": "Group",
+      "menuCode": "Menu Code",
+      "menuName": "Menu Name",
+      "menuAllow": "Allow",
+      "menuRead": "Read",
+      "menuWrite": "Write",
+      "menuDelete": "Delete"
     }
   }
 }

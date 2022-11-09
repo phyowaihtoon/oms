@@ -8,7 +8,7 @@ import com.hmm.dms.service.DocumentHeaderService;
 import com.hmm.dms.service.DocumentService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import com.hmm.dms.service.dto.ReplyMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -79,19 +79,37 @@ public class DocumentResource {
         @RequestParam("documentHeaderData") String docHeaderInStr
     ) throws URISyntaxException {
         DocumentHeaderDTO documentHeaderDTO = null;
+        ReplyMessage<DocumentHeaderDTO> result = null;
+
         try {
             this.objectMapper = new ObjectMapper();
             documentHeaderDTO = this.objectMapper.readValue(docHeaderInStr, DocumentHeaderDTO.class);
             log.debug("REST request to save Document Mapping: {}", documentHeaderDTO);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+            result = new ReplyMessage<DocumentHeaderDTO>();
+            result.setCode(ResponseCode.ERROR_E01);
+            result.setMessage("Unrecognized Field while parsing string to object");
+            return ResponseEntity
+                .created(new URI("/api/documentHeader/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result = new ReplyMessage<DocumentHeaderDTO>();
+            result.setCode(ResponseCode.ERROR_E01);
+            result.setMessage("Unrecognized Field while parsing string to object");
+            return ResponseEntity
+                .created(new URI("/api/documentHeader/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
 
         if (documentHeaderDTO.getId() != null) {
             throw new BadRequestAlertException("A new document cannot already have an ID", ENTITY_NAME, "idexists");
         }
 
-        ReplyMessage<DocumentHeaderDTO> result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
+        result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
         String docHeaderId = "";
         if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
             docHeaderId = result.getData().getId().toString();
@@ -120,12 +138,30 @@ public class DocumentResource {
         @RequestParam("documentHeaderData") String docHeaderInStr
     ) throws URISyntaxException {
         DocumentHeaderDTO documentHeaderDTO = null;
+        ReplyMessage<DocumentHeaderDTO> result = null;
+
         try {
             this.objectMapper = new ObjectMapper();
             documentHeaderDTO = this.objectMapper.readValue(docHeaderInStr, DocumentHeaderDTO.class);
             log.debug("REST request to update Repository : {}, {}", id, documentHeaderDTO);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+            result = new ReplyMessage<DocumentHeaderDTO>();
+            result.setCode(ResponseCode.ERROR_E01);
+            result.setMessage("Unrecognized Field while parsing string to object");
+            return ResponseEntity
+                .created(new URI("/api/documentHeader/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            result = new ReplyMessage<DocumentHeaderDTO>();
+            result.setCode(ResponseCode.ERROR_E01);
+            result.setMessage("Unrecognized Field while parsing string to object");
+            return ResponseEntity
+                .created(new URI("/api/documentHeader/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
 
         if (documentHeaderDTO.getId() == null) {
@@ -139,7 +175,7 @@ public class DocumentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        ReplyMessage<DocumentHeaderDTO> result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
+        result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
         String docHeaderId = "";
         if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
             docHeaderId = result.getData().getId().toString();

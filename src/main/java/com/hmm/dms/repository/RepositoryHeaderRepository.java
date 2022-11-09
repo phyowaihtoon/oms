@@ -15,21 +15,24 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RepositoryHeaderRepository extends JpaRepository<RepositoryHeader, Long> {
     @Query(
-        value = "SELECT dh.id,dh.repository_name,dh.del_flag," +
-        "dh.created_by, date(dh.created_date) as created_date," +
-        "dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
-        "FROM repository_header dh " +
-        "WHERE dh.del_flag='N' AND dh.repository_name LIKE %?1%",
+        value = "SELECT rh.id,rh.repository_name,rh.del_flag," +
+        "rh.created_by, date(rh.created_date) as created_date," +
+        "rh.last_modified_by, date(rh.last_modified_date) as last_modified_date " +
+        "FROM repository_header rh " +
+        "WHERE rh.del_flag='N' AND rh.repository_name LIKE %?1%",
+        countQuery = "SELECT count(*) FROM repository_header rh " + "WHERE rh.del_flag='N' AND rh.repository_name LIKE %?1%",
         nativeQuery = true
     )
     Page<RepositoryHeader> findAllByRepositoryName(String repositoryName, Pageable pageable);
 
     @Query(
-        value = "SELECT dh.id,dh.repository_name,dh.del_flag," +
-        "dh.created_by, date(dh.created_date) as created_date," +
-        "dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
-        "FROM repository_header dh " +
-        "WHERE dh.del_flag='N' AND dh.repository_name LIKE %?1% AND date(dh.created_date) = str_to_date(?2,'%d-%m-%Y')",
+        value = "SELECT rh.id,rh.repository_name,rh.del_flag," +
+        "rh.created_by, date(rh.created_date) as created_date," +
+        "rh.last_modified_by, date(rh.last_modified_date) as last_modified_date " +
+        "FROM repository_header rh " +
+        "WHERE rh.del_flag='N' AND rh.repository_name LIKE %?1% AND date(rh.created_date) = str_to_date(?2,'%d-%m-%Y')",
+        countQuery = "SELECT count(*) FROM repository_header rh " +
+        "WHERE rh.del_flag='N' AND rh.repository_name LIKE %?1% AND date(rh.created_date) = str_to_date(?2,'%d-%m-%Y')",
         nativeQuery = true
     )
     Page<RepositoryHeader> findAllByRepositoryNameAndDate(String repositoryName, String createdDate, Pageable pageable);

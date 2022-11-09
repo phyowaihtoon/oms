@@ -1,13 +1,12 @@
-import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { IMetaData, IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { saveAs } from 'file-saver';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { Document, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
+import { DMSDocument, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
@@ -15,6 +14,8 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
+import { IMenuItem } from 'app/entities/util/setup.model';
+import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
   selector: 'jhi-document-update',
@@ -39,12 +40,18 @@ export class DocumentUpdateComponent implements OnInit {
   fValue: string = '';
 
   isSaving = false;
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   // filenames: string[] = [];
   fileStatus = { status: '', requestType: '', percent: 0 };
-  _fileList: FileList | undefined;
+  _tempFileList: File[] = [];
   repositoryurl: string = '';
   filenames: FileInfo[] = [];
+  _saveButtonTitle: string = '';
+
+  isDocMap = true;
+  isUploadDetail = false;
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
@@ -72,19 +79,22 @@ export class DocumentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ docHeader }) => {
-      this._documentHeader = docHeader;
-      this._documentDetails = this._documentHeader?.docList;
-      if (this._documentHeader !== undefined) {
-        if (this._documentHeader.id !== undefined && docHeader.id !== null) {
-          this.removeAllField();
-        }
-        this.updateForm(docHeader);
-      }
-    });
-
     this.loadSetupService.loadAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
       this.docTypes = res.body;
+
+      this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
+        this._userAuthority = userAuthority;
+        this._activeMenuItem = userAuthority.activeMenu.menuItem;
+
+        this._documentHeader = docHeader;
+        this._documentDetails = this._documentHeader?.docList;
+        if (this._documentHeader !== undefined) {
+          if (this._documentHeader.id !== undefined && docHeader.id !== null) {
+            this.removeAllField();
+          }
+          this.updateForm(docHeader);
+        }
+      });
     });
   }
 
@@ -94,19 +104,21 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   // create new field dynamically
-  newField(filePath: string, fileName: string, fileSize: number): FormGroup {
+  newField(filePath: string, fileName: string, fileSize: number, fileData?: File): FormGroup {
     return this.fb.group({
+      id: [],
       filePath: [filePath, [Validators.required]],
       fileName: [fileName, [Validators.required]],
       fileSize: [fileSize, [Validators.required]],
       version: ['', [Validators.required]],
       remark: [''],
+      fileData: [fileData],
     });
   }
 
   // add new field dynamically
-  addField(filePath: string, fileName: string, fileSize: number): void {
-    this.docList1().push(this.newField(filePath, fileName, fileSize));
+  addField(filePath: string, fileName: string, fileSize: number, fileData?: File): void {
+    this.docList1().push(this.newField(filePath, fileName, fileSize, fileData));
   }
 
   // remove field by given row id
@@ -122,16 +134,19 @@ export class DocumentUpdateComponent implements OnInit {
     this.docList1().clear();
   }
 
-  get metaDataHeaderId(): any {
-    return this.editForm.get('metaDataHeaderId');
+  showDocMap(): void {
+    if (this.isDocMap === false) {
+      this.isDocMap = !this.isDocMap;
+    }
+
+    this.isUploadDetail = false;
   }
 
-  get message(): any {
-    return this.editForm.get('message');
-  }
-
-  get reposistory(): any {
-    return this.editForm.get('reposistory');
+  showUploadDetails(): void {
+    if (this.isUploadDetail === false) {
+      this.isUploadDetail = !this.isUploadDetail;
+    }
+    this.isDocMap = false;
   }
 
   // window.history.back();
@@ -142,6 +157,8 @@ export class DocumentUpdateComponent implements OnInit {
     this.editForm.controls['reposistory']!.setValue('');
     this.removeAllField();
     this.loadMetaDatabyMetadaHeaderID(0);
+    this.isDocMap = true;
+    this.isUploadDetail = false;
   }
 
   searchRepository(): void {
@@ -157,16 +174,31 @@ export class DocumentUpdateComponent implements OnInit {
     this.showLoading('Saving and Uploading Documents');
 
     const formData = new FormData();
-    this.repositoryurl = this.editForm.get(['reposistory'])!.value;
+    const attachedFileList = [];
 
     const documentHeaderdata = this.createFromForm();
-    formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
-
-    if (this._fileList !== undefined) {
-      for (let i = 0; i < this._fileList.length; i++) {
-        formData.append('files', this._fileList.item(i)!, this._fileList.item(i)!.name + '@' + this.repositoryurl);
+    const docList = documentHeaderdata.docList ?? [];
+    if (docList.length > 0) {
+      for (const dmsDoc of docList) {
+        const docDetailID = dmsDoc.id ?? undefined;
+        if (docDetailID === undefined && dmsDoc.fileData !== undefined) {
+          const orgFileName = dmsDoc.fileData.name;
+          const orgFileExtension = orgFileName.split('.').pop();
+          let editedFileName = dmsDoc.fileName;
+          if (editedFileName?.lastIndexOf('.') === -1) {
+            // If file extension is missing, original file extension is added
+            editedFileName = editedFileName.concat('.').concat(orgFileExtension!);
+            dmsDoc.fileName = editedFileName;
+          }
+          formData.append('files', dmsDoc.fileData, editedFileName?.concat('@').concat(dmsDoc.filePath ?? ''));
+        }
+        delete dmsDoc['fileData'];
+        attachedFileList.push(dmsDoc);
       }
     }
+
+    documentHeaderdata.docList = attachedFileList;
+    formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
 
     const docHeaderID = documentHeaderdata.id ?? undefined;
     if (docHeaderID !== undefined) {
@@ -184,22 +216,21 @@ export class DocumentUpdateComponent implements OnInit {
 
   // load metadata by metadaheader ID
   loadMetaDatabyMetadaHeaderID(metaDataHeaderId: number): void {
-    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(metaDataHeaderId).subscribe(
-      (res: HttpResponse<IMetaData[]>) => {
-        if (res.body) {
-          this.metaData = res.body;
+    if (metaDataHeaderId === 0) {
+      this.metaData = [];
+      this.forControlBind();
+    } else {
+      this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+        if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
+          this.metaData = metaDataHeaderItem.metaDataDetails;
+          this.forControlBind();
         }
-        this.forControlBind();
-      },
-      () => {
-        console.log('error');
-      }
-    );
+      });
+    }
   }
 
   forControlBind(): void {
     Object.keys(this.editForm.controls).forEach((key: string) => {
-      const abstractControl = this.editForm.get(key);
       if (key.includes('_fieldName')) {
         const fieldName: string = key;
         this.editForm.removeControl(fieldName);
@@ -216,10 +247,6 @@ export class DocumentUpdateComponent implements OnInit {
       } else {
         this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
       }
-
-      // if (metaDataItem.fieldValue !== '') {
-      //   this._fieldValue = metaDataItem.fieldValue?.split('|');
-      // }
     });
   }
 
@@ -300,12 +327,30 @@ export class DocumentUpdateComponent implements OnInit {
   // define a function to upload files
   onUploadFiles(event: Event): void {
     const target = event.target as HTMLInputElement;
-    this._fileList = target.files!;
+
+    for (let i = 0; i <= target.files!.length - 1; i++) {
+      const selectedFile = target.files![i];
+      this._tempFileList.push(selectedFile);
+    }
+
     this.repositoryurl = this.editForm.get(['reposistory'])!.value;
 
-    for (let i = 0; i < this._fileList.length; i++) {
-      this.addField(this.repositoryurl, this._fileList.item(i)!.name, Math.round(this._fileList.item(i)!.size / 1024));
+    for (let i = 0; i < this._tempFileList.length; i++) {
+      const tempFile = this._tempFileList[i];
+      this.addField(this.repositoryurl, tempFile.name, Math.round(tempFile.size / 1024), tempFile);
     }
+
+    this._tempFileList = [];
+    this.myInputVariable!.nativeElement.value = '';
+  }
+
+  saveBtnTitleChange(): string {
+    if (this.editForm.valid) {
+      this._saveButtonTitle = '';
+    } else {
+      this._saveButtonTitle = 'Please fill all required fields.';
+    }
+    return this._saveButtonTitle;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
@@ -319,11 +364,12 @@ export class DocumentUpdateComponent implements OnInit {
     const replyMessage: IReplyMessage | null = result.body;
 
     if (replyMessage !== null) {
-      if (replyMessage.code === ResponseCode.SUCCESS_CODE) {
-        this._fileList = undefined;
+      if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
+        this.isDocMap = true;
+        this.isUploadDetail = false;
         this.showAlertMessage(replyCode, replyMsg);
       } else {
         const replyCode = replyMessage.code;
@@ -370,8 +416,8 @@ export class DocumentUpdateComponent implements OnInit {
 
   protected createFileListDetail(data: any): IDocument {
     return {
-      ...new Document(),
-      id: undefined,
+      ...new DMSDocument(),
+      id: data.get(['id'])!.value,
       headerId: undefined,
       filePath: data.get(['filePath'])!.value,
       fileName: data.get(['fileName'])!.value,
@@ -379,6 +425,7 @@ export class DocumentUpdateComponent implements OnInit {
       version: data.get(['version'])!.value,
       remark: data.get(['remark'])!.value,
       delFlag: 'N',
+      fileData: data.get(['fileData'])!.value,
     };
   }
 
@@ -400,38 +447,35 @@ export class DocumentUpdateComponent implements OnInit {
     const fn = fieldName.split('|');
     const fv = fieldValue.split('|');
 
-    this.loadSetupService.loadAllMetaDatabyMetadatHeaderId(metaDataHeaderId).subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        this.metaDataUpdate = res.body;
-
-        this.metaDataUpdate?.forEach(metaDataItem => {
-          const id: number = metaDataItem.id!;
-          const idStr: string = id.toString();
-          const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr + '_fieldName';
-
-          for (let i = 0; i < fn.length; i++) {
-            if (fn[i].includes(metaDataItem.fieldName!)) {
-              this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
-            }
-          }
-        });
-      },
-      () => {
-        console.log('error');
+    this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+      if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
+        this.metaDataUpdate = metaDataHeaderItem.metaDataDetails!;
       }
-    );
+
+      this.metaDataUpdate?.forEach(metaDataItem => {
+        const id: number = metaDataItem.id!;
+        const idStr: string = id.toString();
+        const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr + '_fieldName';
+
+        for (let i = 0; i < fn.length; i++) {
+          if (fn[i].includes(metaDataItem.fieldName!)) {
+            this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
+          }
+        }
+      });
+    });
   }
 
   protected updateDocumentDataDetails(docList: IDocument[] | undefined): void {
     let index = 0;
     docList?.forEach(data => {
       this.addField('', '', 0);
+      this.docList1().controls[index].get(['id'])!.setValue(data.id);
       this.docList1().controls[index].get(['filePath'])!.setValue(data.filePath);
       this.docList1().controls[index].get(['fileName'])!.setValue(data.fileName);
       this.docList1().controls[index].get(['fileSize'])!.setValue(data.fileSize);
       this.docList1().controls[index].get(['remark'])!.setValue(data.remark);
       this.docList1().controls[index].get(['version'])!.setValue(data.version);
-      // this.onFieldTypeChange(index);
       index = index + 1;
     });
   }

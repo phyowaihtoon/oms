@@ -4,7 +4,7 @@ import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
-import com.hmm.dms.service.dto.MetaDataInquiryDTO;
+import com.hmm.dms.service.message.MetaDataInquiryMessage;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -93,6 +93,7 @@ public class MetaDataResource {
         @Valid @RequestBody MetaDataHeaderDTO metaDataDTO
     ) throws URISyntaxException {
         log.debug("REST request to update MetaData : {}, {}", id, metaDataDTO);
+
         if (metaDataDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -200,9 +201,9 @@ public class MetaDataResource {
     }
 
     @PostMapping("/meta-data/search")
-    public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaData(@RequestBody MetaDataInquiryDTO dto, Pageable pageable) {
+    public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaData(@RequestBody MetaDataInquiryMessage message, Pageable pageable) {
         log.debug("REST request to get all Documents");
-        Page<MetaDataHeaderDTO> page = metaDataService.getAllMetaData(dto, pageable);
+        Page<MetaDataHeaderDTO> page = metaDataService.getAllMetaData(message, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

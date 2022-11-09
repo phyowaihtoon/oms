@@ -2,12 +2,14 @@ package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the {@link com.hmm.dms.domain.UserRole} entity.
  */
 public class UserRoleDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 

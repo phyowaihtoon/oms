@@ -1,48 +1,96 @@
-<div class="row justify-content-center">
+<div id="page-heading" class="row">
   <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-user-role-heading" data-cy="UserRoleCreateUpdateHeading" jhiTranslate="dmsApp.userRole.home.createOrEditLabel">
-        Create or edit a User Role
-      </h2>
-
-      <div>
-        <jhi-alert-error></jhi-alert-error>
-
-        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-control-label" jhiTranslate="dmsApp.userRole.roleName" for="field_roleName">Role Name</label>
-          <input type="text" class="form-control" name="roleName" id="field_roleName" data-cy="roleName" formControlName="roleName" />
-          <div *ngIf="editForm.get('roleName')!.invalid && (editForm.get('roleName')!.dirty || editForm.get('roleName')!.touched)">
-            <small
-              class="form-text text-danger"
-              *ngIf="editForm.get('roleName')?.errors?.required"
-              jhiTranslate="entity.validation.required"
-            >
-              This field is required.
-            </small>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-        </button>
-
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-        </button>
-      </div>
-    </form>
+    <span>Management</span>
+    <span> >> User Role</span>
   </div>
+
+  <div class="col-4 d-flex justify-content-end">
+    <button
+      type="button"
+      id="save-entity"
+      data-cy="entityCreateSaveButton"
+      [disabled]="editForm.invalid || isSaving"
+      class="btn btn-primary btn-sm"
+      (click)="save()"
+    >
+      <fa-icon icon="save"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.save">Save</span>
+    </button>
+    <span style="width: 5px"></span>
+    <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="resetForm()">
+      <fa-icon icon="plus"></fa-icon>
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
+    </button>
+  </div>
+</div>
+
+<div id="page-body" class="row col-12">
+  <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+    <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+      <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+      <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" jhiTranslate="dmsApp.userRole.roleName" for="field_roleName">Role Name</label>
+      <input type="text" class="form-control" name="roleName" id="field_roleName" data-cy="roleName" formControlName="roleName" />
+      <div *ngIf="editForm.get('roleName')!.invalid && (editForm.get('roleName')!.dirty || editForm.get('roleName')!.touched)">
+        <small class="form-text text-danger" *ngIf="editForm.get('roleName')?.errors?.required" jhiTranslate="entity.validation.required">
+          This field is required.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" jhiTranslate="dmsApp.userRole.menuAccess" for="field_docTitle">Menu Access</label>
+      <div class="tbl-container">
+        <table class="table" formArrayName="menuAccessList">
+          <thead>
+            <tr>
+              <th style="width: 20%">
+                {{ 'dmsApp.userRole.menuGroup' | translate }}
+              </th>
+              <th style="width: 10%">
+                {{ 'dmsApp.userRole.menuCode' | translate }}
+              </th>
+              <th style="width: 30%">
+                {{ 'dmsApp.userRole.menuName' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">
+                {{ 'dmsApp.userRole.menuAllow' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">
+                {{ 'dmsApp.userRole.menuRead' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">
+                {{ 'dmsApp.userRole.menuWrite' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">
+                {{ 'dmsApp.userRole.menuDelete' | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of _menuAccessListFCA.controls; last as isLast; let i = index" [formGroupName]="i">
+              <td>{{ item.get('menuItem')!.value.menuGroup.name }}</td>
+              <td>{{ item.get('menuItem')!.value.menuCode }}</td>
+              <td>{{ item.get('menuItem')!.value.name }}</td>
+              <td style="text-align: center">
+                <input class="form-check-input" type="checkbox" id="isAllow" name="isAllow" formControlName="isAllow" />
+              </td>
+              <td style="text-align: center">
+                <input class="form-check-input" type="checkbox" id="isRead" name="isRead" formControlName="isRead" />
+              </td>
+              <td style="text-align: center">
+                <input class="form-check-input" type="checkbox" id="isWrite" name="isWrite" formControlName="isWrite" />
+              </td>
+              <td style="text-align: center">
+                <input class="form-check-input" type="checkbox" id="isDelete" name="isDelete" formControlName="isDelete" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
 </div>

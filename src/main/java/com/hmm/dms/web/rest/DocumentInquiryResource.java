@@ -3,8 +3,8 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.service.DocumentInquiryService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
-import com.hmm.dms.service.dto.DocumentInquiryDTO;
-import com.hmm.dms.service.dto.ReplyMessage;
+import com.hmm.dms.service.message.DocumentInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class DocumentInquiryResource {
     }
 
     @PostMapping("/docinquiry")
-    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentInquiryDTO dto, Pageable pageable) {
+    public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentInquiryMessage dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
         Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentHeaderByMetaData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -53,19 +53,27 @@ public class DocumentInquiryResource {
 
     @GetMapping("/docinquiry/download/{docId}")
     public ResponseEntity<?> downloadFile(@PathVariable Long docId) {
-        log.debug("REST request to get all Documents");
+        log.debug("REST request to download file");
+
         DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
         String filePath = docDTO.getFilePath();
         String fileName = docDTO.getFileName();
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
+        if (extension == null || extension.isEmpty()) {
+            System.out.println("Invalid file extension while downloading file");
+            return ResponseEntity.status(205).build();
+        }
+
         ReplyMessage<ByteArrayResource> message = null;
         try {
             message = documentInquiryService.downloadFileFromFTPServer(filePath + "//" + fileName);
-        } catch (IOException e) {
+        } catch (IOException ex) {
+            System.out.println("Failed to download: [" + ex.getMessage() + "]");
             return ResponseEntity.status(204).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(205).build();
+        } catch (Exception ex) {
+            System.out.println("Failed to download: [" + ex.getMessage() + "]");
+            return ResponseEntity.status(206).build();
         }
 
         HttpHeaders header = new HttpHeaders();

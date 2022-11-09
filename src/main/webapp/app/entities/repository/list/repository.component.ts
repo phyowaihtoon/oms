@@ -11,13 +11,15 @@ import { RepositoryService } from '../service/repository.service';
 import { RepositoryDeleteDialogComponent } from '../delete/repository-delete-dialog.component';
 import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-repository',
   templateUrl: './repository.component.html',
   styleUrls: ['./repository.component.scss'],
 })
-export class RepositoryComponent {
+export class RepositoryComponent implements OnInit {
   repositorys?: IRepositoryHeader[];
   isLoading = false;
   totalItems = 0;
@@ -31,6 +33,9 @@ export class RepositoryComponent {
   isShowingResult = false;
   isShowingAlert = false;
   _alertMessage = '';
+
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   searchForm = this.fb.group({
     repositoryName: [],
@@ -46,9 +51,12 @@ export class RepositoryComponent {
     protected translateService: TranslateService
   ) {}
 
-  /* ngOnInit(): void {
-    this.handleNavigation();
-  } */
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
+  }
 
   trackId(index: number, item: IRepositoryHeader): number {
     return item.id!;

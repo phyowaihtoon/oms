@@ -3,6 +3,7 @@ package com.hmm.dms.enumeration;
 public class CommonEnum {
 
     public enum WorkflowAuthorityEnum {
+        NA(0, "NA"),
         MAKER(1, "Maker"),
         APPROVER(2, "Approver"),
         BOTH(3, "Both");
@@ -17,11 +18,13 @@ public class CommonEnum {
     }
 
     public enum DocumentStatusEnum {
+        NA(0, "NA"),
         NEW(1, "New"),
-        CANCEL(2, "Canceled"),
-        AMEND(3, "Pending for Amendment"),
-        APPROVE(4, "Approved"),
-        REJECT(5, "Rejected");
+        SEND(2, "Sent for Approval"),
+        CANCEL(3, "Canceled"),
+        AMEND(4, "Sent for Amendment"),
+        APPROVE(5, "Approved"),
+        REJECT(6, "Rejected");
 
         public int value;
         public String description;

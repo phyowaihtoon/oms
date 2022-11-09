@@ -22,14 +22,14 @@
       "detailsField": "Please Add Detail Fields",
       "createdDate": "Created Date",
       "createdBy": "Created By",
-      "search": "SEARCH",
-      "result": "SEARCH RESULT",
       "fieldName": "Field Name",
       "fieldType": "Field Type",
       "fieldValue": "Field Value",
-      "fieldMandatory": "Field Mandatory",
+      "fieldMandatory": "Mandatory",
       "fieldOrder": "Field Order",
-      "fieldAction": "Add/ Remove"
+      "fieldAction": "Add/ Remove",
+      "search": "SEARCH CRITERIA",
+      "result": "SEARCH RESULT"
     }
   }
 }

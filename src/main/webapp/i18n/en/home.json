@@ -1,7 +1,7 @@
 {
   "home": {
-    "title": "Document Management System",
-    "subtitle": "This is your homepage",
+    "title": "The Supreme Court of the Union",
+    "subtitle": "The Supreme Court of the Union",
     "logged": {
       "message": "You are logged in as user \"{{username}}\"."
     },

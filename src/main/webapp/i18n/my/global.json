@@ -1,6 +1,6 @@
 {
   "global": {
-    "title": "Dms",
+    "title": "DMS",
     "browsehappy": "သင် browser version အသစ် အသုံးပြုရန်လိုအပ်ပါသည်။ ကျေးဇူးပြု၍ <a href=\"http://browsehappy.com/?locale=en\">အဆင့်မြှင့်တင်ပါ။</a>",
     "menu": {
       "home": "ပင်မစာမျက်နှာ",
@@ -14,11 +14,34 @@
         "metaData": "Meta Data",
         "documentHeader": "Document Header",
         "document": "Document",
-        "roleMenuMap": "Role Menu Map",
         "repository": "Repository",
-        "applicationUser": "Application User",
-        "userRole": "User Role",
+        "applicationUser": "User Authority",
+        "userRole": "Role Menu Access",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+      },
+      "report": {
+        "title": "Report",
+        "docmaprpt": "Document Mapping Report"
+      },
+      "metadata": {
+        "title": "မက်တာဒေတာ",
+        "create": "မက်တာဒေတာ သတ်မှတ်ခြင်း",
+        "search": "မက်တာဒေတာ ရှာဖွေခြင်း"
+      },
+      "repository": {
+        "title": "အချက်အလက် သိမ်းမည့်နေရာ",
+        "create": "သိမ်းမည့်နေရာ သတ်မှတ်ခြင်း",
+        "search": "သိမ်းမည့်နေရာ ရှာဖွေခြင်း"
+      },
+      "document": {
+        "title": "စာရွက်စာတမ်း",
+        "create": "အချက်အလက် ထည့်သွင်းခြင်း",
+        "update": "အချက်အလက် ပြင်ဆင်ခြင်း",
+        "search": "အချက်အလက် ရှာဖွေခြင်း"
+      },
+      "queue": {
+        "title": "Service Queue",
+        "docmentQueue": "Document Queue"
       },
       "account": {
         "main": "အကောင့်",
@@ -109,7 +132,10 @@
       "open": "ဖွင့်မည်",
       "save": "သိမ်းမည်",
       "view": "ကြည့်မည်",
-      "new": "အသစ်ထည့်မည်"
+      "new": "အသစ်ထည့်မည်",
+      "search": "ရှာမည်",
+      "clear": "ရှင်းလင်းမည်",
+      "generate": "ထုတ်မည်"
     },
     "detail": {
       "field": "Field",

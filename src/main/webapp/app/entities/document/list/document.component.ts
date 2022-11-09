@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
+import { IMenuItem } from 'app/entities/util/setup.model';
+import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
   selector: 'jhi-document',
@@ -31,6 +33,9 @@ export class DocumentComponent implements OnInit {
   isShowingAlert = false;
   _alertMessage = '';
 
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
+
   _metaData1 = { name: '', value: '', valid: false };
   _metaData2 = { name: '', value: '', valid: false };
   _metaData3 = { name: '', value: '', valid: false };
@@ -53,6 +58,10 @@ export class DocumentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
     this.loadAllSetup();
   }
 

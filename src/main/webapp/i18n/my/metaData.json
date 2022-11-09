@@ -18,12 +18,18 @@
         "title": "Meta Data"
       },
       "id": "ID",
-      "headerId": "Header Id",
+      "docTitle": "Document Template",
+      "detailsField": "Please Add Detail Fields",
+      "createdDate": "Created Date",
+      "createdBy": "Created By",
       "fieldName": "Field Name",
       "fieldType": "Field Type",
-      "isRequired": "Is Required",
+      "fieldValue": "Field Value",
+      "fieldMandatory": "Mandatory",
       "fieldOrder": "Field Order",
-      "fieldValue": "Field Value"
+      "fieldAction": "Add/ Remove",
+      "search": "ရှာဖွေလိုသော အချက်အလက်",
+      "result": "ရှာဖွေမှုရလဒ်"
     }
   }
 }

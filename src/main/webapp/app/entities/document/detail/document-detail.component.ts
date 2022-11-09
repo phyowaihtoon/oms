@@ -1,10 +1,11 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
@@ -32,6 +33,8 @@ export class DocumentDetailComponent implements OnInit {
     { extension: 'csv', value: 'CSV' },
   ];
   _metaDataHdrList?: IMetaDataHeader[] | null;
+
+  _modalRef?: NgbModalRef;
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -69,7 +72,7 @@ export class DocumentDetailComponent implements OnInit {
         message1 = 'Invalid File Type.';
       }
 
-      if (fileExtension !== 'pdf') {
+      if (fileExtension?.toLowerCase() !== 'pdf') {
         message1 = 'Preview is only available for PDF documents.';
         message2 = 'You can download the file and view it.';
       }
@@ -91,6 +94,7 @@ export class DocumentDetailComponent implements OnInit {
 
   downloadFile(isPreview: boolean, docId?: number, fileName?: string): void {
     if (docId !== undefined && fileName !== undefined && this.validate(isPreview, fileName)) {
+      this.showLoading(isPreview === true ? 'Loading File' : 'Downloading File');
       this.documentInquiryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
@@ -101,22 +105,37 @@ export class DocumentDetailComponent implements OnInit {
               FileSaver.saveAs(res.body, fileName);
             }
           } else if (res.status === 204) {
-            const code = ResponseCode.WARNING_CODE;
-            const message = 'This file does not exist on file server.';
+            const code = ResponseCode.WARNING;
+            const message = 'This file does not exist.';
+            this.showAlertMessage(code, message);
+          } else if (res.status === 205) {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Invalid file type.';
             this.showAlertMessage(code, message);
           } else {
-            const code = ResponseCode.WARNING_CODE;
-            const message = 'failed to connect FTP Server. Please, check network connection with FTP Server.';
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Cannot download file';
             this.showAlertMessage(code, message);
           }
+          this.hideLoading();
         },
         error => {
+          this.hideLoading();
           const code = ResponseCode.RESPONSE_FAILED_CODE;
           const message = 'Error occured while connecting to server. Please, check network connection with your server.';
           this.showAlertMessage(code, message);
         }
       );
     }
+  }
+
+  showLoading(loadingMessage?: string): void {
+    this._modalRef = this.modalService.open(LoadingPopupComponent, { size: 'sm', backdrop: 'static', centered: true });
+    this._modalRef.componentInstance.loadingMessage = loadingMessage;
+  }
+
+  hideLoading(): void {
+    this._modalRef?.close();
   }
 
   getDocTitleByID(id?: number): string | undefined {

@@ -34,9 +34,10 @@
       "preview": "Preview",
       "download": "Download",
       "otherMetaData": "Other MetaData",
-      "search": "SEARCH",
+      "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",
       "metadataLabel": "MetaData Information",
+      "docDetailMapLabel": "Document Mapping Details",
       "docDetailLabel": "Document Mapping Details"
     }
   }

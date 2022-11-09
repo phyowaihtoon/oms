@@ -1,99 +1,102 @@
 <div id="page-heading" class="row">
   <div class="col-10">
-    <span>Document</span>
-    <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
-    <span> >> Document Inquiry</span>
+    <span jhiTranslate="global.menu.document.title"></span>
+    <span>>></span>
+    <span jhiTranslate="global.menu.document.search"></span>
   </div>
   <div class="col-2 d-flex justify-content-end">
-    <button type="submit" (click)="previousState()" class="btn btn-info btn-sm" data-cy="entityDetailsBackButton">
+    <button type="submit" (click)="previousState()" class="btn btn-primary btn-sm" data-cy="entityDetailsBackButton">
       <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span class="d-none d-md-inline" jhiTranslate="entity.action.back">Back</span>
     </button>
   </div>
 </div>
-<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span></div>
-<div class="row" id="documentHeaderView">
-  <div class="row col-12">
+
+<div id="page-body">
+  <div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span></div>
+  <div class="row" id="documentHeaderView">
     <div class="row col-12">
-      <div class="col-2 dms-label">
-        <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
-      </div>
-      <div class="col-4 dms-view-data">
-        <span>{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}</span>
-      </div>
-      <div class="col-2 dms-label">
-        <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
-      </div>
-      <div class="col-1 dms-view-data">
-        <span>{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}</span>
-      </div>
-      <div class="col-2 dms-label">
-        <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
-      </div>
-      <div class="col-1 dms-view-data">
-        <span>{{ _documentHeader?.createdBy }}</span>
+      <div class="row col-12">
+        <div class="col-2 dms-label">
+          <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
+        </div>
+        <div class="col-4 dms-view-data">
+          <span>{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}</span>
+        </div>
+        <div class="col-2 dms-label">
+          <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
+        </div>
+        <div class="col-1 dms-view-data">
+          <span>{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}</span>
+        </div>
+        <div class="col-2 dms-label">
+          <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+        </div>
+        <div class="col-1 dms-view-data">
+          <span>{{ _documentHeader?.createdBy }}</span>
+        </div>
       </div>
     </div>
+    <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"></div>
   </div>
-  <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"></div>
-</div>
 
-<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.docDetailLabel">MetaData Information</span></div>
+  <div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.docDetailLabel">MetaData Information</span></div>
 
-<div class="row" id="documentDetailView">
-  <div class="table-responsive" id="entities" *ngIf="_documentDetails && _documentDetails.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
-        <tr>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.no">No.</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.filePath">File Path</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileName">File Name</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileSize">Size</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileVersion">Version</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.remark">Remark</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileType">File Type</span>
-          </th>
-          <th scope="col" style="text-align: center">
-            <span jhiTranslate="dmsApp.document.preview">Preview</span>
-          </th>
-          <th scope="col" style="text-align: center">
-            <span jhiTranslate="dmsApp.document.download">Download</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
-          <td>{{ i + 1 }}</td>
-          <td>{{ docDetail.filePath }}</td>
-          <td>{{ docDetail.fileName }}</td>
-          <td>{{ docDetail.fileSize }} KB</td>
-          <td>{{ docDetail.version }}</td>
-          <td>{{ docDetail.remark }}</td>
-          <td>{{ getFileType(docDetail.fileName) }}</td>
-          <td style="text-align: center">
-            <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.fileName)">
-              <a style="color: #2780e3; text-decoration: none">Preview</a>
-            </span>
-          </td>
-          <td style="text-align: center">
-            <span style="cursor: pointer" (click)="downloadFile(false, docDetail.id, docDetail.fileName)">
-              <fa-icon icon="download"></fa-icon>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row" id="documentDetailView">
+    <div class="table-responsive" id="entities" *ngIf="_documentDetails && _documentDetails.length > 0">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.no">No.</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileName">File Name</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileSize">Size</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileVersion">Version</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.remark">Remark</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileType">File Type</span>
+            </th>
+            <th scope="col" style="text-align: center">
+              <span jhiTranslate="dmsApp.document.preview">Preview</span>
+            </th>
+            <th scope="col" style="text-align: center">
+              <span jhiTranslate="dmsApp.document.download">Download</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
+            <td>{{ i + 1 }}</td>
+            <td>{{ docDetail.filePath }}</td>
+            <td>{{ docDetail.fileName }}</td>
+            <td>{{ docDetail.fileSize }} KB</td>
+            <td>{{ docDetail.version }}</td>
+            <td>{{ docDetail.remark }}</td>
+            <td>{{ getFileType(docDetail.fileName) }}</td>
+            <td style="text-align: center">
+              <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.fileName)">
+                <a style="color: #2780e3; text-decoration: none">Preview</a>
+              </span>
+            </td>
+            <td style="text-align: center">
+              <span style="cursor: pointer" (click)="downloadFile(false, docDetail.id, docDetail.fileName)">
+                <fa-icon icon="download"></fa-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

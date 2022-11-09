@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of, Subject } from 'rxjs';
 
 import { DocumentService } from '../service/document.service';
-import { IDocument, Document } from '../document.model';
+import { IDocument, DMSDocument } from '../document.model';
 
 import { DocumentUpdateComponent } from './document-update.component';
 
@@ -71,7 +71,7 @@ describe('Component Tests', () => {
       it('Should call create service on save for new entity', () => {
         // GIVEN
         const saveSubject = new Subject();
-        const document = new Document();
+        const document = new DMSDocument();
         spyOn(documentService, 'create').and.returnValue(saveSubject);
         spyOn(comp, 'previousState');
         activatedRoute.data = of({ document });
