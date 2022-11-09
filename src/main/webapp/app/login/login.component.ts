@@ -10,6 +10,7 @@ import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.c
 @Component({
   selector: 'jhi-login',
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('username', { static: false })

@@ -42,6 +42,10 @@ export class NavbarComponent implements OnInit {
       this.inProduction = profileInfo.inProduction;
       this.openAPIEnabled = profileInfo.openAPIEnabled;
     });
+
+    if (!this.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    }
   }
 
   changeLanguage(languageKey: string): void {
@@ -59,7 +63,6 @@ export class NavbarComponent implements OnInit {
 
   getMenus(): IMenuGroupMessage[] {
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
-    console.log('User Authority : ', userAuthority);
     if (userAuthority?.menuGroups) {
       return userAuthority.menuGroups;
     }
@@ -74,7 +77,7 @@ export class NavbarComponent implements OnInit {
     this.collapseNavbar();
     this.userAuthorityService.clearUserAuthority();
     this.loginService.logout();
-    this.router.navigate(['']);
+    this.router.navigate(['/login']);
   }
 
   toggleNavbar(): void {

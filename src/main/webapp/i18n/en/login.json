@@ -1,6 +1,7 @@
 {
   "login": {
-    "title": "Document Management System",
+    "title": "The Supreme Court of the Union",
+    "subTitle": "Document Management System",
     "form": {
       "password": "Password",
       "password.placeholder": "Your password",

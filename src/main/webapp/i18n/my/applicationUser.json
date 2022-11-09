@@ -2,26 +2,26 @@
   "dmsApp": {
     "applicationUser": {
       "home": {
-        "title": "Application Users",
+        "title": "User Authority",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Application User အသစ်ထည့်မည်",
-        "createOrEditLabel": "Application User အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
-        "notFound": "No Application Users found"
+        "createLabel": "အသစ်ထည့်မည်",
+        "createOrEditLabel": "User Authority အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
+        "notFound": "No User Authoritys found"
       },
-      "created": "{{ param }} အိုင်ဒီဖြင့် Application User အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
-      "updated": "{{ param }} အိုင်ဒီဖြင့် Application User တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
-      "deleted": "{{ param }} အိုင်ဒီဖြင့် Application User တစ်ခုအား ဖျက်ပြီးပါပြီ။",
+      "created": "{{ param }} အိုင်ဒီဖြင့် User Authority အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
+      "updated": "{{ param }} အိုင်ဒီဖြင့် User Authority တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
+      "deleted": "{{ param }} အိုင်ဒီဖြင့် User Authority တစ်ခုအား ဖျက်ပြီးပါပြီ။",
       "delete": {
-        "question": "Application User {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+        "question": "User Authority {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
       },
       "detail": {
-        "title": "Application User"
+        "title": "User Authority"
       },
       "id": "ID",
-      "workflowAuthority": "Workflow Authority",
-      "user": "User",
-      "userRole": "User Role",
-      "department": "Department"
+      "workflowAuthority": "လုပ်ငန်းစဉ်အဆင့်",
+      "user": "အသုံးပြုသူ",
+      "userRole": "အခန်းကဏ္ဍ",
+      "department": "ဌာန"
     }
   }
 }
