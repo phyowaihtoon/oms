@@ -80,6 +80,10 @@ export class DocMappingRptComponent {
     this._modalRef.componentInstance.loadingMessage = loadingMessage;
   }
 
+  clearFormData(): void {
+    this.editForm.reset();
+  }
+
   closeAlert(): void {
     this.isShowingAlert = false;
   }

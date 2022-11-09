@@ -1,5 +1,5 @@
 <div id="page-heading" class="row">
-  <div class="col-10">
+  <div class="col-8">
     <span>{{
       _activeMenuItem && _activeMenuItem.menuGroup.translateKey
         ? (_activeMenuItem.menuGroup.translateKey | translate)
@@ -10,7 +10,7 @@
     >
   </div>
 
-  <div class="col-2 d-flex justify-content-end">
+  <div class="col-4 d-flex justify-content-end">
     <button
       *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
       type="button"
@@ -31,7 +31,7 @@
   </div>
 </div>
 
-<div id="page-heading" class="row">
+<div id="page-body" class="row">
   <form name="editForm" role="form" novalidate [formGroup]="editForm" autocomplete="off">
     <jhi-alert-error></jhi-alert-error>
 

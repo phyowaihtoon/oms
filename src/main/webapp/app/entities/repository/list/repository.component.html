@@ -1,5 +1,5 @@
 <div id="page-heading" class="row">
-  <div class="col-10">
+  <div class="col-8">
     <span>{{
       _activeMenuItem && _activeMenuItem.menuGroup.translateKey
         ? (_activeMenuItem.menuGroup.translateKey | translate)
@@ -9,7 +9,7 @@
       >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
     >
   </div>
-  <div class="col-2 d-flex justify-content-end">
+  <div class="col-4 d-flex justify-content-end">
     <button class="btn btn-primary btn-sm" (click)="loadPage(1)" [disabled]="isLoading">
       <fa-icon icon="search"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
@@ -25,155 +25,165 @@
 
 <jhi-alert></jhi-alert>
 
-<div *ngIf="isShowingFilters">
-  <fa-icon icon="angle-down" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.search">Search Repository</span>
-</div>
+<div id="page-body">
+  <div *ngIf="isShowingFilters">
+    <fa-icon icon="angle-down" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.search"
+      >Search Repository</span
+    >
+  </div>
 
-<div *ngIf="!isShowingFilters">
-  <fa-icon icon="angle-right" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.search">Search Repository</span>
-</div>
+  <div *ngIf="!isShowingFilters">
+    <fa-icon icon="angle-right" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.search"
+      >Search Repository</span
+    >
+  </div>
 
-<div *ngIf="isShowingFilters" id="search-area" class="col-12">
-  <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
-    <div class="form-group row col-12">
-      <div class="col-2">
-        <label class="form-control-label" jhiTranslate="dmsApp.repository.repositoryName" for="field_repositoryName">Repository Name</label>
-      </div>
-      <div class="col-2">
-        <input
-          type="text"
-          class="form-control"
-          name="repositoryName"
-          id="field_repositoryName"
-          data-cy="repositoryName"
-          formControlName="repositoryName"
-        />
-      </div>
-      <div class="col-2">
-        <label class="form-control-label" jhiTranslate="dmsApp.repository.createdDate" for="field_createdDate">Created Date</label>
-      </div>
-      <div class="col-2">
-        <div class="input-group">
+  <div *ngIf="isShowingFilters" id="search-area" class="col-12">
+    <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
+      <div class="form-group row col-12">
+        <div class="col-2">
+          <label class="form-control-label" jhiTranslate="dmsApp.repository.repositoryName" for="field_repositoryName"
+            >Repository Name</label
+          >
+        </div>
+        <div class="col-2">
           <input
+            type="text"
             class="form-control"
-            id="field_createdDate"
-            data-cy="createdDate"
-            placeholder="DD-MM-YYYY"
-            name="createdDate"
-            formControlName="createdDate"
-            ngbDatepicker
-            #createdDate="ngbDatepicker"
+            name="repositoryName"
+            id="field_repositoryName"
+            data-cy="repositoryName"
+            formControlName="repositoryName"
           />
-          <div class="input-group-append">
-            <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
-              <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
-            </button>
+        </div>
+        <div class="col-2">
+          <label class="form-control-label" jhiTranslate="dmsApp.repository.createdDate" for="field_createdDate">Created Date</label>
+        </div>
+        <div class="col-2">
+          <div class="input-group">
+            <input
+              class="form-control"
+              id="field_createdDate"
+              data-cy="createdDate"
+              placeholder="DD-MM-YYYY"
+              name="createdDate"
+              formControlName="createdDate"
+              ngbDatepicker
+              #createdDate="ngbDatepicker"
+            />
+            <div class="input-group-append">
+              <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
+                <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </form>
-</div>
+    </form>
+  </div>
 
-<div *ngIf="isShowingResult" class="result-header">
-  <fa-icon icon="angle-down" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.result">Search Result</span>
-</div>
+  <div *ngIf="isShowingResult" class="result-header">
+    <fa-icon icon="angle-down" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.result">Search Result</span>
+  </div>
 
-<div *ngIf="!isShowingResult" class="result-header">
-  <fa-icon icon="angle-right" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.result">Search Result</span>
-</div>
+  <div *ngIf="!isShowingResult" class="result-header">
+    <fa-icon icon="angle-right" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.repository.result"
+      >Search Result</span
+    >
+  </div>
 
-<div id="result-container" *ngIf="isShowingResult">
-  <!-- <div class="alert alert-warning" id="no-result" *ngIf="repositorys?.length === 0">
+  <div id="result-container" *ngIf="isShowingResult">
+    <!-- <div class="alert alert-warning" id="no-result" *ngIf="repositorys?.length === 0">
     <span jhiTranslate="dmsApp.repository.home.notFound">No Repository found</span>
   </div> -->
 
-  <div class="alert alert-info" *ngIf="isShowingAlert">
-    <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
-    <span>{{ _alertMessage }}</span>
-  </div>
+    <div class="alert alert-info" *ngIf="isShowingAlert">
+      <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+      <span>{{ _alertMessage }}</span>
+    </div>
 
-  <div class="table-responsive" id="entities" *ngIf="repositorys && repositorys.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-          <th scope="col" jhiSortBy="id">
-            <span jhiTranslate="global.field.id">ID</span>
-            <!-- <fa-icon icon="sort"></fa-icon> -->
-          </th>
-          <th scope="col" jhiSortBy="repositoryName">
-            <span jhiTranslate="dmsApp.repository.repositoryName">Repository Name</span>
-            <!-- <fa-icon icon="sort"></fa-icon> -->
-          </th>
+    <div class="table-responsive" id="entities" *ngIf="repositorys && repositorys.length > 0">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+            <th scope="col" jhiSortBy="id">
+              <span jhiTranslate="global.field.id">ID</span>
+              <!-- <fa-icon icon="sort"></fa-icon> -->
+            </th>
+            <th scope="col" jhiSortBy="repositoryName">
+              <span jhiTranslate="dmsApp.repository.repositoryName">Repository Name</span>
+              <!-- <fa-icon icon="sort"></fa-icon> -->
+            </th>
 
-          <th scope="col" jhiSortBy="repositoryPath">
-            <span jhiTranslate="dmsApp.repository.repositoryPath">Repository Path</span>
-            <!-- <fa-icon icon="sort"></fa-icon> -->
-          </th>
+            <th scope="col" jhiSortBy="repositoryPath">
+              <span jhiTranslate="dmsApp.repository.repositoryPath">Repository Path</span>
+              <!-- <fa-icon icon="sort"></fa-icon> -->
+            </th>
 
-          <th scope="col" jhiSortBy="createdDate">
-            <span jhiTranslate="dmsApp.repository.createdDate">Created Date</span>
-            <!-- <fa-icon icon="sort"></fa-icon> -->
-          </th>
-          <th scope="col" jhiSortBy="createdBy">
-            <span jhiTranslate="dmsApp.repository.createdBy">Created By</span>
-            <!--  <fa-icon icon="sort"></fa-icon> -->
-          </th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let repository of repositorys; trackBy: trackId" data-cy="entityTable">
-          <td>
-            <a [routerLink]="['/repository', repository.id, 'edit']">{{ repository.id }}</a>
-          </td>
-          <td>{{ repository.repositoryName }}</td>
-          <td>{{ loadRepositoryPath(repository.repositoryDetails) }}</td>
-          <td>{{ repository.createdDate ? repository.createdDate.format('DD-MM-YYYY') : '-' }}</td>
-          <td>{{ repository.createdBy }}</td>
-          <td class="text-right">
-            <div class="btn-group">
-              <button
-                *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
-                type="submit"
-                [routerLink]="['/repository', repository.id, 'edit']"
-                class="btn btn-primary btn-sm"
-                data-cy="entityEditButton"
-              >
-                <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-              </button>
+            <th scope="col" jhiSortBy="createdDate">
+              <span jhiTranslate="dmsApp.repository.createdDate">Created Date</span>
+              <!-- <fa-icon icon="sort"></fa-icon> -->
+            </th>
+            <th scope="col" jhiSortBy="createdBy">
+              <span jhiTranslate="dmsApp.repository.createdBy">Created By</span>
+              <!--  <fa-icon icon="sort"></fa-icon> -->
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let repository of repositorys; trackBy: trackId" data-cy="entityTable">
+            <td>
+              <a [routerLink]="['/repository', repository.id, 'edit']">{{ repository.id }}</a>
+            </td>
+            <td>{{ repository.repositoryName }}</td>
+            <td>{{ loadRepositoryPath(repository.repositoryDetails) }}</td>
+            <td>{{ repository.createdDate ? repository.createdDate.format('DD-MM-YYYY') : '-' }}</td>
+            <td>{{ repository.createdBy }}</td>
+            <td class="text-right">
+              <div class="btn-group">
+                <button
+                  *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+                  type="submit"
+                  [routerLink]="['/repository', repository.id, 'edit']"
+                  class="btn btn-primary btn-sm"
+                  data-cy="entityEditButton"
+                >
+                  <fa-icon icon="pencil-alt"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                </button>
 
-              <button
-                *ngIf="_userAuthority && _userAuthority.activeMenu.isDelete === 1"
-                type="submit"
-                (click)="delete(repository)"
-                class="btn btn-danger btn-sm"
-                data-cy="entityDeleteButton"
-              >
-                <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+                <button
+                  *ngIf="_userAuthority && _userAuthority.activeMenu.isDelete === 1"
+                  type="submit"
+                  (click)="delete(repository)"
+                  class="btn btn-danger btn-sm"
+                  data-cy="entityDeleteButton"
+                >
+                  <fa-icon icon="times"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div *ngIf="repositorys && repositorys.length > 0">
-    <div class="row justify-content-center">
-      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-      <span style="width: 30px">&nbsp;&nbsp;</span>
-      <ngb-pagination
-        [collectionSize]="totalItems"
-        [(page)]="ngbPaginationPage"
-        [pageSize]="itemsPerPage"
-        [maxSize]="5"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        (pageChange)="loadPage($event)"
-      ></ngb-pagination>
+    <div *ngIf="repositorys && repositorys.length > 0">
+      <div class="row justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+        <span style="width: 30px">&nbsp;&nbsp;</span>
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [(page)]="ngbPaginationPage"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="loadPage($event)"
+        ></ngb-pagination>
+      </div>
     </div>
   </div>
 </div>
