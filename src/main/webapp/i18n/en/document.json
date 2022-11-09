@@ -37,6 +37,7 @@
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",
       "metadataLabel": "MetaData Information",
+      "docDetailMapLabel": "Document Mapping Details",
       "docDetailLabel": "Document Mapping Details"
     }
   }

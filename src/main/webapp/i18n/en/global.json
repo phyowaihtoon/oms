@@ -135,7 +135,8 @@
       "new": "New",
       "search": "Search",
       "clear": "Clear",
-      "ok": "OK"
+      "ok": "OK",
+      "generate": "Generate"
     },
     "detail": {
       "field": "Field",

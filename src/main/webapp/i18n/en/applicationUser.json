@@ -2,20 +2,20 @@
   "dmsApp": {
     "applicationUser": {
       "home": {
-        "title": "Application Users",
+        "title": "User Authority",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Create a new Application User",
-        "createOrEditLabel": "Create or edit a Application User",
-        "notFound": "No Application Users found"
+        "createLabel": "Create User Authority",
+        "createOrEditLabel": "Create or edit a User Authority",
+        "notFound": "No User Authoritys found"
       },
-      "created": "A new Application User is created with identifier {{ param }}",
-      "updated": "A Application User is updated with identifier {{ param }}",
-      "deleted": "A Application User is deleted with identifier {{ param }}",
+      "created": "A new User Authority is created with identifier {{ param }}",
+      "updated": "A User Authority is updated with identifier {{ param }}",
+      "deleted": "A User Authority is deleted with identifier {{ param }}",
       "delete": {
-        "question": "Are you sure you want to delete Application User {{ id }}?"
+        "question": "Are you sure you want to delete User Authority {{ id }}?"
       },
       "detail": {
-        "title": "Application User"
+        "title": "User Authority"
       },
       "id": "ID",
       "workflowAuthority": "Workflow Authority",

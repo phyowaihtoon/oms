@@ -1,6 +1,6 @@
 {
   "global": {
-    "title": "Dms",
+    "title": "DMS",
     "browsehappy": "သင် browser version အသစ် အသုံးပြုရန်လိုအပ်ပါသည်။ ကျေးဇူးပြု၍ <a href=\"http://browsehappy.com/?locale=en\">အဆင့်မြှင့်တင်ပါ။</a>",
     "menu": {
       "home": "ပင်မစာမျက်နှာ",
@@ -134,7 +134,8 @@
       "view": "ကြည့်မည်",
       "new": "အသစ်ထည့်မည်",
       "search": "ရှာမည်",
-      "clear": "ရှင်းလင်းမည်"
+      "clear": "ရှင်းလင်းမည်",
+      "generate": "ထုတ်မည်"
     },
     "detail": {
       "field": "Field",

@@ -9,6 +9,8 @@ import { IApplicationUser } from '../application-user.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { ApplicationUserService } from '../service/application-user.service';
 import { ApplicationUserDeleteDialogComponent } from '../delete/application-user-delete-dialog.component';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { IWorkflowAuthority } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-application-user',
@@ -23,9 +25,11 @@ export class ApplicationUserComponent implements OnInit {
   predicate!: string;
   ascending!: boolean;
   ngbPaginationPage = 1;
+  workflowAuthorities: IWorkflowAuthority[] = [];
 
   constructor(
     protected applicationUserService: ApplicationUserService,
+    protected loadSetupService: LoadSetupService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected modalService: NgbModal
@@ -51,6 +55,12 @@ export class ApplicationUserComponent implements OnInit {
           this.onError();
         }
       );
+
+    this.loadSetupService.loadWorkflowAuthority().subscribe(res => {
+      if (res.body) {
+        this.workflowAuthorities = res.body;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -59,6 +69,14 @@ export class ApplicationUserComponent implements OnInit {
 
   trackId(index: number, item: IApplicationUser): number {
     return item.id!;
+  }
+
+  getWorkFlowDescription(key?: number): string {
+    const workflow = this.workflowAuthorities.find(item => item.value === key);
+    if (workflow?.description) {
+      return workflow.description;
+    }
+    return '';
   }
 
   delete(applicationUser: IApplicationUser): void {
