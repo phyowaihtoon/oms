@@ -4,7 +4,7 @@
       "home": {
         "title": "Departments",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Department အသစ်ထည့်မည်",
+        "createLabel": "အသစ်ထည့်မည်",
         "createOrEditLabel": "Department အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
         "notFound": "No Departments found"
       },

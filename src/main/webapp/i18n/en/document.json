@@ -23,6 +23,7 @@
       "docTitle": "Document Template",
       "message": "Message",
       "repositoryURL": "Repository URL",
+      "fileLocation": "Repository URL",
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "filePath": "File Path",
@@ -30,7 +31,6 @@
       "fileSize": "Size",
       "fileVersion": "Version",
       "remark": "Remark",
-      "fileType": "File Type",
       "preview": "Preview",
       "download": "Download",
       "otherMetaData": "Other MetaData",
@@ -38,7 +38,9 @@
       "result": "SEARCH RESULT",
       "metadataLabel": "MetaData Information",
       "docDetailMapLabel": "Document Mapping Details",
-      "docDetailLabel": "Document Mapping Details"
+      "docDetailLabel": "Document Mapping Details",
+      "fieldAction": "#",
+      "chooseFile": "Choose File"
     }
   }
 }
