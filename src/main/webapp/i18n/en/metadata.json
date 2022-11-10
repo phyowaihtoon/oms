@@ -19,7 +19,7 @@
       },
       "id": "ID",
       "docTitle": "Document Template",
-      "detailsField": "Please Add Detail Fields",
+      "detailsField": "Please, add fields related to document template",
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "fieldName": "Field Name",
@@ -27,7 +27,7 @@
       "fieldValue": "Field Value",
       "fieldMandatory": "Mandatory",
       "fieldOrder": "Field Order",
-      "fieldAction": "Add/ Remove",
+      "fieldAction": "#",
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT"
     }

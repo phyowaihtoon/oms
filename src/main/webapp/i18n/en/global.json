@@ -31,7 +31,8 @@
       "repository": {
         "title": "Repository",
         "create": "Repository Creation",
-        "search": "Repository Inquiry"
+        "search": "Repository Inquiry",
+        "popupTitle": "Repository Inquiry"
       },
       "document": {
         "title": "Document",
@@ -136,7 +137,8 @@
       "search": "Search",
       "clear": "Clear",
       "ok": "OK",
-      "generate": "Generate"
+      "generate": "Generate",
+      "select": "Select"
     },
     "detail": {
       "field": "Field",

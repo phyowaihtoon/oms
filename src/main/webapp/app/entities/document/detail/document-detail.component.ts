@@ -36,6 +36,9 @@ export class DocumentDetailComponent implements OnInit {
 
   _modalRef?: NgbModalRef;
 
+  _isDocHeaderShow = true;
+  _isDocDetailShow = false;
+
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected loadSetupService: LoadSetupService,
@@ -161,31 +164,41 @@ export class DocumentDetailComponent implements OnInit {
     return fileType;
   }
 
-  arrangeMetaData(fNames?: string, fValues?: string): string {
-    let arrangedFields = '';
+  getMetaDataFieldsAndValues(fNames?: string, fValues?: string): any {
+    const keyValues = [];
     if (fNames !== undefined && fValues !== undefined && fNames.trim().length > 0 && fValues.trim().length > 0) {
       const fNameArray = fNames.split('|');
       const fValueArray = fValues.split('|');
       if (fNameArray.length > 0 && fValueArray.length > 0 && fNameArray.length === fValueArray.length) {
         let arrIndex = 0;
         while (arrIndex < fNameArray.length) {
-          const rowStart = "<div class='row col-12'>";
-          const col_1_Start = "<div class='col-2 dms-label'>";
-          const col_1_Data = '<span>' + fNameArray[arrIndex] + '</span>';
-          const col_1_End = '</div>';
-          const col_2_Start = "<div class='col-4 dms-view-data'>";
-          const col_2_Data = '<span>' + fValueArray[arrIndex] + '</span>';
-          const col_2_End = '</div>';
-          const rowEnd = '</div>';
-          arrangedFields += rowStart + col_1_Start + col_1_Data + col_1_End + col_2_Start + col_2_Data + col_2_End + rowEnd;
+          const keyValue = { name: '', value: '' };
+          keyValue.name = fNameArray[arrIndex];
+          keyValue.value = fValueArray[arrIndex];
+          keyValues.push(keyValue);
           arrIndex++;
         }
       }
     }
-    return arrangedFields;
+    return keyValues;
   }
 
   previousState(): void {
     window.history.back();
+  }
+
+  showDocHeader(): void {
+    if (this._isDocHeaderShow === false) {
+      this._isDocHeaderShow = !this._isDocHeaderShow;
+    }
+
+    this._isDocDetailShow = false;
+  }
+
+  showDocDetail(): void {
+    if (this._isDocDetailShow === false) {
+      this._isDocDetailShow = !this._isDocDetailShow;
+    }
+    this._isDocHeaderShow = false;
   }
 }
