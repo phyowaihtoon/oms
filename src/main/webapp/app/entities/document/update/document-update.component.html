@@ -170,7 +170,7 @@
                 <div class="form-group">
                   <button class="btn btn-primary btn-sm" (click)="checkRepositoryURL(inputFileElement)">
                     <fa-icon icon="upload"></fa-icon>
-                    <span class="d-none d-md-inline">Choose Files</span>
+                    <span class="d-none d-md-inline" jhiTranslate="dmsApp.document.chooseFile">Choose File</span>
                   </button>
                   <input #inputFileElement type="file" (change)="onUploadFiles($event)" name="files" multiple />
                 </div>
@@ -183,12 +183,12 @@
           <table class="table" formArrayName="docList1">
             <thead>
               <tr>
-                <th class="text-center" style="width: 25%">Repository URL</th>
-                <th class="text-center" style="width: 20%">File Name</th>
-                <th class="text-center" style="width: 10%">File Size (KB)</th>
-                <th class="text-center" style="width: 5%">Version<span>&nbsp;*</span></th>
-                <th class="text-center" style="width: 30%">Remark</th>
-                <th class="text-center" style="width: 5%">Remove</th>
+                <th class="text-center" style="width: 25%" jhiTranslate="dmsApp.document.fileLocation">Repository URL</th>
+                <th class="text-center" style="width: 20%" jhiTranslate="dmsApp.document.fileName">File Name</th>
+                <th class="text-center" style="width: 10%" jhiTranslate="dmsApp.document.fileSize">File Size (KB)</th>
+                <th class="text-center" style="width: 5%" jhiTranslate="dmsApp.document.fileVersion">Version<span>&nbsp;*</span></th>
+                <th class="text-center" style="width: 30%" jhiTranslate="dmsApp.document.remark">Remark</th>
+                <th class="text-center" style="width: 5%" jhiTranslate="dmsApp.document.fieldAction">#</th>
               </tr>
             </thead>
             <tbody>

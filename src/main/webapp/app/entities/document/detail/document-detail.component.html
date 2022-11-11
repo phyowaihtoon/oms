@@ -12,36 +12,71 @@
 </div>
 
 <div id="page-body">
-  <div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span></div>
-  <div class="row" id="documentHeaderView">
-    <div class="row col-12">
-      <div class="row col-12">
-        <div class="col-2 dms-label">
-          <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
-        </div>
-        <div class="col-4 dms-view-data">
-          <span>{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}</span>
-        </div>
-        <div class="col-2 dms-label">
-          <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
-        </div>
-        <div class="col-1 dms-view-data">
-          <span>{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}</span>
-        </div>
-        <div class="col-2 dms-label">
-          <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
-        </div>
-        <div class="col-1 dms-view-data">
-          <span>{{ _documentHeader?.createdBy }}</span>
-        </div>
+  <div class="row">
+    <div class="col-3">
+      <div *ngIf="_isDocHeaderShow" class="tab-header-select" (click)="showDocHeader()">
+        <fa-icon icon="angle-down" (click)="showDocHeader()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span>
+      </div>
+
+      <div *ngIf="!_isDocHeaderShow" class="tab-header" (click)="showDocHeader()">
+        <fa-icon icon="angle-right" (click)="showDocHeader()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span>
       </div>
     </div>
-    <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"></div>
+
+    <div class="col-6">
+      <div class="div-tab" *ngIf="_isDocDetailShow" class="tab-header-select" (click)="showDocDetail()">
+        <fa-icon icon="angle-down" (click)="showDocDetail()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.docDetailLabel">Document Upload Details</span>
+      </div>
+
+      <div *ngIf="!_isDocDetailShow" class="tab-header" (click)="showDocDetail()">
+        <fa-icon icon="angle-right" (click)="showDocDetail()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.docDetailLabel">Document Upload Details</span>
+      </div>
+    </div>
   </div>
 
-  <div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.docDetailLabel">MetaData Information</span></div>
+  <div class="row" id="documentHeaderView" *ngIf="_isDocHeaderShow">
+    <div class="row col-12 form-group">
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
+      </div>
+      <div class="col-4 dms-view-data">
+        <input type="text" class="form-control" value="{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}" />
+      </div>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
+      </div>
+      <div class="col-1 dms-view-data">
+        <input
+          type="text"
+          class="form-control"
+          value="{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}"
+        />
+      </div>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+      </div>
+      <div class="col-1 dms-view-data">
+        <input type="text" class="form-control" value="{{ _documentHeader?.createdBy }}" />
+      </div>
+    </div>
+    <div
+      class="row col-12 form-group"
+      *ngFor="let metadata of getMetaDataFieldsAndValues(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"
+    >
+      <div class="col-2 dms-label">
+        <span>{{ metadata.name }}</span>
+      </div>
+      <div class="col-4 dms-view-data">
+        <input type="text" class="form-control" value="{{ metadata.value }}" />
+      </div>
+    </div>
+  </div>
 
-  <div class="row" id="documentDetailView">
+  <div class="row" id="documentDetailView" *ngIf="_isDocDetailShow">
     <div class="table-responsive" id="entities" *ngIf="_documentDetails && _documentDetails.length > 0">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
@@ -64,9 +99,6 @@
             <th scope="col">
               <span jhiTranslate="dmsApp.document.remark">Remark</span>
             </th>
-            <th scope="col">
-              <span jhiTranslate="dmsApp.document.fileType">File Type</span>
-            </th>
             <th scope="col" style="text-align: center">
               <span jhiTranslate="dmsApp.document.preview">Preview</span>
             </th>
@@ -83,10 +115,9 @@
             <td>{{ docDetail.fileSize }} KB</td>
             <td>{{ docDetail.version }}</td>
             <td>{{ docDetail.remark }}</td>
-            <td>{{ getFileType(docDetail.fileName) }}</td>
             <td style="text-align: center">
               <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.fileName)">
-                <a style="color: #2780e3; text-decoration: none">Preview</a>
+                <fa-icon icon="eye"></fa-icon>
               </span>
             </td>
             <td style="text-align: center">

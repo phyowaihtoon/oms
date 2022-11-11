@@ -4,7 +4,7 @@
       "home": {
         "title": "User Roles",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Create a new User Role",
+        "createLabel": "Create User Role",
         "createOrEditLabel": "Create or edit a User Role",
         "notFound": "No User Roles found"
       },

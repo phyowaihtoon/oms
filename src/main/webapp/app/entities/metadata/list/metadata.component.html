@@ -38,10 +38,10 @@
   <div *ngIf="isShowingFilters" id="search-area" class="col-12">
     <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
       <div class="form-group row col-12">
-        <div class="col-2">
+        <div class="col-3">
           <label class="form-control-label" jhiTranslate="dmsApp.metaData.docTitle" for="field_docTitle">Document Template</label>
         </div>
-        <div class="col-2">
+        <div class="col-3">
           <input type="text" class="form-control" name="docTitle" id="field_docTitle" data-cy="docTitle" formControlName="docTitle" />
         </div>
         <div class="col-2">

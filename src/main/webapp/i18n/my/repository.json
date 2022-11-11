@@ -18,10 +18,10 @@
         "title": "Repository"
       },
       "id": "ID",
-      "repositoryName": "Root Repository",
-      "repositoryPath": "Sub Repository",
-      "createdDate": "Created Date",
-      "createdBy": "Created By",
+      "repositoryName": "ပင်မနေရာ",
+      "repositoryPath": "နေရာခွဲ",
+      "createdDate": "ဖန်တီးသော ရက်စွဲ",
+      "createdBy": "ဖန်တီးသူ",
       "search": "ရှာဖွေလိုသော အချက်အလက်",
       "result": "ရှာဖွေမှုရလဒ်"
     }
