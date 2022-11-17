@@ -10,6 +10,8 @@ import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.compo
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
+import { IUserAuthority } from 'app/login/userauthority.model';
 import * as FileSaver from 'file-saver';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -27,6 +29,8 @@ export class DocumentQueueUpdateComponent implements OnInit {
   _replyMessage?: IReplyMessage | null;
   _documentHeaderId: number = 0;
   _iDocumentInquiry: IDocumentInquiry | null = null;
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
 
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
@@ -52,7 +56,10 @@ export class DocumentQueueUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ docHeader }) => {
+    this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+
       this._documentHeader = docHeader;
       this._documentHeaderId = docHeader.id;
       this._documentDetails = this._documentHeader?.docList;
@@ -234,7 +241,7 @@ export class DocumentQueueUpdateComponent implements OnInit {
 
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
-        //this.editForm.get(['id'])?.setValue(replyMessage.data.id);
+        // this.editForm.get(['id'])?.setValue(replyMessage.data.id);
         // this.statusUpdate(replyMessage.data.status);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
