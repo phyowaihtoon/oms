@@ -59,7 +59,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
         if (dto.getMetaDataHeaderId() == null) {
-            Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, repURL, pageable);
+            Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, pageable);
             return pageWithEntity.map(documentHeaderMapper::toDto);
         } else if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();

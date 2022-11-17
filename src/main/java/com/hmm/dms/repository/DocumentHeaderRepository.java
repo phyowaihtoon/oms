@@ -46,7 +46,7 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     DocumentHeader findDocumentHeaderById(Long id);
 
     @Query(value = "SELECT dh FROM DocumentHeader dh where dh.status=?1")
-    Page<DocumentHeader> findByStatus(int id, String fieldValues, String repURL, Pageable pageable);
+    Page<DocumentHeader> findByStatus(int id, String fieldValues, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document_header SET status=?1, reason_for_amend=?2 " + "WHERE id = ?3", nativeQuery = true)
