@@ -1,0 +1,27 @@
+<div class="modal-header bg-primary text-white">
+  <div class="col-10" id="dms-modal-title">
+    <span>PDF Viewer</span>
+  </div>
+  <div class="col-2">
+    <span class="close" style="cursor: pointer" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</span>
+  </div>
+</div>
+
+<div class="modal-body">
+  <ngx-extended-pdf-viewer
+    [src]="pdfBlobURL"
+    [useBrowserLocale]="true"
+    [showRotateButton]="false"
+    [showBookmarkButton]="false"
+    [showSecondaryToolbarButton]="false"
+    [showOpenFileButton]="false"
+    [zoom]="'100%'"
+  >
+  </ngx-extended-pdf-viewer>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="cancel()">
+    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+  </button>
+</div>

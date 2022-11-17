@@ -59,10 +59,19 @@ export interface IDocumentInquiry {
   repositoryURL?: string;
   createdDate?: string;
   fieldValues?: string;
+  fieldIndex?: number;
+  generalValue?: string;
 }
 
 export class DocumentInquiry implements IDocumentInquiry {
-  constructor(public metaDataHeaderId?: number, public repositoryURL?: string, public createdDate?: string, public fieldValues?: string) {}
+  constructor(
+    public metaDataHeaderId?: number,
+    public repositoryURL?: string,
+    public createdDate?: string,
+    public fieldValues?: string,
+    public fieldIndex?: number,
+    public generalValue?: string
+  ) {}
 }
 
 export function getDocIdentifier(docHeader: IDocumentHeader): number | undefined {
