@@ -17,8 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -30,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class DocumentInquiryServiceImpl implements DocumentInquiryService {
-
-    private final Logger log = LoggerFactory.getLogger(DocumentInquiryServiceImpl.class);
 
     private final DocumentHeaderRepository documentHeaderRepository;
     private final DocumentRepository documentRepository;
@@ -54,21 +50,32 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         this.documentMapper = documentMapper;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
-        String repURL = dto.getRepositoryURL();
         String fValues = dto.getFieldValues();
-        if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = ""; else repURL = repURL.trim();
         if (fValues == null || fValues.equals("null") || fValues.isEmpty()) fValues = ""; else fValues = fValues.trim();
+        String generalVal = dto.getGeneralValue();
+        if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
-        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
+        if (dto.getMetaDataHeaderId() == null) {
+            Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, repURL, pageable);
+            return pageWithEntity.map(documentHeaderMapper::toDto);
+        } else if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<DocumentHeader> pageWithEntity =
-                this.documentHeaderRepository.findAllByDate(dto.getMetaDataHeaderId(), fValues, createdDate, repURL, pageable);
+                this.documentHeaderRepository.findAllByDate(
+                        dto.getMetaDataHeaderId(),
+                        dto.getFieldIndex(),
+                        fValues,
+                        generalVal,
+                        createdDate,
+                        pageable
+                    );
             return pageWithEntity.map(documentHeaderMapper::toDto);
         }
-
-        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), fValues, repURL, pageable);
+        Page<DocumentHeader> pageWithEntity =
+            this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), dto.getFieldIndex(), fValues, generalVal, pageable);
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 

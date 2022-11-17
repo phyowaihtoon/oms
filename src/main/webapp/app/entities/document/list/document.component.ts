@@ -20,6 +20,8 @@ export class DocumentComponent implements OnInit {
   _documentHeaders?: IDocumentHeader[];
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _selectedMetaDataList?: IMetaData[];
+  _lovValues?: string[] = [];
+  isLOV = false;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -45,7 +47,9 @@ export class DocumentComponent implements OnInit {
   searchForm = this.fb.group({
     metaDataHdrID: [null, [Validators.required]],
     createdDate: [],
-    fieldValues: [],
+    fieldValues: [{ value: '', disabled: true }],
+    metaDataID: [0],
+    generalValue: [],
   });
 
   constructor(
@@ -87,10 +91,25 @@ export class DocumentComponent implements OnInit {
   }
 
   onChangeDocumentTemplate(event: any): void {
+    this.searchForm.get('fieldValues')?.patchValue('');
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+    }
+  }
+
+  onChangeMetaDataField(event: any): void {
+    this.isLOV = false;
+    this.searchForm.get('fieldValues')?.patchValue('');
+    const metaDataID: number = +this.searchForm.get('metaDataID')!.value;
+    if (metaDataID !== 0) {
+      this.searchForm.get('fieldValues')?.enable();
+    }
+    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
+    if (metaData?.fieldType === 'LOV') {
+      this.isLOV = true;
+      this._lovValues = metaData.fieldValue?.split('|');
     }
   }
 
@@ -213,12 +232,19 @@ export class DocumentComponent implements OnInit {
       size: this.itemsPerPage,
       // sort: this.sort(),
     };
+
+    const metaDataID: number = +this.searchForm.get('metaDataID')!.value;
+    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
+
     const searchCriteria = {
       ...new DocumentInquiry(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
       fieldValues: this.searchForm.get('fieldValues')!.value,
+      fieldIndex: metaData?.fieldOrder,
+      generalValue: this.searchForm.get('generalValue')!.value,
     };
+
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;
@@ -235,6 +261,10 @@ export class DocumentComponent implements OnInit {
     this.searchForm.reset();
     this._documentHeaders = [];
     this.isShowingResult = false;
+    this.isLOV = false;
+    this._selectedMetaDataList = [];
+    this.searchForm.get('fieldValues')?.disable();
+    this.searchForm.get('metaDataID')?.patchValue(0);
   }
 
   protected sort(): string[] {

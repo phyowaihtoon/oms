@@ -20,14 +20,16 @@ a {
   width: 100%;
 }
 
-/*
+.bg-primary {
+  background-color: #691c31 !important;
+}
+
 th {
   color: white;
   border: 1px solid #716f6f;
   padding: 5px;
   background-color: #056e7c;
 }
-*/
 
 td {
   border: none !important;
@@ -84,27 +86,7 @@ form {
   vertical-align: middle;
 }
 
-#dms-modal-title {
-  font-size: 13pt;
-  font-weight: bold;
-  padding-left: 0px;
-}
-
-#search-area {
-  border: 0.5pt solid grey;
-  padding: 10pt 10pt;
-}
-
-.result-header {
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-.dms-icon-btn {
-  padding: 2px;
-  height: 1.5rem;
-}
-
-.modal-body {
-  padding: 8px !important;
+.required-field {
+  color: #dc3545;
+  font-size: 17px;
 }

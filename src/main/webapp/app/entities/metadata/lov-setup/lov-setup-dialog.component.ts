@@ -20,6 +20,7 @@ export class LovSetupDialogComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal, protected fb: FormBuilder) {}
 
   ngOnInit(): void {
+    2;
     this.addField();
     if (this.lovStr.length > 0) {
       this.removeAllField();

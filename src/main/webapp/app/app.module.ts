@@ -30,6 +30,7 @@ import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { NgbDateCustomParserFormatter } from './config/NgbDateCustomParserFormatter';
+import { PdfViewerComponent } from './entities/util/pdfviewer/pdf-viewer.component';
 
 @NgModule({
   imports: [
@@ -63,7 +64,15 @@ import { NgbDateCustomParserFormatter } from './config/NgbDateCustomParserFormat
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },
     httpInterceptorProviders,
   ],
-  declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
+  declarations: [
+    MainComponent,
+    NavbarComponent,
+    ErrorComponent,
+    PageRibbonComponent,
+    ActiveMenuDirective,
+    FooterComponent,
+    PdfViewerComponent,
+  ],
   bootstrap: [MainComponent],
 })
 export class AppModule {
