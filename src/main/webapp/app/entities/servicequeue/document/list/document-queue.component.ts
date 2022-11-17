@@ -61,13 +61,9 @@ export class DocumentQueueComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-
-      console.log('xxxxx');
-      console.log('Aughority', this._userAuthority);
-      console.log('activeMenu', this._activeMenuItem);
     });
-    this.loadAllSetup();
 
+    this.loadAllSetup();
     this.searchDocument(1);
   }
 

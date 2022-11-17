@@ -82,7 +82,7 @@ export class DocumentInquiry implements IDocumentInquiry {
     public createdDate?: string,
     public fieldValues?: string,
     public status?: number,
-    public reason?: string
+    public reason?: string,
     public fieldIndex?: number,
     public generalValue?: string
   ) {}
