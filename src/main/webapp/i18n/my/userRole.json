@@ -4,7 +4,7 @@
       "home": {
         "title": "User Roles",
         "refreshListLabel": "Refresh list",
-        "createLabel": "User Role အသစ်ထည့်မည်",
+        "createLabel": "အသစ်ထည့်မည်",
         "createOrEditLabel": "User Role အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
         "notFound": "No User Roles found"
       },

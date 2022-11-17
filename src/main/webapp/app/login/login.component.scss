@@ -1,0 +1,26 @@
+#dms-login-container {
+  height: 90vh;
+  padding-top: 10px;
+  background-image: url('../../content/images/login_bkground.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  color: white;
+}
+
+#dms-bkimage {
+  border: 2px solid;
+}
+
+#login-title {
+  text-align: center;
+}
+
+#login-subtitle {
+  padding-top: 10px;
+  text-align: center;
+}
+
+.dms-vertical-space {
+  height: 30px;
+}

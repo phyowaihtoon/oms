@@ -1,125 +1,132 @@
 <div id="page-heading" class="row">
-  <div class="col-10">
+  <div class="col-8">
     <span>Report</span>
     <span> >> Document Mapping Report</span>
   </div>
+  <div class="col-4 d-flex justify-content-end">
+    <button
+      type="button"
+      (click)="generate()"
+      id="generate-report"
+      data-cy="reportGenerateButton"
+      [disabled]="editForm.invalid || isGenerating"
+      class="btn btn-primary btn-sm"
+    >
+      <fa-icon icon="save"></fa-icon>&nbsp;
+      <span jhiTranslate="entity.action.generate">Generate</span>
+    </button>
+    <span style="width: 5px"></span>
+    <button class="btn btn-primary btn-sm" (click)="clearFormData()">
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+    </button>
+  </div>
 </div>
 
-<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="report.docmapping.criteriaLbl">Report Criteria</span></div>
+<div id="page-body">
+  <div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="report.docmapping.criteriaLbl">Report Criteria</span></div>
 
-<div class="col-10" style="padding-top: 10px">
-  <form name="editForm" role="form" novalidate (ngSubmit)="generate()" [formGroup]="editForm">
-    <div id="report-criteria-area" class="row form-group">
-      <div class="row col-5">
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="report.docmapping.startdate" for="field_startDate"> Start Date </label>
-        </div>
-        <div class="col-8">
-          <div class="input-group">
-            <input
-              class="form-control"
-              id="field_startDate"
-              data-cy="startDate"
-              placeholder="DD-MM-YYYY"
-              name="startDate"
-              formControlName="startDate"
-              ngbDatepicker
-              #startDate="ngbDatepicker"
-            />
-            <div class="input-group-append">
-              <button class="btn btn-primary btn-sm dms-icon-btn" id="startDateButton" (click)="startDate.toggle()" type="button">
-                <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
-              </button>
+  <div class="col-10" style="padding-top: 10px">
+    <form name="editForm" role="form" novalidate (ngSubmit)="generate()" [formGroup]="editForm">
+      <div id="report-criteria-area" class="row form-group">
+        <div class="row col-5">
+          <div class="col-4">
+            <label class="form-control-label" jhiTranslate="report.docmapping.startdate" for="field_startDate"> Start Date </label>
+          </div>
+          <div class="col-8">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="field_startDate"
+                data-cy="startDate"
+                placeholder="DD-MM-YYYY"
+                name="startDate"
+                formControlName="startDate"
+                ngbDatepicker
+                #startDate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="startDateButton" (click)="startDate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="col-12"
-          *ngIf="editForm.get('startDate')!.invalid && (editForm.get('startDate')!.dirty || editForm.get('startDate')!.touched)"
-        >
-          <small
-            style="text-align: right"
-            class="form-text text-danger"
-            *ngIf="editForm.get('startDate')?.errors?.required"
-            jhiTranslate="entity.validation.required"
+          <div
+            class="col-12"
+            *ngIf="editForm.get('startDate')!.invalid && (editForm.get('startDate')!.dirty || editForm.get('startDate')!.touched)"
           >
-            This field is required.
-          </small>
-          <small
-            style="text-align: right"
-            class="form-text text-danger"
-            [hidden]="!editForm.get('startDate')?.errors?.ngbDate"
-            jhiTranslate="report.validation.datePattern"
-          >
-            Date should be entered in DD-MM-YYYY.
-          </small>
-        </div>
-      </div>
-
-      <div class="row col-5">
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="report.docmapping.enddate" for="field_endDate"> End Date </label>
-        </div>
-        <div class="col-8">
-          <div class="input-group">
-            <input
-              class="form-control"
-              id="field_endDate"
-              data-cy="endDate"
-              placeholder="DD-MM-YYYY"
-              name="endDate"
-              formControlName="endDate"
-              ngbDatepicker
-              #endDate="ngbDatepicker"
-            />
-            <div class="input-group-append">
-              <button class="btn btn-primary btn-sm dms-icon-btn" id="endDateButton" (click)="endDate.toggle()" type="button">
-                <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
-              </button>
-            </div>
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              *ngIf="editForm.get('startDate')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              [hidden]="!editForm.get('startDate')?.errors?.ngbDate"
+              jhiTranslate="report.validation.datePattern"
+            >
+              Date should be entered in DD-MM-YYYY.
+            </small>
           </div>
         </div>
-        <div
-          class="col-12"
-          *ngIf="editForm.get('endDate')!.invalid && (editForm.get('endDate')!.dirty || editForm.get('endDate')!.touched)"
-        >
-          <small
-            style="text-align: right"
-            class="form-text text-danger"
-            *ngIf="editForm.get('endDate')?.errors?.required"
-            jhiTranslate="entity.validation.required"
+
+        <div class="row col-5">
+          <div class="col-4">
+            <label class="form-control-label" jhiTranslate="report.docmapping.enddate" for="field_endDate"> End Date </label>
+          </div>
+          <div class="col-8">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="field_endDate"
+                data-cy="endDate"
+                placeholder="DD-MM-YYYY"
+                name="endDate"
+                formControlName="endDate"
+                ngbDatepicker
+                #endDate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="endDateButton" (click)="endDate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-12"
+            *ngIf="editForm.get('endDate')!.invalid && (editForm.get('endDate')!.dirty || editForm.get('endDate')!.touched)"
           >
-            This field is required.
-          </small>
-          <small
-            style="text-align: right"
-            class="form-text text-danger"
-            [hidden]="!editForm.get('endDate')?.errors?.ngbDate"
-            jhiTranslate="report.validation.datePattern"
-          >
-            Date should be entered in DD-MM-YYYY.
-          </small>
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              *ngIf="editForm.get('endDate')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              style="text-align: right"
+              class="form-text text-danger"
+              [hidden]="!editForm.get('endDate')?.errors?.ngbDate"
+              jhiTranslate="report.validation.datePattern"
+            >
+              Date should be entered in DD-MM-YYYY.
+            </small>
+          </div>
         </div>
       </div>
-    </div>
+    </form>
+  </div>
 
-    <div>
-      <button
-        type="submit"
-        id="generate-report"
-        data-cy="reportGenerateButton"
-        [disabled]="editForm.invalid || isGenerating"
-        class="btn btn-primary"
-      >
-        <fa-icon icon="save"></fa-icon>&nbsp;<span>Generate</span>
-      </button>
+  <div class="dms-alert-container">
+    <div class="alert alert-info" id="no-result" *ngIf="isShowingAlert">
+      <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+      <span>{{ _alertMessage }}</span>
     </div>
-  </form>
-</div>
-
-<div class="dms-alert-container">
-  <div class="alert alert-info" id="no-result" *ngIf="isShowingAlert">
-    <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
-    <span>{{ _alertMessage }}</span>
   </div>
 </div>

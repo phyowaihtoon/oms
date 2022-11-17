@@ -71,6 +71,8 @@ export interface IDocumentInquiry {
   fieldValues?: string;
   status?: number;
   reason?: string;
+  fieldIndex?: number;
+  generalValue?: string;
 }
 
 export class DocumentInquiry implements IDocumentInquiry {
@@ -81,6 +83,8 @@ export class DocumentInquiry implements IDocumentInquiry {
     public fieldValues?: string,
     public status?: number,
     public reason?: string
+    public fieldIndex?: number,
+    public generalValue?: string
   ) {}
 }
 

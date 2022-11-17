@@ -1,6 +1,6 @@
 {
   "global": {
-    "title": "Dms",
+    "title": "DMS",
     "browsehappy": "သင် browser version အသစ် အသုံးပြုရန်လိုအပ်ပါသည်။ ကျေးဇူးပြု၍ <a href=\"http://browsehappy.com/?locale=en\">အဆင့်မြှင့်တင်ပါ။</a>",
     "menu": {
       "home": "ပင်မစာမျက်နှာ",
@@ -20,7 +20,7 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
-        "title": "Report",
+        "title": "ရီပို့ထုတ်ခြင်း",
         "docmaprpt": "Document Mapping Report"
       },
       "metadata": {
@@ -29,9 +29,10 @@
         "search": "မက်တာဒေတာ ရှာဖွေခြင်း"
       },
       "repository": {
-        "title": "အချက်အလက် သိမ်းမည့်နေရာ",
+        "title": "ဖိုင် သိမ်းမည့်နေရာ",
         "create": "သိမ်းမည့်နေရာ သတ်မှတ်ခြင်း",
-        "search": "သိမ်းမည့်နေရာ ရှာဖွေခြင်း"
+        "search": "သိမ်းမည့်နေရာ ရှာဖွေခြင်း",
+        "popupTitle": "ဖိုင်သိမ်းမည့်နေရာ ရွေးချယ်ခြင်း"
       },
       "document": {
         "title": "စာရွက်စာတမ်း",
@@ -134,7 +135,9 @@
       "view": "ကြည့်မည်",
       "new": "အသစ်ထည့်မည်",
       "search": "ရှာမည်",
-      "clear": "ရှင်းလင်းမည်"
+      "clear": "ရှင်းလင်းမည်",
+      "generate": "ထုတ်မည်",
+      "select": "ရွေးချယ်မည်"
     },
     "detail": {
       "field": "Field",

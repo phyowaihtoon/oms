@@ -6,6 +6,7 @@ import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
+import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
@@ -35,6 +36,9 @@ export class DocumentDetailComponent implements OnInit {
   _metaDataHdrList?: IMetaDataHeader[] | null;
 
   _modalRef?: NgbModalRef;
+
+  _isDocHeaderShow = true;
+  _isDocDetailShow = false;
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -99,8 +103,8 @@ export class DocumentDetailComponent implements OnInit {
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
             if (isPreview) {
-              const myURL = URL.createObjectURL(res.body);
-              window.open(myURL);
+              const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
+              modalRef.componentInstance.pdfBlobURL = res.body;
             } else {
               FileSaver.saveAs(res.body, fileName);
             }
@@ -161,31 +165,41 @@ export class DocumentDetailComponent implements OnInit {
     return fileType;
   }
 
-  arrangeMetaData(fNames?: string, fValues?: string): string {
-    let arrangedFields = '';
+  getMetaDataFieldsAndValues(fNames?: string, fValues?: string): any {
+    const keyValues = [];
     if (fNames !== undefined && fValues !== undefined && fNames.trim().length > 0 && fValues.trim().length > 0) {
       const fNameArray = fNames.split('|');
       const fValueArray = fValues.split('|');
       if (fNameArray.length > 0 && fValueArray.length > 0 && fNameArray.length === fValueArray.length) {
         let arrIndex = 0;
         while (arrIndex < fNameArray.length) {
-          const rowStart = "<div class='row col-12'>";
-          const col_1_Start = "<div class='col-2 dms-label'>";
-          const col_1_Data = '<span>' + fNameArray[arrIndex] + '</span>';
-          const col_1_End = '</div>';
-          const col_2_Start = "<div class='col-4 dms-view-data'>";
-          const col_2_Data = '<span>' + fValueArray[arrIndex] + '</span>';
-          const col_2_End = '</div>';
-          const rowEnd = '</div>';
-          arrangedFields += rowStart + col_1_Start + col_1_Data + col_1_End + col_2_Start + col_2_Data + col_2_End + rowEnd;
+          const keyValue = { name: '', value: '' };
+          keyValue.name = fNameArray[arrIndex];
+          keyValue.value = fValueArray[arrIndex];
+          keyValues.push(keyValue);
           arrIndex++;
         }
       }
     }
-    return arrangedFields;
+    return keyValues;
   }
 
   previousState(): void {
     window.history.back();
+  }
+
+  showDocHeader(): void {
+    if (this._isDocHeaderShow === false) {
+      this._isDocHeaderShow = !this._isDocHeaderShow;
+    }
+
+    this._isDocDetailShow = false;
+  }
+
+  showDocDetail(): void {
+    if (this._isDocDetailShow === false) {
+      this._isDocDetailShow = !this._isDocDetailShow;
+    }
+    this._isDocHeaderShow = false;
   }
 }

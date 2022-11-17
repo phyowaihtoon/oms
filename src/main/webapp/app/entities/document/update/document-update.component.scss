@@ -1,3 +1,16 @@
+#page-heading {
+  font-size: 13pt;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#page-body {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
 .input-btn-primary {
   color: #fff;
   background-color: #2780e3;
@@ -54,11 +67,6 @@ td {
   background-color: #d58e03;
 }
 
-#page-heading {
-  font-size: 13pt;
-  padding-top: 10px;
-}
-
 .tbl-container {
   width: 100%;
   overflow-x: auto;
@@ -81,11 +89,6 @@ input[type='file'] {
   display: none;
 }
 
-#page-heading {
-  font-size: 13pt;
-  padding-top: 10px;
-}
-
 #search-area {
   border: 0.5pt solid gray;
   padding: 10pt;
@@ -104,6 +107,11 @@ input[type='file'] {
   padding-bottom: 5px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.tab-header:hover,
+.tab-header-select:hover {
+  font-size: large;
 }
 
 .dms-icon-btn {

@@ -27,6 +27,7 @@
       "priority": "Priority",
       "status": "Status",
       "repositoryURL": "Repository URL",
+      "fileLocation": "Repository URL",
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "filePath": "File Path",
@@ -34,15 +35,18 @@
       "fileSize": "Size",
       "fileVersion": "Version",
       "remark": "Remark",
-      "fileType": "File Type",
       "preview": "Preview",
       "download": "Download",
+      "specificMetaData": "Specific MetaData",
       "otherMetaData": "Other MetaData",
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",
       "queue": "Queue to proceed",
       "metadataLabel": "MetaData Information",
-      "docDetailLabel": "Document Mapping Details"
+      "docDetailMapLabel": "Document Mapping Details",
+      "docDetailLabel": "Document Mapping Details",
+      "fieldAction": "#",
+      "chooseFile": "Choose File"
     }
   }
 }

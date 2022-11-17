@@ -3,6 +3,7 @@ package com.hmm.dms.enumeration;
 public class CommonEnum {
 
     public enum WorkflowAuthorityEnum {
+        NA(0, "NA"),
         MAKER(1, "Maker"),
         APPROVER(2, "Approver"),
         BOTH(3, "Both");
