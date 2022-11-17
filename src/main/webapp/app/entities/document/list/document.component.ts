@@ -219,6 +219,7 @@ export class DocumentComponent implements OnInit {
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
       fieldValues: this.searchForm.get('fieldValues')!.value,
     };
+
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;

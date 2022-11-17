@@ -54,6 +54,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         this.documentMapper = documentMapper;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
         String repURL = dto.getRepositoryURL();
@@ -61,7 +62,10 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         if (repURL == null || repURL.equals("null") || repURL.isEmpty()) repURL = ""; else repURL = repURL.trim();
         if (fValues == null || fValues.equals("null") || fValues.isEmpty()) fValues = ""; else fValues = fValues.trim();
 
-        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
+        if (dto.getMetaDataHeaderId() == null) {
+            Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, repURL, pageable);
+            return pageWithEntity.map(documentHeaderMapper::toDto);
+        } else if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<DocumentHeader> pageWithEntity =
                 this.documentHeaderRepository.findAllByDate(dto.getMetaDataHeaderId(), fValues, createdDate, repURL, pageable);
@@ -69,6 +73,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         }
 
         Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), fValues, repURL, pageable);
+
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 

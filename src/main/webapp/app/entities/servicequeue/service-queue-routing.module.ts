@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { DocumentQueueComponent } from './document/list/document-queue.component';
 import { DocumentQueueUpdateComponent } from './document/update/document-queue-update.component';
+import { ServiceQueueRoutingResolveService } from './service-queue-routing-resolve.service';
 
 const serviceQueueRoute: Routes = [
   {
@@ -14,10 +15,13 @@ const serviceQueueRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: 'document/id',
+    path: 'document/:id/view',
     component: DocumentQueueUpdateComponent,
     data: {
       defaultSort: 'id,asc',
+    },
+    resolve: {
+      docHeader: ServiceQueueRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

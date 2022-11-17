@@ -10,6 +10,8 @@ public class DocumentInquiryMessage implements Serializable {
     private String repositoryURL;
     private String createdDate;
     private String fieldValues;
+    private String reason;
+    private int status;
 
     public Long getMetaDataHeaderId() {
         return metaDataHeaderId;
@@ -41,5 +43,21 @@ public class DocumentInquiryMessage implements Serializable {
 
     public void setFieldValues(String fieldValues) {
         this.fieldValues = fieldValues;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

@@ -19,6 +19,16 @@ public class DocumentHeaderDTO implements Serializable {
 
     private String repositoryURL;
 
+    private String approvedBy;
+
+    private int priority;
+
+    private int status;
+
+    private String reasonForAmend;
+
+    private String reasonForReject;
+
     private String message;
 
     private String delFlag;
@@ -47,6 +57,46 @@ public class DocumentHeaderDTO implements Serializable {
 
     public void setMetaDataHeaderId(Long metaDataHeaderId) {
         this.metaDataHeaderId = metaDataHeaderId;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getReasonForAmend() {
+        return reasonForAmend;
+    }
+
+    public void setReasonForAmend(String reasonForAmend) {
+        this.reasonForAmend = reasonForAmend;
+    }
+
+    public String getReasonForReject() {
+        return reasonForReject;
+    }
+
+    public void setReasonForReject(String reasonForReject) {
+        this.reasonForReject = reasonForReject;
     }
 
     public String getFieldNames() {
