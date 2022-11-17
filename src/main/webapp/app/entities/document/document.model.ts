@@ -6,6 +6,11 @@ export interface IDocumentHeader {
   fieldNames?: string;
   fieldValues?: string;
   repositoryURL?: string;
+  priority?: number;
+  status?: number;
+  approvedbY?: string;
+  reasonForAmend?: string;
+  reasonForReject?: string;
   message?: string;
   delFlag?: string;
   createdBy?: string;
@@ -21,6 +26,11 @@ export class DocumentHeader implements IDocumentHeader {
     public fieldValues?: string,
     public repositoryURL?: string,
     public message?: string,
+    public priority?: number,
+    public status?: number,
+    public approvedbY?: string,
+    public reasonForAmend?: string,
+    public reasonForReject?: string,
     public delFlag?: string,
     public createdBy?: string,
     public createdDate?: dayjs.Dayjs,
@@ -59,6 +69,8 @@ export interface IDocumentInquiry {
   repositoryURL?: string;
   createdDate?: string;
   fieldValues?: string;
+  status?: number;
+  reason?: string;
   fieldIndex?: number;
   generalValue?: string;
 }
@@ -69,6 +81,8 @@ export class DocumentInquiry implements IDocumentInquiry {
     public repositoryURL?: string,
     public createdDate?: string,
     public fieldValues?: string,
+    public status?: number,
+    public reason?: string
     public fieldIndex?: number,
     public generalValue?: string
   ) {}

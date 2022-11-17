@@ -9,6 +9,8 @@ import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
+import com.hmm.dms.service.message.BaseMessage;
+import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.util.ResponseCode;
@@ -41,6 +43,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
     private final DocumentRepository documentRepository;
     private final DocumentMapper documentMapper;
     private ReplyMessage<DocumentHeaderDTO> replyMessage;
+    private ReplyMessage<DocumentInquiryMessage> replyMessage_BM;
 
     public DocumentHeaderServiceImpl(
         DocumentHeaderRepository documentHeaderRepository,
@@ -55,6 +58,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         this.documentMapper = documentMapper;
         this.ftpSessionFactory = ftpSessionFactory;
         this.replyMessage = new ReplyMessage<DocumentHeaderDTO>();
+        this.replyMessage_BM = new ReplyMessage<DocumentInquiryMessage>();
     }
 
     @Override
@@ -233,5 +237,20 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public ReplyMessage<DocumentInquiryMessage> partialUpdate(DocumentInquiryMessage approvalInfo, Long id) {
+        if (id != null) {
+            if (approvalInfo.getStatus() == 4) {
+                documentHeaderRepository.updateAmmendById(approvalInfo.getStatus(), approvalInfo.getReason(), id);
+            } else if (approvalInfo.getStatus() == 6) {
+                documentHeaderRepository.updateRejectById(approvalInfo.getStatus(), approvalInfo.getReason(), id);
+            } else documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), id);
+
+            replyMessage_BM.setCode(ResponseCode.SUCCESS);
+            replyMessage_BM.setMessage("Documnet is updated");
+        }
+        return replyMessage_BM;
     }
 }

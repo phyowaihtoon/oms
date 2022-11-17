@@ -244,6 +244,7 @@ export class DocumentComponent implements OnInit {
       fieldIndex: metaData?.fieldOrder,
       generalValue: this.searchForm.get('generalValue')!.value,
     };
+
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;

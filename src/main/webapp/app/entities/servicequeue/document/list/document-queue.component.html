@@ -1,1 +1,116 @@
-<p>document-queue works!</p>
+<div id="page-heading" class="row">
+  <div class="col-10">
+    <span>{{
+      _activeMenuItem && _activeMenuItem.menuGroup.translateKey
+        ? (_activeMenuItem.menuGroup.translateKey | translate)
+        : _activeMenuItem?.menuGroup?.name
+    }}</span>
+    <span>
+      >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
+    >
+  </div>
+</div>
+
+<div class="result-header">
+  <fa-icon icon="angle-down" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.queue"></span>
+</div>
+
+<div id="result-container" *ngIf="isShowingResult">
+  <div class="alert alert-info" *ngIf="isShowingAlert">
+    <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+    <span>{{ _alertMessage }}</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+          <th scope="col">
+            <span jhiTranslate="global.field.id">ID</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
+          </th>
+          <th scope="col" *ngIf="_metaData1.valid">
+            <span>{{ _metaData1.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData2.valid">
+            <span>{{ _metaData2.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData3.valid">
+            <span>{{ _metaData3.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData4.valid">
+            <span>{{ _metaData4.name }}</span>
+          </th>
+          <th scope="col" *ngIf="_metaData5.valid">
+            <span>{{ _metaData5.name }}</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
+          </th>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/service-queue/document', documentHeader.id, 'view']"
+              >{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a
+            >
+          </td>
+          <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
+          <td *ngIf="_metaData1.valid">{{ _metaData1.value }}</td>
+          <td *ngIf="_metaData2.valid">{{ _metaData2.value }}</td>
+          <td *ngIf="_metaData3.valid">{{ _metaData3.value }}</td>
+          <td *ngIf="_metaData4.valid">{{ _metaData4.value }}</td>
+          <td *ngIf="_metaData5.valid">{{ _metaData5.value }}</td>
+          <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
+          <td>{{ documentHeader.createdBy }}</td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/service-queue/document', documentHeader.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/document', documentHeader.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="_documentHeaders && _documentHeaders.length > 0">
+    <div class="row justify-content-center">
+      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      <span style="width: 30px">&nbsp;&nbsp;</span>
+      <ngb-pagination
+        [collectionSize]="totalItems"
+        [(page)]="ngbPaginationPage"
+        [pageSize]="itemsPerPage"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="loadPage($event)"
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>
