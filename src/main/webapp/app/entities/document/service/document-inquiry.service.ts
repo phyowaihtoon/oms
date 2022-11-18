@@ -28,6 +28,13 @@ export class DocumentInquiryService {
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
+  queryForQueue(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IDocumentHeader[]>(`${this.resourceUrl}/servicequeue`, criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
   getDocumentsById(id: number): Observable<EntityResponseType> {
     return this.http
       .get(`${this.resourceUrl}/${id}`, { observe: 'response' })

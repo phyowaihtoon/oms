@@ -397,7 +397,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'CANCEL';
+      this.docStatus = 'CANCELED';
       this.docStatus_number = 3;
     } else if (status === 4) {
       this.isNA = false;
@@ -409,13 +409,13 @@ export class DocumentUpdateComponent implements OnInit {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'APPROVE';
+      this.docStatus = 'APPROVED';
       this.docStatus_number = 5;
     } else {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'REJECT';
+      this.docStatus = 'REJECTED';
       this.docStatus_number = 6;
     }
   }
