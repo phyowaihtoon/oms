@@ -41,6 +41,8 @@ public class DocumentHeaderDTO implements Serializable {
 
     private Instant lastModifiedDate;
 
+    private Instant approvedDate;
+
     private List<DocumentDTO> docList;
 
     public Long getId() {
@@ -169,6 +171,14 @@ public class DocumentHeaderDTO implements Serializable {
 
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Instant getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Instant approvedDate) {
+        this.approvedDate = approvedDate;
     }
 
     public List<DocumentDTO> getDocList() {

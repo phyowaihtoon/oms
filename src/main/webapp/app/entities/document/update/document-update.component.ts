@@ -96,10 +96,6 @@ export class DocumentUpdateComponent implements OnInit {
       this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
         this._userAuthority = userAuthority;
         this._activeMenuItem = userAuthority.activeMenu.menuItem;
-
-        console.log('Aughority', this._userAuthority);
-        console.log('activeMenu', this._activeMenuItem);
-
         this._documentHeader = docHeader;
         this._documentDetails = this._documentHeader?.docList;
         if (this._documentHeader !== undefined) {
@@ -319,6 +315,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.fValue += value;
       this.fValue += '|';
     });
+
     return this.fValue.slice(0, -1);
   }
 

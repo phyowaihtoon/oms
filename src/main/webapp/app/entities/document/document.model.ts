@@ -15,6 +15,7 @@ export interface IDocumentHeader {
   delFlag?: string;
   createdBy?: string;
   createdDate?: dayjs.Dayjs;
+  approvedDate?: dayjs.Dayjs;
   docList?: IDocument[];
 }
 
@@ -34,6 +35,7 @@ export class DocumentHeader implements IDocumentHeader {
     public delFlag?: string,
     public createdBy?: string,
     public createdDate?: dayjs.Dayjs,
+    public approvedDate?: dayjs.Dayjs,
     public docList?: IDocument[]
   ) {}
 }
@@ -73,6 +75,7 @@ export interface IDocumentInquiry {
   reason?: string;
   fieldIndex?: number;
   generalValue?: string;
+  approvedBy?: string;
 }
 
 export class DocumentInquiry implements IDocumentInquiry {
@@ -84,7 +87,8 @@ export class DocumentInquiry implements IDocumentInquiry {
     public status?: number,
     public reason?: string,
     public fieldIndex?: number,
-    public generalValue?: string
+    public generalValue?: string,
+    public approvedBy?: string
   ) {}
 }
 

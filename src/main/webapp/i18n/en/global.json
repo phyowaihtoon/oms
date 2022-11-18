@@ -133,7 +133,7 @@
       "open": "Open",
       "view": "View",
       "save": "Save",
-      "ammend": "Send to Ammend",
+      "ammend": "Send to Amend",
       "senttoapprove": "Send to Approve",
       "approve": "Approve",
       "reject": "Reject",
@@ -142,7 +142,8 @@
       "clear": "Clear",
       "ok": "OK",
       "generate": "Generate",
-      "select": "Select"
+      "select": "Select",
+      "proceed": "Proceed"
     },
     "detail": {
       "field": "Field",

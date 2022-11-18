@@ -1,6 +1,7 @@
 package com.hmm.dms.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
@@ -50,6 +51,9 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
 
     @Column(name = "reason_for_reject")
     private String reasonForReject;
+
+    @Column(name = "approved_date")
+    private Instant approvedDate;
 
     public Long getId() {
         return id;
@@ -157,6 +161,14 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
 
     public void setReasonForReject(String reasonForReject) {
         this.reasonForReject = reasonForReject;
+    }
+
+    public Instant getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Instant approvedDate) {
+        this.approvedDate = approvedDate;
     }
 
     @Override
