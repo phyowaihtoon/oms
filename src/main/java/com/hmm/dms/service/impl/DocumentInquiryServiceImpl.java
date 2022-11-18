@@ -58,10 +58,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
-        if (dto.getMetaDataHeaderId() == null) {
-            Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, pageable);
-            return pageWithEntity.map(documentHeaderMapper::toDto);
-        } else if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
+        if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<DocumentHeader> pageWithEntity =
                 this.documentHeaderRepository.findAllByDate(
@@ -74,8 +71,16 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                     );
             return pageWithEntity.map(documentHeaderMapper::toDto);
         }
+
         Page<DocumentHeader> pageWithEntity =
             this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), dto.getFieldIndex(), fValues, generalVal, pageable);
+        return pageWithEntity.map(documentHeaderMapper::toDto);
+    }
+
+    @Override
+    public Page<DocumentHeaderDTO> searchDocumentHeaderForServiceQueue(DocumentInquiryMessage dto, Pageable pageable) {
+        String fValues = dto.getFieldValues();
+        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, pageable);
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 

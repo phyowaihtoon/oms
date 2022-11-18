@@ -223,7 +223,7 @@ export class DocumentQueueComponent implements OnInit {
       fieldValues: this.searchForm.get('fieldValues')!.value,
     };
 
-    this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
+    this.documentInquiryService.queryForQueue(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;
         this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
