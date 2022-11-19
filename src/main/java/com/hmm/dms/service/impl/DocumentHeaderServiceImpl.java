@@ -242,25 +242,38 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
 
     @Override
     public ReplyMessage<DocumentInquiryMessage> partialUpdate(DocumentInquiryMessage approvalInfo, Long id) {
-        if (id != null) {
-            if (approvalInfo.getStatus() == 4) {
-                documentHeaderRepository.updateAmmendById(approvalInfo.getStatus(), approvalInfo.getReason(), id);
-                replyMessage_BM.setMessage("Documnet is successfully sent to amend.");
-            } else if (approvalInfo.getStatus() == 6) {
-                documentHeaderRepository.updateRejectById(
-                    approvalInfo.getStatus(),
-                    approvalInfo.getReason(),
-                    approvalInfo.getApprovedBy(),
-                    Instant.now(),
-                    id
-                );
-                replyMessage_BM.setMessage("Documnet is successfully rejected.");
-            } else {
-                documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
-                replyMessage_BM.setMessage("Documnet is successfully aproved");
+        try {
+            if (id != null) {
+                if (approvalInfo.getStatus() == 4) {
+                    documentHeaderRepository.updateAmmendById(approvalInfo.getStatus(), approvalInfo.getReason(), id);
+                    replyMessage_BM.setMessage("Documnet is successfully sent to amend.");
+                } else if (approvalInfo.getStatus() == 6) {
+                    documentHeaderRepository.updateRejectById(
+                        approvalInfo.getStatus(),
+                        approvalInfo.getReason(),
+                        approvalInfo.getApprovedBy(),
+                        Instant.now(),
+                        id
+                    );
+                    replyMessage_BM.setMessage("Documnet is successfully rejected.");
+                } else {
+                    documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
+                    replyMessage_BM.setMessage("Documnet is successfully aproved");
+                }
+                replyMessage_BM.setCode(ResponseCode.SUCCESS);
             }
-            replyMessage_BM.setCode(ResponseCode.SUCCESS);
+        } catch (IllegalStateException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage(ex.getMessage());
         }
+
         return replyMessage_BM;
     }
 }

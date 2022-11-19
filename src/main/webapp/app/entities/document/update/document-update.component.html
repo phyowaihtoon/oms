@@ -10,7 +10,7 @@
     >
   </div>
   <div class="col-6 d-flex justify-content-end">
-    <button [disabled]="!isSentApprove" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="save(2)">
+    <button [disabled]="!isSentApprove" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="updateStatus(2)">
       <span class="d-none d-md-inline" jhiTranslate="entity.action.senttoapprove">Send to Approve</span>
     </button>
     <span style="width: 5px"></span>
@@ -29,7 +29,7 @@
     </button>
     <span style="width: 5px"></span>
 
-    <button [disabled]="!isCancel" type="button" id="cancel-save" class="btn btn-danger btn-sm" (click)="save(3)">
+    <button [disabled]="!isCancel" type="button" id="cancel-save" class="btn btn-danger btn-sm" (click)="updateStatus(3)">
       <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
     </button>
     <span style="width: 5px"></span>

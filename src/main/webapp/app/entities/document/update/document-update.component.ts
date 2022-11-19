@@ -6,7 +6,7 @@ import { IMetaData, IMetaDataHeader, MetaDataHeader } from 'app/entities/metadat
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { DMSDocument, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
+import { DMSDocument, DocumentHeader, DocumentInquiry, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
@@ -200,6 +200,7 @@ export class DocumentUpdateComponent implements OnInit {
 
     const documentHeaderdata = this.createFromForm(status);
     const docList = documentHeaderdata.docList ?? [];
+
     if (docList.length > 0) {
       for (const dmsDoc of docList) {
         const docDetailID = dmsDoc.id ?? undefined;
@@ -229,6 +230,22 @@ export class DocumentUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.documentHeaderService.createAndUploadDocuments(formData));
     }
+  }
+
+  updateStatus(status: number): void {
+    this.docStatus_number = status;
+    const docHeaderId = this.editForm.get(['id'])!.value;
+
+    const approvalInfo = {
+      ...new DocumentInquiry(),
+      status: this.docStatus_number,
+      approvedBy: this._userAuthority!.userID,
+    };
+
+    console.log('approvalinfo', this._userAuthority!.userID);
+
+    this.showLoading('Approving in progress');
+    this.subscribeTeUpdateStatusResponse(this.documentHeaderService.updateDocumentStatus(approvalInfo, docHeaderId));
   }
 
   // change event for doc template select box
@@ -457,10 +474,43 @@ export class DocumentUpdateComponent implements OnInit {
     this.hideLoading();
   }
 
+  protected subscribeTeUpdateStatusResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessUpdateStatus(res),
+      () => this.onSaveErrorUpdateStatus()
+    );
+  }
+
+  protected onSaveSuccessUpdateStatus(result: HttpResponse<IReplyMessage>): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.SUCCESS) {
+        this.statusUpdate(this.docStatus_number);
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      } else {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    } else {
+      this.onSaveError();
+    }
+  }
+
+  protected onSaveErrorUpdateStatus(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
+  }
+
   protected createFromForm(paraStatus: number): IDocumentHeader {
-    if (paraStatus === 1 && this.docStatus_number !== 0) {
+    if (paraStatus === 1 && this.docStatus_number !== 0 && this.editForm.get(['id'])!.value > 0) {
       paraStatus = this.docStatus_number;
     }
+
     return {
       ...new DocumentHeader(),
       id: this.editForm.get(['id'])!.value,
