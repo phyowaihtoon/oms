@@ -31,20 +31,8 @@
           <th scope="col">
             <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
           </th>
-          <th scope="col" *ngIf="_metaData1.valid">
-            <span>{{ _metaData1.name }}</span>
-          </th>
-          <th scope="col" *ngIf="_metaData2.valid">
-            <span>{{ _metaData2.name }}</span>
-          </th>
-          <th scope="col" *ngIf="_metaData3.valid">
-            <span>{{ _metaData3.name }}</span>
-          </th>
-          <th scope="col" *ngIf="_metaData4.valid">
-            <span>{{ _metaData4.name }}</span>
-          </th>
-          <th scope="col" *ngIf="_metaData5.valid">
-            <span>{{ _metaData5.name }}</span>
+          <th scope="col">
+            <span jhiTranslate="dmsApp.document.priority">Priority</span>
           </th>
           <th scope="col">
             <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
@@ -63,11 +51,7 @@
             >
           </td>
           <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
-          <td *ngIf="_metaData1.valid">{{ _metaData1.value }}</td>
-          <td *ngIf="_metaData2.valid">{{ _metaData2.value }}</td>
-          <td *ngIf="_metaData3.valid">{{ _metaData3.value }}</td>
-          <td *ngIf="_metaData4.valid">{{ _metaData4.value }}</td>
-          <td *ngIf="_metaData5.valid">{{ _metaData5.value }}</td>
+          <td>{{ bindPriority(documentHeader.priority!) }}</td>
           <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
           <td>{{ documentHeader.createdBy }}</td>
           <td class="text-right">
@@ -75,21 +59,11 @@
               <button
                 type="submit"
                 [routerLink]="['/service-queue/document', documentHeader.id, 'view']"
-                class="btn btn-info btn-sm"
+                class="btn btn-primary btn-sm"
                 data-cy="entityDetailsButton"
               >
-                <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-              </button>
-
-              <button
-                type="submit"
-                [routerLink]="['/document', documentHeader.id, 'edit']"
-                class="btn btn-primary btn-sm"
-                data-cy="entityEditButton"
-              >
-                <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                <fa-icon icon="angle-double-right"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.proceed">Proceed</span>
               </button>
             </div>
           </td>
