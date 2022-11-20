@@ -24,7 +24,14 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% ",
         nativeQuery = true
     )
-    Page<DocumentHeader> findAll(Long headerId, int fieldIndex, String fieldValue, String generalValue, Pageable pageable);
+    Page<DocumentHeader> findAll(
+        Long headerId,
+        int fieldIndex,
+        String fieldValue,
+        String generalValue,
+        String filteredByStatus,
+        Pageable pageable
+    );
 
     @Query(
         value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
@@ -40,6 +47,7 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         String fieldValue,
         String generalValue,
         String createdDate,
+        String filteredByStatus,
         Pageable pageable
     );
 

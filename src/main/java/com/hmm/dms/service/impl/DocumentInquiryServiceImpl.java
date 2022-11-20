@@ -50,30 +50,42 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         this.documentMapper = documentMapper;
     }
 
-    @SuppressWarnings("unused")
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
-        String fValues = dto.getFieldValues();
-        if (fValues == null || fValues.equals("null") || fValues.isEmpty()) fValues = ""; else fValues = fValues.trim();
+        String specificVal = dto.getFieldValues();
+        if (specificVal == null || specificVal.equals("null") || specificVal.isEmpty()) specificVal = ""; else specificVal =
+            specificVal.trim();
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
+        String filteredByStatus = "";
+        if (dto.getStatus() != 0) {
+            filteredByStatus = "1 AND dh.status=" + dto.getStatus();
+        }
         if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<DocumentHeader> pageWithEntity =
                 this.documentHeaderRepository.findAllByDate(
                         dto.getMetaDataHeaderId(),
                         dto.getFieldIndex(),
-                        fValues,
+                        specificVal,
                         generalVal,
                         createdDate,
+                        filteredByStatus,
                         pageable
                     );
             return pageWithEntity.map(documentHeaderMapper::toDto);
         }
 
         Page<DocumentHeader> pageWithEntity =
-            this.documentHeaderRepository.findAll(dto.getMetaDataHeaderId(), dto.getFieldIndex(), fValues, generalVal, pageable);
+            this.documentHeaderRepository.findAll(
+                    dto.getMetaDataHeaderId(),
+                    dto.getFieldIndex(),
+                    specificVal,
+                    generalVal,
+                    filteredByStatus,
+                    pageable
+                );
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 
