@@ -10,10 +10,6 @@
     >
   </div>
   <div class="col-6 d-flex justify-content-end">
-    <button [disabled]="!isSentApprove" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="updateStatus(2)">
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.senttoapprove">Send to Approve</span>
-    </button>
-    <span style="width: 5px"></span>
     <button
       *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
       type="button"
@@ -26,6 +22,11 @@
     >
       <fa-icon icon="save"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.save">Save</span>
+    </button>
+    <span style="width: 5px"></span>
+
+    <button [disabled]="!isSentApprove" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="updateStatus(2)">
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.senttoapprove">Send to Approve</span>
     </button>
     <span style="width: 5px"></span>
 
@@ -111,7 +112,7 @@
           </div>
 
           <div class="form-group col-6">
-            <label class="form-control-label" jhiTranslate="dmsApp.document.message" for="text">Message </label>
+            <label class="form-control-label" jhiTranslate="dmsApp.document.message" for="text">Remark</label>
             <input type="text" class="form-control" name="message" formControlName="message" />
           </div>
         </div>
