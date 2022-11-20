@@ -2,6 +2,7 @@ package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.Document;
 import com.hmm.dms.domain.DocumentHeader;
+import com.hmm.dms.enumeration.CommonEnum.DocumentStatusEnum;
 import com.hmm.dms.repository.DocumentHeaderRepository;
 import com.hmm.dms.repository.DocumentRepository;
 import com.hmm.dms.service.DocumentInquiryService;
@@ -11,12 +12,15 @@ import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
 import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.service.message.SetupEnumMessage;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.util.ResponseCode;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -58,10 +62,13 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
-        String filteredByStatus = "";
-        if (dto.getStatus() != 0) {
-            filteredByStatus = "1 AND dh.status=" + dto.getStatus();
-        }
+        Set<Integer> setOfStatus = new HashSet<Integer>();
+        if (dto.getStatus() == 0) {
+            for (DocumentStatusEnum enumData : DocumentStatusEnum.values()) {
+                setOfStatus.add(enumData.value);
+            }
+        } else setOfStatus.add(dto.getStatus());
+
         if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<DocumentHeader> pageWithEntity =
@@ -71,7 +78,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                         specificVal,
                         generalVal,
                         createdDate,
-                        filteredByStatus,
+                        setOfStatus,
                         pageable
                     );
             return pageWithEntity.map(documentHeaderMapper::toDto);
@@ -83,7 +90,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                     dto.getFieldIndex(),
                     specificVal,
                     generalVal,
-                    filteredByStatus,
+                    setOfStatus,
                     pageable
                 );
         return pageWithEntity.map(documentHeaderMapper::toDto);

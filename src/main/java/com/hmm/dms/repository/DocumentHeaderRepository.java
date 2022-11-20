@@ -2,6 +2,7 @@ package com.hmm.dms.repository;
 
 import com.hmm.dms.domain.DocumentHeader;
 import java.time.Instant;
+import java.util.Collection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,8 +21,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
         "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +
         "dh.reason_for_reject, dh.approved_date, dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
-        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% ",
-        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% ",
+        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND dh.status IN ?5 ",
+        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND dh.status IN ?5 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findAll(
@@ -29,7 +30,7 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         int fieldIndex,
         String fieldValue,
         String generalValue,
-        String filteredByStatus,
+        Collection<Integer> status,
         Pageable pageable
     );
 
@@ -37,8 +38,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
         "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +
         "dh.reason_for_reject, dh.approved_date, dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
-        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND date(dh.created_date) = str_to_date(?5,'%d-%m-%Y') ",
-        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND date(dh.created_date) = str_to_date(?5,'%d-%m-%Y') ",
+        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND date(dh.created_date) = str_to_date(?5,'%d-%m-%Y') AND dh.status IN ?6 ",
+        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND date(dh.created_date) = str_to_date(?5,'%d-%m-%Y') AND dh.status IN ?6 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findAllByDate(
@@ -47,7 +48,7 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         String fieldValue,
         String generalValue,
         String createdDate,
-        String filteredByStatus,
+        Collection<Integer> status,
         Pageable pageable
     );
 
