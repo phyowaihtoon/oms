@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
-import { IMenuItem } from 'app/entities/util/setup.model';
+import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
@@ -19,6 +19,7 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 export class DocumentComponent implements OnInit {
   _documentHeaders?: IDocumentHeader[];
   _metaDataHdrList?: IMetaDataHeader[] | null;
+  _documentStatusList?: IDocumentStatus[];
   _selectedMetaDataList?: IMetaData[];
   _lovValues?: string[] = [];
   isLOV = false;
@@ -45,11 +46,12 @@ export class DocumentComponent implements OnInit {
   _metaData5 = { name: '', value: '', valid: false };
 
   searchForm = this.fb.group({
-    metaDataHdrID: [null, [Validators.required]],
+    metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     createdDate: [],
     fieldValues: [{ value: '', disabled: true }],
     metaDataID: [0],
     generalValue: [],
+    docStatus: [0],
   });
 
   constructor(
@@ -88,6 +90,11 @@ export class DocumentComponent implements OnInit {
   getDocTitleByID(id?: number): string | undefined {
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === id);
     return metaDataHeader?.docTitle;
+  }
+
+  getDocStatusDesc(value?: number): string | undefined {
+    const documentStatus = this._documentStatusList?.find(item => item.value === value);
+    return documentStatus?.description;
   }
 
   onChangeDocumentTemplate(event: any): void {
@@ -205,7 +212,18 @@ export class DocumentComponent implements OnInit {
         this._metaDataHdrList = res.body;
       },
       error => {
-        console.log('Response Failed : ', error);
+        console.log('Loading MetaData Setup Failed : ', error);
+      }
+    );
+
+    this.loadSetupService.loadDocumentStatus().subscribe(
+      (res: HttpResponse<IDocumentStatus[]>) => {
+        if (res.body) {
+          this._documentStatusList = res.body;
+        }
+      },
+      error => {
+        console.log('Loading Document Status Failed : ', error);
       }
     );
   }
@@ -243,6 +261,7 @@ export class DocumentComponent implements OnInit {
       fieldValues: this.searchForm.get('fieldValues')!.value,
       fieldIndex: metaData?.fieldOrder,
       generalValue: this.searchForm.get('generalValue')!.value,
+      status: this.searchForm.get('docStatus')!.value,
     };
 
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
@@ -265,6 +284,8 @@ export class DocumentComponent implements OnInit {
     this._selectedMetaDataList = [];
     this.searchForm.get('fieldValues')?.disable();
     this.searchForm.get('metaDataID')?.patchValue(0);
+    this.searchForm.get('docStatus')?.patchValue(0);
+    this.searchForm.get('metaDataHdrID')?.patchValue(0);
   }
 
   protected sort(): string[] {

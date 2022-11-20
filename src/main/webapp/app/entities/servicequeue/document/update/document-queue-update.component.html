@@ -1,119 +1,157 @@
 <div id="page-heading" class="row">
   <div class="col-6">
-    <!--<fa-icon icon="angle-double-right" ></fa-icon>-->
     <span>Document Service Queue</span>
   </div>
   <div class="col-6 d-flex justify-content-end">
-    <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="proceedApproval(5)">
+    <button [disabled]="!_isApprove" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="proceedApproval(5)">
       <span class="d-none d-md-inline" jhiTranslate="entity.action.approve">Approve</span>
     </button>
     <span style="width: 5px"></span>
 
-    <button type="button" id="cancel-save" class="btn btn-danger btn-sm" (click)="proceedApproval(6)">
+    <button [disabled]="!_isSentAmmend" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="proceedApproval(4)">
+      <span class="d-none d-md-inline" jhiTranslate="entity.action.ammend">Send to Amend</span>
+    </button>
+    <span style="width: 5px"></span>
+
+    <button [disabled]="!_isReject" type="button" id="cancel-save" class="btn btn-danger btn-sm" (click)="proceedApproval(6)">
       <span class="d-none d-md-inline" jhiTranslate="entity.action.reject">Reject</span>
     </button>
     <span style="width: 5px"></span>
 
-    <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="proceedApproval(4)">
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.ammend">Send to Ammendment</span>
-    </button>
-    <span style="width: 5px"></span>
-
-    <button type="button" id="cancel-save" class="btn btn-danger btn-sm" (click)="proceedApproval(3)">
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
-    </button>
-    <span style="width: 5px"></span>
-
-    <button type="submit" (click)="previousState()" class="btn btn-info btn-sm" data-cy="entityDetailsBackButton">
+    <button type="submit" (click)="previousState()" class="btn btn-primary btn-sm" data-cy="entityDetailsBackButton">
       <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span class="d-none d-md-inline" jhiTranslate="entity.action.back">Back</span>
     </button>
   </div>
 </div>
 
-<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span></div>
-<div class="row" id="documentHeaderView">
-  <div class="row col-12">
-    <div class="row col-12">
+<div id="page-body">
+  <div class="row">
+    <div class="col-3">
+      <div *ngIf="_isDocHeaderShow" class="tab-header-select" (click)="showDocHeader()">
+        <fa-icon icon="angle-down" (click)="showDocHeader()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span>
+      </div>
+
+      <div *ngIf="!_isDocHeaderShow" class="tab-header" (click)="showDocHeader()">
+        <fa-icon icon="angle-right" (click)="showDocHeader()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.metadataLabel">MetaData Information</span>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <div class="div-tab" *ngIf="_isDocDetailShow" class="tab-header-select" (click)="showDocDetail()">
+        <fa-icon icon="angle-down" (click)="showDocDetail()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.docDetailLabel">Document Upload Details</span>
+      </div>
+
+      <div *ngIf="!_isDocDetailShow" class="tab-header" (click)="showDocDetail()">
+        <fa-icon icon="angle-right" (click)="showDocDetail()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.document.docDetailLabel">Document Upload Details</span>
+      </div>
+    </div>
+
+    <div *ngIf="_docStatus_no > 0" class="col-3 d-flex justify-content-end">
+      <div *ngIf="_docStatus_no === 6">
+        <span style="color: red; font-weight: bold"> {{ _docStatus }} </span>
+      </div>
+
+      <div *ngIf="_docStatus_no !== 6">
+        <span style="color: green; font-weight: bold"> {{ _docStatus }} </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="documentHeaderView" *ngIf="_isDocHeaderShow">
+    <div class="row col-12 form-group">
       <div class="col-2 dms-label">
         <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
       </div>
       <div class="col-4 dms-view-data">
-        <span>{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}</span>
+        <input type="text" class="form-control" value="{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}" />
       </div>
       <div class="col-2 dms-label">
         <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
       </div>
       <div class="col-1 dms-view-data">
-        <span>{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}</span>
+        <input
+          type="text"
+          class="form-control"
+          value="{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}"
+        />
       </div>
       <div class="col-2 dms-label">
         <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
       </div>
       <div class="col-1 dms-view-data">
-        <span>{{ _documentHeader?.createdBy }}</span>
+        <input type="text" class="form-control" value="{{ _documentHeader?.createdBy }}" />
+      </div>
+    </div>
+
+    <div
+      class="row col-12 form-group"
+      *ngFor="let metadata of getMetaDataFieldsAndValues(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"
+    >
+      <div class="col-2 dms-label">
+        <span>{{ metadata.name }}</span>
+      </div>
+      <div class="col-4 dms-view-data">
+        <input type="text" class="form-control" value="{{ metadata.value }}" />
       </div>
     </div>
   </div>
-  <div class="row col-12" [innerHTML]="arrangeMetaData(_documentHeader?.fieldNames, _documentHeader?.fieldValues)"></div>
-</div>
 
-<div><fa-icon icon="angle-right"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.docDetailLabel">MetaData Information</span></div>
-
-<div class="row" id="documentDetailView">
-  <div class="table-responsive" id="entities" *ngIf="_documentDetails && _documentDetails.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
-        <tr>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.no">No.</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.repositoryURL">Repository URL</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileName">File Name</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileSize">Size</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileVersion">Version</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.remark">Remark</span>
-          </th>
-          <th scope="col">
-            <span jhiTranslate="dmsApp.document.fileType">File Type</span>
-          </th>
-          <th scope="col" style="text-align: center">
-            <span jhiTranslate="dmsApp.document.preview">Preview</span>
-          </th>
-          <th scope="col" style="text-align: center">
-            <span jhiTranslate="dmsApp.document.download">Download</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
-          <td>{{ i + 1 }}</td>
-          <td>{{ docDetail.filePath }}</td>
-          <td>{{ docDetail.fileName }}</td>
-          <td>{{ docDetail.fileSize }} KB</td>
-          <td>{{ docDetail.version }}</td>
-          <td>{{ docDetail.remark }}</td>
-          <td>{{ getFileType(docDetail.fileName) }}</td>
-          <td style="text-align: center">
-            <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.fileName)">
-              <a style="color: #2780e3; text-decoration: none">Preview</a>
-            </span>
-          </td>
-          <td style="text-align: center">
-            <span style="cursor: pointer" (click)="downloadFile(false, docDetail.id, docDetail.fileName)">
-              <fa-icon icon="download"></fa-icon>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row" id="documentDetailView" *ngIf="_isDocDetailShow">
+    <div class="table-responsive" id="entities" *ngIf="_documentDetails && _documentDetails.length > 0">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.no">No.</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileLocation">Repository URL</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileName">File Name</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileSize">Size</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.fileVersion">Version</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.remark">Remark</span>
+            </th>
+            <th scope="col" style="text-align: center">
+              <span jhiTranslate="dmsApp.document.preview">Preview</span>
+            </th>
+            <th scope="col" style="text-align: center">
+              <span jhiTranslate="dmsApp.document.download">Download</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let docDetail of _documentDetails; let i = index" data-cy="entityTable">
+            <td>{{ i + 1 }}</td>
+            <td>{{ docDetail.filePath }}</td>
+            <td>{{ docDetail.fileName }}</td>
+            <td>{{ docDetail.fileSize }} KB</td>
+            <td>{{ docDetail.version }}</td>
+            <td>{{ docDetail.remark }}</td>
+            <td style="text-align: center">
+              <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.fileName)">
+                <fa-icon icon="eye"></fa-icon>
+              </span>
+            </td>
+            <td style="text-align: center">
+              <span style="cursor: pointer" (click)="downloadFile(false, docDetail.id, docDetail.fileName)">
+                <fa-icon icon="download"></fa-icon>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

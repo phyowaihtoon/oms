@@ -6,10 +6,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
-import { IMenuItem } from 'app/entities/util/setup.model';
+import { IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { DocumentInquiry, IDocumentHeader } from 'app/entities/document/document.model';
 import { DocumentInquiryService } from 'app/entities/document/service/document-inquiry.service';
+import { exit } from 'process';
 
 @Component({
   selector: 'jhi-document-queue',
@@ -20,6 +21,8 @@ export class DocumentQueueComponent implements OnInit {
   _documentHeaders?: IDocumentHeader[];
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _selectedMetaDataList?: IMetaData[];
+  _priority: IPriority[] | null = [];
+
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -61,6 +64,10 @@ export class DocumentQueueComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
+
+    this.loadSetupService.loadPriority().subscribe((res: HttpResponse<IPriority[]>) => {
+      this._priority = res.body;
     });
 
     this.loadAllSetup();
@@ -193,6 +200,16 @@ export class DocumentQueueComponent implements OnInit {
     );
   }
 
+  bindPriority(priority: number): string {
+    let desc: string = '';
+    this._priority?.forEach(data => {
+      if (data.value === priority) {
+        desc = data.description;
+      }
+    });
+    return desc;
+  }
+
   searchDocument(page?: number): void {
     if (this.searchForm.invalid) {
       this.searchForm.get('metaDataHdrID')!.markAsTouched();
@@ -223,7 +240,7 @@ export class DocumentQueueComponent implements OnInit {
       fieldValues: this.searchForm.get('fieldValues')!.value,
     };
 
-    this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
+    this.documentInquiryService.queryForQueue(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;
         this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);

@@ -14,6 +14,7 @@ public class DocumentInquiryMessage implements Serializable {
     private int status;
     private int fieldIndex;
     private String generalValue;
+    private String approvedBy;
 
     public Long getMetaDataHeaderId() {
         return metaDataHeaderId;
@@ -46,6 +47,7 @@ public class DocumentInquiryMessage implements Serializable {
     public void setFieldValues(String fieldValues) {
         this.fieldValues = fieldValues;
     }
+
     public String getReason() {
         return reason;
     }
@@ -60,7 +62,8 @@ public class DocumentInquiryMessage implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
-        }
+    }
+
     public int getFieldIndex() {
         return fieldIndex;
     }
@@ -75,5 +78,13 @@ public class DocumentInquiryMessage implements Serializable {
 
     public void setGeneralValue(String generalValue) {
         this.generalValue = generalValue;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
     }
 }

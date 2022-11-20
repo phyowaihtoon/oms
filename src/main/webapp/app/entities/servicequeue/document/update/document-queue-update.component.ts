@@ -9,8 +9,10 @@ import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
+import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { IMenuItem } from 'app/entities/util/setup.model';
+import { Login } from 'app/login/login.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import * as FileSaver from 'file-saver';
 import { Observable } from 'rxjs';
@@ -47,6 +49,16 @@ export class DocumentQueueUpdateComponent implements OnInit {
 
   _modalRef?: NgbModalRef;
 
+  _isDocHeaderShow = true;
+  _isDocDetailShow = false;
+
+  _isSentAmmend = true;
+  _isApprove = true;
+  _isReject = true;
+
+  _docStatus_no: number = 0;
+  _docStatus: string = '';
+
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected loadSetupService: LoadSetupService,
@@ -60,10 +72,14 @@ export class DocumentQueueUpdateComponent implements OnInit {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
 
+      console.log('user', this._userAuthority);
+      console.log('menu', this._activeMenuItem);
+
       this._documentHeader = docHeader;
       this._documentHeaderId = docHeader.id;
+      this._docStatus_no = docHeader.status;
+      this.buttonProperties(this._docStatus_no);
       this._documentDetails = this._documentHeader?.docList;
-      console.log('Document Header Information :', this._documentHeader);
     });
     this.loadAllSetup();
   }
@@ -102,6 +118,7 @@ export class DocumentQueueUpdateComponent implements OnInit {
   }
 
   proceedApproval(status: number): void {
+    this._docStatus_no = status;
     if (status !== 3 && status !== 5) {
       const modalRef = this.modalService.open(ApproveRejectRemarkComponent, { size: 'md', backdrop: 'static' });
       modalRef.componentInstance.passEntry.subscribe((data: any) => {
@@ -116,11 +133,15 @@ export class DocumentQueueUpdateComponent implements OnInit {
   save(status: number, reason: string): void {
     const status_ = status;
     const reason_ = reason;
+
     const approvalInfo = {
       ...new DocumentInquiry(),
       status: status_,
       reason: reason_,
+      approvedBy: this._userAuthority!.userID,
     };
+
+    console.log('approvalinfo', this._userAuthority!.userID);
 
     this.showLoading('Approving in progress');
     this.subscribeToSaveResponse(this.documentSevice.updateDocumentStatus(approvalInfo, this._documentHeaderId));
@@ -139,8 +160,8 @@ export class DocumentQueueUpdateComponent implements OnInit {
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
             if (isPreview) {
-              const myURL = URL.createObjectURL(res.body);
-              window.open(myURL);
+              const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
+              modalRef.componentInstance.pdfBlobURL = res.body;
             } else {
               FileSaver.saveAs(res.body, fileName);
             }
@@ -229,6 +250,57 @@ export class DocumentQueueUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  showDocHeader(): void {
+    if (this._isDocHeaderShow === false) {
+      this._isDocHeaderShow = !this._isDocHeaderShow;
+    }
+
+    this._isDocDetailShow = false;
+  }
+
+  showDocDetail(): void {
+    if (this._isDocDetailShow === false) {
+      this._isDocDetailShow = !this._isDocDetailShow;
+    }
+    this._isDocHeaderShow = false;
+  }
+
+  getMetaDataFieldsAndValues(fNames?: string, fValues?: string): any {
+    const keyValues = [];
+    if (fNames !== undefined && fValues !== undefined && fNames.trim().length > 0 && fValues.trim().length > 0) {
+      const fNameArray = fNames.split('|');
+      const fValueArray = fValues.split('|');
+      if (fNameArray.length > 0 && fValueArray.length > 0 && fNameArray.length === fValueArray.length) {
+        let arrIndex = 0;
+        while (arrIndex < fNameArray.length) {
+          const keyValue = { name: '', value: '' };
+          keyValue.name = fNameArray[arrIndex];
+          keyValue.value = fValueArray[arrIndex];
+          keyValues.push(keyValue);
+          arrIndex++;
+        }
+      }
+    }
+    return keyValues;
+  }
+
+  buttonProperties(status: number): void {
+    console.log('butt', status);
+
+    if (status !== 2) {
+      this._isApprove = false;
+      this._isReject = false;
+      this._isSentAmmend = false;
+    }
+    if (this._docStatus_no === 4) {
+      this._docStatus = 'SENT TO AMEND';
+    } else if (this._docStatus_no === 5) {
+      this._docStatus = 'APPROVED';
+    } else if (this._docStatus_no === 6) {
+      this._docStatus = 'REJECT';
+    }
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
@@ -241,12 +313,9 @@ export class DocumentQueueUpdateComponent implements OnInit {
 
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
-        // this.editForm.get(['id'])?.setValue(replyMessage.data.id);
-        // this.statusUpdate(replyMessage.data.status);
+        this.buttonProperties(this._docStatus_no);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
-        // this.isDocMap = true;
-        // this.isUploadDetail = false;
         this.showAlertMessage(replyCode, replyMsg);
       } else {
         const replyCode = replyMessage.code;
