@@ -12,8 +12,9 @@
 }
 
 #search-area {
+  margin-top: 3pt;
   border: 0.5pt solid grey;
-  padding: 10pt 10pt;
+  padding: 3pt;
 }
 
 .result-header {
@@ -24,4 +25,9 @@
 .dms-icon-btn {
   padding: 2px;
   height: 1.5rem;
+}
+
+.dms-col {
+  padding-left: 0px;
+  padding-right: 0px;
 }
