@@ -1,10 +1,4 @@
-<div class="row" [ngSwitch]="isAuthenticated()">
-  <div class="row col-12" *ngSwitchCase="true">
-    <div class="col-3"></div>
-    <div class="col-9">Dashboard Data will be displayed here</div>
-  </div>
-  <div class="row" *ngSwitchCase="false">
-    <div class="col-md-3"></div>
-    <div class="col-md-9"></div>
-  </div>
+<div class="row" style="margin-top: 10px">
+  <jhi-showchart class="col-md-6" [template]="template1"></jhi-showchart>
+  <jhi-showchart class="col-md-6" [template]="template2"></jhi-showchart>
 </div>
