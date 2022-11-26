@@ -1,6 +1,7 @@
 package com.hmm.dms.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
@@ -35,6 +36,24 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
     @NotNull
     @Column(name = "del_flag")
     private String delFlag;
+
+    @Column(name = "approved_by")
+    private String approvedBy;
+
+    @Column(name = "status")
+    private int status;
+
+    @Column(name = "priority")
+    private int priority;
+
+    @Column(name = "reason_for_amend")
+    private String reasonForAmend;
+
+    @Column(name = "reason_for_reject")
+    private String reasonForReject;
+
+    @Column(name = "approved_date")
+    private Instant approvedDate;
 
     public Long getId() {
         return id;
@@ -102,6 +121,54 @@ public class DocumentHeader extends AbstractAuditingEntity implements Serializab
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public String getReasonForAmend() {
+        return reasonForAmend;
+    }
+
+    public void setReasonForAmend(String reasonForAmend) {
+        this.reasonForAmend = reasonForAmend;
+    }
+
+    public String getReasonForReject() {
+        return reasonForReject;
+    }
+
+    public void setReasonForReject(String reasonForReject) {
+        this.reasonForReject = reasonForReject;
+    }
+
+    public Instant getApprovedDate() {
+        return approvedDate;
+    }
+
+    public void setApprovedDate(Instant approvedDate) {
+        this.approvedDate = approvedDate;
     }
 
     @Override

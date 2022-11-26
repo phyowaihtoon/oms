@@ -6,7 +6,7 @@ import { IMetaData, IMetaDataHeader, MetaDataHeader } from 'app/entities/metadat
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { DMSDocument, DocumentHeader, IDocument, IDocumentHeader } from '../document.model';
+import { DMSDocument, DocumentHeader, DocumentInquiry, IDocument, IDocumentHeader } from '../document.model';
 import { DocumentService } from '../service/document.service';
 import { FileInfo } from 'app/entities/util/file-info.model';
 import { RepositoryDialogComponent } from 'app/entities/util/repositorypopup/repository-dialog.component';
@@ -14,7 +14,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
-import { IMenuItem } from 'app/entities/util/setup.model';
+import { IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
@@ -27,6 +27,7 @@ export class DocumentUpdateComponent implements OnInit {
   _documentDetails: IDocument[] | undefined;
 
   docTypes: MetaDataHeader[] | null = [];
+  _priority: IPriority[] | null = [];
   _fieldValue?: string[] = [];
   metaData?: IMetaData[];
   metaDataUpdate: IMetaData[] | null = [];
@@ -53,6 +54,12 @@ export class DocumentUpdateComponent implements OnInit {
   isDocMap = true;
   isUploadDetail = false;
 
+  isNA = true;
+  isSentApprove = false;
+  isCancel = false;
+  docStatus: string = '';
+  docStatus_number: number = 0;
+
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
   _modalRef?: NgbModalRef;
@@ -64,7 +71,11 @@ export class DocumentUpdateComponent implements OnInit {
     fieldValues: [],
     repositoryURL: [],
     message: [],
+    priority: [],
+    status: [],
     reposistory: [],
+    reject: [],
+    ammendment: [],
     delFlag: [],
     docList: [],
     docList1: this.fb.array([]),
@@ -85,7 +96,6 @@ export class DocumentUpdateComponent implements OnInit {
       this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
         this._userAuthority = userAuthority;
         this._activeMenuItem = userAuthority.activeMenu.menuItem;
-
         this._documentHeader = docHeader;
         this._documentDetails = this._documentHeader?.docList;
         if (this._documentHeader !== undefined) {
@@ -95,6 +105,10 @@ export class DocumentUpdateComponent implements OnInit {
           this.updateForm(docHeader);
         }
       });
+    });
+
+    this.loadSetupService.loadPriority().subscribe((res: HttpResponse<IPriority[]>) => {
+      this._priority = res.body;
     });
   }
 
@@ -153,12 +167,20 @@ export class DocumentUpdateComponent implements OnInit {
   previousState(): void {
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['metaDataHeaderId']!.setValue('');
+    this.editForm.controls['priority']!.setValue('');
     this.editForm.controls['message']!.setValue('');
+    this.editForm.controls['reject']!.setValue('');
+    this.editForm.controls['ammendment']!.setValue('');
     this.editForm.controls['reposistory']!.setValue('');
     this.removeAllField();
     this.loadMetaDatabyMetadaHeaderID(0);
     this.isDocMap = true;
     this.isUploadDetail = false;
+    this.isNA = true;
+    this.isSentApprove = false;
+    this.isCancel = false;
+    this.docStatus = '';
+    this.docStatus_number = 0;
   }
 
   searchRepository(): void {
@@ -169,15 +191,16 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   // save the form here
-  save(): void {
+  save(status: number): void {
     this.isSaving = true;
     this.showLoading('Saving and Uploading Documents');
 
     const formData = new FormData();
     const attachedFileList = [];
 
-    const documentHeaderdata = this.createFromForm();
+    const documentHeaderdata = this.createFromForm(status);
     const docList = documentHeaderdata.docList ?? [];
+
     if (docList.length > 0) {
       for (const dmsDoc of docList) {
         const docDetailID = dmsDoc.id ?? undefined;
@@ -199,6 +222,7 @@ export class DocumentUpdateComponent implements OnInit {
 
     documentHeaderdata.docList = attachedFileList;
     formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
+    formData.append('paraStatus', status.toString());
 
     const docHeaderID = documentHeaderdata.id ?? undefined;
     if (docHeaderID !== undefined) {
@@ -206,6 +230,22 @@ export class DocumentUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.documentHeaderService.createAndUploadDocuments(formData));
     }
+  }
+
+  updateStatus(status: number): void {
+    this.docStatus_number = status;
+    const docHeaderId = this.editForm.get(['id'])!.value;
+
+    const approvalInfo = {
+      ...new DocumentInquiry(),
+      status: this.docStatus_number,
+      approvedBy: this._userAuthority!.userID,
+    };
+
+    console.log('approvalinfo', this._userAuthority!.userID);
+
+    this.showLoading('Approving in progress');
+    this.subscribeTeUpdateStatusResponse(this.documentHeaderService.updateDocumentStatus(approvalInfo, docHeaderId));
   }
 
   // change event for doc template select box
@@ -292,6 +332,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.fValue += value;
       this.fValue += '|';
     });
+
     return this.fValue.slice(0, -1);
   }
 
@@ -353,6 +394,46 @@ export class DocumentUpdateComponent implements OnInit {
     return this._saveButtonTitle;
   }
 
+  statusUpdate(status: number): void {
+    if (status === 1) {
+      this.isNA = false;
+      this.isSentApprove = true;
+      this.isCancel = true;
+      this.docStatus = 'NEW';
+      this.docStatus_number = 1;
+    } else if (status === 2) {
+      this.isNA = false;
+      this.isSentApprove = false;
+      this.isCancel = false;
+      this.docStatus = 'SENT TO APPROVE';
+      this.docStatus_number = 2;
+    } else if (status === 3) {
+      this.isNA = false;
+      this.isSentApprove = false;
+      this.isCancel = false;
+      this.docStatus = 'CANCELED';
+      this.docStatus_number = 3;
+    } else if (status === 4) {
+      this.isNA = false;
+      this.isSentApprove = true;
+      this.isCancel = false;
+      this.docStatus = 'SENT FOR AMENDMENT';
+      this.docStatus_number = 4;
+    } else if (status === 5) {
+      this.isNA = false;
+      this.isSentApprove = false;
+      this.isCancel = false;
+      this.docStatus = 'APPROVED';
+      this.docStatus_number = 5;
+    } else {
+      this.isNA = false;
+      this.isSentApprove = false;
+      this.isCancel = false;
+      this.docStatus = 'REJECTED';
+      this.docStatus_number = 6;
+    }
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
@@ -366,6 +447,7 @@ export class DocumentUpdateComponent implements OnInit {
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
+        this.statusUpdate(replyMessage.data.status);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
         this.isDocMap = true;
@@ -392,12 +474,52 @@ export class DocumentUpdateComponent implements OnInit {
     this.hideLoading();
   }
 
-  protected createFromForm(): IDocumentHeader {
+  protected subscribeTeUpdateStatusResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessUpdateStatus(res),
+      () => this.onSaveErrorUpdateStatus()
+    );
+  }
+
+  protected onSaveSuccessUpdateStatus(result: HttpResponse<IReplyMessage>): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.SUCCESS) {
+        this.statusUpdate(this.docStatus_number);
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      } else {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    } else {
+      this.onSaveError();
+    }
+  }
+
+  protected onSaveErrorUpdateStatus(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
+  }
+
+  protected createFromForm(paraStatus: number): IDocumentHeader {
+    if (paraStatus === 1 && this.docStatus_number !== 0 && this.editForm.get(['id'])!.value > 0) {
+      paraStatus = this.docStatus_number;
+    }
+
     return {
       ...new DocumentHeader(),
       id: this.editForm.get(['id'])!.value,
       metaDataHeaderId: this.editForm.get(['metaDataHeaderId'])!.value,
       message: this.editForm.get(['message'])!.value,
+      reasonForAmend: this.editForm.get(['ammendment'])!.value,
+      reasonForReject: this.editForm.get(['reject'])!.value,
+      priority: this.editForm.get(['priority'])!.value,
+      status: paraStatus,
       fieldValues: this.getFieldValue(this.editForm),
       fieldNames: this.getFieldName(this.editForm),
       delFlag: 'N',
@@ -432,13 +554,18 @@ export class DocumentUpdateComponent implements OnInit {
   protected updateForm(docHeaderData: IDocumentHeader): void {
     this.loadMetaDatabyMetadaHeaderID(docHeaderData.metaDataHeaderId!);
     this.updateDynamicField(docHeaderData.metaDataHeaderId!, docHeaderData.fieldValues!, docHeaderData.fieldNames!);
+    this.statusUpdate(docHeaderData.status!);
 
     this.editForm.patchValue({
       id: docHeaderData.id,
       metaDataHeaderId: docHeaderData.metaDataHeaderId,
       message: docHeaderData.message,
+      ammendment: docHeaderData.reasonForAmend,
+      reject: docHeaderData.reasonForReject,
       fieldValues: docHeaderData.fieldValues,
       fieldNames: docHeaderData.fieldNames,
+      priority: docHeaderData.priority,
+      status: docHeaderData.status,
       docList: this.updateDocumentDataDetails(docHeaderData.docList),
     });
   }

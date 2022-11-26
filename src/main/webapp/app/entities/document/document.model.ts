@@ -6,10 +6,16 @@ export interface IDocumentHeader {
   fieldNames?: string;
   fieldValues?: string;
   repositoryURL?: string;
+  priority?: number;
+  status?: number;
+  approvedbY?: string;
+  reasonForAmend?: string;
+  reasonForReject?: string;
   message?: string;
   delFlag?: string;
   createdBy?: string;
   createdDate?: dayjs.Dayjs;
+  approvedDate?: dayjs.Dayjs;
   docList?: IDocument[];
 }
 
@@ -21,9 +27,15 @@ export class DocumentHeader implements IDocumentHeader {
     public fieldValues?: string,
     public repositoryURL?: string,
     public message?: string,
+    public priority?: number,
+    public status?: number,
+    public approvedbY?: string,
+    public reasonForAmend?: string,
+    public reasonForReject?: string,
     public delFlag?: string,
     public createdBy?: string,
     public createdDate?: dayjs.Dayjs,
+    public approvedDate?: dayjs.Dayjs,
     public docList?: IDocument[]
   ) {}
 }
@@ -59,10 +71,25 @@ export interface IDocumentInquiry {
   repositoryURL?: string;
   createdDate?: string;
   fieldValues?: string;
+  status?: number;
+  reason?: string;
+  fieldIndex?: number;
+  generalValue?: string;
+  approvedBy?: string;
 }
 
 export class DocumentInquiry implements IDocumentInquiry {
-  constructor(public metaDataHeaderId?: number, public repositoryURL?: string, public createdDate?: string, public fieldValues?: string) {}
+  constructor(
+    public metaDataHeaderId?: number,
+    public repositoryURL?: string,
+    public createdDate?: string,
+    public fieldValues?: string,
+    public status?: number,
+    public reason?: string,
+    public fieldIndex?: number,
+    public generalValue?: string,
+    public approvedBy?: string
+  ) {}
 }
 
 export function getDocIdentifier(docHeader: IDocumentHeader): number | undefined {

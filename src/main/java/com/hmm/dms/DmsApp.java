@@ -23,7 +23,6 @@ import tech.jhipster.config.JHipsterConstants;
 public class DmsApp {
 
     private static final Logger log = LoggerFactory.getLogger(DmsApp.class);
-
     private final Environment env;
 
     public DmsApp(Environment env) {

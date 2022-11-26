@@ -6,6 +6,7 @@ import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
+import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
@@ -102,8 +103,8 @@ export class DocumentDetailComponent implements OnInit {
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
             if (isPreview) {
-              const myURL = URL.createObjectURL(res.body);
-              window.open(myURL);
+              const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
+              modalRef.componentInstance.pdfBlobURL = res.body;
             } else {
               FileSaver.saveAs(res.body, fileName);
             }

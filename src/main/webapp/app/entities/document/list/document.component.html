@@ -31,14 +31,28 @@
     <fa-icon icon="angle-right" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.search">Search Document</span>
   </div>
 
-  <div *ngIf="isShowingFilters" id="search-area" class="col-12">
-    <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
-      <div class="form-group row col-12">
-        <div class="col-2 dms-col-data">
+  <div *ngIf="isShowingFilters" id="search-area">
+    <form name="searchForm" role="form" novalidate [formGroup]="searchForm" autocomplete="off">
+      <div class="form-group row col-12 dms-col">
+        <div class="col-3">
           <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Template</label>
           <span class="text-danger">*</span>
         </div>
-        <div class="col-2 dms-col-data">
+        <div class="col-4">
+          <label class="form-control-label" jhiTranslate="dmsApp.document.specificMetaData" for="field_fieldValues"
+            >Specific MetaData</label
+          >
+        </div>
+        <div class="col-3">
+          <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
+        </div>
+
+        <div class="col-2">
+          <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
+        </div>
+      </div>
+      <div class="form-group row col-12 dms-col">
+        <div class="col-3">
           <select
             (change)="onChangeDocumentTemplate($event)"
             class="form-control"
@@ -47,7 +61,7 @@
             name="metaDataHdrID"
             formControlName="metaDataHdrID"
           >
-            <option [value]="0"></option>
+            <option [value]="0">Select Document Template</option>
             <option [value]="metaData.id" *ngFor="let metaData of _metaDataHdrList; trackBy: trackMetaDataByID">
               {{ metaData.docTitle }}
             </option>
@@ -60,30 +74,62 @@
           >
             <small
               class="form-text text-danger"
-              *ngIf="searchForm.get('metaDataHdrID')?.errors?.required"
+              *ngIf="searchForm.get('metaDataHdrID')?.errors?.required || searchForm.get('metaDataHdrID')!.value === 0"
               jhiTranslate="entity.validation.required"
             >
               This field is required.
             </small>
           </div>
         </div>
-        <div class="col-2 dms-col-data">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
-        </div>
-        <div class="col-2 dms-col-data">
+        <div class="col-4 row">
+          <select
+            (change)="onChangeMetaDataField($event)"
+            class="form-control col-6"
+            id="field_metaDataID"
+            data-cy="metaDataID"
+            name="metaDataID"
+            formControlName="metaDataID"
+          >
+            <option [value]="0">Select Field Name</option>
+            <option [value]="metaData.id" *ngFor="let metaData of _selectedMetaDataList">
+              {{ metaData.fieldName }}
+            </option>
+          </select>
+          <select
+            *ngIf="isLOV"
+            class="form-control col-6"
+            id="field_fieldValues"
+            data-cy="fieldValues"
+            name="fieldValues"
+            formControlName="fieldValues"
+          >
+            <option [value]=""></option>
+            <option [value]="lovValue" *ngFor="let lovValue of _lovValues">
+              {{ lovValue }}
+            </option>
+          </select>
           <input
+            *ngIf="!isLOV"
             type="text"
-            class="form-control"
+            class="form-control col-6"
             name="fieldValues"
             id="field_fieldValues"
             data-cy="fieldValues"
             formControlName="fieldValues"
+            placeholder="Enter Data"
           />
         </div>
-        <div class="col-2 dms-col-data">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
+        <div class="col-3">
+          <input
+            type="text"
+            class="form-control"
+            name="generalValue"
+            id="field_generalValue"
+            data-cy="generalValue"
+            formControlName="generalValue"
+          />
         </div>
-        <div class="col-2 dms-col-data">
+        <div class="col-2">
           <div class="input-group">
             <input
               class="form-control"
@@ -101,6 +147,18 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="form-group row col-12 dms-col">
+        <div class="col-1">
+          <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="field_fieldValues">Status</label>
+        </div>
+        <div class="col-2">
+          <select class="form-control" id="field_docStatus" data-cy="docStatus" name="docStatus" formControlName="docStatus">
+            <option [value]="documentStatus.value" *ngFor="let documentStatus of _documentStatusList">
+              {{ documentStatus.description }}
+            </option>
+          </select>
         </div>
       </div>
     </form>
@@ -129,6 +187,9 @@
             </th>
             <th scope="col">
               <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
+            </th>
+            <th scope="col">
+              <span jhiTranslate="dmsApp.document.status">Status</span>
             </th>
             <th scope="col" *ngIf="_metaData1.valid">
               <span>{{ _metaData1.name }}</span>
@@ -162,6 +223,7 @@
               >
             </td>
             <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
+            <td>{{ getDocStatusDesc(documentHeader.status) }}</td>
             <td *ngIf="_metaData1.valid">{{ _metaData1.value }}</td>
             <td *ngIf="_metaData2.valid">{{ _metaData2.value }}</td>
             <td *ngIf="_metaData3.valid">{{ _metaData3.value }}</td>

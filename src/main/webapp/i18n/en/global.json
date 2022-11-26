@@ -131,14 +131,19 @@
       "delete": "Delete",
       "edit": "Edit",
       "open": "Open",
-      "save": "Save",
       "view": "View",
+      "save": "Save",
+      "ammend": "Send to Amend",
+      "senttoapprove": "Send to Approve",
+      "approve": "Approve",
+      "reject": "Reject",
       "new": "New",
       "search": "Search",
       "clear": "Clear",
       "ok": "OK",
       "generate": "Generate",
-      "select": "Select"
+      "select": "Select",
+      "proceed": "Proceed"
     },
     "detail": {
       "field": "Field",

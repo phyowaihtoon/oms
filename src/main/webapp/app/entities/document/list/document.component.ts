@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
-import { IMenuItem } from 'app/entities/util/setup.model';
+import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
@@ -19,7 +19,10 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 export class DocumentComponent implements OnInit {
   _documentHeaders?: IDocumentHeader[];
   _metaDataHdrList?: IMetaDataHeader[] | null;
+  _documentStatusList?: IDocumentStatus[];
   _selectedMetaDataList?: IMetaData[];
+  _lovValues?: string[] = [];
+  isLOV = false;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -43,9 +46,12 @@ export class DocumentComponent implements OnInit {
   _metaData5 = { name: '', value: '', valid: false };
 
   searchForm = this.fb.group({
-    metaDataHdrID: [null, [Validators.required]],
+    metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     createdDate: [],
-    fieldValues: [],
+    fieldValues: [{ value: '', disabled: true }],
+    metaDataID: [0],
+    generalValue: [],
+    docStatus: [0],
   });
 
   constructor(
@@ -86,11 +92,31 @@ export class DocumentComponent implements OnInit {
     return metaDataHeader?.docTitle;
   }
 
+  getDocStatusDesc(value?: number): string | undefined {
+    const documentStatus = this._documentStatusList?.find(item => item.value === value);
+    return documentStatus?.description;
+  }
+
   onChangeDocumentTemplate(event: any): void {
+    this.searchForm.get('fieldValues')?.patchValue('');
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+    }
+  }
+
+  onChangeMetaDataField(event: any): void {
+    this.isLOV = false;
+    this.searchForm.get('fieldValues')?.patchValue('');
+    const metaDataID: number = +this.searchForm.get('metaDataID')!.value;
+    if (metaDataID !== 0) {
+      this.searchForm.get('fieldValues')?.enable();
+    }
+    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
+    if (metaData?.fieldType === 'LOV') {
+      this.isLOV = true;
+      this._lovValues = metaData.fieldValue?.split('|');
     }
   }
 
@@ -186,7 +212,18 @@ export class DocumentComponent implements OnInit {
         this._metaDataHdrList = res.body;
       },
       error => {
-        console.log('Response Failed : ', error);
+        console.log('Loading MetaData Setup Failed : ', error);
+      }
+    );
+
+    this.loadSetupService.loadDocumentStatus().subscribe(
+      (res: HttpResponse<IDocumentStatus[]>) => {
+        if (res.body) {
+          this._documentStatusList = res.body;
+        }
+      },
+      error => {
+        console.log('Loading Document Status Failed : ', error);
       }
     );
   }
@@ -213,12 +250,20 @@ export class DocumentComponent implements OnInit {
       size: this.itemsPerPage,
       // sort: this.sort(),
     };
+
+    const metaDataID: number = +this.searchForm.get('metaDataID')!.value;
+    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
+
     const searchCriteria = {
       ...new DocumentInquiry(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
       fieldValues: this.searchForm.get('fieldValues')!.value,
+      fieldIndex: metaData?.fieldOrder,
+      generalValue: this.searchForm.get('generalValue')!.value,
+      status: this.searchForm.get('docStatus')!.value,
     };
+
     this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;
@@ -235,6 +280,12 @@ export class DocumentComponent implements OnInit {
     this.searchForm.reset();
     this._documentHeaders = [];
     this.isShowingResult = false;
+    this.isLOV = false;
+    this._selectedMetaDataList = [];
+    this.searchForm.get('fieldValues')?.disable();
+    this.searchForm.get('metaDataID')?.patchValue(0);
+    this.searchForm.get('docStatus')?.patchValue(0);
+    this.searchForm.get('metaDataHdrID')?.patchValue(0);
   }
 
   protected sort(): string[] {

@@ -9,11 +9,14 @@ import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
+import com.hmm.dms.service.message.BaseMessage;
+import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.util.ResponseCode;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +44,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
     private final DocumentRepository documentRepository;
     private final DocumentMapper documentMapper;
     private ReplyMessage<DocumentHeaderDTO> replyMessage;
+    private ReplyMessage<DocumentInquiryMessage> replyMessage_BM;
 
     public DocumentHeaderServiceImpl(
         DocumentHeaderRepository documentHeaderRepository,
@@ -55,6 +59,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         this.documentMapper = documentMapper;
         this.ftpSessionFactory = ftpSessionFactory;
         this.replyMessage = new ReplyMessage<DocumentHeaderDTO>();
+        this.replyMessage_BM = new ReplyMessage<DocumentInquiryMessage>();
     }
 
     @Override
@@ -233,5 +238,42 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public ReplyMessage<DocumentInquiryMessage> partialUpdate(DocumentInquiryMessage approvalInfo, Long id) {
+        try {
+            if (id != null) {
+                if (approvalInfo.getStatus() == 4) {
+                    documentHeaderRepository.updateAmmendById(approvalInfo.getStatus(), approvalInfo.getReason(), id);
+                    replyMessage_BM.setMessage("Documnet is successfully sent to amend.");
+                } else if (approvalInfo.getStatus() == 6) {
+                    documentHeaderRepository.updateRejectById(
+                        approvalInfo.getStatus(),
+                        approvalInfo.getReason(),
+                        approvalInfo.getApprovedBy(),
+                        Instant.now(),
+                        id
+                    );
+                    replyMessage_BM.setMessage("Documnet is successfully rejected.");
+                } else {
+                    documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
+                    replyMessage_BM.setMessage("Documnet is successfully aproved");
+                }
+                replyMessage_BM.setCode(ResponseCode.SUCCESS);
+            }
+        } catch (IllegalStateException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage(ex.getMessage());
+        }
+
+        return replyMessage_BM;
     }
 }

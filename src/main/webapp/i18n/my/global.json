@@ -20,7 +20,7 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
-        "title": "Report",
+        "title": "ရီပို့ထုတ်ခြင်း",
         "docmaprpt": "Document Mapping Report"
       },
       "metadata": {
@@ -133,6 +133,10 @@
       "open": "ဖွင့်မည်",
       "save": "သိမ်းမည်",
       "view": "ကြည့်မည်",
+      "ammend": "ပြင်ဆင်ရန် ပေးပို့မည်",
+      "senttoapprove": "အတည်ပြုရန် ပေးပို့မည်",
+      "approve": "အတည်ပြုမည်",
+      "reject": "ငြင်းပယ်မည်",
       "new": "အသစ်ထည့်မည်",
       "search": "ရှာမည်",
       "clear": "ရှင်းလင်းမည်",

@@ -12,8 +12,9 @@
 }
 
 #search-area {
+  margin-top: 3pt;
   border: 0.5pt solid grey;
-  padding: 10pt 10pt;
+  padding: 3pt;
 }
 
 .result-header {
@@ -26,7 +27,7 @@
   height: 1.5rem;
 }
 
-.dms-col-data {
-  padding-right: 3px;
-  padding-left: 3px;
+.dms-col {
+  padding-left: 0px;
+  padding-right: 0px;
 }

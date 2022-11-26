@@ -170,7 +170,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Arial" size="10"/>
+					<font fontName="MyPyidaungsu" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dataS1}]]></textFieldExpression>
 			</textField>
@@ -185,7 +185,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="10"/>
+					<font fontName="MyPyidaungsu" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dataS3}]]></textFieldExpression>
 			</textField>
