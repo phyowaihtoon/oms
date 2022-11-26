@@ -25,7 +25,7 @@ export class UserRoleRoutingResolveService implements Resolve<IHeaderDetailsMess
         })
       );
     }
-    const message: IHeaderDetailsMessage = { header: new UserRole(), details: [] };
+    const message: IHeaderDetailsMessage = { header: new UserRole(), details1: [] };
     return of(message);
   }
 }

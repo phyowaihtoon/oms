@@ -12,7 +12,6 @@ import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
 import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
-import com.hmm.dms.service.message.SetupEnumMessage;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.util.ResponseCode;
 import java.io.ByteArrayOutputStream;
@@ -56,9 +55,14 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
 
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
-        String specificVal = dto.getFieldValues();
-        if (specificVal == null || specificVal.equals("null") || specificVal.isEmpty()) specificVal = ""; else specificVal =
-            specificVal.trim();
+        String specificVal1 = dto.getFieldValue1();
+        if (specificVal1 == null || specificVal1.equals("null") || specificVal1.isEmpty()) specificVal1 = ""; else specificVal1 =
+            specificVal1.trim();
+
+        String specificVal2 = dto.getFieldValue2();
+        if (specificVal2 == null || specificVal2.equals("null") || specificVal2.isEmpty()) specificVal2 = ""; else specificVal2 =
+            specificVal2.trim();
+
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
@@ -74,8 +78,10 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
             Page<DocumentHeader> pageWithEntity =
                 this.documentHeaderRepository.findAllByDate(
                         dto.getMetaDataHeaderId(),
-                        dto.getFieldIndex(),
-                        specificVal,
+                        dto.getFieldIndex1(),
+                        specificVal1,
+                        dto.getFieldIndex2(),
+                        specificVal2,
                         generalVal,
                         createdDate,
                         setOfStatus,
@@ -87,8 +93,10 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         Page<DocumentHeader> pageWithEntity =
             this.documentHeaderRepository.findAll(
                     dto.getMetaDataHeaderId(),
-                    dto.getFieldIndex(),
-                    specificVal,
+                    dto.getFieldIndex1(),
+                    specificVal1,
+                    dto.getFieldIndex2(),
+                    specificVal2,
                     generalVal,
                     setOfStatus,
                     pageable
@@ -98,8 +106,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
 
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderForServiceQueue(DocumentInquiryMessage dto, Pageable pageable) {
-        String fValues = dto.getFieldValues();
-        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, fValues, pageable);
+        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findByStatus(2, pageable);
         return pageWithEntity.map(documentHeaderMapper::toDto);
     }
 

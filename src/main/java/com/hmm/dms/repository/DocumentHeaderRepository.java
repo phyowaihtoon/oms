@@ -21,14 +21,22 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
         "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +
         "dh.reason_for_reject, dh.approved_date, dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
-        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND dh.status IN ?5 ",
-        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND dh.status IN ?5 ",
+        "FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) LIKE %?5% " +
+        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) LIKE %?5% " +
+        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findAll(
         Long headerId,
-        int fieldIndex,
-        String fieldValue,
+        int fieldIndex1,
+        String fieldValue1,
+        int fieldIndex2,
+        String fieldValue2,
         String generalValue,
         Collection<Integer> status,
         Pageable pageable
@@ -38,14 +46,24 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
         "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +
         "dh.reason_for_reject, dh.approved_date, dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
-        "FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND date(dh.created_date) = str_to_date(?5,'%d-%m-%Y') AND dh.status IN ?6 ",
-        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% AND dh.field_values LIKE %?4% AND date(dh.created_date) = str_to_date(?5,'%d-%m-%Y') AND dh.status IN ?6 ",
+        "FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) LIKE %?5% " +
+        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
+        "AND dh.status IN ?8 ",
+        countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) LIKE %?3% " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) LIKE %?5% " +
+        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
+        "AND dh.status IN ?8 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findAllByDate(
         Long headerId,
-        int fieldIndex,
-        String fieldValue,
+        int fieldIndex1,
+        String fieldValue1,
+        int fieldIndex2,
+        String fieldValue2,
         String generalValue,
         String createdDate,
         Collection<Integer> status,
@@ -56,7 +74,7 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     DocumentHeader findDocumentHeaderById(Long id);
 
     @Query(value = "SELECT dh FROM DocumentHeader dh where dh.status=?1")
-    Page<DocumentHeader> findByStatus(int id, String fieldValues, Pageable pageable);
+    Page<DocumentHeader> findByStatus(int id, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document_header SET status=?1, reason_for_amend=?2 " + "WHERE id = ?3", nativeQuery = true)
