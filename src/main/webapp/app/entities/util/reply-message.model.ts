@@ -23,5 +23,6 @@ export interface IHeaderDetailsMessage {
   code?: string;
   message?: string;
   header?: any;
-  details?: any;
+  details1?: any;
+  details2?: any;
 }

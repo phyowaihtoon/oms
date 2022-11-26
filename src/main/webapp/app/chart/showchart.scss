@@ -1,0 +1,121 @@
+.dashboard-box {
+  border: 1px solid black !important;
+  padding: 0px;
+  margin-bottom: 30px;
+  //margin-right: 8px;
+}
+.dashboard-box .box-header {
+  width: 100%;
+  height: 35px;
+  text-align: center;
+  font-weight: bold;
+  //background-color: #691c32;
+  color: white;
+  line-height: 2;
+}
+.dashboard-box .box-body {
+  width: 100%;
+  min-height: 75vh;
+}
+
+.chart-body {
+  max-height: 70vh;
+  overflow: auto !important;
+}
+
+.fa-icon-theme {
+  font-size: 26px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0px 7px 1px 7px;
+  box-shadow: 0 0px 2px #a7a7a7;
+}
+
+.fa-icon-theme:hover {
+  background-color: #f2f2f2;
+}
+
+.pdf-icon-color {
+  color: #691c32;
+}
+
+.excel-icon-color {
+  color: #025f02;
+}
+
+#msform .action-button:hover,
+#msform .action-button:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #27ae60;
+}
+/*headings*/
+
+fieldset {
+  padding-left: 16px;
+}
+.fs-title {
+  font-size: 15px;
+  text-transform: uppercase;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+.fs-body {
+  margin-top: 8px;
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/*progressbar*/
+#progressbar {
+  padding-top: 8px;
+  margin-bottom: 30px;
+  overflow: hidden;
+  /*CSS counters to number the steps*/
+  counter-reset: step;
+}
+#progressbar li {
+  list-style-type: none;
+  color: white;
+  text-transform: uppercase;
+  font-size: 9px;
+  width: 20%;
+  float: left;
+  position: relative;
+}
+#progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+  width: 20px;
+  line-height: 20px;
+  display: block;
+  font-size: 10px;
+  color: #333;
+  background: white;
+  border-radius: 3px;
+  margin: 0 auto 5px auto;
+  text-align: center;
+}
+/*progressbar connectors*/
+#progressbar li:after {
+  content: '';
+  width: 85%;
+  height: 2px;
+  background: white;
+  position: absolute;
+  left: -40%;
+  top: 9px;
+  //z-index: -1; /*put it behind the numbers*/
+}
+#progressbar li:first-child:after {
+  /*connector not needed before the first step*/
+  content: none;
+}
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar li.active:before,
+#progressbar li.active:after {
+  background: #27ae60;
+  color: white;
+}

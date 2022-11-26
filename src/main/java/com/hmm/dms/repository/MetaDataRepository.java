@@ -1,6 +1,7 @@
 package com.hmm.dms.repository;
 
 import com.hmm.dms.domain.MetaData;
+import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,4 +21,7 @@ public interface MetaDataRepository extends JpaRepository<MetaData, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE meta_data SET del_flag='Y' " + "WHERE header_id = ?", nativeQuery = true)
     void updateByHeaderId(Long id);
+
+    @Query(value = "select md from MetaData md where md.headerId=?1")
+    List<MetaData> findAllByMetaDataHeaderId(Long id);
 }

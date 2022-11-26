@@ -1,15 +1,19 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.RoleMenuAccess;
+import com.hmm.dms.domain.RoleTemplateAccess;
 import com.hmm.dms.domain.UserRole;
 import com.hmm.dms.repository.RoleMenuAccessRepository;
+import com.hmm.dms.repository.RoleTemplateAccessRepository;
 import com.hmm.dms.repository.UserRoleRepository;
 import com.hmm.dms.service.UserRoleService;
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
 import com.hmm.dms.service.mapper.RoleMenuAccessMapper;
+import com.hmm.dms.service.mapper.RoleTemplateAccessMapper;
 import com.hmm.dms.service.mapper.UserRoleMapper;
 import com.hmm.dms.service.message.HeaderDetailsMessage;
+import com.hmm.dms.service.message.RoleTemplateAccessDTO;
 import com.hmm.dms.util.ResponseCode;
 import java.util.List;
 import java.util.Optional;
@@ -34,28 +38,36 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     private final RoleMenuAccessRepository roleMenuAccessRepository;
     private final RoleMenuAccessMapper roleMenuAccessMapper;
+    private final RoleTemplateAccessMapper roleTemplateAccessMapper;
+    private final RoleTemplateAccessRepository roleTemplateAccessRepository;
 
     public UserRoleServiceImpl(
         UserRoleRepository userRoleRepository,
         UserRoleMapper userRoleMapper,
         RoleMenuAccessRepository roleMenuAccessRepository,
-        RoleMenuAccessMapper roleMenuAccessMapper
+        RoleMenuAccessMapper roleMenuAccessMapper,
+        RoleTemplateAccessRepository roleTemplateAccessRepository,
+        RoleTemplateAccessMapper roleTemplateAccessMapper
     ) {
         this.userRoleRepository = userRoleRepository;
         this.userRoleMapper = userRoleMapper;
         this.roleMenuAccessRepository = roleMenuAccessRepository;
         this.roleMenuAccessMapper = roleMenuAccessMapper;
+        this.roleTemplateAccessRepository = roleTemplateAccessRepository;
+        this.roleTemplateAccessMapper = roleTemplateAccessMapper;
     }
 
     @Override
-    public HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> save(HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message) {
+    public HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> save(
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> message
+    ) {
         log.debug("Request to save UserRole : {}", message.getHeader());
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> savedMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>();
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> savedMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO>();
         UserRole userRole = userRoleMapper.toEntity(message.getHeader());
         userRole = userRoleRepository.save(userRole);
         UserRoleDTO savedUserDTO = userRoleMapper.toDto(userRole);
 
-        List<RoleMenuAccessDTO> dtoList = message.getDetails();
+        List<RoleMenuAccessDTO> dtoList = message.getDetails1();
         List<RoleMenuAccess> entityList = this.roleMenuAccessMapper.toEntity(dtoList);
 
         if (entityList != null && entityList.size() > 0) {
@@ -67,10 +79,26 @@ public class UserRoleServiceImpl implements UserRoleService {
         List<RoleMenuAccess> savedEntityList = this.roleMenuAccessRepository.saveAll(entityList);
         List<RoleMenuAccessDTO> savedDTOList = this.roleMenuAccessMapper.toDto(savedEntityList);
 
+        List<RoleTemplateAccessDTO> templateDTOList = message.getDetails2();
+        List<RoleTemplateAccess> templateEntityList = this.roleTemplateAccessMapper.toEntity(templateDTOList);
+
+        if (templateEntityList != null && templateEntityList.size() > 0) {
+            for (RoleTemplateAccess entity : templateEntityList) {
+                entity.setUserRole(userRole);
+            }
+        }
+
+        /* Deleting all template access before saving */
+        this.roleTemplateAccessRepository.deleteByUserRoleId(userRole.getId());
+        /* Saving template access */
+        List<RoleTemplateAccess> savedTemplateList = this.roleTemplateAccessRepository.saveAll(templateEntityList);
+        List<RoleTemplateAccessDTO> savedTemplateDTOList = this.roleTemplateAccessMapper.toDto(savedTemplateList);
+
         savedMessage.setHeader(savedUserDTO);
-        savedMessage.setDetails(savedDTOList);
+        savedMessage.setDetails1(savedDTOList);
+        savedMessage.setDetails2(savedTemplateDTOList);
         savedMessage.setCode(ResponseCode.SUCCESS);
-        savedMessage.setMessage("User Role and Menu Access is successfully saved");
+        savedMessage.setMessage("User Role and Access are successfully saved");
         return savedMessage;
     }
 
