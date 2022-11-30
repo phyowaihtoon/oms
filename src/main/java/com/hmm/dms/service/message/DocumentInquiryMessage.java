@@ -9,10 +9,12 @@ public class DocumentInquiryMessage implements Serializable {
     private Long metaDataHeaderId;
     private String repositoryURL;
     private String createdDate;
-    private String fieldValues;
+    private String fieldValue1;
+    private String fieldValue2;
     private String reason;
     private int status;
-    private int fieldIndex;
+    private int fieldIndex1;
+    private int fieldIndex2;
     private String generalValue;
     private String approvedBy;
 
@@ -40,12 +42,20 @@ public class DocumentInquiryMessage implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public String getFieldValues() {
-        return fieldValues;
+    public String getFieldValue1() {
+        return fieldValue1;
     }
 
-    public void setFieldValues(String fieldValues) {
-        this.fieldValues = fieldValues;
+    public void setFieldValue1(String fieldValue1) {
+        this.fieldValue1 = fieldValue1;
+    }
+
+    public String getFieldValue2() {
+        return fieldValue2;
+    }
+
+    public void setFieldValue2(String fieldValue2) {
+        this.fieldValue2 = fieldValue2;
     }
 
     public String getReason() {
@@ -64,12 +74,20 @@ public class DocumentInquiryMessage implements Serializable {
         this.status = status;
     }
 
-    public int getFieldIndex() {
-        return fieldIndex;
+    public int getFieldIndex1() {
+        return fieldIndex1;
     }
 
-    public void setFieldIndex(int fieldIndex) {
-        this.fieldIndex = fieldIndex;
+    public void setFieldIndex1(int fieldIndex1) {
+        this.fieldIndex1 = fieldIndex1;
+    }
+
+    public int getFieldIndex2() {
+        return fieldIndex2;
+    }
+
+    public void setFieldIndex2(int fieldIndex2) {
+        this.fieldIndex2 = fieldIndex2;
     }
 
     public String getGeneralValue() {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { DocumentInquiry, IDocumentHeader } from '../document.model';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { DocumentInquiry, IDocumentHeader, IDocumentInquiry } from '../document.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { FormBuilder, Validators } from '@angular/forms';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
@@ -10,19 +10,22 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
+import { textChangeRangeIsUnchanged } from 'typescript';
 
 @Component({
   selector: 'jhi-document',
   templateUrl: './document.component.html',
   styleUrls: ['./document.component.scss'],
 })
-export class DocumentComponent implements OnInit {
+export class DocumentComponent implements OnInit, OnDestroy {
   _documentHeaders?: IDocumentHeader[];
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _documentStatusList?: IDocumentStatus[];
   _selectedMetaDataList?: IMetaData[];
-  _lovValues?: string[] = [];
-  isLOV = false;
+  _lovValuesF1?: string[] = [];
+  _lovValuesF2?: string[] = [];
+  isLOV1 = false;
+  isLOV2 = false;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -48,11 +51,15 @@ export class DocumentComponent implements OnInit {
   searchForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     createdDate: [],
-    fieldValues: [{ value: '', disabled: true }],
-    metaDataID: [0],
+    metaDataID1: [0],
+    fieldValue1: [{ value: '', disabled: true }],
+    metaDataID2: [0],
+    fieldValue2: [{ value: '', disabled: true }],
     generalValue: [],
     docStatus: [0],
   });
+
+  _searchCriteria?: IDocumentInquiry;
 
   constructor(
     protected fb: FormBuilder,
@@ -63,11 +70,20 @@ export class DocumentComponent implements OnInit {
     protected translateService: TranslateService
   ) {}
 
+  ngOnDestroy(): void {
+    this.documentInquiryService.clearPreviousState();
+  }
+
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
+      this._metaDataHdrList = userAuthority.templateList;
     });
+    const searchedCriteria = this.documentInquiryService.getSearchCriteria();
+    if (searchedCriteria) {
+      this.updateSearchFormData(searchedCriteria);
+    }
     this.loadAllSetup();
   }
 
@@ -97,8 +113,7 @@ export class DocumentComponent implements OnInit {
     return documentStatus?.description;
   }
 
-  onChangeDocumentTemplate(event: any): void {
-    this.searchForm.get('fieldValues')?.patchValue('');
+  onChangeDocumentTemplate(): void {
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
@@ -106,17 +121,31 @@ export class DocumentComponent implements OnInit {
     }
   }
 
-  onChangeMetaDataField(event: any): void {
-    this.isLOV = false;
-    this.searchForm.get('fieldValues')?.patchValue('');
-    const metaDataID: number = +this.searchForm.get('metaDataID')!.value;
+  onChangeMetaDataField1(event: any): void {
+    this.isLOV1 = false;
+    this.searchForm.get('fieldValue1')?.patchValue('');
+    const metaDataID: number = +this.searchForm.get('metaDataID1')!.value;
     if (metaDataID !== 0) {
-      this.searchForm.get('fieldValues')?.enable();
+      this.searchForm.get('fieldValue1')?.enable();
     }
     const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
     if (metaData?.fieldType === 'LOV') {
-      this.isLOV = true;
-      this._lovValues = metaData.fieldValue?.split('|');
+      this.isLOV1 = true;
+      this._lovValuesF1 = metaData.fieldValue?.split('|');
+    }
+  }
+
+  onChangeMetaDataField2(event: any): void {
+    this.isLOV2 = false;
+    this.searchForm.get('fieldValue2')?.patchValue('');
+    const metaDataID: number = +this.searchForm.get('metaDataID2')!.value;
+    if (metaDataID !== 0) {
+      this.searchForm.get('fieldValue2')?.enable();
+    }
+    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
+    if (metaData?.fieldType === 'LOV') {
+      this.isLOV2 = true;
+      this._lovValuesF2 = metaData.fieldValue?.split('|');
     }
   }
 
@@ -207,15 +236,6 @@ export class DocumentComponent implements OnInit {
   }
 
   loadAllSetup(): void {
-    this.loadSetupService.loadAllMetaDataHeader().subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        this._metaDataHdrList = res.body;
-      },
-      error => {
-        console.log('Loading MetaData Setup Failed : ', error);
-      }
-    );
-
     this.loadSetupService.loadDocumentStatus().subscribe(
       (res: HttpResponse<IDocumentStatus[]>) => {
         if (res.body) {
@@ -251,20 +271,27 @@ export class DocumentComponent implements OnInit {
       // sort: this.sort(),
     };
 
-    const metaDataID: number = +this.searchForm.get('metaDataID')!.value;
-    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
+    const metaDataID1: number = +this.searchForm.get('metaDataID1')!.value;
+    const metaDataField1 = this._selectedMetaDataList?.find(item => item.id === metaDataID1);
 
-    const searchCriteria = {
+    const metaDataID2: number = +this.searchForm.get('metaDataID2')!.value;
+    const metaDataField2 = this._selectedMetaDataList?.find(item => item.id === metaDataID2);
+
+    this._searchCriteria = {
       ...new DocumentInquiry(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
-      fieldValues: this.searchForm.get('fieldValues')!.value,
-      fieldIndex: metaData?.fieldOrder,
+      metaDataID1: this.searchForm.get('metaDataID1')!.value,
+      fieldValue1: this.searchForm.get('fieldValue1')!.value,
+      fieldIndex1: metaDataField1?.fieldOrder,
+      metaDataID2: this.searchForm.get('metaDataID2')!.value,
+      fieldValue2: this.searchForm.get('fieldValue2')!.value,
+      fieldIndex2: metaDataField2?.fieldOrder,
       generalValue: this.searchForm.get('generalValue')!.value,
       status: this.searchForm.get('docStatus')!.value,
     };
 
-    this.documentInquiryService.query(searchCriteria, paginationReqParams).subscribe(
+    this.documentInquiryService.query(this._searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
         this.isLoading = false;
         this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
@@ -280,12 +307,49 @@ export class DocumentComponent implements OnInit {
     this.searchForm.reset();
     this._documentHeaders = [];
     this.isShowingResult = false;
-    this.isLOV = false;
+    this.isLOV1 = false;
+    this.isLOV2 = false;
     this._selectedMetaDataList = [];
-    this.searchForm.get('fieldValues')?.disable();
-    this.searchForm.get('metaDataID')?.patchValue(0);
-    this.searchForm.get('docStatus')?.patchValue(0);
     this.searchForm.get('metaDataHdrID')?.patchValue(0);
+    this.searchForm.get('metaDataID1')?.patchValue(0);
+    this.searchForm.get('fieldValue1')?.disable();
+    this.searchForm.get('metaDataID2')?.patchValue(0);
+    this.searchForm.get('fieldValue2')?.disable();
+    this.searchForm.get('docStatus')?.patchValue(0);
+    this.documentInquiryService.clearSearchCriteria();
+  }
+
+  updateSearchFormData(criteriaData: IDocumentInquiry): void {
+    this.searchForm.get('metaDataHdrID')?.patchValue(criteriaData.metaDataHeaderId);
+    this.onChangeDocumentTemplate();
+    const metaData1 = this._selectedMetaDataList?.find(item => item.id?.toString() === criteriaData.metaDataID1?.toString());
+    if (metaData1 !== undefined) {
+      this.searchForm.get('fieldValue1')?.enable();
+    }
+    if (metaData1?.fieldType === 'LOV') {
+      this.isLOV1 = true;
+      this._lovValuesF1 = metaData1.fieldValue?.split('|');
+    }
+    const metaData2 = this._selectedMetaDataList?.find(item => item.id?.toString() === criteriaData.metaDataID2?.toString());
+    if (metaData2 !== undefined) {
+      this.searchForm.get('fieldValue2')?.enable();
+    }
+    if (metaData2?.fieldType === 'LOV') {
+      this.isLOV2 = true;
+      this._lovValuesF2 = metaData2.fieldValue?.split('|');
+    }
+    this.searchForm.get('metaDataID1')?.patchValue(criteriaData.metaDataID1);
+    this.searchForm.get('fieldValue1')?.patchValue(criteriaData.fieldValue1);
+    this.searchForm.get('metaDataID2')?.patchValue(criteriaData.metaDataID2);
+    this.searchForm.get('fieldValue2')?.patchValue(criteriaData.fieldValue2);
+    this.searchForm.get('generalValue')?.patchValue(criteriaData.generalValue);
+    this.searchForm.get('docStatus')?.patchValue(criteriaData.status);
+    this.searchDocument(1);
+  }
+
+  goToView(id?: number): void {
+    this.documentInquiryService.storeSearchCriteria(this._searchCriteria);
+    this.router.navigate(['/document', id, 'view']);
   }
 
   protected sort(): string[] {

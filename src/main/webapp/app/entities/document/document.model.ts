@@ -70,10 +70,14 @@ export interface IDocumentInquiry {
   metaDataHeaderId?: number;
   repositoryURL?: string;
   createdDate?: string;
-  fieldValues?: string;
+  metaDataID1?: number;
+  fieldValue1?: string;
+  fieldIndex1?: number;
+  metaDataID2?: number;
+  fieldValue2?: string;
+  fieldIndex2?: number;
   status?: number;
   reason?: string;
-  fieldIndex?: number;
   generalValue?: string;
   approvedBy?: string;
 }
@@ -83,10 +87,14 @@ export class DocumentInquiry implements IDocumentInquiry {
     public metaDataHeaderId?: number,
     public repositoryURL?: string,
     public createdDate?: string,
-    public fieldValues?: string,
+    public metaDataID1?: number,
+    public fieldValue1?: string,
+    public fieldIndex1?: number,
+    public metaDataID2?: number,
+    public fieldValue2?: string,
+    public fieldIndex2?: number,
     public status?: number,
     public reason?: string,
-    public fieldIndex?: number,
     public generalValue?: string,
     public approvedBy?: string
   ) {}
