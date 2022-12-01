@@ -34,6 +34,13 @@ export class DocumentInquiryService {
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
+  searchInTrashBin(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IDocumentHeader[]>(`${this.resourceUrl}/trashbin`, criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
   queryForQueue(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http

@@ -13,6 +13,7 @@ public class UserAuthorityMessage implements Serializable {
     private String departmentName;
     private String roleName;
     private int workflowAuthority;
+    private SysConfigMessage sysConfigMessage;
     private List<MenuGroupMessage> menuGroups;
     private List<MetaDataHeaderDTO> templateList;
 
@@ -54,6 +55,14 @@ public class UserAuthorityMessage implements Serializable {
 
     public void setWorkflowAuthority(int workflowAuthority) {
         this.workflowAuthority = workflowAuthority;
+    }
+
+    public SysConfigMessage getSysConfigMessage() {
+        return sysConfigMessage;
+    }
+
+    public void setSysConfigMessage(SysConfigMessage sysConfigMessage) {
+        this.sysConfigMessage = sysConfigMessage;
     }
 
     public List<MenuGroupMessage> getMenuGroups() {

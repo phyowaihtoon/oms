@@ -15,6 +15,9 @@
       "delete": {
         "question": "Are you sure you want to delete Document {{ id }}?"
       },
+      "restore": {
+        "question": "Are you sure you want to restore Document {{ id }}?"
+      },
       "detail": {
         "title": "Document"
       },
