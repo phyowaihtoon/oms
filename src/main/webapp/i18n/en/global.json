@@ -38,7 +38,8 @@
         "title": "Document",
         "create": "Document Mapping",
         "update": "Document Mapping",
-        "search": "Document Inquiry"
+        "search": "Document Inquiry",
+        "trashbin": "Trash Bin"
       },
       "queue": {
         "title": "Service Queue",
@@ -129,6 +130,7 @@
       "back": "Back",
       "cancel": "Cancel",
       "delete": "Delete",
+      "restore": "Restore",
       "edit": "Edit",
       "open": "Open",
       "view": "View",
@@ -152,6 +154,9 @@
     },
     "delete": {
       "title": "Confirm delete operation"
+    },
+    "restore": {
+      "title": "Confirm restore operation"
     },
     "validation": {
       "required": "This field is required.",
