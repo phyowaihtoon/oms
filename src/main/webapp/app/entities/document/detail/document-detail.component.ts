@@ -233,8 +233,7 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   previousState(): void {
-    this.documentInquiryService.setPreviousState('DocumentDetial');
-    this.router.navigate(['/document/list']);
+    window.history.back();
   }
 
   showDocHeader(): void {

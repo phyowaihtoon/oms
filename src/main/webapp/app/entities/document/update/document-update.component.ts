@@ -27,7 +27,7 @@ export class DocumentUpdateComponent implements OnInit {
   _documentDetails: IDocument[] | undefined;
   _documentStatus?: IDocumentStatus[];
 
-  docTypes: MetaDataHeader[] | null = [];
+  _metaDataHdrList: MetaDataHeader[] | null = [];
   _priority: IPriority[] | null = [];
   _fieldValue?: string[] = [];
   metaData?: IMetaData[];
@@ -92,20 +92,19 @@ export class DocumentUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllSetup();
-    this.loadSetupService.loadAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
-      this.docTypes = res.body;
-      this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
-        this._userAuthority = userAuthority;
-        this._activeMenuItem = userAuthority.activeMenu.menuItem;
-        this._documentHeader = docHeader;
-        this._documentDetails = this._documentHeader?.docList;
-        if (this._documentHeader !== undefined) {
-          if (this._documentHeader.id !== undefined && docHeader.id !== null) {
-            this.removeAllField();
-          }
-          this.updateForm(docHeader);
+    this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+      this._metaDataHdrList = userAuthority.templateList;
+
+      this._documentHeader = docHeader;
+      this._documentDetails = this._documentHeader?.docList;
+      if (this._documentHeader !== undefined) {
+        if (this._documentHeader.id !== undefined && docHeader.id !== null) {
+          this.removeAllField();
         }
-      });
+        this.updateForm(docHeader);
+      }
     });
   }
 
@@ -271,7 +270,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.metaData = [];
       this.forControlBind();
     } else {
-      this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+      this._metaDataHdrList!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
         if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
           this.metaData = metaDataHeaderItem.metaDataDetails;
           this.forControlBind();
@@ -407,9 +406,6 @@ export class DocumentUpdateComponent implements OnInit {
 
   getDocumentStatus(id?: number): string | undefined {
     const docStatus = this._documentStatus?.find(item => item.value === id);
-
-    console.log('docstatus', docStatus);
-
     return docStatus?.description.toUpperCase();
   }
 
@@ -583,7 +579,7 @@ export class DocumentUpdateComponent implements OnInit {
     const fn = fieldName.split('|');
     const fv = fieldValue.split('|');
 
-    this.docTypes!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
+    this._metaDataHdrList!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
       if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
         this.metaDataUpdate = metaDataHeaderItem.metaDataDetails!;
       }

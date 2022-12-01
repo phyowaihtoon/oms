@@ -18,10 +18,8 @@ export class DocumentRestoreDialogComponent {
   }
 
   confirmRestore(id: number): void {
-    /*
-    this.documentService.delete(id).subscribe(() => {
+    this.documentService.restoreDocument(id).subscribe(() => {
       this.activeModal.close('restored');
     });
-    */
   }
 }

@@ -9,6 +9,7 @@ import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.FTPSessionFactory;
@@ -198,7 +199,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                     ex.printStackTrace();
                     replyMessage.setCode(ResponseCode.ERROR_E01);
                     replyMessage.setMessage("Failed to upload file :" + filename + " " + ex.getMessage());
-                    //Removing previous uploaded files from FTP Server if failed to upload one file
+                    // Removing previous uploaded files from FTP Server if failed to upload one file
                     if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
                     return false;
                 }
@@ -245,7 +246,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
             if (id != null) {
                 if (approvalInfo.getStatus() == 4) {
                     documentHeaderRepository.updateAmmendById(approvalInfo.getStatus(), approvalInfo.getReason(), id);
-                    replyMessage_BM.setMessage("Documnet is successfully sent to amend.");
+                    replyMessage_BM.setMessage("Document is successfully sent to amend.");
                 } else if (approvalInfo.getStatus() == 6) {
                     documentHeaderRepository.updateRejectById(
                         approvalInfo.getStatus(),
@@ -254,31 +255,46 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                         Instant.now(),
                         id
                     );
-                    replyMessage_BM.setMessage("Documnet is successfully rejected.");
+                    replyMessage_BM.setMessage("Document has been rejected.");
                 } else if (approvalInfo.getStatus() == 5) {
                     documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
-                    replyMessage_BM.setMessage("Documnet is successfully approved");
+                    replyMessage_BM.setMessage("Document is successfully approved.");
                 } else if (approvalInfo.getStatus() == 2) {
                     documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
-                    replyMessage_BM.setMessage("Documnet is successfully sent to approve");
+                    replyMessage_BM.setMessage("Document is successfully sent to approve.");
                 } else {
                     documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
-                    replyMessage_BM.setMessage("Documnet is successfully canceled");
+                    replyMessage_BM.setMessage("Document has been canceled.");
                 }
                 replyMessage_BM.setCode(ResponseCode.SUCCESS);
+            } else {
+                replyMessage_BM.setCode(ResponseCode.WARNING);
+                replyMessage_BM.setMessage("Invalid Document.");
             }
-        } catch (IllegalStateException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
-            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
+            System.out.println("Error while updating document status: " + ex.getMessage());
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
-            replyMessage.setMessage(ex.getMessage());
+            replyMessage_BM.setCode(ResponseCode.ERROR_E01);
+            replyMessage_BM.setMessage(ex.getMessage());
         }
 
         return replyMessage_BM;
+    }
+
+    @Override
+    public BaseMessage restoreDocument(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        try {
+            this.documentHeaderRepository.restoreDocument(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("Document has been restored.");
+        } catch (Exception ex) {
+            System.out.println("Error while restoring document :" + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Document Restore failed : " + ex.getMessage());
+        }
+
+        return replyMessage;
     }
 }
