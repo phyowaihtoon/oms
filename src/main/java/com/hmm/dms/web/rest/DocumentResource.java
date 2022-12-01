@@ -139,8 +139,7 @@ public class DocumentResource {
     public ResponseEntity<ReplyMessage<DocumentHeaderDTO>> updateDocument(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles,
-        @RequestParam("documentHeaderData") String docHeaderInStr,
-        @RequestParam("paraStatus") String status
+        @RequestParam("documentHeaderData") String docHeaderInStr
     ) throws URISyntaxException {
         DocumentHeaderDTO documentHeaderDTO = null;
         ReplyMessage<DocumentHeaderDTO> result = null;
@@ -182,14 +181,14 @@ public class DocumentResource {
 
         result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
         String docHeaderId = "";
-        if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
-            if (status.equals("2")) {
-                result.setMessage("Document Mapping is successfully sent to approve.");
-            } else if (status.equals("3")) {
-                result.setMessage("Document Mapping is successfully cancelled.");
-            }
-            docHeaderId = result.getData().getId().toString();
-        }
+        //        if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
+        //            if (documentHeaderDTO.equals("2")) {
+        //                result.setMessage("Document Mapping is successfully sent to approve.");
+        //            } else if (status.equals("3")) {
+        //                result.setMessage("Document Mapping is successfully cancelled.");
+        //            }
+        docHeaderId = result.getData().getId().toString();
+        // }
 
         return ResponseEntity
             .ok()

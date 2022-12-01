@@ -14,7 +14,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
-import { IMenuItem, IPriority } from 'app/entities/util/setup.model';
+import { IDocumentStatus, IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 
 @Component({
@@ -25,6 +25,7 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentDetails: IDocument[] | undefined;
+  _documentStatus?: IDocumentStatus[];
 
   docTypes: MetaDataHeader[] | null = [];
   _priority: IPriority[] | null = [];
@@ -72,7 +73,7 @@ export class DocumentUpdateComponent implements OnInit {
     repositoryURL: [],
     message: [],
     priority: [],
-    status: [],
+    status: [1],
     reposistory: [],
     reject: [],
     ammendment: [],
@@ -90,9 +91,9 @@ export class DocumentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadAllSetup();
     this.loadSetupService.loadAllMetaDataHeader().subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
       this.docTypes = res.body;
-
       this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
         this._userAuthority = userAuthority;
         this._activeMenuItem = userAuthority.activeMenu.menuItem;
@@ -106,10 +107,23 @@ export class DocumentUpdateComponent implements OnInit {
         }
       });
     });
+  }
 
-    this.loadSetupService.loadPriority().subscribe((res: HttpResponse<IPriority[]>) => {
-      this._priority = res.body;
+  loadAllSetup(): void {
+    this.loadSetupService.loadPriority().subscribe((res_priority: HttpResponse<IPriority[]>) => {
+      this._priority = res_priority.body;
     });
+
+    this.loadSetupService.loadDocumentStatus().subscribe(
+      (res_status: HttpResponse<IDocumentStatus[]>) => {
+        if (res_status.body) {
+          this._documentStatus = res_status.body;
+        }
+      },
+      error => {
+        console.log('Document Status Failed : ', error);
+      }
+    );
   }
 
   // define FormArray for document List
@@ -222,7 +236,7 @@ export class DocumentUpdateComponent implements OnInit {
 
     documentHeaderdata.docList = attachedFileList;
     formData.append('documentHeaderData', JSON.stringify(documentHeaderdata));
-    formData.append('paraStatus', status.toString());
+    // formData.append('paraStatus', status.toString());
 
     const docHeaderID = documentHeaderdata.id ?? undefined;
     if (docHeaderID !== undefined) {
@@ -241,9 +255,6 @@ export class DocumentUpdateComponent implements OnInit {
       status: this.docStatus_number,
       approvedBy: this._userAuthority!.userID,
     };
-
-    console.log('approvalinfo', this._userAuthority!.userID);
-
     this.showLoading('Approving in progress');
     this.subscribeTeUpdateStatusResponse(this.documentHeaderService.updateDocumentStatus(approvalInfo, docHeaderId));
   }
@@ -394,43 +405,41 @@ export class DocumentUpdateComponent implements OnInit {
     return this._saveButtonTitle;
   }
 
+  getDocumentStatus(id?: number): string | undefined {
+    const docStatus = this._documentStatus?.find(item => item.value === id);
+
+    console.log('docstatus', docStatus);
+
+    return docStatus?.description.toUpperCase();
+  }
+
   statusUpdate(status: number): void {
+    this.docStatus_number = status;
+
     if (status === 1) {
       this.isNA = false;
       this.isSentApprove = true;
       this.isCancel = true;
-      this.docStatus = 'NEW';
-      this.docStatus_number = 1;
     } else if (status === 2) {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'SENT TO APPROVE';
-      this.docStatus_number = 2;
     } else if (status === 3) {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'CANCELED';
-      this.docStatus_number = 3;
     } else if (status === 4) {
       this.isNA = false;
       this.isSentApprove = true;
       this.isCancel = false;
-      this.docStatus = 'SENT FOR AMENDMENT';
-      this.docStatus_number = 4;
     } else if (status === 5) {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'APPROVED';
-      this.docStatus_number = 5;
     } else {
       this.isNA = false;
       this.isSentApprove = false;
       this.isCancel = false;
-      this.docStatus = 'REJECTED';
-      this.docStatus_number = 6;
     }
   }
 
@@ -507,7 +516,7 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   protected createFromForm(paraStatus: number): IDocumentHeader {
-    if (paraStatus === 1 && this.docStatus_number !== 0 && this.editForm.get(['id'])!.value > 0) {
+    if (this.docStatus_number > 0) {
       paraStatus = this.docStatus_number;
     }
 
