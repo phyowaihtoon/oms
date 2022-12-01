@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 public interface DocumentInquiryService {
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable);
 
+    public Page<DocumentHeaderDTO> searchDocumentHeaderInTrashBin(DocumentInquiryMessage dto, Pageable pageable);
+
     public Page<DocumentHeaderDTO> searchDocumentHeaderForServiceQueue(DocumentInquiryMessage dto, Pageable pageable);
 
     public DocumentHeaderDTO findAllDocumentsByHeaderId(Long id);

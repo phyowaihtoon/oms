@@ -9,7 +9,6 @@ import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.mapper.DocumentHeaderMapper;
 import com.hmm.dms.service.mapper.DocumentMapper;
-import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.FTPSessionFactory;
