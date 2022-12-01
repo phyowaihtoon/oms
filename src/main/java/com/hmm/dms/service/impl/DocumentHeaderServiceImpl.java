@@ -256,9 +256,15 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                         id
                     );
                     replyMessage_BM.setMessage("Documnet is successfully rejected.");
+                } else if (approvalInfo.getStatus() == 5) {
+                    documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
+                    replyMessage_BM.setMessage("Documnet is successfully approved");
+                } else if (approvalInfo.getStatus() == 2) {
+                    documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
+                    replyMessage_BM.setMessage("Documnet is successfully sent to approve");
                 } else {
                     documentHeaderRepository.updateStatusById(approvalInfo.getStatus(), approvalInfo.getApprovedBy(), Instant.now(), id);
-                    replyMessage_BM.setMessage("Documnet is successfully aproved");
+                    replyMessage_BM.setMessage("Documnet is successfully canceled");
                 }
                 replyMessage_BM.setCode(ResponseCode.SUCCESS);
             }

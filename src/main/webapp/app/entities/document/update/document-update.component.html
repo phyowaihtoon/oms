@@ -87,14 +87,14 @@
             <div *ngIf="docStatus_number === 3 || docStatus_number === 6">
               <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="text">Status</label>
               <div>
-                <span style="color: red; font-weight: bold"> {{ docStatus }} </span>
+                <span style="color: red; font-weight: bold"> {{ getDocumentStatus(docStatus_number) }} </span>
               </div>
             </div>
 
             <div *ngIf="docStatus_number !== 3 && docStatus_number !== 6">
               <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="text">Status</label>
               <div>
-                <span style="color: green; font-weight: bold"> {{ docStatus }} </span>
+                <span style="color: green; font-weight: bold"> {{ getDocumentStatus(docStatus_number) }} </span>
               </div>
             </div>
           </div>
