@@ -90,4 +90,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document_header SET status=?1, approved_by=?2, approved_date=?3  " + "WHERE id = ?4", nativeQuery = true)
     void updateStatusById(int status, String approvedBy, Instant currentTime, Long id);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE document_header SET status=1 " + "WHERE id = ?1", nativeQuery = true)
+    void restoreDocument(Long id);
 }

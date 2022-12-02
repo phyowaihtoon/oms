@@ -6,6 +6,7 @@ import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -29,6 +30,8 @@ public interface DocumentHeaderService {
     Optional<DocumentHeaderDTO> partialUpdate(DocumentHeaderDTO documentHeaderDTO);
 
     ReplyMessage<DocumentInquiryMessage> partialUpdate(DocumentInquiryMessage approvalInfo, Long id);
+
+    BaseMessage restoreDocument(Long id);
     /**
      * Get all the documents.
      *

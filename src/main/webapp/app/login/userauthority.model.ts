@@ -7,7 +7,12 @@ export interface IUserAuthority {
   departmentName?: string;
   roleName: string;
   workflowAuthority: number;
+  sysConfigMessage: ISysConfigMessage;
   menuGroups: IMenuGroupMessage[];
   activeMenu: IRoleMenuAccess;
   templateList: IMetaDataHeader[];
+}
+
+export interface ISysConfigMessage {
+  workflowEnabled: string;
 }

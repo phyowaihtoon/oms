@@ -57,6 +57,7 @@
           <td class="text-right">
             <div class="btn-group">
               <button
+                *ngIf="_userAuthority && _userAuthority.sysConfigMessage.workflowEnabled === 'Y'"
                 type="submit"
                 [routerLink]="['/service-queue/document', documentHeader.id, 'view']"
                 class="btn btn-primary btn-sm"
