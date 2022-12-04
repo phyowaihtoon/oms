@@ -2,6 +2,7 @@ package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.HeaderDetailsMessage;
 import com.hmm.dms.service.message.RoleTemplateAccessDTO;
 import java.util.Optional;
@@ -52,4 +53,6 @@ public interface UserRoleService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    BaseMessage checkDependency(Long roleId);
 }

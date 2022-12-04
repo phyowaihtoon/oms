@@ -181,6 +181,10 @@ export class UserRoleUpdateComponent implements OnInit {
     this._templateAccessListFCA.removeAt(index);
   }
 
+  previousState(): void {
+    window.history.back();
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IHeaderDetailsMessage>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res.body),

@@ -6,12 +6,13 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IUserRole, getUserRoleIdentifier, IRoleMenuAccess } from '../user-role.model';
-import { IHeaderDetailsMessage } from 'app/entities/util/reply-message.model';
+import { IHeaderDetailsMessage, IReplyMessage } from 'app/entities/util/reply-message.model';
 
 export type EntityResponseType = HttpResponse<IUserRole>;
 export type EntityArrayResponseType = HttpResponse<IUserRole[]>;
 export type MenuAccessResponseType = HttpResponse<IRoleMenuAccess[]>;
 export type HeaderDetailsResponseType = HttpResponse<IHeaderDetailsMessage>;
+export type ReplyMessageResponseType = HttpResponse<IReplyMessage>;
 
 @Injectable({ providedIn: 'root' })
 export class UserRoleService {
@@ -70,5 +71,9 @@ export class UserRoleService {
 
   getAllMenuItems(): Observable<MenuAccessResponseType> {
     return this.http.get<IRoleMenuAccess[]>(this.menuAccessResourceUrl, { observe: 'response' });
+  }
+
+  checkDependency(id: number): Observable<ReplyMessageResponseType> {
+    return this.http.get<IReplyMessage>(`${this.resourceUrl}/check/${id}`, { observe: 'response' });
   }
 }

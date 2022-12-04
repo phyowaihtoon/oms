@@ -16,7 +16,7 @@
         "document": "Document",
         "repository": "Repository",
         "applicationUser": "User Authority",
-        "userRole": "Role Menu Access",
+        "userRole": "Role Access",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
