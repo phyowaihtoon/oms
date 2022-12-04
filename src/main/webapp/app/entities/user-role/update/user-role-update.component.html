@@ -1,7 +1,7 @@
 <div id="page-heading" class="row">
   <div class="col-8">
     <span>Management</span>
-    <span> >> User Role</span>
+    <span> >> Role Access</span>
   </div>
 
   <div class="col-4 d-flex justify-content-end">
@@ -20,6 +20,10 @@
     <button type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="resetForm()">
       <fa-icon icon="plus"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
+    </button>
+    <span style="width: 5px"></span>
+    <button type="submit" (click)="previousState()" class="btn btn-primary btn-sm" data-cy="entityDetailsBackButton">
+      <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span class="d-none d-md-inline" jhiTranslate="entity.action.back">Back</span>
     </button>
   </div>
 </div>
