@@ -1,8 +1,10 @@
 package com.hmm.dms.service.impl;
 
+import com.hmm.dms.domain.ApplicationUser;
 import com.hmm.dms.domain.RoleMenuAccess;
 import com.hmm.dms.domain.RoleTemplateAccess;
 import com.hmm.dms.domain.UserRole;
+import com.hmm.dms.repository.ApplicationUserRepository;
 import com.hmm.dms.repository.RoleMenuAccessRepository;
 import com.hmm.dms.repository.RoleTemplateAccessRepository;
 import com.hmm.dms.repository.UserRoleRepository;
@@ -12,6 +14,7 @@ import com.hmm.dms.service.dto.UserRoleDTO;
 import com.hmm.dms.service.mapper.RoleMenuAccessMapper;
 import com.hmm.dms.service.mapper.RoleTemplateAccessMapper;
 import com.hmm.dms.service.mapper.UserRoleMapper;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.HeaderDetailsMessage;
 import com.hmm.dms.service.message.RoleTemplateAccessDTO;
 import com.hmm.dms.util.ResponseCode;
@@ -35,6 +38,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     private final UserRoleRepository userRoleRepository;
     private final UserRoleMapper userRoleMapper;
+    private final ApplicationUserRepository applicationUserRepository;
 
     private final RoleMenuAccessRepository roleMenuAccessRepository;
     private final RoleMenuAccessMapper roleMenuAccessMapper;
@@ -47,7 +51,8 @@ public class UserRoleServiceImpl implements UserRoleService {
         RoleMenuAccessRepository roleMenuAccessRepository,
         RoleMenuAccessMapper roleMenuAccessMapper,
         RoleTemplateAccessRepository roleTemplateAccessRepository,
-        RoleTemplateAccessMapper roleTemplateAccessMapper
+        RoleTemplateAccessMapper roleTemplateAccessMapper,
+        ApplicationUserRepository applicationUserRepository
     ) {
         this.userRoleRepository = userRoleRepository;
         this.userRoleMapper = userRoleMapper;
@@ -55,6 +60,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         this.roleMenuAccessMapper = roleMenuAccessMapper;
         this.roleTemplateAccessRepository = roleTemplateAccessRepository;
         this.roleTemplateAccessMapper = roleTemplateAccessMapper;
+        this.applicationUserRepository = applicationUserRepository;
     }
 
     @Override
@@ -135,6 +141,22 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete UserRole : {}", id);
+        roleMenuAccessRepository.deleteByUserRoleId(id);
+        roleTemplateAccessRepository.deleteByUserRoleId(id);
         userRoleRepository.deleteById(id);
+    }
+
+    @Override
+    public BaseMessage checkDependency(Long roleId) {
+        BaseMessage replyMessage = new BaseMessage();
+        replyMessage.setCode(ResponseCode.SUCCESS);
+        List<ApplicationUser> userList = this.applicationUserRepository.findAllByRoleID(roleId);
+        if (userList != null && userList.size() > 0) {
+            replyMessage.setCode(ResponseCode.WARNING);
+            replyMessage.setMessage(
+                "This role is currently being used in User Authority. It can be deleted only after removing first in User Authority."
+            );
+        }
+        return replyMessage;
     }
 }

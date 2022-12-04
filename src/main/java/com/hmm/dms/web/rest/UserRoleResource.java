@@ -6,6 +6,7 @@ import com.hmm.dms.service.RoleTemplateAccessService;
 import com.hmm.dms.service.UserRoleService;
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.HeaderDetailsMessage;
 import com.hmm.dms.service.message.RoleTemplateAccessDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
@@ -211,5 +212,12 @@ public class UserRoleResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/user-roles/check/{id}")
+    public ResponseEntity<BaseMessage> checkDependency(@PathVariable Long id) {
+        log.debug("REST request to check dependency of UserRole : {}", id);
+        BaseMessage replyMessage = userRoleService.checkDependency(id);
+        return ResponseEntity.ok().body(replyMessage);
     }
 }

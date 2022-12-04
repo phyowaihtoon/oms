@@ -9,6 +9,8 @@ import { IUserRole } from '../user-role.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { UserRoleService } from '../service/user-role.service';
 import { UserRoleDeleteDialogComponent } from '../delete/user-role-delete-dialog.component';
+import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
+import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 
 @Component({
   selector: 'jhi-user-role',
@@ -62,14 +64,37 @@ export class UserRoleComponent implements OnInit {
   }
 
   delete(userRole: IUserRole): void {
-    const modalRef = this.modalService.open(UserRoleDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.userRole = userRole;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed.subscribe(reason => {
-      if (reason === 'deleted') {
-        this.loadPage();
-      }
-    });
+    if (userRole.id) {
+      this.userRoleService.checkDependency(userRole.id).subscribe((res: HttpResponse<IReplyMessage>) => {
+        if (res.body) {
+          const replyMessage = res.body;
+
+          // Dependency exists for this user role
+          if (replyMessage.code === ResponseCode.WARNING) {
+            const replyCode = replyMessage.code;
+            const replyMsg = replyMessage.message;
+            this.showAlertMessage(replyCode, replyMsg);
+          }
+
+          // No Dependency exists for this user role.
+          if (replyMessage.code === ResponseCode.SUCCESS) {
+            const modalRef = this.modalService.open(UserRoleDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+            modalRef.componentInstance.userRole = userRole;
+            modalRef.closed.subscribe(reason => {
+              if (reason === 'deleted') {
+                this.loadPage();
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+
+  protected showAlertMessage(msg1: string, msg2?: string): void {
+    const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+    modalRef.componentInstance.code = msg1;
+    modalRef.componentInstance.message = msg2;
   }
 
   protected sort(): string[] {

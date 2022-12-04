@@ -2,7 +2,7 @@
   "dmsApp": {
     "userRole": {
       "home": {
-        "title": "User Roles",
+        "title": "Role Access",
         "refreshListLabel": "Refresh list",
         "createLabel": "အသစ်ထည့်မည်",
         "createOrEditLabel": "User Role အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
@@ -15,7 +15,7 @@
         "question": "User Role {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
       },
       "detail": {
-        "title": "User Role"
+        "title": "Role Access"
       },
       "id": "ID",
       "roleName": "Role Name"

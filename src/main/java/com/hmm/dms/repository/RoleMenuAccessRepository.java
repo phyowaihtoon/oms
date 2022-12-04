@@ -16,4 +16,6 @@ public interface RoleMenuAccessRepository extends JpaRepository<RoleMenuAccess, 
         nativeQuery = true
     )
     List<RoleMenuAccess> findAllByUserRoleAndMenuGroup(Long userRoleId, Long menuGroupId);
+
+    void deleteByUserRoleId(Long id);
 }

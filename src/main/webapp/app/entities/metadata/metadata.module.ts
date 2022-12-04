@@ -6,6 +6,7 @@ import { MetaDataComponent } from './list/metadata.component';
 import { MetaDataDetailComponent } from './detail/metadata-detail.component';
 import { MetaDataDeleteDialogComponent } from './delete/metadata-delete-dialog.component';
 import { LovSetupDialogComponent } from './lov-setup/lov-setup-dialog.component';
+import { MetadataTrashbinComponent } from './trashbin/metadata-trashbin.component';
 
 @NgModule({
   imports: [SharedModule, MetadataRoutingModule],
@@ -15,6 +16,7 @@ import { LovSetupDialogComponent } from './lov-setup/lov-setup-dialog.component'
     MetadataUpdateComponent,
     MetaDataDeleteDialogComponent,
     LovSetupDialogComponent,
+    MetadataTrashbinComponent,
   ],
   entryComponents: [MetaDataDeleteDialogComponent, LovSetupDialogComponent],
 })
