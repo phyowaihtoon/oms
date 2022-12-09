@@ -15,6 +15,9 @@
       "delete": {
         "question": "Are you sure you want to delete Document {{ id }}?"
       },
+      "restore": {
+        "question": "Are you sure you want to restore Document {{ id }}?"
+      },
       "detail": {
         "title": "Document"
       },
@@ -37,7 +40,8 @@
       "remark": "Remark",
       "preview": "Preview",
       "download": "Download",
-      "specificMetaData": "Specific MetaData",
+      "specificMetaData1": "Specific MetaData (1)",
+      "specificMetaData2": "Specific MetaData (2)",
       "otherMetaData": "Other MetaData",
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",

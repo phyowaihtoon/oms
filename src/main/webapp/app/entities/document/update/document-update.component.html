@@ -25,12 +25,26 @@
     </button>
     <span style="width: 5px"></span>
 
-    <button [disabled]="!isSentApprove" type="button" id="cancel-save" class="btn btn-primary btn-sm" (click)="updateStatus(2)">
+    <button
+      *ngIf="_userAuthority && _userAuthority.sysConfigMessage.workflowEnabled === 'Y'"
+      [disabled]="!isSentApprove"
+      type="button"
+      id="cancel-save"
+      class="btn btn-primary btn-sm"
+      (click)="updateStatus(2)"
+    >
       <span class="d-none d-md-inline" jhiTranslate="entity.action.senttoapprove">Send to Approve</span>
     </button>
     <span style="width: 5px"></span>
 
-    <button [disabled]="!isCancel" type="button" id="cancel-save" class="btn btn-danger btn-sm" (click)="updateStatus(3)">
+    <button
+      *ngIf="_userAuthority && _userAuthority.sysConfigMessage.workflowEnabled === 'Y'"
+      [disabled]="!isCancel"
+      type="button"
+      id="cancel-save"
+      class="btn btn-danger btn-sm"
+      (click)="updateStatus(3)"
+    >
       <span class="d-none d-md-inline" jhiTranslate="entity.action.cancel">Cancel</span>
     </button>
     <span style="width: 5px"></span>
@@ -87,14 +101,14 @@
             <div *ngIf="docStatus_number === 3 || docStatus_number === 6">
               <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="text">Status</label>
               <div>
-                <span style="color: red; font-weight: bold"> {{ docStatus }} </span>
+                <span style="color: red; font-weight: bold"> {{ getDocumentStatus(docStatus_number) }} </span>
               </div>
             </div>
 
             <div *ngIf="docStatus_number !== 3 && docStatus_number !== 6">
               <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="text">Status</label>
               <div>
-                <span style="color: green; font-weight: bold"> {{ docStatus }} </span>
+                <span style="color: green; font-weight: bold"> {{ getDocumentStatus(docStatus_number) }} </span>
               </div>
             </div>
           </div>
@@ -105,7 +119,7 @@
             <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template</label>
             <span class="text-danger">*</span>
             <select (change)="onDocTemplateChange($event)" class="form-control" formControlName="metaDataHeaderId">
-              <option [value]="doctype.id" *ngFor="let doctype of docTypes">
+              <option [value]="doctype.id" *ngFor="let doctype of _metaDataHdrList">
                 {{ doctype.docTitle }}
               </option>
             </select>

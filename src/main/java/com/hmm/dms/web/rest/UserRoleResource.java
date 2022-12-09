@@ -2,10 +2,13 @@ package com.hmm.dms.web.rest;
 
 import com.hmm.dms.repository.UserRoleRepository;
 import com.hmm.dms.service.RoleMenuAccessService;
+import com.hmm.dms.service.RoleTemplateAccessService;
 import com.hmm.dms.service.UserRoleService;
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.HeaderDetailsMessage;
+import com.hmm.dms.service.message.RoleTemplateAccessDTO;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,16 +56,20 @@ public class UserRoleResource {
 
     private final RoleMenuAccessService roleMenuAccessService;
 
+    private final RoleTemplateAccessService roleTemplateAccessService;
+
     private final UserRoleRepository userRoleRepository;
 
     public UserRoleResource(
         UserRoleService userRoleService,
         UserRoleRepository userRoleRepository,
-        RoleMenuAccessService roleMenuAccessService
+        RoleMenuAccessService roleMenuAccessService,
+        RoleTemplateAccessService roleTemplateAccessService
     ) {
         this.userRoleService = userRoleService;
         this.userRoleRepository = userRoleRepository;
         this.roleMenuAccessService = roleMenuAccessService;
+        this.roleTemplateAccessService = roleTemplateAccessService;
     }
 
     /**
@@ -73,14 +80,14 @@ public class UserRoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/user-roles")
-    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>> createUserRole(
-        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO>> createUserRole(
+        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> message
     ) throws URISyntaxException {
         log.debug("REST request to save UserRole : {}", message.getHeader());
         if (message.getHeader().getId() != null) {
             throw new BadRequestAlertException("A new userRole cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> result = userRoleService.save(message);
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> result = userRoleService.save(message);
         return ResponseEntity
             .created(new URI("/api/user-roles/" + result.getHeader().getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getHeader().getId().toString()))
@@ -98,9 +105,9 @@ public class UserRoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/user-roles/{id}")
-    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>> updateUserRole(
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO>> updateUserRole(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message
+        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> message
     ) throws URISyntaxException {
         log.debug("REST request to update UserRole : {}, {}", id, message);
         if (message.getHeader().getId() == null) {
@@ -114,7 +121,7 @@ public class UserRoleResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> result = userRoleService.save(message);
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> result = userRoleService.save(message);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, message.getHeader().getId().toString()))
@@ -178,14 +185,16 @@ public class UserRoleResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userRoleDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/user-roles/{id}")
-    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>> getUserRole(@PathVariable Long id) {
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO>> getUserRole(@PathVariable Long id) {
         log.debug("REST request to get UserRole : {}", id);
         Optional<UserRoleDTO> userRoleDTO = userRoleService.findOne(id);
         List<RoleMenuAccessDTO> menuAccessList = roleMenuAccessService.getAllMenuAccessByRole(id);
+        List<RoleTemplateAccessDTO> templateAccessList = roleTemplateAccessService.getAllTemplateAccessByRole(id);
 
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> replyMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO>();
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> replyMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO>();
         replyMessage.setHeader(userRoleDTO.get());
-        replyMessage.setDetails(menuAccessList);
+        replyMessage.setDetails1(menuAccessList);
+        replyMessage.setDetails2(templateAccessList);
         return ResponseEntity.ok().body(replyMessage);
     }
 
@@ -203,5 +212,12 @@ public class UserRoleResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/user-roles/check/{id}")
+    public ResponseEntity<BaseMessage> checkDependency(@PathVariable Long id) {
+        log.debug("REST request to check dependency of UserRole : {}", id);
+        BaseMessage replyMessage = userRoleService.checkDependency(id);
+        return ResponseEntity.ok().body(replyMessage);
     }
 }

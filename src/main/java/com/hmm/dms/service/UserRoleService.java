@@ -2,7 +2,9 @@ package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.HeaderDetailsMessage;
+import com.hmm.dms.service.message.RoleTemplateAccessDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,9 @@ public interface UserRoleService {
      * @param userRoleDTO the entity to save.
      * @return the persisted entity.
      */
-    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> save(HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO> message);
+    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> save(
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> message
+    );
 
     /**
      * Partially updates a userRole.
@@ -49,4 +53,6 @@ public interface UserRoleService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    BaseMessage checkDependency(Long roleId);
 }

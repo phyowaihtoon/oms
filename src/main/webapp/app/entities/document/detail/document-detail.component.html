@@ -41,25 +41,45 @@
   <div class="row" id="documentHeaderView" *ngIf="_isDocHeaderShow">
     <div class="row col-12 form-group">
       <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.id">ID</span>
+      </div>
+      <div class="col-3 dms-view-data">
+        <input type="text" class="form-control" value="{{ _documentHeader?.id }}" readonly />
+      </div>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.document.status">Status</span>
+      </div>
+      <div class="col-2 dms-view-data">
+        <input type="text" class="form-control" value="{{ getDocumentStatus(_documentHeader?.status) }}" readonly />
+      </div>
+      <div class="col-1 dms-label">
+        <span jhiTranslate="dmsApp.document.priority">Priority</span>
+      </div>
+      <div class="col-2 dms-view-data">
+        <input type="text" class="form-control" value="{{ getPriorityDesc(_documentHeader?.priority) }}" readonly />
+      </div>
+    </div>
+    <div class="row col-12 form-group">
+      <div class="col-2 dms-label">
         <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
       </div>
-      <div class="col-4 dms-view-data">
+      <div class="col-3 dms-view-data">
         <input type="text" class="form-control" value="{{ getDocTitleByID(_documentHeader?.metaDataHeaderId) }}" />
       </div>
       <div class="col-2 dms-label">
         <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
       </div>
-      <div class="col-1 dms-view-data">
+      <div class="col-2 dms-view-data">
         <input
           type="text"
           class="form-control"
           value="{{ _documentHeader ? (_documentHeader.createdDate ? _documentHeader.createdDate.format('DD-MM-YYYY') : '-') : '-' }}"
         />
       </div>
-      <div class="col-2 dms-label">
+      <div class="col-1 dms-label">
         <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
       </div>
-      <div class="col-1 dms-view-data">
+      <div class="col-2 dms-view-data">
         <input type="text" class="form-control" value="{{ _documentHeader?.createdBy }}" />
       </div>
     </div>
@@ -70,7 +90,7 @@
       <div class="col-2 dms-label">
         <span>{{ metadata.name }}</span>
       </div>
-      <div class="col-4 dms-view-data">
+      <div class="col-3 dms-view-data">
         <input type="text" class="form-control" value="{{ metadata.value }}" />
       </div>
     </div>

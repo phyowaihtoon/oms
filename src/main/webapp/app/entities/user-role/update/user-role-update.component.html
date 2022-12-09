@@ -1,7 +1,7 @@
 <div id="page-heading" class="row">
   <div class="col-8">
     <span>Management</span>
-    <span> >> User Role</span>
+    <span> >> Role Access</span>
   </div>
 
   <div class="col-4 d-flex justify-content-end">
@@ -21,30 +21,60 @@
       <fa-icon icon="plus"></fa-icon>
       <span class="d-none d-md-inline" jhiTranslate="entity.action.new">New</span>
     </button>
+    <span style="width: 5px"></span>
+    <button type="submit" (click)="previousState()" class="btn btn-primary btn-sm" data-cy="entityDetailsBackButton">
+      <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span class="d-none d-md-inline" jhiTranslate="entity.action.back">Back</span>
+    </button>
   </div>
 </div>
 
 <div id="page-body" class="row col-12">
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-    <div class="form-group" [hidden]="editForm.get('id')!.value == null">
-      <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-      <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-    </div>
-
-    <div class="form-group">
-      <label class="form-control-label" jhiTranslate="dmsApp.userRole.roleName" for="field_roleName">Role Name</label>
-      <input type="text" class="form-control" name="roleName" id="field_roleName" data-cy="roleName" formControlName="roleName" />
-      <div *ngIf="editForm.get('roleName')!.invalid && (editForm.get('roleName')!.dirty || editForm.get('roleName')!.touched)">
-        <small class="form-text text-danger" *ngIf="editForm.get('roleName')?.errors?.required" jhiTranslate="entity.validation.required">
-          This field is required.
-        </small>
+    <div class="row">
+      <div class="form-group col-4" [hidden]="editForm.get('id')!.value == null">
+        <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+        <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+      </div>
+      <div class="form-group col-4">
+        <label class="form-control-label" jhiTranslate="dmsApp.userRole.roleName" for="field_roleName">Role Name</label>
+        <input type="text" class="form-control" name="roleName" id="field_roleName" data-cy="roleName" formControlName="roleName" />
+        <div *ngIf="editForm.get('roleName')!.invalid && (editForm.get('roleName')!.dirty || editForm.get('roleName')!.touched)">
+          <small class="form-text text-danger" *ngIf="editForm.get('roleName')?.errors?.required" jhiTranslate="entity.validation.required">
+            This field is required.
+          </small>
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-control-label" jhiTranslate="dmsApp.userRole.menuAccess" for="field_docTitle">Menu Access</label>
+    <div class="row">
+      <div class="col-3">
+        <div *ngIf="_isMenuAccess" class="tab-header-select" (click)="switchAccess(1)">
+          <fa-icon icon="angle-down" (click)="switchAccess(1)"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.userRole.menuAccess">Menu Access</span>
+        </div>
+
+        <div *ngIf="!_isMenuAccess" class="tab-header" (click)="switchAccess(1)">
+          <fa-icon icon="angle-right" (click)="switchAccess(1)"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.userRole.menuAccess">Menu Access</span>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="div-tab" *ngIf="_isTemplateAccess" class="tab-header-select" (click)="switchAccess(2)">
+          <fa-icon icon="angle-down" (click)="switchAccess(2)"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.userRole.templateAccess">Template Access</span>
+        </div>
+
+        <div *ngIf="!_isTemplateAccess" class="tab-header" (click)="switchAccess(2)">
+          <fa-icon icon="angle-right" (click)="switchAccess(2)"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.userRole.templateAccess">Template Access</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" id="menu-access" *ngIf="_isMenuAccess">
       <div class="tbl-container">
-        <table class="table" formArrayName="menuAccessList">
+        <table class="table">
           <thead>
             <tr>
               <th style="width: 20%">
@@ -57,20 +87,48 @@
                 {{ 'dmsApp.userRole.menuName' | translate }}
               </th>
               <th class="text-center" style="width: 10%">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="onCheckAllMenuAccess($event, 1)"
+                  name="AllowAll"
+                  formControlName="AllowAll"
+                />
                 {{ 'dmsApp.userRole.menuAllow' | translate }}
               </th>
               <th class="text-center" style="width: 10%">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="onCheckAllMenuAccess($event, 2)"
+                  name="ReadAll"
+                  formControlName="ReadAll"
+                />
                 {{ 'dmsApp.userRole.menuRead' | translate }}
               </th>
               <th class="text-center" style="width: 10%">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="onCheckAllMenuAccess($event, 3)"
+                  name="WriteAll"
+                  formControlName="WriteAll"
+                />
                 {{ 'dmsApp.userRole.menuWrite' | translate }}
               </th>
               <th class="text-center" style="width: 10%">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="onCheckAllMenuAccess($event, 4)"
+                  name="DeleteAll"
+                  formControlName="DeleteAll"
+                />
                 {{ 'dmsApp.userRole.menuDelete' | translate }}
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody formArrayName="menuAccessList">
             <tr *ngFor="let item of _menuAccessListFCA.controls; last as isLast; let i = index" [formGroupName]="i">
               <td>{{ item.get('menuItem')!.value.menuGroup.name }}</td>
               <td>{{ item.get('menuItem')!.value.menuCode }}</td>
@@ -90,6 +148,63 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <div class="form-group" id="template-access" *ngIf="_isTemplateAccess">
+      <div class="row">
+        <div class="col-2 dms-label">
+          <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
+        </div>
+        <div class="input-group col-4">
+          <select
+            class="form-control"
+            id="field_metaDataHeader"
+            data-cy="metaDataHeader"
+            name="metaDataHeader"
+            formControlName="metaDataHeader"
+          >
+            <option [value]="0"></option>
+            <option [value]="metaDataHeader.id" *ngFor="let metaDataHeader of _metaDataHdrList">
+              {{ metaDataHeader.docTitle }}
+            </option>
+          </select>
+          <span class="input-group-append" style="width: 10px"></span>
+          <div class="input-group-append dms-plus">
+            <span class="input-sm input-btn-primary" (click)="addTemplate()">
+              <fa-icon icon="plus" class="fa-icon-theme"></fa-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="role-template-table">
+        <div class="tbl-container">
+          <table class="table" formArrayName="templateAccessList">
+            <thead>
+              <tr>
+                <th style="width: 20%">
+                  {{ 'dmsApp.userRole.templateId' | translate }}
+                </th>
+                <th style="width: 70%">
+                  {{ 'dmsApp.userRole.template' | translate }}
+                </th>
+                <th style="width: 10%; text-align: center">#</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of _templateAccessListFCA.controls; last as isLast; let i = index" [formGroupName]="i">
+                <td>{{ item.get('template')!.value.id }}</td>
+                <td>{{ item.get('template')!.value.docTitle }}</td>
+                <td style="text-align: center">
+                  <span title="Remove" (click)="removeTemplate(i)">
+                    <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </form>
