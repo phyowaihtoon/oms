@@ -6,6 +6,7 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
 import { MetaDataRoutingResolveService } from './metadata-routing-resolve.service';
 import { MetaDataDetailComponent } from '../detail/metadata-detail.component';
 import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
+import { MetadataTrashbinComponent } from '../trashbin/metadata-trashbin.component';
 
 const metadataRoute: Routes = [
   {
@@ -49,6 +50,17 @@ const metadataRoute: Routes = [
     component: MetaDataDetailComponent,
     resolve: {
       metadata: MetaDataRoutingResolveService,
+    },
+  },
+  {
+    path: 'trashbin',
+    component: MetadataTrashbinComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      defaultSort: 'id,asc',
+      menuCode: 'METADTB',
     },
     canActivate: [UserRouteAccessService],
   },

@@ -4,6 +4,7 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
 import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 import { DocumentDetailComponent } from '../detail/document-detail.component';
 import { DocumentComponent } from '../list/document.component';
+import { DocumentTrashbinComponent } from '../trashbin/document-trashbin.component';
 import { DocumentUpdateComponent } from '../update/document-update.component';
 import { DocumentRoutingResolveService } from './document-routing-resolve.service';
 
@@ -47,6 +48,16 @@ const metadataRoute: Routes = [
       menuCode: 'DOCMC',
     },
     canActivate: [UserRouteAccessService],
+  },
+  {
+    path: 'trashbin',
+    component: DocumentTrashbinComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      menuCode: 'DOCTB',
+    },
   },
 ];
 

@@ -2,9 +2,9 @@
   "dmsApp": {
     "userRole": {
       "home": {
-        "title": "User Roles",
+        "title": "Role Access",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Create User Role",
+        "createLabel": "Create Role",
         "createOrEditLabel": "Create or edit a User Role",
         "notFound": "No User Roles found"
       },
@@ -15,11 +15,14 @@
         "question": "Are you sure you want to delete User Role {{ id }}?"
       },
       "detail": {
-        "title": "User Role"
+        "title": "Role Access"
       },
       "id": "ID",
       "roleName": "Role Name",
       "menuAccess": "Menu Access",
+      "templateAccess": "Template Access",
+      "templateId": "Template ID",
+      "template": "Document Template",
       "menuGroup": "Group",
       "menuCode": "Menu Code",
       "menuName": "Menu Name",

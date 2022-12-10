@@ -1,6 +1,6 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
@@ -11,6 +11,9 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
 import { DocumentInquiryService } from '../service/document-inquiry.service';
+import { filter } from 'rxjs/operators';
+import { Event as NavigationEvent } from '@angular/router';
+import { IDocumentStatus, IPriority } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-document-detail',
@@ -22,6 +25,9 @@ export class DocumentDetailComponent implements OnInit {
   _documentHeader: IDocumentHeader | null = null;
   _documentDetails: IDocument[] | undefined;
   _replyMessage?: IReplyMessage | null;
+  _documentStatus?: IDocumentStatus[];
+  _priority?: IPriority[];
+
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
     { extension: 'docx', value: 'WORD' },
@@ -44,14 +50,26 @@ export class DocumentDetailComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     protected loadSetupService: LoadSetupService,
     protected documentInquiryService: DocumentInquiryService,
-    protected modalService: NgbModal
-  ) {}
+    protected modalService: NgbModal,
+    protected router: Router
+  ) {
+    this.router.events.subscribe((event: NavigationEvent) => {
+      if (event instanceof NavigationStart) {
+        if (event.restoredState) {
+          console.log('Navigation ID:', event.id);
+          console.log('Navigation URL:', event.url);
+          console.log('trigger:', event.navigationTrigger);
+          console.warn('restoring navigation id:', event.restoredState.navigationId);
+          this.documentInquiryService.setPreviousState('DocumentDetial');
+        }
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ docHeader }) => {
       this._documentHeader = docHeader;
       this._documentDetails = this._documentHeader?.docList;
-      console.log('Document Header Information :', JSON.stringify(this._documentHeader));
     });
     this.loadAllSetup();
   }
@@ -62,7 +80,27 @@ export class DocumentDetailComponent implements OnInit {
         this._metaDataHdrList = res.body;
       },
       error => {
-        console.log('Response Failed : ', error);
+        console.log('MetaDataHeader Failed : ', error);
+      }
+    );
+    this.loadSetupService.loadDocumentStatus().subscribe(
+      (res: HttpResponse<IDocumentStatus[]>) => {
+        if (res.body) {
+          this._documentStatus = res.body;
+        }
+      },
+      error => {
+        console.log('Document Status Failed : ', error);
+      }
+    );
+    this.loadSetupService.loadPriority().subscribe(
+      (res: HttpResponse<IPriority[]>) => {
+        if (res.body) {
+          this._priority = res.body;
+        }
+      },
+      error => {
+        console.log('Priority Failed : ', error);
       }
     );
   }
@@ -140,6 +178,16 @@ export class DocumentDetailComponent implements OnInit {
 
   hideLoading(): void {
     this._modalRef?.close();
+  }
+
+  getDocumentStatus(id?: number): string | undefined {
+    const docStatus = this._documentStatus?.find(item => item.value === id);
+    return docStatus?.description.toUpperCase();
+  }
+
+  getPriorityDesc(id?: number): string | undefined {
+    const priority = this._priority?.find(item => item.value === id);
+    return priority?.description;
   }
 
   getDocTitleByID(id?: number): string | undefined {

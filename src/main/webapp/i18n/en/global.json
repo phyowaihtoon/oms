@@ -16,7 +16,7 @@
         "document": "Document",
         "repository": "Repository",
         "applicationUser": "User Authority",
-        "userRole": "Role Menu Access",
+        "userRole": "Role Access",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
@@ -38,7 +38,8 @@
         "title": "Document",
         "create": "Document Mapping",
         "update": "Document Mapping",
-        "search": "Document Inquiry"
+        "search": "Document Inquiry",
+        "trashbin": "Trash Bin"
       },
       "queue": {
         "title": "Service Queue",
@@ -129,6 +130,7 @@
       "back": "Back",
       "cancel": "Cancel",
       "delete": "Delete",
+      "restore": "Restore",
       "edit": "Edit",
       "open": "Open",
       "view": "View",
@@ -143,7 +145,8 @@
       "ok": "OK",
       "generate": "Generate",
       "select": "Select",
-      "proceed": "Proceed"
+      "proceed": "Proceed",
+      "add": "Add"
     },
     "detail": {
       "field": "Field",
@@ -151,6 +154,9 @@
     },
     "delete": {
       "title": "Confirm delete operation"
+    },
+    "restore": {
+      "title": "Confirm restore operation"
     },
     "validation": {
       "required": "This field is required.",

@@ -32,4 +32,14 @@ export class DocumentService {
       observe: 'response',
     });
   }
+
+  restoreDocument(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.patch<IReplyMessage>(
+      `${this.resourceUrl}/restore/${id}`,
+      {},
+      {
+        observe: 'response',
+      }
+    );
+  }
 }

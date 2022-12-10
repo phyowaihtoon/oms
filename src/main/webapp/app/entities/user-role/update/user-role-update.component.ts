@@ -5,11 +5,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { IRoleMenuAccess, IUserRole, RoleMenuAccess, UserRole } from '../user-role.model';
+import { IRoleMenuAccess, IRoleTemplateAccess, IUserRole, RoleMenuAccess, RoleTemplateAccess, UserRole } from '../user-role.model';
 import { UserRoleService } from '../service/user-role.service';
 import { IHeaderDetailsMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 
 @Component({
   selector: 'jhi-user-role-update',
@@ -18,18 +20,28 @@ import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.compo
 })
 export class UserRoleUpdateComponent implements OnInit {
   isSaving = false;
+  _isMenuAccess = true;
+  _isTemplateAccess = false;
+  _metaDataHdrList?: IMetaDataHeader[];
 
   editForm = this.fb.group({
     id: [],
     roleName: [null, [Validators.required]],
     menuAccessList: this.fb.array([]),
+    templateAccessList: this.fb.array([]),
+    metaDataHeader: [],
+    AllowAll: [],
+    ReadAll: [],
+    WriteAll: [],
+    DeleteAll: [],
   });
 
   constructor(
     protected userRoleService: UserRoleService,
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected loadSetupService: LoadSetupService
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +51,21 @@ export class UserRoleUpdateComponent implements OnInit {
       }
       this.updateForm(headerDetailsMessage);
     });
+
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        if (res.body) {
+          this._metaDataHdrList = res.body;
+        }
+      },
+      error => {
+        console.log('Loading MetaData Setup Failed : ', error);
+      }
+    );
+  }
+
+  get _templateAccessListFCA(): FormArray {
+    return this.editForm.get('templateAccessList') as FormArray;
   }
 
   get _menuAccessListFCA(): FormArray {
@@ -48,15 +75,40 @@ export class UserRoleUpdateComponent implements OnInit {
   resetForm(): void {
     this.editForm.get('id')?.setValue(undefined);
     this.editForm.get('roleName')?.setValue('');
+    this.editForm.get('AllowAll')?.setValue(false);
+    this.editForm.get('ReadAll')?.setValue(false);
+    this.editForm.get('WriteAll')?.setValue(false);
+    this.editForm.get('DeleteAll')?.setValue(false);
     this._menuAccessListFCA.controls.forEach(rowFormControl => {
       rowFormControl.get('isAllow')?.setValue(false);
       rowFormControl.get('isRead')?.setValue(false);
       rowFormControl.get('isWrite')?.setValue(false);
       rowFormControl.get('isDelete')?.setValue(false);
     });
+
+    this._templateAccessListFCA.clear();
   }
 
-  initializeNewRow(): void {
+  onCheckAllMenuAccess(event: any, value: number): void {
+    if (event.target.checked) {
+      this._menuAccessListFCA.controls.forEach(rowFormControl => {
+        if (value === 1) {
+          rowFormControl.get('isAllow')?.setValue(true);
+        }
+        if (value === 2) {
+          rowFormControl.get('isRead')?.setValue(true);
+        }
+        if (value === 3) {
+          rowFormControl.get('isWrite')?.setValue(true);
+        }
+        if (value === 4) {
+          rowFormControl.get('isDelete')?.setValue(true);
+        }
+      });
+    }
+  }
+
+  initializeNewMenuAccessRow(): void {
     const initialRow = this.fb.group({
       id: [],
       isAllow: [],
@@ -69,6 +121,24 @@ export class UserRoleUpdateComponent implements OnInit {
     this._menuAccessListFCA.push(initialRow);
   }
 
+  initializeNewTemplateAccessRow(): void {
+    const initialRow = this.fb.group({
+      id: [],
+      template: [],
+      userRole: [],
+    });
+    this._templateAccessListFCA.push(initialRow);
+  }
+
+  addNewTemplateAccessRow(data: IRoleTemplateAccess): void {
+    const newTemplateRow = this.fb.group({
+      id: [],
+      template: [data.metaDataHeader],
+      userRole: [data.userRole],
+    });
+    this._templateAccessListFCA.push(newTemplateRow);
+  }
+
   save(): void {
     this.isSaving = true;
     const message = this.createFromForm();
@@ -77,6 +147,42 @@ export class UserRoleUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.userRoleService.create(message));
     }
+  }
+
+  switchAccess(id: number): void {
+    if (id === 1) {
+      this._isMenuAccess = true;
+      this._isTemplateAccess = false;
+    } else {
+      this._isMenuAccess = false;
+      this._isTemplateAccess = true;
+    }
+  }
+
+  addTemplate(): void {
+    const metaDataHeaderId = +this.editForm.get('metaDataHeader')!.value;
+    const addedMetaDataList = this.createTemplateAccess();
+    const addedMetaData = addedMetaDataList.find(item => item.metaDataHeader?.id === metaDataHeaderId);
+    if (addedMetaData === undefined) {
+      const metaDataHeader = this._metaDataHdrList?.find(item => item.id === metaDataHeaderId);
+      if (metaDataHeader !== undefined) {
+        const roleTemplate = {
+          ...new RoleTemplateAccess(),
+          metaDataHeader: { ...new MetaDataHeader(), id: metaDataHeader.id, docTitle: metaDataHeader.docTitle },
+          userRole: { ...new UserRole(), id: 0, roleName: '' },
+        };
+        this.addNewTemplateAccessRow(roleTemplate);
+      }
+    }
+    this.editForm.get('metaDataHeader')?.patchValue(0);
+  }
+
+  removeTemplate(index: number): void {
+    this._templateAccessListFCA.removeAt(index);
+  }
+
+  previousState(): void {
+    window.history.back();
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IHeaderDetailsMessage>>): void {
@@ -90,7 +196,8 @@ export class UserRoleUpdateComponent implements OnInit {
     if (message?.code) {
       if (message.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(message.header.id);
-        this.updateRoleMenuAccess(message.details);
+        this.updateRoleMenuAccess(message.details1);
+        this.updateTemplateAccess(message.details2);
       }
       const replyCode = message.code;
       const replyMsg = message.message;
@@ -135,7 +242,8 @@ export class UserRoleUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: userRole.id,
       roleName: userRole.roleName,
-      menuAccessList: this.updateRoleMenuAccess(message.details),
+      menuAccessList: this.updateRoleMenuAccess(message.details1),
+      templateAccessList: this.updateTemplateAccess(message.details2),
     });
   }
 
@@ -146,7 +254,8 @@ export class UserRoleUpdateComponent implements OnInit {
         id: this.editForm.get(['id'])!.value,
         roleName: this.editForm.get(['roleName'])!.value,
       },
-      details: this.createRoleMenuAccess(),
+      details1: this.createRoleMenuAccess(),
+      details2: this.createTemplateAccess(),
     };
   }
 
@@ -171,11 +280,28 @@ export class UserRoleUpdateComponent implements OnInit {
     };
   }
 
+  protected createTemplateAccess(): IRoleTemplateAccess[] {
+    const fieldList: IRoleTemplateAccess[] = [];
+    this._templateAccessListFCA.controls.forEach(formControl => {
+      fieldList.push(this.getTemplateAccess(formControl));
+    });
+    return fieldList;
+  }
+
+  protected getTemplateAccess(formControl: any): IRoleTemplateAccess {
+    return {
+      ...new RoleTemplateAccess(),
+      id: formControl.get(['id'])!.value,
+      metaDataHeader: formControl.get(['template'])!.value,
+      userRole: formControl.get(['userRole'])!.value,
+    };
+  }
+
   protected updateRoleMenuAccess(menuAccessList: IRoleMenuAccess[] | undefined): void {
     let index = 0;
     this._menuAccessListFCA.clear();
     menuAccessList?.forEach(data => {
-      this.initializeNewRow();
+      this.initializeNewMenuAccessRow();
       this._menuAccessListFCA.controls[index].get(['id'])!.setValue(data.id);
       this._menuAccessListFCA.controls[index].get(['isAllow'])!.setValue(this.convertNumToBool(data.isAllow));
       this._menuAccessListFCA.controls[index].get(['isRead'])!.setValue(this.convertNumToBool(data.isRead));
@@ -183,6 +309,18 @@ export class UserRoleUpdateComponent implements OnInit {
       this._menuAccessListFCA.controls[index].get(['isDelete'])!.setValue(this.convertNumToBool(data.isDelete));
       this._menuAccessListFCA.controls[index].get(['menuItem'])!.setValue(data.menuItem);
       this._menuAccessListFCA.controls[index].get(['userRole'])!.setValue(data.userRole);
+      index = index + 1;
+    });
+  }
+
+  protected updateTemplateAccess(templateAccessList: IRoleTemplateAccess[] | undefined): void {
+    let index = 0;
+    this._templateAccessListFCA.clear();
+    templateAccessList?.forEach(data => {
+      this.initializeNewTemplateAccessRow();
+      this._templateAccessListFCA.controls[index].get(['id'])!.setValue(data.id);
+      this._templateAccessListFCA.controls[index].get(['template'])!.setValue(data.metaDataHeader);
+      this._templateAccessListFCA.controls[index].get(['userRole'])!.setValue(data.userRole);
       index = index + 1;
     });
   }

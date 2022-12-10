@@ -51,6 +51,7 @@ import {
   faFolderOpen,
   faUpload,
   faCaretRight,
+  faTrashRestore,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -107,5 +108,6 @@ export const fontAwesomeIcons = [
   faFolderOpen,
   faUpload,
   faCaretRight,
+  faTrashRestore,
   // jhipster-needle-add-icon-import
 ];

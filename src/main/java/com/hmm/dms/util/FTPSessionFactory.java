@@ -18,6 +18,7 @@ public class FTPSessionFactory {
         dsf.setPort(ftpConfig.getPort());
         dsf.setUsername(ftpConfig.getUsername());
         dsf.setPassword(ftpConfig.getPassword());
+        dsf.setControlEncoding("UTF-8");
         return dsf;
     }
 

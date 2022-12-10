@@ -15,3 +15,58 @@ form {
   width: 100%;
   overflow-x: auto;
 }
+
+#menu-access {
+  margin-top: 10pt;
+  padding: 10pt;
+  border: 0.5pt solid gray;
+}
+
+#template-access {
+  margin-top: 10pt;
+  padding: 10pt;
+  border: 0.5pt solid gray;
+}
+
+#role-template-table {
+  padding: 20px;
+}
+
+.tab-header-select {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tab-header {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.tab-header:hover,
+.tab-header-select:hover {
+  font-size: large;
+}
+
+.dms-plus {
+  cursor: pointer;
+}
+
+.fa-icon-theme {
+  font-size: 15px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0px 5px 0px 5px;
+  box-shadow: 0 0px 2px #a7a7a7;
+  margin: 6px;
+}
+
+.fa-icon-theme:hover {
+  background-color: #d58e03;
+}
