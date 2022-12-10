@@ -29,7 +29,8 @@
       "fieldOrder": "Field Order",
       "fieldAction": "#",
       "search": "SEARCH CRITERIA",
-      "result": "SEARCH RESULT"
+      "result": "SEARCH RESULT",
+      "metadataLabel": "MetaData Information"
     }
   }
 }

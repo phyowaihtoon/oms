@@ -29,7 +29,8 @@
       "fieldOrder": "Field Order",
       "fieldAction": "#",
       "search": "ရှာဖွေလိုသော အချက်အလက်",
-      "result": "ရှာဖွေမှုရလဒ်"
+      "result": "ရှာဖွေမှုရလဒ်",
+      "metadataLabel": "MetaData အချက်အလက်"
     }
   }
 }

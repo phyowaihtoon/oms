@@ -51,7 +51,7 @@ export class DocumentDetailComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ docHeader }) => {
       this._documentHeader = docHeader;
       this._documentDetails = this._documentHeader?.docList;
-      console.log('Document Header Information :', this._documentHeader);
+      console.log('Document Header Information :', JSON.stringify(this._documentHeader));
     });
     this.loadAllSetup();
   }

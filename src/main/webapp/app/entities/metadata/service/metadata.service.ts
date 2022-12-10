@@ -36,7 +36,9 @@ export class MetaDataService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IMetaDataHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<IMetaDataHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   /* query(req?: any): Observable<EntityArrayResponseType> {
@@ -82,5 +84,12 @@ export class MetaDataService {
       return [...categoriesToAdd, ...metaDataHeaderCollection];
     }
     return metaDataHeaderCollection;
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
+    }
+    return res;
   }
 }
