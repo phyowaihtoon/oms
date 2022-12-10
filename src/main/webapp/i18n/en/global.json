@@ -17,6 +17,7 @@
         "repository": "Repository",
         "applicationUser": "User Authority",
         "userRole": "Role Access",
+        "sysconfig": "System Configuration",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {

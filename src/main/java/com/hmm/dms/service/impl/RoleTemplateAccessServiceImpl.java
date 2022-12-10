@@ -7,7 +7,6 @@ import com.hmm.dms.repository.RoleTemplateAccessRepository;
 import com.hmm.dms.service.RoleTemplateAccessService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
-import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import com.hmm.dms.service.mapper.RoleTemplateAccessMapper;
 import com.hmm.dms.service.message.RoleTemplateAccessDTO;
@@ -23,20 +22,17 @@ public class RoleTemplateAccessServiceImpl implements RoleTemplateAccessService 
     private final RoleTemplateAccessRepository roleTemplateAccessRepository;
     private final RoleTemplateAccessMapper roleTemplateAccessMapper;
     private final MetaDataRepository metaDataRepository;
-    private final MetaDataHeaderMapper metaDataHeaderMapper;
     private final MetaDataMapper metaDataMapper;
 
     public RoleTemplateAccessServiceImpl(
         RoleTemplateAccessRepository roleTemplateAccessRepository,
         RoleTemplateAccessMapper roleTemplateAccessMapper,
         MetaDataRepository metaDataRepository,
-        MetaDataHeaderMapper metaDataHeaderMapper,
         MetaDataMapper metaDataMapper
     ) {
         this.roleTemplateAccessRepository = roleTemplateAccessRepository;
         this.roleTemplateAccessMapper = roleTemplateAccessMapper;
         this.metaDataRepository = metaDataRepository;
-        this.metaDataHeaderMapper = metaDataHeaderMapper;
         this.metaDataMapper = metaDataMapper;
     }
 

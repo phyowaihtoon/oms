@@ -109,4 +109,40 @@ public class DocumentInquiryResource {
             //.contentLength(file.length())
             .body(message.getData());
     }
+
+    @GetMapping("/docinquiry/preview/{docId}")
+    public ResponseEntity<?> previewFile(@PathVariable Long docId) {
+        log.debug("REST request to download file");
+
+        DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
+        String filePath = docDTO.getFilePath();
+        String fileName = docDTO.getFileName();
+        int dot = fileName.lastIndexOf('.');
+        String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
+        if (extension == null || extension.isEmpty()) {
+            System.out.println("Invalid file extension while downloading file");
+            return ResponseEntity.status(205).build();
+        }
+
+        ReplyMessage<ByteArrayResource> message = null;
+        try {
+            message = documentInquiryService.downloadPreviewFile(filePath + "//" + fileName);
+        } catch (IOException ex) {
+            System.out.println("Failed to download: [" + ex.getMessage() + "]");
+            return ResponseEntity.status(204).build();
+        } catch (Exception ex) {
+            System.out.println("Failed to download: [" + ex.getMessage() + "]");
+            return ResponseEntity.status(206).build();
+        }
+
+        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
+        header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
+        return ResponseEntity
+            .ok()
+            .headers(header)
+            //.contentLength(file.length())
+            .body(message.getData());
+    }
 }

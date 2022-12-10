@@ -46,9 +46,7 @@
       <tbody>
         <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/service-queue/document', documentHeader.id, 'view']"
-              >{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a
-            >
+            <a>{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a>
           </td>
           <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
           <td>{{ bindPriority(documentHeader.priority!) }}</td>

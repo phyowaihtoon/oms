@@ -9,7 +9,9 @@ import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
+import com.hmm.dms.util.ResponseCode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -125,11 +127,46 @@ public class MetaDataServiceImpl implements MetaDataService {
         log.debug("Requesting to get all Metadata__" + docTitle);
         if (message.getCreatedDate() != null && message.getCreatedDate().trim().length() > 0) {
             String createdDate = message.getCreatedDate();
-            Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitleAndDate(docTitle, createdDate, pageable);
+            Page<MetaDataHeader> pageWithEntity =
+                this.metaDataHeaderRepository.findAllByDocTitleAndDate("N", docTitle, createdDate, pageable);
             return pageWithEntity.map(metaDataHeaderMapper::toDto);
         }
 
-        Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitle(docTitle, pageable);
+        Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitle("N", docTitle, pageable);
         return pageWithEntity.map(metaDataHeaderMapper::toDto);
+    }
+
+    @Override
+    public Page<MetaDataHeaderDTO> getAllMetaDataInTrashBin(MetaDataInquiryMessage message, Pageable pageable) {
+        String docTitle = message.getDocTitle();
+        if (docTitle == null || docTitle.equals("null") || docTitle.isEmpty()) docTitle = ""; else docTitle = docTitle.trim();
+
+        log.debug("Requesting to get all Metadata__" + docTitle);
+        if (message.getCreatedDate() != null && message.getCreatedDate().trim().length() > 0) {
+            String createdDate = message.getCreatedDate();
+            Page<MetaDataHeader> pageWithEntity =
+                this.metaDataHeaderRepository.findAllByDocTitleAndDate("Y", docTitle, createdDate, pageable);
+            return pageWithEntity.map(metaDataHeaderMapper::toDto);
+        }
+
+        Page<MetaDataHeader> pageWithEntity = this.metaDataHeaderRepository.findAllByDocTitle("Y", docTitle, pageable);
+        return pageWithEntity.map(metaDataHeaderMapper::toDto);
+    }
+
+    @Override
+    public BaseMessage restoreMetaData(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        try {
+            this.metaDataHeaderRepository.restoreMetaData(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("MetaData has been restored.");
+        } catch (Exception ex) {
+            System.out.println("Error while restoring MetaData :" + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("MetaData Restore failed : " + ex.getMessage());
+        }
+
+        return replyMessage;
     }
 }

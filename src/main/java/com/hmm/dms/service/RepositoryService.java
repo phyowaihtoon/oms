@@ -2,6 +2,7 @@ package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.RepositoryInquiryMessage;
 import java.util.List;
 import java.util.Optional;
@@ -53,4 +54,8 @@ public interface RepositoryService {
     Page<RepositoryHeaderDTO> findAll(Pageable pageable);
 
     Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryMessage message, Pageable pageable);
+
+    Page<RepositoryHeaderDTO> getAllRepositoryDataInTrashBin(RepositoryInquiryMessage message, Pageable pageable);
+
+    BaseMessage restoreRepository(Long id);
 }

@@ -5,12 +5,12 @@ export interface IUserAuthority {
   userID: string;
   userName: string;
   departmentName?: string;
+  roleID: number;
   roleName: string;
   workflowAuthority: number;
   sysConfigMessage: ISysConfigMessage;
   menuGroups: IMenuGroupMessage[];
   activeMenu: IRoleMenuAccess;
-  templateList: IMetaDataHeader[];
 }
 
 export interface ISysConfigMessage {

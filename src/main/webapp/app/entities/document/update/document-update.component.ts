@@ -24,7 +24,6 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 })
 export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
-  _documentDetails: IDocument[] | undefined;
   _documentStatus?: IDocumentStatus[];
 
   _metaDataHdrList: MetaDataHeader[] | null = [];
@@ -91,24 +90,32 @@ export class DocumentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadAllSetup();
     this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-      this._metaDataHdrList = userAuthority.templateList;
-
       this._documentHeader = docHeader;
-      this._documentDetails = this._documentHeader?.docList;
-      if (this._documentHeader !== undefined) {
-        if (this._documentHeader.id !== undefined && docHeader.id !== null) {
-          this.removeAllField();
-        }
-        this.updateForm(docHeader);
-      }
+      this.loadAllSetup();
     });
   }
 
   loadAllSetup(): void {
+    if (this._userAuthority) {
+      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
+        (res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+            if (this._documentHeader) {
+              this.removeAllField();
+              this.updateForm(this._documentHeader);
+            }
+          }
+        },
+        error => {
+          console.log('Loading MetaData Header Failed : ', error);
+        }
+      );
+    }
+
     this.loadSetupService.loadPriority().subscribe((res_priority: HttpResponse<IPriority[]>) => {
       this._priority = res_priority.body;
     });
@@ -176,8 +183,7 @@ export class DocumentUpdateComponent implements OnInit {
     this.isDocMap = false;
   }
 
-  // window.history.back();
-  previousState(): void {
+  clearFormData(): void {
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['metaDataHeaderId']!.setValue('');
     this.editForm.controls['priority']!.setValue('');

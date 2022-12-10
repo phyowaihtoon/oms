@@ -54,6 +54,10 @@ export class DocumentInquiryService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  previewFile(docId: number): Observable<BlobType> {
+    return this.http.get(`${this.resourceUrl}/preview/${docId}`, { observe: 'response', responseType: 'blob' });
+  }
+
   downloadFile(docId: number): Observable<BlobType> {
     return this.http.get(`${this.resourceUrl}/download/${docId}`, { observe: 'response', responseType: 'blob' });
   }
