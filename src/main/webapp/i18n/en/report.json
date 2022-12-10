@@ -10,7 +10,11 @@
     "docmapping": {
       "criteriaLbl": "Report Criteria",
       "startdate": "Start Date",
-      "enddate": "End Date"
+      "enddate": "End Date",
+      "uploadfromdate": "Upload From Date",
+      "uploadtodate": "Upload To Date",
+      "template": "Template",
+      "user": "User"
     }
   }
 }

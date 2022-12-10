@@ -151,9 +151,14 @@ export class DocumentUpdateComponent implements OnInit {
   // remove field by given row id
   removeField(i: number): void {
     if (this.docList1().length > 0) {
-      this.docList1().removeAt(i);
-      this.myInputVariable!.nativeElement.value = '';
+      const filename = this.docList1().controls[i].get(['fileName'])!.value;
+      this.subscribeToSaveResponseCheckFileexist(this.documentHeaderService.checkFileExist(filename), i);
     }
+  }
+
+  removeFieldConfirm(i: number): void {
+    this.docList1().removeAt(i);
+    this.myInputVariable!.nativeElement.value = '';
   }
 
   // remove all Field of document table
@@ -437,6 +442,35 @@ export class DocumentUpdateComponent implements OnInit {
       this.isSentApprove = false;
       this.isCancel = false;
     }
+  }
+
+  protected subscribeToSaveResponseCheckFileexist(result: Observable<HttpResponse<IReplyMessage>>, i: number): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessCheckFileexist(res, i),
+      () => this.onSaveErrorCheckFileexist()
+    );
+  }
+
+  protected onSaveSuccessCheckFileexist(result: HttpResponse<IReplyMessage>, i: number): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.ERROR_E00) {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      } else {
+        this.removeFieldConfirm(i);
+      }
+    } else {
+      this.onSaveErrorCheckFileexist();
+    }
+  }
+
+  protected onSaveErrorCheckFileexist(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
