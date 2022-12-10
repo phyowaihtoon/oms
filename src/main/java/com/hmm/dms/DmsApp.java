@@ -62,6 +62,7 @@ public class DmsApp {
      *
      * @param args the command line arguments.
      */
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(DmsApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
