@@ -16,7 +16,6 @@ export class RepositoryRoutingResolveService implements Resolve<IRepositoryHeade
     if (id) {
       return this.service.find(id).pipe(
         mergeMap((repository: HttpResponse<RepositoryHeader>) => {
-          console.log('Resolvess____' + JSON.stringify(repository.body));
           if (repository.body) {
             return of(repository.body);
           } else {

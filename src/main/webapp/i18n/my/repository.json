@@ -26,7 +26,8 @@
       "createdDate": "ဖန်တီးသော ရက်စွဲ",
       "createdBy": "ဖန်တီးသူ",
       "search": "ရှာဖွေလိုသော အချက်အလက်",
-      "result": "ရှာဖွေမှုရလဒ်"
+      "result": "ရှာဖွေမှုရလဒ်",
+      "repositoryLabel": "Repository အချက်အလက်"
     }
   }
 }
