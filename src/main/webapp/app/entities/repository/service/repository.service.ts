@@ -37,7 +37,9 @@ export class RepositoryService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IRepositoryHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<IRepositoryHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   query(criteriaData: IRepositoryInquiry, req?: any): Observable<EntityArrayResponseType> {
@@ -87,6 +89,12 @@ export class RepositoryService {
     return repositoryHeaderCollection;
   }
 
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
+    }
+    return res;
+}
   restoreRepository(id: number): Observable<HttpResponse<IReplyMessage>> {
     return this.http.put<IReplyMessage>(
       `${this.resourceUrl}/restore/${id}`,

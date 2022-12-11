@@ -26,7 +26,8 @@
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "search": "SEARCH CRITERIA",
-      "result": "SEARCH RESULT"
+      "result": "SEARCH RESULT",
+      "repositoryLabel": "Repository Information"
     }
   }
 }

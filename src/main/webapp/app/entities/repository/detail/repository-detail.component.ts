@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { IRepository } from '../repository.model';
+import { IRepository, IRepositoryHeader } from '../repository.model';
 
 @Component({
   selector: 'jhi-repository-detail',
   templateUrl: './repository-detail.component.html',
+  styleUrls: ['./repository-detail.component.scss'],
 })
 export class RepositoryDetailComponent implements OnInit {
-  repository: IRepository | null = null;
+  repository: IRepositoryHeader | null = null;
+
+  _isShow = true;
 
   constructor(protected activatedRoute: ActivatedRoute) {}
 
@@ -20,5 +23,13 @@ export class RepositoryDetailComponent implements OnInit {
 
   previousState(): void {
     window.history.back();
+  }
+
+  showData(): void {
+    if (this._isShow === false) {
+      this._isShow = !this._isShow;
+    }
+
+    this._isShow = false;
   }
 }
