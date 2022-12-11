@@ -21,4 +21,6 @@ public interface DocumentInquiryService {
     DocumentDTO getDocumentById(Long id);
 
     public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) throws IOException, Exception;
+
+    public ReplyMessage<ByteArrayResource> downloadPreviewFile(String filePath) throws IOException, Exception;
 }

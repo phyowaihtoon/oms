@@ -5,4 +5,6 @@ import com.hmm.dms.service.message.RptParamsMessage;
 
 public interface ReportService {
     public ReplyMessage<RptParamsMessage> generateDocumentListRpt(RptParamsMessage rptPara);
+
+    public ReplyMessage<RptParamsMessage> generateDocumentListRpt2(RptParamsMessage rptPara);
 }

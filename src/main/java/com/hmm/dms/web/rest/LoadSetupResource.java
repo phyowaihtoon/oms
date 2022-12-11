@@ -78,9 +78,9 @@ public class LoadSetupResource {
         return this.loadSetupService.getAllMetaDataHeader();
     }
 
-    @GetMapping("/metadata")
-    public List<MetaDataHeaderDTO> loadAllMetaData() {
-        return null; //this.loadSetupService.getAllMetaData();
+    @GetMapping("/metadataheader/{id}")
+    public List<MetaDataHeaderDTO> getAllMetaDataHeaderAccessByRole(@PathVariable Long id) {
+        return this.loadSetupService.getAllMetaDataHeaderAccessByRole(id);
     }
 
     @GetMapping("/metadata/{id}")
@@ -90,7 +90,7 @@ public class LoadSetupResource {
     }
 
     @PostMapping("/repository")
-    public ResponseEntity<List<RepositoryHeaderDTO>> getAllMetaData(@RequestBody RepositoryInquiryMessage dto, Pageable pageable) {
+    public ResponseEntity<List<RepositoryHeaderDTO>> getAllRepository(@RequestBody RepositoryInquiryMessage dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
         Page<RepositoryHeaderDTO> page = loadSetupService.getAllRepositoryData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

@@ -4,6 +4,7 @@ import com.hmm.dms.repository.RepositoryHeaderRepository;
 import com.hmm.dms.service.RepositoryService;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.RepositoryInquiryMessage;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -205,9 +206,28 @@ public class RepositoryResource {
         @RequestBody RepositoryInquiryMessage message,
         Pageable pageable
     ) {
-        log.debug("REST request to get all Documents");
+        log.debug("REST request to get all Repository");
         Page<RepositoryHeaderDTO> page = repositoryService.getAllRepositoryData(message, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @PostMapping("/repository/trashbin")
+    public ResponseEntity<List<RepositoryHeaderDTO>> getAllRepositoryInTrashBin(
+        @RequestBody RepositoryInquiryMessage message,
+        Pageable pageable
+    ) {
+        log.debug("REST request to get all Repository Inside Trash Bin");
+        Page<RepositoryHeaderDTO> page = repositoryService.getAllRepositoryDataInTrashBin(message, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @PutMapping("/repository/restore/{id}")
+    public ResponseEntity<BaseMessage> restoreRepository(@PathVariable(value = "id", required = false) final Long id)
+        throws URISyntaxException {
+        BaseMessage result = repositoryService.restoreRepository(id);
+        String headerID = id.toString();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, headerID)).body(result);
     }
 }

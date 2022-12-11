@@ -115,7 +115,7 @@
         <tbody>
           <tr *ngFor="let metadata of metadatas; trackBy: trackId" data-cy="entityTable">
             <td>
-              <a [routerLink]="['/metadata', metadata.id, 'edit']">{{ metadata.id }}</a>
+              <a>{{ metadata.id }}</a>
             </td>
             <td>{{ metadata.docTitle }}</td>
             <td>{{ metadata.createdDate ? metadata.createdDate.format('DD-MM-YYYY') : '-' }}</td>
@@ -125,11 +125,11 @@
                 <button
                   *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
                   type="submit"
-                  [routerLink]="['/metadata', metadata.id, 'edit']"
+                  (click)="restoreMetaData(metadata)"
                   class="btn btn-primary btn-sm"
                   data-cy="entityEditButton"
                 >
-                  <fa-icon icon="pencil-alt"></fa-icon>
+                  <fa-icon icon="trash-restore"></fa-icon>
                   <span class="d-none d-md-inline" jhiTranslate="entity.action.restore">Restore</span>
                 </button>
               </div>

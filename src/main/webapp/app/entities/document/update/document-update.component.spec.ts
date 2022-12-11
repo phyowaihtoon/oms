@@ -63,7 +63,7 @@ describe('Component Tests', () => {
         saveSubject.complete();
 
         // THEN
-        expect(comp.previousState).toHaveBeenCalled();
+        expect(comp.clearFormData).toHaveBeenCalled();
         expect(documentService.update).toHaveBeenCalledWith(document);
         expect(comp.isSaving).toEqual(false);
       });
@@ -86,7 +86,7 @@ describe('Component Tests', () => {
         // THEN
         expect(documentService.create).toHaveBeenCalledWith(document);
         expect(comp.isSaving).toEqual(false);
-        expect(comp.previousState).toHaveBeenCalled();
+        expect(comp.clearFormData).toHaveBeenCalled();
       });
 
       it('Should set isSaving to false on error', () => {
@@ -106,7 +106,7 @@ describe('Component Tests', () => {
         // THEN
         expect(documentService.update).toHaveBeenCalledWith(document);
         expect(comp.isSaving).toEqual(false);
-        expect(comp.previousState).not.toHaveBeenCalled();
+        expect(comp.clearFormData).not.toHaveBeenCalled();
       });
     });
   });

@@ -42,4 +42,8 @@ export class DocumentService {
       }
     );
   }
+
+  checkFileExist(filename: string): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.get<IReplyMessage>(`${this.resourceUrl}/checkfileexist/${filename}`, { observe: 'response' });
+  }
 }
