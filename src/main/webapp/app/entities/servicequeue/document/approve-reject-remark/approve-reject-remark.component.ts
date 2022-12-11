@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentService } from 'app/entities/document/service/document.service';
@@ -10,6 +10,7 @@ import { DocumentService } from 'app/entities/document/service/document.service'
 })
 export class ApproveRejectRemarkComponent implements OnInit {
   @Output() passEntry: EventEmitter<any> = new EventEmitter();
+  @Input() public title: any;
 
   editForm = this.fb.group({
     reason: ['', [Validators.required]],

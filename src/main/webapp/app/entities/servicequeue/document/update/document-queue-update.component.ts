@@ -121,6 +121,11 @@ export class DocumentQueueUpdateComponent implements OnInit {
     this._docStatus_no = status;
     if (status !== 3 && status !== 5) {
       const modalRef = this.modalService.open(ApproveRejectRemarkComponent, { size: 'md', backdrop: 'static' });
+      if (status === 4) {
+        modalRef.componentInstance.title = 'Reason for Ammendment';
+      } else {
+        modalRef.componentInstance.title = 'Reason for Reject';
+      }
       modalRef.componentInstance.passEntry.subscribe((data: any) => {
         const reason = data;
         this.save(status, reason);
