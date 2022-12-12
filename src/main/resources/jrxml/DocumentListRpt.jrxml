@@ -43,25 +43,33 @@
 				<text><![CDATA[Uploaded Document List Report]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="203" y="77" width="351" height="20" uuid="8ebcc45c-96c7-4730-bfaa-1e29151309ce"/>
+				<reportElement x="204" y="77" width="351" height="20" uuid="8ebcc45c-96c7-4730-bfaa-1e29151309ce"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Uploaded Date Range: " + $P{frmDate}+" - "+$P{toDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Uploaded Date Range:    From " + $P{frmDate}+" To "+$P{toDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="275" y="34" width="254" height="20" uuid="15ec3792-1bba-4ee2-a608-8418cf0e37d2"/>
+				<reportElement x="275" y="34" width="65" height="20" uuid="15ec3792-1bba-4ee2-a608-8418cf0e37d2"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Template: " +$P{metadata}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Template:   "
+]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="299" y="57" width="254" height="20" uuid="3ae12c42-f917-410d-aaae-919de4a723c0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["User: " +$P{userid}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["User:    " +$P{userid}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="342" y="34" width="150" height="23" uuid="b1d71697-7d12-4cfc-b315-cb88acd238a3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="MyPyidaungsu" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{metadata}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -78,7 +86,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Sr.]]></text>
 			</staticText>
@@ -92,7 +100,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Template Name]]></text>
 			</staticText>
@@ -107,7 +115,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Uploaded Date]]></text>
 			</staticText>
@@ -123,7 +131,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Modified Date]]></text>
 			</staticText>
@@ -139,7 +147,7 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[User Name]]></text>
 			</staticText>
@@ -154,7 +162,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Arial" size="12"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Document Name]]></text>
 			</staticText>
@@ -217,7 +225,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial" size="10"/>
+					<font fontName="MyPyidaungsu" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dataS2}]]></textFieldExpression>
 			</textField>

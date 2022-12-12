@@ -37,7 +37,7 @@ export class DoclistRptComponent implements OnInit {
     startDate: [null, [Validators.required]],
     endDate: [null, [Validators.required]],
     metaDataHeaderId: [],
-    userID: [],
+    userId: [''],
   });
 
   constructor(
@@ -111,7 +111,9 @@ export class DoclistRptComponent implements OnInit {
     const startDate = this.editForm.get(['startDate'])!.value.format('DD-MM-YYYY');
     const endDate = this.editForm.get(['endDate'])!.value.format('DD-MM-YYYY');
     const metaDataID = this.editForm.get(['metaDataHeaderId'])!.value;
-    const userID = this.editForm.get(['userID'])!.value;
+    const userID = this.editForm.get(['userId'])!.value;
+
+    console.log('Userid', userID);
 
     return {
       ...new RptParamsDTO(),

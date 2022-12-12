@@ -111,7 +111,7 @@ public class ReportServiceImpl implements ReportService {
             query.setParameter("frmDate", rptPara.getRptPS1());
             query.setParameter("toDate", rptPara.getRptPS2());
             query.setParameter("metadata", Long.parseLong(rptPara.getRptPS3() == null ? "0" : rptPara.getRptPS3()));
-            query.setParameter("userid", "");
+            query.setParameter("userid", rptPara.getRptPS4().trim());
 
             List<Object[]> resultList = query.getResultList();
             if (resultList == null || resultList.size() == 0) {
@@ -141,10 +141,7 @@ public class ReportServiceImpl implements ReportService {
             parameters.put("frmDate", rptPara.getRptPS1());
             parameters.put("toDate", rptPara.getRptPS2());
             parameters.put("metadata", metaDtaHeader.isEmpty() ? "All" : metaDtaHeader.get().getDocTitle());
-
-            System.out.println(metaDtaHeader.isEmpty() ? "All" : metaDtaHeader.get().getDocTitle());
-
-            parameters.put("userid", "All");
+            parameters.put("userid", rptPara.getRptPS4().trim() == "" ? "All" : rptPara.getRptPS4());
 
             String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
             if (rptFilePath == null || rptFilePath.equals("")) {
