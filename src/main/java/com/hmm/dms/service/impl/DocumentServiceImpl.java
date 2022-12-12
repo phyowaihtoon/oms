@@ -81,9 +81,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public BaseMessage findbyFileName(String filename) {
         BaseMessage replyMessage = new BaseMessage();
-        Document doc = documentRepository.findByFileName(filename);
+        List<Document> doc = documentRepository.findByFileName(filename);
 
-        if (doc != null) {
+        if (doc.size() > 0) {
             replyMessage.setCode(ResponseCode.ERROR_E00);
             replyMessage.setMessage("Document is already stored in server. Can' be deleted");
         } else {
