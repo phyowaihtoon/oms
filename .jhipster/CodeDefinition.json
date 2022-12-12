@@ -1,15 +1,20 @@
 {
-  "changelogDate": "20220930153334",
+  "changelogDate": "20221211050155",
   "dto": "mapstruct",
   "fields": [
     {
-      "fieldName": "roleName",
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "definition",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
     }
   ],
   "jpaMetamodelFiltering": false,
-  "name": "UserRole",
+  "name": "CodeDefinition",
   "pagination": "pagination",
   "readOnly": false,
   "relationships": [],

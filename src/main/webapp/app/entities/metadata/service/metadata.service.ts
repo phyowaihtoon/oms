@@ -89,12 +89,6 @@ export class MetaDataService {
     return metaDataHeaderCollection;
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
-    }
-    return res;
-}
   restoreMetaData(id: number): Observable<HttpResponse<IReplyMessage>> {
     return this.http.put<IReplyMessage>(
       `${this.resourceUrl}/restore/${id}`,
@@ -103,5 +97,12 @@ export class MetaDataService {
         observe: 'response',
       }
     );
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
+    }
+    return res;
   }
 }

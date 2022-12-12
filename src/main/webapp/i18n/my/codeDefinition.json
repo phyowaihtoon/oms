@@ -1,0 +1,25 @@
+{
+  "dmsApp": {
+    "codeDefinition": {
+      "home": {
+        "title": "Code Definitions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Code Definition အသစ်ထည့်မည်",
+        "createOrEditLabel": "Code Definition အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
+        "notFound": "No Code Definitions found"
+      },
+      "created": "{{ param }} အိုင်ဒီဖြင့် Code Definition အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
+      "updated": "{{ param }} အိုင်ဒီဖြင့် Code Definition တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
+      "deleted": "{{ param }} အိုင်ဒီဖြင့် Code Definition တစ်ခုအား ဖျက်ပြီးပါပြီ။",
+      "delete": {
+        "question": "Code Definition {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+      },
+      "detail": {
+        "title": "Code Definition"
+      },
+      "id": "ID",
+      "code": "Code",
+      "definition": "Definition"
+    }
+  }
+}
