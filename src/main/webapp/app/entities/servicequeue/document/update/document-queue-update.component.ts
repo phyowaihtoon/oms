@@ -158,18 +158,46 @@ export class DocumentQueueUpdateComponent implements OnInit {
     modalRef.componentInstance.message = msg2;
   }
 
-  downloadFile(isPreview: boolean, docId?: number, fileName?: string): void {
-    if (docId !== undefined && fileName !== undefined && this.validate(isPreview, fileName)) {
-      this.showLoading(isPreview === true ? 'Loading File' : 'Downloading File');
+  previewFile(docId?: number, fileName?: string): void {
+    if (docId !== undefined && fileName !== undefined && this.validate(true, fileName)) {
+      this.showLoading('Loading File');
+      this.documentInquiryService.previewFile(docId).subscribe(
+        (res: HttpResponse<Blob>) => {
+          if (res.status === 200 && res.body) {
+            const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
+            modalRef.componentInstance.pdfBlobURL = res.body;
+          } else if (res.status === 204) {
+            const code = ResponseCode.WARNING;
+            const message = 'This file does not exist.';
+            this.showAlertMessage(code, message);
+          } else if (res.status === 205) {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Invalid file type.';
+            this.showAlertMessage(code, message);
+          } else {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Cannot download file';
+            this.showAlertMessage(code, message);
+          }
+          this.hideLoading();
+        },
+        error => {
+          this.hideLoading();
+          const code = ResponseCode.RESPONSE_FAILED_CODE;
+          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          this.showAlertMessage(code, message);
+        }
+      );
+    }
+  }
+
+  downloadFile(docId?: number, fileName?: string): void {
+    if (docId !== undefined && fileName !== undefined && this.validate(false, fileName)) {
+      this.showLoading('Downloading File');
       this.documentInquiryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
-            if (isPreview) {
-              const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
-              modalRef.componentInstance.pdfBlobURL = res.body;
-            } else {
-              FileSaver.saveAs(res.body, fileName);
-            }
+            FileSaver.saveAs(res.body, fileName);
           } else if (res.status === 204) {
             const code = ResponseCode.WARNING;
             const message = 'This file does not exist.';

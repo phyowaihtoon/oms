@@ -1,0 +1,25 @@
+{
+  "dmsApp": {
+    "codeDefinition": {
+      "home": {
+        "title": "Code Definitions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Code Definition",
+        "createOrEditLabel": "Create or edit a Code Definition",
+        "notFound": "No Code Definitions found"
+      },
+      "created": "A new Code Definition is created with identifier {{ param }}",
+      "updated": "A Code Definition is updated with identifier {{ param }}",
+      "deleted": "A Code Definition is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Code Definition {{ id }}?"
+      },
+      "detail": {
+        "title": "Code Definition"
+      },
+      "id": "ID",
+      "code": "Code",
+      "definition": "Definition"
+    }
+  }
+}

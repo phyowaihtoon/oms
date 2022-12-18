@@ -5,6 +5,8 @@ import { RepositoryComponent } from '../list/repository.component';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { RepositoryRoutingResolveService } from './repository-routing-resolve.service';
 import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
+import { RepositoryDetailComponent } from '../detail/repository-detail.component';
+import { RepositoryTrashbinComponent } from '../trashbin/repository-trashbin.component';
 
 const repositoryRoute: Routes = [
   {
@@ -41,6 +43,25 @@ const repositoryRoute: Routes = [
     },
     data: {
       menuCode: 'REPOC',
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':id/view',
+    component: RepositoryDetailComponent,
+    resolve: {
+      repository: RepositoryRoutingResolveService,
+    }
+    },
+    {
+    path: 'trashbin',
+    component: RepositoryTrashbinComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
+    data: {
+      defaultSort: 'id,asc',
+      menuCode: 'REPOTB',
     },
     canActivate: [UserRouteAccessService],
   },

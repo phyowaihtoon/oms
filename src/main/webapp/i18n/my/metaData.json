@@ -12,7 +12,10 @@
       "updated": "{{ param }} အိုင်ဒီဖြင့် Meta Data တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
       "deleted": "{{ param }} အိုင်ဒီဖြင့် Meta Data တစ်ခုအား ဖျက်ပြီးပါပြီ။",
       "delete": {
-        "question": "Meta Data {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+        "question": "မက်တာဒေတာ [{{id}} - {{valDesc}}]  အား ဖျက်ပါမည်။ သေချာပါသလား?"
+      },
+      "restore": {
+        "question": "မက်တာဒေတာ [{{id}} - {{valDesc}}]  အား ပြန်လည်ရယူမည်။ သေချာပါသလား?"
       },
       "detail": {
         "title": "Meta Data"
@@ -29,7 +32,8 @@
       "fieldOrder": "Field Order",
       "fieldAction": "#",
       "search": "ရှာဖွေလိုသော အချက်အလက်",
-      "result": "ရှာဖွေမှုရလဒ်"
+      "result": "ရှာဖွေမှုရလဒ်",
+      "metadataLabel": "MetaData အချက်အလက်"
     }
   }
 }

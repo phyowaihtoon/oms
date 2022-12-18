@@ -1,32 +1,79 @@
-<div class="row justify-content-center">
-  <div class="col-8">
-    <div *ngIf="metadata">
-      <h2 data-cy="metadataDetailsHeading"><span jhiTranslate="dmsApp.metadata.detail.title">Metadata</span></h2>
+<div id="page-heading" class="row">
+  <div class="col-10">
+    <span jhiTranslate="global.menu.metadata.title"></span>
+    <span>>></span>
+    <span jhiTranslate="global.menu.metadata.search"></span>
+  </div>
+  <div class="col-2 d-flex justify-content-end">
+    <button type="submit" (click)="previousState()" class="btn btn-primary btn-sm" data-cy="entityDetailsBackButton">
+      <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span class="d-none d-md-inline" jhiTranslate="entity.action.back">Back</span>
+    </button>
+  </div>
+</div>
 
-      <hr />
+<div id="page-body">
+  <div class="row">
+    <div class="col-3">
+      <div *ngIf="_isShow" class="tab-header-select" (click)="showData()">
+        <fa-icon icon="angle-down" (click)="showData()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.metaData.metadataLabel">MetaData Information</span>
+      </div>
 
-      <jhi-alert-error></jhi-alert-error>
+      <div *ngIf="!_isShow" class="tab-header" (click)="showData()">
+        <fa-icon icon="angle-right" (click)="showData()"></fa-icon>&nbsp;
+        <span jhiTranslate="dmsApp.metaData.metadataLabel">MetaData Information</span>
+      </div>
+    </div>
+  </div>
 
-      <jhi-alert></jhi-alert>
+  <div class="row" id="metadataView" *ngIf="_isShow">
+    <div class="row col-12 form-group">
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.metaData.docTitle">Document Template</span>
+      </div>
+      <div class="col-4 dms-view-data">
+        <input type="text" readonly class="form-control" value="{{ metadata?.docTitle }}" />
+      </div>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.metaData.createdDate">Created Date</span>
+      </div>
+      <div class="col-1 dms-view-data">
+        <input type="text" readonly class="form-control" value="{{ metadata?.createdDate?.format('DD-MM-YYYY') }}" />
+      </div>
+      <div class="col-2 dms-label">
+        <span jhiTranslate="dmsApp.metaData.createdBy">Created By</span>
+      </div>
+      <div class="col-1 dms-view-data">
+        <input type="text" readonly class="form-control" value="{{ metadata?.createdBy }}" />
+      </div>
+    </div>
 
-      <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="global.field.id">ID</span></dt>
-        <dd>
-          <span>{{ metadata.id }}</span>
-        </dd>
-        <dt><span jhiTranslate="dmsApp.metadata.docTitle">Document Title</span></dt>
-        <dd>
-          <span>{{ metadata.docTitle }}</span>
-        </dd>
-      </dl>
-
-      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
-      </button>
-
-      <button type="button" [routerLink]="['/metadata', metadata.id, 'edit']" class="btn btn-primary">
-        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
-      </button>
+    <div class="row col-12 form-group">
+      <div class="col-12 dms-label">
+        <span jhiTranslate="dmsApp.metaData.detailsField">Please, add fields related to document template</span>
+      </div>
+    </div>
+    <div class="row col-12 tbl-container" style="margin-bottom: 3px">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="text-center bg-primary" style="width: 40%">{{ 'dmsApp.metaData.fieldName' | translate }}</th>
+            <th class="text-center bg-primary" style="width: 10%">{{ 'dmsApp.metaData.fieldType' | translate }}</th>
+            <th class="text-center bg-primary" style="width: 30%">{{ 'dmsApp.metaData.fieldValue' | translate }}</th>
+            <th class="text-center bg-primary" style="width: 10%">{{ 'dmsApp.metaData.fieldMandatory' | translate }}</th>
+            <th class="text-center bg-primary" style="width: 10%">{{ 'dmsApp.metaData.fieldOrder' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detail of metadata?.metaDataDetails">
+            <td><input type="text" readonly class="form-control" value="{{ detail?.fieldName }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.fieldType }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.fieldValue }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.isRequired }}" /></td>
+            <td><input type="text" readonly class="form-control text-right" value="{{ detail?.fieldOrder }}" /></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

@@ -228,8 +228,8 @@
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
-      <table class="table table-striped" aria-describedby="page-heading">
-        <thead>
+      <table class="table table-bordered table-hover" aria-describedby="page-heading">
+        <thead class="thead-light">
           <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
             <th scope="col">
               <span jhiTranslate="global.field.id">ID</span>
@@ -240,44 +240,38 @@
             <th scope="col">
               <span jhiTranslate="dmsApp.document.status">Status</span>
             </th>
-            <th scope="col" *ngIf="_metaData1.valid">
-              <span>{{ _metaData1.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData2.valid">
-              <span>{{ _metaData2.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData3.valid">
-              <span>{{ _metaData3.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData4.valid">
-              <span>{{ _metaData4.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData5.valid">
-              <span>{{ _metaData5.name }}</span>
-            </th>
+            <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
             <th scope="col">
               <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
             </th>
             <th scope="col">
               <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
             </th>
-            <th scope="col"></th>
+            <th scope="col" class="text-center" style="cursor: pointer">
+              <li ngbDropdown display="dynamic" style="list-style-type: none">
+                <span class="dropdown-toggle" ngbDropdownToggle>
+                  <fa-icon icon="cog"></fa-icon>
+                </span>
+                <div class="dropdown-menu" ngbDropdownMenu>
+                  <div class="dropdown-item" *ngFor="let colData of _displayedMetaDataColumns" (click)="showColumn(colData)">
+                    <span>
+                      <fa-icon icon="check" [fixedWidth]="true" *ngIf="colData.isDisplayed"></fa-icon>
+                      {{ colData.fieldName }}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
             <td>
-              <a [routerLink]="['/document', documentHeader.id, 'view']"
-                >{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a
-              >
+              <a>{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a>
             </td>
             <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
             <td>{{ getDocStatusDesc(documentHeader.status) }}</td>
-            <td *ngIf="_metaData1.valid">{{ _metaData1.value }}</td>
-            <td *ngIf="_metaData2.valid">{{ _metaData2.value }}</td>
-            <td *ngIf="_metaData3.valid">{{ _metaData3.value }}</td>
-            <td *ngIf="_metaData4.valid">{{ _metaData4.value }}</td>
-            <td *ngIf="_metaData5.valid">{{ _metaData5.value }}</td>
+            <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
             <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
             <td>{{ documentHeader.createdBy }}</td>
             <td class="text-right">

@@ -14,12 +14,16 @@ import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.FTPSessionFactory;
 import com.hmm.dms.util.ResponseCode;
+import com.hmm.dms.util.SysConfigVariables;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.pdfbox.multipdf.Splitter;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -192,5 +196,43 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                     pageable
                 );
         return pageWithEntity.map(documentHeaderMapper::toDto);
+    }
+
+    @Override
+    public ReplyMessage<ByteArrayResource> downloadPreviewFile(String filePath) throws IOException, Exception {
+        ReplyMessage<ByteArrayResource> replyMessage = new ReplyMessage<ByteArrayResource>();
+        FtpSession ftpSession = this.ftpSessionFactory.getSession();
+        System.out.println("Connected successfully to FTP Server");
+        System.out.println("Start downloading file: [" + filePath + "]");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        if (SysConfigVariables.PDF_PREVIEW_ENABLED.equals("Y") && SysConfigVariables.PDF_PREVIEW_VALUE != null) {
+            try {
+                InputStream inputStream = ftpSession.readRaw(filePath);
+                PDDocument pdboxDoc = PDDocument.load(inputStream);
+                Splitter pdfSplitter = new Splitter();
+                pdfSplitter.setSplitAtPage(Integer.parseInt(SysConfigVariables.PDF_PREVIEW_VALUE));
+
+                List<PDDocument> pdfPageList = pdfSplitter.split(pdboxDoc);
+                for (PDDocument pdfDoc : pdfPageList) {
+                    pdfDoc.save(out);
+                    break;
+                }
+            } catch (Exception ex) {
+                System.out.println("Invalid Configuration for PDF_PREVIEW_LIMIT :" + ex.getMessage());
+                ex.printStackTrace();
+                ftpSession.read(filePath, out);
+            }
+        } else ftpSession.read(filePath, out);
+
+        ByteArrayResource resource = new ByteArrayResource(out.toByteArray());
+        replyMessage.setCode(ResponseCode.SUCCESS);
+        replyMessage.setData(resource);
+        ftpSession.close();
+
+        System.out.println("Downloaded Successfully: [" + filePath + "]");
+
+        return replyMessage;
     }
 }

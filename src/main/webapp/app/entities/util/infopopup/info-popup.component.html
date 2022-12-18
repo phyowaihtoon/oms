@@ -2,7 +2,7 @@
   <div class="row col-12 dms-modal-row">
     <h4 class="modal-title col-10">{{ infoTitle }}</h4>
     <div class="col-2 d-flex justify-content-end dms-modal-col">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="dismiss()">&times;</button>
     </div>
   </div>
 </div>
@@ -16,7 +16,7 @@
 </div>
 
 <div class="modal-footer justify-content-center">
-  <button type="button" [ngClass]="modalButtonClass" data-dismiss="modal" (click)="cancel()">
+  <button type="button" [ngClass]="modalButtonClass" data-dismiss="modal" (click)="dismiss()">
     <span jhiTranslate="entity.action.ok">OK</span>
   </button>
 </div>

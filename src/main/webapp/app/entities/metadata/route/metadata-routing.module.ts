@@ -22,14 +22,6 @@ const metadataRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':id/view',
-    component: MetaDataDetailComponent,
-    resolve: {
-      metadata: MetaDataRoutingResolveService,
-    },
-    canActivate: [UserRouteAccessService],
-  },
-  {
     path: 'new',
     component: MetadataUpdateComponent,
     resolve: {
@@ -52,6 +44,13 @@ const metadataRoute: Routes = [
       menuCode: 'METADC',
     },
     canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':id/view',
+    component: MetaDataDetailComponent,
+    resolve: {
+      metadata: MetaDataRoutingResolveService,
+    },
   },
   {
     path: 'trashbin',

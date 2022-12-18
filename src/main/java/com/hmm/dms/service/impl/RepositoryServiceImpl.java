@@ -9,7 +9,9 @@ import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
 import com.hmm.dms.service.mapper.RepositoryHeaderMapper;
 import com.hmm.dms.service.mapper.RepositoryMapper;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.RepositoryInquiryMessage;
+import com.hmm.dms.util.ResponseCode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -129,7 +131,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         if (message.getCreatedDate() != null && message.getCreatedDate().trim().length() > 0) {
             String createdDate = message.getCreatedDate();
             Page<RepositoryHeader> pageWithEntity =
-                this.repositoryHeaderRepository.findAllByRepositoryNameAndDate(repoName, createdDate, pageable);
+                this.repositoryHeaderRepository.findAllByRepositoryNameAndDate("N", repoName, createdDate, pageable);
             Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);
             for (int i = 0; i < pageWithEntity.getContent().size(); i++) {
                 data
@@ -146,7 +148,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             return data;
         }
 
-        Page<RepositoryHeader> pageWithEntity = this.repositoryHeaderRepository.findAllByRepositoryName(repoName, pageable);
+        Page<RepositoryHeader> pageWithEntity = this.repositoryHeaderRepository.findAllByRepositoryName("N", repoName, pageable);
         Page<RepositoryHeaderDTO> data = pageWithEntity.map(repositoryHeaderMapper::toDto);
         for (int i = 0; i < pageWithEntity.getContent().size(); i++) {
             data
@@ -161,5 +163,54 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         return data;
+    }
+
+    @Override
+    public Page<RepositoryHeaderDTO> getAllRepositoryDataInTrashBin(RepositoryInquiryMessage message, Pageable pageable) {
+        Page<RepositoryHeaderDTO> headerDTOPage = null;
+        String repoName = message.getRepositoryName();
+        if (repoName == null || repoName.equals("null") || repoName.isEmpty()) repoName = ""; else repoName = repoName.trim();
+
+        if (message.getCreatedDate() != null && message.getCreatedDate().trim().length() > 0) {
+            String createdDate = message.getCreatedDate();
+            Page<RepositoryHeader> pageWithEntity =
+                this.repositoryHeaderRepository.findAllByRepositoryNameAndDate("Y", repoName, createdDate, pageable);
+            headerDTOPage = pageWithEntity.map(repositoryHeaderMapper::toDto);
+        } else {
+            Page<RepositoryHeader> pageWithEntity = this.repositoryHeaderRepository.findAllByRepositoryName("Y", repoName, pageable);
+            headerDTOPage = pageWithEntity.map(repositoryHeaderMapper::toDto);
+        }
+
+        // Extracting Sub Repository
+        if (headerDTOPage != null) for (int i = 0; i < headerDTOPage.getContent().size(); i++) {
+            headerDTOPage
+                .getContent()
+                .get(i)
+                .setRepositoryDetails(
+                    repositoryRepo
+                        .findByHeaderId(headerDTOPage.getContent().get(i).getId())
+                        .map(repositoryMapper::toDto)
+                        .collect(Collectors.toList())
+                );
+        }
+
+        return headerDTOPage;
+    }
+
+    @Override
+    public BaseMessage restoreRepository(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        try {
+            this.repositoryHeaderRepository.restoreRepository(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("Repository has been restored.");
+        } catch (Exception ex) {
+            System.out.println("Error while restoring Repository :" + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Repository Restore failed : " + ex.getMessage());
+        }
+
+        return replyMessage;
     }
 }

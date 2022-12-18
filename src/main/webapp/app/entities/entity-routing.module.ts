@@ -44,6 +44,16 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'home.title' },
         loadChildren: () => import('./servicequeue/service-queue.module').then(m => m.ServiceQueueModule),
       },
+      {
+        path: 'sysconfig',
+        data: { pageTitle: 'home.title' },
+        loadChildren: () => import('./sysconfig/sys-config.module').then(m => m.SysConfigModule),
+      },
+      {
+        path: 'code-definition',
+        data: { pageTitle: 'home.title' },
+        loadChildren: () => import('./code-definition/code-definition.module').then(m => m.CodeDefinitionModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

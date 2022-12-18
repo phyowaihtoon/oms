@@ -14,6 +14,9 @@
       "delete": {
         "question": "Are you sure you want to delete Repository {{ id }}?"
       },
+      "restore": {
+        "question": "ဖိုင်သိမ်းမည့်နေရာ [{{id}} - {{valDesc}}]  အား ပြန်လည်ရယူမည်။ သေချာပါသလား?"
+      },
       "detail": {
         "title": "Repository"
       },
@@ -23,7 +26,8 @@
       "createdDate": "ဖန်တီးသော ရက်စွဲ",
       "createdBy": "ဖန်တီးသူ",
       "search": "ရှာဖွေလိုသော အချက်အလက်",
-      "result": "ရှာဖွေမှုရလဒ်"
+      "result": "ရှာဖွေမှုရလဒ်",
+      "repositoryLabel": "Repository အချက်အလက်"
     }
   }
 }

@@ -95,6 +95,7 @@
   },
   "defaultProject": "dms",
   "cli": {
+    "analytics": false,
     "packageManager": "npm"
   }
 }

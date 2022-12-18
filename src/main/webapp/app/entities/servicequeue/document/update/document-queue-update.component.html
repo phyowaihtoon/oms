@@ -140,12 +140,12 @@
             <td>{{ docDetail.version }}</td>
             <td>{{ docDetail.remark }}</td>
             <td style="text-align: center">
-              <span style="cursor: pointer" (click)="downloadFile(true, docDetail.id, docDetail.fileName)">
+              <span style="cursor: pointer" (click)="previewFile(docDetail.id, docDetail.fileName)">
                 <fa-icon icon="eye"></fa-icon>
               </span>
             </td>
             <td style="text-align: center">
-              <span style="cursor: pointer" (click)="downloadFile(false, docDetail.id, docDetail.fileName)">
+              <span style="cursor: pointer" (click)="downloadFile(docDetail.id, docDetail.fileName)">
                 <fa-icon icon="download"></fa-icon>
               </span>
             </td>
