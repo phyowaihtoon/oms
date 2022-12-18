@@ -9,6 +9,7 @@ import { IRepositoryHeader, getRepositoryIdentifier, IRepositoryInquiry } from '
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
 
 export type EntityResponseType = HttpResponse<IRepositoryHeader>;
 export type EntityArrayResponseType = HttpResponse<IRepositoryHeader[]>;
@@ -36,18 +37,22 @@ export class RepositoryService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IRepositoryHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<IRepositoryHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
-
-  /* query(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http.get<IRepositoryHeader[]>(this.resourceUrl, { params: options, observe: 'response' });
-  } */
 
   query(criteriaData: IRepositoryInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
       .post<IRepositoryHeader[]>(this.resourceUrl + '/search', criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
+  getAllRepositoryInTrashBin(criteriaData: IRepositoryInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IRepositoryHeader[]>(this.resourceUrl + '/trashbin', criteriaData, { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
@@ -82,5 +87,22 @@ export class RepositoryService {
       return [...categoriesToAdd, ...repositoryHeaderCollection];
     }
     return repositoryHeaderCollection;
+  }
+
+  restoreRepository(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(
+      `${this.resourceUrl}/restore/${id}`,
+      {},
+      {
+        observe: 'response',
+      }
+    );
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
+    }
+    return res;
   }
 }

@@ -42,4 +42,8 @@ export class DocumentService {
       }
     );
   }
+
+  deleteFile(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.get<IReplyMessage>(`${this.resourceUrl}/deleteFileById/${id}`, { observe: 'response' });
+  }
 }

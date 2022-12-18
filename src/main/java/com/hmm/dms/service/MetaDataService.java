@@ -2,6 +2,7 @@ package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
 import java.util.List;
 import java.util.Optional;
@@ -53,4 +54,8 @@ public interface MetaDataService {
     Page<MetaDataHeaderDTO> findAll(Pageable pageable);
 
     Page<MetaDataHeaderDTO> getAllMetaData(MetaDataInquiryMessage message, Pageable pageable);
+
+    Page<MetaDataHeaderDTO> getAllMetaDataInTrashBin(MetaDataInquiryMessage message, Pageable pageable);
+
+    BaseMessage restoreMetaData(Long id);
 }

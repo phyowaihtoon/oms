@@ -4,6 +4,7 @@ import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -202,9 +203,31 @@ public class MetaDataResource {
 
     @PostMapping("/meta-data/search")
     public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaData(@RequestBody MetaDataInquiryMessage message, Pageable pageable) {
-        log.debug("REST request to get all Documents");
+        log.debug("REST request to get all metadata");
         Page<MetaDataHeaderDTO> page = metaDataService.getAllMetaData(message, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @PostMapping("/meta-data/trashbin")
+    public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaDataInTrashBin(
+        @RequestBody MetaDataInquiryMessage message,
+        Pageable pageable
+    ) {
+        log.debug("REST request to get all metadata");
+        Page<MetaDataHeaderDTO> page = metaDataService.getAllMetaDataInTrashBin(message, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @PutMapping("/meta-data/restore/{id}")
+    public ResponseEntity<BaseMessage> restoreMetaData(@PathVariable(value = "id", required = false) final Long id)
+        throws URISyntaxException {
+        BaseMessage result = metaDataService.restoreMetaData(id);
+        String docHeaderId = id.toString();
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
+            .body(result);
     }
 }

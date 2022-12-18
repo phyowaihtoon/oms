@@ -10,7 +10,6 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
-import { textChangeRangeIsUnchanged } from 'typescript';
 
 @Component({
   selector: 'jhi-document',
@@ -22,6 +21,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _documentStatusList?: IDocumentStatus[];
   _selectedMetaDataList?: IMetaData[];
+  _displayedMetaDataColumns?: IMetaData[];
+  _displayedMetaDataValues?: string[] = [];
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
   isLOV1 = false;
@@ -41,12 +42,6 @@ export class DocumentComponent implements OnInit, OnDestroy {
 
   _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
-
-  _metaData1 = { name: '', value: '', valid: false };
-  _metaData2 = { name: '', value: '', valid: false };
-  _metaData3 = { name: '', value: '', valid: false };
-  _metaData4 = { name: '', value: '', valid: false };
-  _metaData5 = { name: '', value: '', valid: false };
 
   searchForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
@@ -78,13 +73,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-      this._metaDataHdrList = userAuthority.templateList;
+      this.loadAllSetup();
     });
-    const searchedCriteria = this.documentInquiryService.getSearchCriteria();
-    if (searchedCriteria) {
-      this.updateSearchFormData(searchedCriteria);
-    }
-    this.loadAllSetup();
   }
 
   trackDocumentHeaderById(index: number, item: IDocumentHeader): number {
@@ -149,84 +139,26 @@ export class DocumentComponent implements OnInit, OnDestroy {
     }
   }
 
-  bindMetaDataNames(): void {
-    this.resetMetaDataNames();
-    if (this._selectedMetaDataList !== undefined) {
-      let arrIndex = 0;
-      while (arrIndex < this._selectedMetaDataList.length) {
-        if (arrIndex === 0) {
-          this._metaData1.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData1.valid = true;
-        }
-        if (arrIndex === 1) {
-          this._metaData2.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData2.valid = true;
-        }
-        if (arrIndex === 2) {
-          this._metaData3.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData3.valid = true;
-        }
-        if (arrIndex === 3) {
-          this._metaData4.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData4.valid = true;
-        }
-        if (arrIndex === 4) {
-          this._metaData5.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData5.valid = true;
-        }
-
-        arrIndex++;
-      }
-    }
+  showColumn(metaData: IMetaData): void {
+    metaData.isDisplayed = metaData.isDisplayed === undefined ? true : !metaData.isDisplayed;
+    console.log('You selected :', metaData.fieldName, ' , ', metaData.isDisplayed);
   }
 
-  resetMetaDataNames(): void {
-    this._metaData1.name = '';
-    this._metaData1.valid = false;
-    this._metaData2.name = '';
-    this._metaData2.valid = false;
-    this._metaData3.name = '';
-    this._metaData3.valid = false;
-    this._metaData4.name = '';
-    this._metaData4.valid = false;
-    this._metaData5.name = '';
-    this._metaData5.valid = false;
-  }
-
-  resetMetaDataValues(): void {
-    this._metaData1.value = '';
-    this._metaData2.value = '';
-    this._metaData3.value = '';
-    this._metaData4.value = '';
-    this._metaData5.value = '';
+  bindMetaDataColumns(): void {
+    this._displayedMetaDataColumns = this._selectedMetaDataList;
   }
 
   bindMetaDataValues(fValues?: string): void {
-    this.resetMetaDataValues();
-
+    this._displayedMetaDataValues = [];
     if (fValues !== undefined && fValues.trim().length > 0) {
       const fValueArray = fValues.split('|');
       if (fValueArray.length > 0) {
-        let arrIndex = 0;
-        while (arrIndex < fValueArray.length) {
-          if (arrIndex === 0) {
-            this._metaData1.value = fValueArray[arrIndex];
+        this._displayedMetaDataColumns?.forEach(item => {
+          if (item.fieldOrder) {
+            const fieldValue = fValueArray[item.fieldOrder - 1];
+            this._displayedMetaDataValues?.push(fieldValue);
           }
-          if (arrIndex === 1) {
-            this._metaData2.value = fValueArray[arrIndex];
-          }
-          if (arrIndex === 2) {
-            this._metaData3.value = fValueArray[arrIndex];
-          }
-          if (arrIndex === 3) {
-            this._metaData4.value = fValueArray[arrIndex];
-          }
-          if (arrIndex === 4) {
-            this._metaData5.value = fValueArray[arrIndex];
-          }
-
-          arrIndex++;
-        }
+        });
       }
     }
   }
@@ -236,6 +168,23 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   loadAllSetup(): void {
+    if (this._userAuthority) {
+      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
+        (res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+            const searchedCriteria = this.documentInquiryService.getSearchCriteria();
+            if (searchedCriteria) {
+              this.updateSearchFormData(searchedCriteria);
+            }
+          }
+        },
+        error => {
+          console.log('Loading MetaData Header Failed : ', error);
+        }
+      );
+    }
+
     this.loadSetupService.loadDocumentStatus().subscribe(
       (res: HttpResponse<IDocumentStatus[]>) => {
         if (res.body) {
@@ -255,7 +204,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
       this.isShowingAlert = true;
       this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
-      this.bindMetaDataNames();
+      this.bindMetaDataColumns();
       this.loadPage(page);
     }
   }

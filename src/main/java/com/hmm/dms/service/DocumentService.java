@@ -1,6 +1,7 @@
 package com.hmm.dms.service;
 
 import com.hmm.dms.service.dto.DocumentDTO;
+import com.hmm.dms.service.message.BaseMessage;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,10 @@ public interface DocumentService {
      *
      * @param id the id of the entity.
      */
+
+    BaseMessage findbyFileName(String filename);
+
     void delete(Long id);
+
+    BaseMessage deleteFileById(Long id);
 }

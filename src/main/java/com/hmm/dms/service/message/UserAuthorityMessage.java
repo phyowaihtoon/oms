@@ -11,11 +11,11 @@ public class UserAuthorityMessage implements Serializable {
     private String userID;
     private String userName;
     private String departmentName;
+    private Long roleID;
     private String roleName;
     private int workflowAuthority;
     private SysConfigMessage sysConfigMessage;
     private List<MenuGroupMessage> menuGroups;
-    private List<MetaDataHeaderDTO> templateList;
 
     public String getUserID() {
         return userID;
@@ -39,6 +39,14 @@ public class UserAuthorityMessage implements Serializable {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public Long getRoleID() {
+        return roleID;
+    }
+
+    public void setRoleID(Long roleID) {
+        this.roleID = roleID;
     }
 
     public String getRoleName() {
@@ -71,13 +79,5 @@ public class UserAuthorityMessage implements Serializable {
 
     public void setMenuGroups(List<MenuGroupMessage> menuGroups) {
         this.menuGroups = menuGroups;
-    }
-
-    public List<MetaDataHeaderDTO> getTemplateList() {
-        return templateList;
-    }
-
-    public void setTemplateList(List<MetaDataHeaderDTO> templateList) {
-        this.templateList = templateList;
     }
 }

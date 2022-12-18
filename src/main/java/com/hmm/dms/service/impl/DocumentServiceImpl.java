@@ -5,6 +5,8 @@ import com.hmm.dms.repository.DocumentRepository;
 import com.hmm.dms.service.DocumentService;
 import com.hmm.dms.service.dto.DocumentDTO;
 import com.hmm.dms.service.mapper.DocumentMapper;
+import com.hmm.dms.service.message.BaseMessage;
+import com.hmm.dms.util.ResponseCode;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -74,5 +76,30 @@ public class DocumentServiceImpl implements DocumentService {
     public void delete(Long id) {
         log.debug("Request to delete Document : {}", id);
         documentRepository.deleteById(id);
+    }
+
+    @Override
+    public BaseMessage findbyFileName(String filename) {
+        BaseMessage replyMessage = new BaseMessage();
+        List<Document> doc = documentRepository.findByFileName(filename);
+
+        replyMessage.setCode(ResponseCode.ERROR_E00);
+        if (doc.size() > 0) {
+            replyMessage.setMessage("Document is already stored in server. Can' be deleted");
+        } else {
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("Document is not in database yet.");
+        }
+
+        return replyMessage;
+    }
+
+    @Override
+    public BaseMessage deleteFileById(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        documentRepository.updateFlagById(id);
+        replyMessage.setCode(ResponseCode.ERROR_E00);
+        replyMessage.setMessage("Document is already stored in server. Can' be deleted");
+        return replyMessage;
     }
 }

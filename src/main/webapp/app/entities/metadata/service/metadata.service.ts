@@ -9,6 +9,7 @@ import { IMetaDataHeader, getMetadataIdentifier, IMetaDataInquiry } from '../met
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
+import { IReplyMessage } from 'app/entities/util/reply-message.model';
 
 export type EntityResponseType = HttpResponse<IMetaDataHeader>;
 export type EntityArrayResponseType = HttpResponse<IMetaDataHeader[]>;
@@ -36,18 +37,22 @@ export class MetaDataService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IMetaDataHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<IMetaDataHeader>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
-
-  /* query(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http.get<IMetaDataHeader[]>(this.resourceUrl, { params: options, observe: 'response' });
-  } */
 
   query(criteriaData: IMetaDataInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
       .post<IMetaDataHeader[]>(this.resourceUrl + '/search', criteriaData, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
+  findAllMetaDataInTrashBin(criteriaData: IMetaDataInquiry, req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .post<IMetaDataHeader[]>(this.resourceUrl + '/trashbin', criteriaData, { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
@@ -82,5 +87,22 @@ export class MetaDataService {
       return [...categoriesToAdd, ...metaDataHeaderCollection];
     }
     return metaDataHeaderCollection;
+  }
+
+  restoreMetaData(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(
+      `${this.resourceUrl}/restore/${id}`,
+      {},
+      {
+        observe: 'response',
+      }
+    );
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
+    }
+    return res;
   }
 }

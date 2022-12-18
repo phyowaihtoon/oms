@@ -10,6 +10,7 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 import { IMetaDataHeader, MetaDataInquiry } from '../metadata.model';
 import { MetaDataService } from '../service/metadata.service';
 import { combineLatest } from 'rxjs';
+import { MetadataRestoreDialogComponent } from '../restore/metadata-restore-dialog.component';
 
 @Component({
   selector: 'jhi-metadata-trashbin',
@@ -87,7 +88,7 @@ export class MetadataTrashbinComponent implements OnInit {
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
     };
 
-    this.service.query(searchCriteria, paginationReqParams).subscribe(
+    this.service.findAllMetaDataInTrashBin(searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IMetaDataHeader[]>) => {
         this.isLoading = false;
         this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
@@ -103,6 +104,17 @@ export class MetadataTrashbinComponent implements OnInit {
     this.searchForm.reset();
     this.metadatas = [];
     this.isShowingResult = false;
+  }
+
+  restoreMetaData(metadataHeader: IMetaDataHeader): void {
+    const modalRef = this.modalService.open(MetadataRestoreDialogComponent, { size: 'md', backdrop: 'static' });
+    modalRef.componentInstance.metadataHeader = metadataHeader;
+    // unsubscribe not needed because closed completes on modal close
+    modalRef.closed.subscribe(reason => {
+      if (reason === 'restored') {
+        this.loadPage(1);
+      }
+    });
   }
 
   protected sort(): string[] {

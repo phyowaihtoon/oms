@@ -103,8 +103,8 @@
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="repositorys && repositorys.length > 0">
-      <table class="table table-striped" aria-describedby="page-heading">
-        <thead>
+      <table class="table table-bordered table-hover" aria-describedby="page-heading">
+        <thead class="thead-light">
           <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
             <th scope="col" jhiSortBy="id">
               <span jhiTranslate="global.field.id">ID</span>
@@ -134,7 +134,7 @@
         <tbody>
           <tr *ngFor="let repository of repositorys; trackBy: trackId" data-cy="entityTable">
             <td>
-              <a [routerLink]="['/repository', repository.id, 'edit']">{{ repository.id }}</a>
+              <a [routerLink]="['/repository', repository.id, 'view']">{{ repository.id }}</a>
             </td>
             <td>{{ repository.repositoryName }}</td>
             <td>{{ loadRepositoryPath(repository.repositoryDetails) }}</td>
@@ -142,6 +142,17 @@
             <td>{{ repository.createdBy }}</td>
             <td class="text-right">
               <div class="btn-group">
+                <button
+                  *ngIf="_userAuthority && _userAuthority.activeMenu.isRead === 1"
+                  type="submit"
+                  [routerLink]="['/repository', repository.id, 'view']"
+                  class="btn btn-info btn-sm"
+                  data-cy="entityDetailsButton"
+                >
+                  <fa-icon icon="eye"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                </button>
+
                 <button
                   *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
                   type="submit"
