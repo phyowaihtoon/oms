@@ -21,8 +21,14 @@ export class DocumentComponent implements OnInit, OnDestroy {
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _documentStatusList?: IDocumentStatus[];
   _selectedMetaDataList?: IMetaData[];
+  _metaDataColumns?: IMetaData[];
   _displayedMetaDataColumns?: IMetaData[];
   _displayedMetaDataValues?: string[] = [];
+  _staticMetaDataColumns = [
+    { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: true },
+    { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: true },
+    { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: true },
+  ];
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
   isLOV1 = false;
@@ -108,6 +114,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+      this.bindMetaDataColumns();
     }
   }
 
@@ -139,13 +146,25 @@ export class DocumentComponent implements OnInit, OnDestroy {
     }
   }
 
-  showColumn(metaData: IMetaData): void {
+  showHideStaticColumn(staticData: any): void {
+    staticData.isDisplayed = staticData.isDisplayed === undefined ? true : !staticData.isDisplayed;
+  }
+
+  showHideColumn(metaData: IMetaData): void {
     metaData.isDisplayed = metaData.isDisplayed === undefined ? true : !metaData.isDisplayed;
-    console.log('You selected :', metaData.fieldName, ' , ', metaData.isDisplayed);
+    this._displayedMetaDataColumns = this._metaDataColumns?.filter(item => item.isDisplayed === true);
   }
 
   bindMetaDataColumns(): void {
-    this._displayedMetaDataColumns = this._selectedMetaDataList;
+    this._displayedMetaDataColumns = [];
+    this._metaDataColumns = this._selectedMetaDataList;
+    this._metaDataColumns?.forEach((value, index) => {
+      // Initially, the first five metadata fields will be shown in list
+      if (index < 5) {
+        value.isDisplayed = true;
+        this._displayedMetaDataColumns?.push(value);
+      }
+    });
   }
 
   bindMetaDataValues(fValues?: string): void {
@@ -204,7 +223,6 @@ export class DocumentComponent implements OnInit, OnDestroy {
       this.isShowingAlert = true;
       this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
-      this.bindMetaDataColumns();
       this.loadPage(page);
     }
   }

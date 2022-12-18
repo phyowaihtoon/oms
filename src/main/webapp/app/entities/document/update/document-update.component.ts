@@ -26,6 +26,7 @@ import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentStatus?: IDocumentStatus[];
+  _documentDetails: IDocument[] | undefined;
 
   _metaDataHdrList: MetaDataHeader[] | null = [];
   _priority: IPriority[] | null = [];
