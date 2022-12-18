@@ -32,6 +32,9 @@ public class Document extends AbstractAuditingEntity implements Serializable {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
+    @Column(name = "file_name_version", nullable = false)
+    private String fileNameVersion;
+
     @Column(name = "file_size")
     private Long fileSize;
 
@@ -95,6 +98,14 @@ public class Document extends AbstractAuditingEntity implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFileNameVersion() {
+        return fileNameVersion;
+    }
+
+    public void setFileNameVersion(String fileNameVersion) {
+        this.fileNameVersion = fileNameVersion;
     }
 
     public Long getFileSize() {

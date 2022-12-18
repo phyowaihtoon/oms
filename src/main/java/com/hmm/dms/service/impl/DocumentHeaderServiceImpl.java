@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import liquibase.pro.packaged.id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.integration.ftp.session.FtpSession;
@@ -65,7 +66,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
     @Override
     public ReplyMessage<DocumentHeaderDTO> saveAndUploadDocuments(List<MultipartFile> multipartFiles, DocumentHeaderDTO documentHeaderDTO) {
         if (multipartFiles != null && multipartFiles.size() > 0) {
-            if (!uploadFiles(multipartFiles)) {
+            if (!uploadFiles(multipartFiles, documentHeaderDTO.getId())) {
                 return replyMessage;
             }
         }
@@ -85,19 +86,29 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                 .map(documentMapper::toEntity)
                 .collect(Collectors.toList());
 
+            List<Document> doc_List = new ArrayList<Document>();
+
             documentHeader = documentHeaderRepository.save(documentHeader);
+
+            log.debug("Deleting Document Details by header ID before saving: {}");
 
             for (Document document : documentList) {
                 document.setHeaderId(documentHeader.getId());
+
+                if (document.getId() == null) {
+                    int fileVersion = checkFileVersion(documentHeader.getId(), document.getFilePath(), document.getFileName(), 1) + 1;
+                    document.setFileNameVersion(fileNameUpdate(fileVersion, document.getFileName()));
+                    document.setVersion(fileVersion);
+                    document = documentRepository.save(document);
+                } else {
+                    document = documentRepository.save(document);
+                }
+                doc_List.add(document);
             }
 
-            log.debug("Deleting Document Details by header ID before saving: {}");
-            documentRepository.deleteByHeaderId(documentHeader.getId());
-
             log.debug("Saving Document Details");
-            documentList = documentRepository.saveAll(documentList);
 
-            List<DocumentDTO> documentDTOList = documentMapper.toDto(documentList);
+            List<DocumentDTO> documentDTOList = documentMapper.toDto(doc_List);
             DocumentHeaderDTO docHeaderDTO = documentHeaderMapper.toDto(documentHeader);
             docHeaderDTO.setDocList(documentDTOList);
 
@@ -153,7 +164,26 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         documentHeaderRepository.deleteById(id);
     }
 
-    private boolean uploadFiles(List<MultipartFile> multipartFiles) {
+    private int checkFileVersion(Long id, String directory, String filename, int type) {
+        int filecount = 0;
+        if (type == 2) {
+            directory = (directory.substring(1, directory.length())).replace("/", "//");
+        }
+        List<Document> docList = documentRepository.findByHeaderIdAndFilePathAndFileName(id, directory, filename);
+        filecount = docList.size();
+        return filecount;
+    }
+
+    private String fileNameUpdate(int versionNo, String filename) {
+        String fileVersion = "";
+
+        String[] originalFilearr = filename.split("\\.");
+        fileVersion = originalFilearr[0] + "_" + "V" + Integer.toString(versionNo) + "." + originalFilearr[1];
+
+        return fileVersion;
+    }
+
+    private boolean uploadFiles(List<MultipartFile> multipartFiles, Long id) {
         List<String> uploadedFileList = new ArrayList<>();
         try {
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
@@ -184,7 +214,12 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
                         }
                     }
                 }
-                String firstRemoteFile = directory + "/" + filename;
+
+                int fileVersion = checkFileVersion(id, directory, filename, 2) + 1;
+
+                filename = fileNameUpdate(fileVersion, filename);
+
+                String firstRemoteFile = directory + "/" + filename + "";
 
                 InputStream inputStream = file.getInputStream();
                 System.out.println("Start uploading file: [" + firstRemoteFile + "]");
@@ -277,7 +312,6 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
             replyMessage_BM.setCode(ResponseCode.ERROR_E01);
             replyMessage_BM.setMessage(ex.getMessage());
         }
-
         return replyMessage_BM;
     }
 
@@ -294,7 +328,6 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage("Document Restore failed : " + ex.getMessage());
         }
-
         return replyMessage;
     }
 }
