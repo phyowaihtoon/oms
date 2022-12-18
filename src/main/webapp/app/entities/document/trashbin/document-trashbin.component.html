@@ -218,8 +218,8 @@
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
-      <table class="table table-striped" aria-describedby="page-heading">
-        <thead>
+      <table class="table table-bordered table-hover" aria-describedby="page-heading">
+        <thead class="thead-light">
           <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
             <th scope="col">
               <span jhiTranslate="global.field.id">ID</span>

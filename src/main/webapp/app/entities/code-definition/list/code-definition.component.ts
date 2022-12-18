@@ -15,10 +15,8 @@ import { CodeDefinitionDeleteDialogComponent } from '../delete/code-definition-d
 export class CodeDefinitionComponent implements OnInit {
   codeDefinitions?: ICodeDefinition[];
   isLoading = false;
-
   predicate = 'id';
   ascending = true;
-
   itemsPerPage = ITEMS_PER_PAGE;
   totalItems = 0;
   page?: number;
@@ -57,7 +55,7 @@ export class CodeDefinitionComponent implements OnInit {
     this.handleNavigation();
   }
 
-  trackId(index: number, item: ICodeDefinition): number {
+  trackId(index: number, item: ICodeDefinition): number | undefined {
     return item.id;
   }
 

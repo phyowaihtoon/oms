@@ -12,12 +12,12 @@
       <div>
         <jhi-alert-error></jhi-alert-error>
 
-        <div class="row mb-3" *ngIf="editForm.controls.id.value !== null">
+        <div class="form-group" *ngIf="editForm.controls.id.value !== null">
           <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
-        <div class="row mb-3">
+        <div class="form-group">
           <label class="form-label" jhiTranslate="dmsApp.codeDefinition.code" for="field_code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           <div *ngIf="editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)">
@@ -27,7 +27,7 @@
           </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="form-group">
           <label class="form-label" jhiTranslate="dmsApp.codeDefinition.definition" for="field_definition">Definition</label>
           <input
             type="text"
@@ -50,8 +50,8 @@
       </div>
 
       <div>
-        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        <button [routerLink]="['/code-definition']" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
         </button>
 
         <button

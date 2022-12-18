@@ -50,7 +50,7 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./sysconfig/sys-config.module').then(m => m.SysConfigModule),
       },
       {
-        path: 'definition',
+        path: 'code-definition',
         data: { pageTitle: 'home.title' },
         loadChildren: () => import('./code-definition/code-definition.module').then(m => m.CodeDefinitionModule),
       },

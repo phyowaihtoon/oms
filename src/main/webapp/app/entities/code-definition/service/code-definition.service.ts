@@ -23,15 +23,23 @@ export class CodeDefinitionService {
   }
 
   update(codeDefinition: ICodeDefinition): Observable<EntityResponseType> {
-    return this.http.put<ICodeDefinition>(`${this.resourceUrl}/${this.getCodeDefinitionIdentifier(codeDefinition)}`, codeDefinition, {
-      observe: 'response',
-    });
+    return this.http.put<ICodeDefinition>(
+      `${this.resourceUrl}/${this.getCodeDefinitionIdentifier(codeDefinition) as number}`,
+      codeDefinition,
+      {
+        observe: 'response',
+      }
+    );
   }
 
   partialUpdate(codeDefinition: PartialUpdateCodeDefinition): Observable<EntityResponseType> {
-    return this.http.patch<ICodeDefinition>(`${this.resourceUrl}/${this.getCodeDefinitionIdentifier(codeDefinition)}`, codeDefinition, {
-      observe: 'response',
-    });
+    return this.http.patch<ICodeDefinition>(
+      `${this.resourceUrl}/${this.getCodeDefinitionIdentifier(codeDefinition) as number}`,
+      codeDefinition,
+      {
+        observe: 'response',
+      }
+    );
   }
 
   find(id: number): Observable<EntityResponseType> {
@@ -47,7 +55,7 @@ export class CodeDefinitionService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getCodeDefinitionIdentifier(codeDefinition: Pick<ICodeDefinition, 'id'>): number {
+  getCodeDefinitionIdentifier(codeDefinition: Pick<ICodeDefinition, 'id'>): number | undefined {
     return codeDefinition.id;
   }
 
@@ -66,7 +74,7 @@ export class CodeDefinitionService {
       );
       const codeDefinitionsToAdd = codeDefinitions.filter(codeDefinitionItem => {
         const codeDefinitionIdentifier = this.getCodeDefinitionIdentifier(codeDefinitionItem);
-        if (codeDefinitionCollectionIdentifiers.includes(codeDefinitionIdentifier)) {
+        if (codeDefinitionIdentifier == null || codeDefinitionCollectionIdentifiers.includes(codeDefinitionIdentifier)) {
           return false;
         }
         codeDefinitionCollectionIdentifiers.push(codeDefinitionIdentifier);

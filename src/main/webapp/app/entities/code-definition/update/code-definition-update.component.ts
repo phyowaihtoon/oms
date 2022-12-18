@@ -3,9 +3,10 @@ import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { ICodeDefinition } from '../code-definition.model';
+import { CodeDefinition, ICodeDefinition } from '../code-definition.model';
 import { CodeDefinitionService } from '../service/code-definition.service';
 import { FormBuilder } from '@angular/forms';
+import { typeWithParameters } from '@angular/compiler/src/render3/util';
 
 @Component({
   selector: 'jhi-code-definition-update',
@@ -15,7 +16,11 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   isSaving = false;
   codeDefinition: ICodeDefinition | null = null;
 
-  editForm = this.fb.group({});
+  editForm = this.fb.group({
+    id: [],
+    code: [],
+    definition: [],
+  });
 
   constructor(
     protected codeDefinitionService: CodeDefinitionService,
@@ -38,14 +43,13 @@ export class CodeDefinitionUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    /*
-    const codeDefinition = this.codeDefinitionFormService.getCodeDefinition(this.editForm);
-    if (codeDefinition.id !== null) {
+    const codeDefinition = this.createForm();
+    const codeDefinitionID = codeDefinition.id ?? undefined;
+    if (codeDefinitionID !== undefined) {
       this.subscribeToSaveResponse(this.codeDefinitionService.update(codeDefinition));
     } else {
       this.subscribeToSaveResponse(this.codeDefinitionService.create(codeDefinition));
     }
-    */
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICodeDefinition>>): void {
@@ -68,6 +72,19 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   }
 
   protected updateForm(codeDefinition: ICodeDefinition): void {
-    this.codeDefinition = codeDefinition;
+    this.editForm.patchValue({
+      id: codeDefinition.id,
+      code: codeDefinition.code,
+      definition: codeDefinition.definition,
+    });
+  }
+
+  protected createForm(): ICodeDefinition {
+    return {
+      ...new CodeDefinition(),
+      id: this.editForm.get(['id'])!.value,
+      code: this.editForm.get(['code'])!.value,
+      definition: this.editForm.get(['definition'])!.value,
+    };
   }
 }
