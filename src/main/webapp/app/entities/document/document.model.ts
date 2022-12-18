@@ -45,6 +45,7 @@ export interface IDocument {
   headerId?: number;
   filePath?: string;
   fileName?: string;
+  fileNameVersion?: string;
   fileSize?: number;
   version?: number;
   remark?: string;
@@ -58,6 +59,7 @@ export class DMSDocument implements IDocument {
     public headerId?: number,
     public filePath?: string,
     public fileName?: string,
+    public fileNameVersion?: string,
     public fileSize?: number,
     public version?: number,
     public delFlag?: string,

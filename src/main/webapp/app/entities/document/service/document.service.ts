@@ -43,7 +43,7 @@ export class DocumentService {
     );
   }
 
-  checkFileExist(filename: string): Observable<HttpResponse<IReplyMessage>> {
-    return this.http.get<IReplyMessage>(`${this.resourceUrl}/checkfileexist/${filename}`, { observe: 'response' });
+  deleteFile(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.get<IReplyMessage>(`${this.resourceUrl}/deleteFileById/${id}`, { observe: 'response' });
   }
 }

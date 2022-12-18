@@ -207,10 +207,11 @@ public class DocumentResource {
             .body(result);
     }
 
-    @GetMapping("/documents/checkfileexist/{filename}")
-    public ResponseEntity<BaseMessage> checkFileExist(@PathVariable(value = "filename", required = false) final String filename) {
+    @GetMapping("/documents/deleteFileById/{id}")
+    public ResponseEntity<BaseMessage> checkFileExist(@PathVariable(value = "id", required = false) final Long id) {
         log.debug("REST request to get file info");
-        BaseMessage result = documentService.findbyFileName(filename);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, filename)).body(result);
+        BaseMessage result = documentService.deleteFileById(id);
+        String docId = id.toString();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docId)).body(result);
     }
 }

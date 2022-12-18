@@ -118,7 +118,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     public DocumentHeaderDTO findAllDocumentsByHeaderId(Long id) {
         DocumentHeader docHeaderEntity = this.documentHeaderRepository.findDocumentHeaderById(id);
         DocumentHeaderDTO docHeaderDTO = this.documentHeaderMapper.toDto(docHeaderEntity);
-        List<Document> docList = this.documentRepository.findAllByHeaderId(docHeaderDTO.getId());
+        List<Document> docList = this.documentRepository.findAllByHeaderIdAndDelFlag(docHeaderDTO.getId(), "N");
         List<DocumentDTO> docDTOList = this.documentMapper.toDto(docList);
         docHeaderDTO.setDocList(docDTOList);
         return docHeaderDTO;

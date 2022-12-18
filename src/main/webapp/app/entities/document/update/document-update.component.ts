@@ -16,6 +16,7 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IDocumentStatus, IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
+import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 
 @Component({
   selector: 'jhi-document-update',
@@ -143,8 +144,9 @@ export class DocumentUpdateComponent implements OnInit {
       id: [],
       filePath: [filePath, [Validators.required]],
       fileName: [fileName, [Validators.required]],
+      fileNameVersion: [],
       fileSize: [fileSize, [Validators.required]],
-      version: ['', [Validators.required]],
+      version: [''],
       remark: [''],
       fileData: [fileData],
     });
@@ -158,8 +160,13 @@ export class DocumentUpdateComponent implements OnInit {
   // remove field by given row id
   removeField(i: number): void {
     if (this.docList1().length > 0) {
-      const filename = this.docList1().controls[i].get(['fileName'])!.value;
-      this.subscribeToSaveResponseCheckFileexist(this.documentHeaderService.checkFileExist(filename), i);
+      const id = this.docList1().controls[i].get(['id'])!.value;
+
+      if (this.docList1().controls[i].get(['id'])!.value === null || this.docList1().controls[i].get(['id'])!.value === undefined) {
+        this.removeFieldConfirm(i);
+      } else {
+        this.subscribeToSaveResponseCheckFileexist(this.documentHeaderService.deleteFile(id), i);
+      }
     }
   }
 
@@ -464,7 +471,8 @@ export class DocumentUpdateComponent implements OnInit {
       if (replyMessage.code === ResponseCode.ERROR_E00) {
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
-        this.showAlertMessage(replyCode, replyMsg);
+        // this.showAlertMessage(replyCode, replyMsg);
+        this.removeFieldConfirm(i);
       } else {
         this.removeFieldConfirm(i);
       }
@@ -492,6 +500,14 @@ export class DocumentUpdateComponent implements OnInit {
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
+
+        this._documentHeader = replyMessage.data;
+        this._documentDetails = this._documentHeader?.docList;
+        this.removeAllField();
+        this.updateForm(replyMessage.data);
+
+        console.log('Document Header xxxxxxxx', this._documentHeader);
+
         this.statusUpdate(replyMessage.data.status);
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;
@@ -588,6 +604,7 @@ export class DocumentUpdateComponent implements OnInit {
       headerId: undefined,
       filePath: data.get(['filePath'])!.value,
       fileName: data.get(['fileName'])!.value,
+      fileNameVersion: data.get(['fileNameVersion'])!.value,
       fileSize: data.get(['fileSize'])!.value,
       version: data.get(['version'])!.value,
       remark: data.get(['remark'])!.value,
@@ -645,6 +662,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.docList1().controls[index].get(['id'])!.setValue(data.id);
       this.docList1().controls[index].get(['filePath'])!.setValue(data.filePath);
       this.docList1().controls[index].get(['fileName'])!.setValue(data.fileName);
+      this.docList1().controls[index].get(['fileNameVersion'])!.setValue(data.fileNameVersion);
       this.docList1().controls[index].get(['fileSize'])!.setValue(data.fileSize);
       this.docList1().controls[index].get(['remark'])!.setValue(data.remark);
       this.docList1().controls[index].get(['version'])!.setValue(data.version);
