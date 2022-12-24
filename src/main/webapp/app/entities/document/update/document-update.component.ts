@@ -16,7 +16,6 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IDocumentStatus, IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog.component';
 
 @Component({
