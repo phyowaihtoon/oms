@@ -1,4 +1,4 @@
-<form *ngIf="metadata" name="deleteForm" (ngSubmit)="confirmDelete(metadata.id!)">
+<form name="deleteForm" (ngSubmit)="confirmDelete()">
   <div class="modal-header">
     <h4 class="modal-title" data-cy="metadataDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
 
@@ -7,14 +7,7 @@
 
   <div class="modal-body">
     <jhi-alert-error></jhi-alert-error>
-
-    <p
-      id="jhi-delete-metadata-heading"
-      jhiTranslate="dmsApp.metaData.delete.question"
-      [translateValues]="{ id: metadata.id, valDesc: metadata.docTitle }"
-    >
-      Are you sure you want to delete this Metadata?
-    </p>
+    <p>Are you sure you want to delete this Metadata?</p>
   </div>
 
   <div class="modal-footer">

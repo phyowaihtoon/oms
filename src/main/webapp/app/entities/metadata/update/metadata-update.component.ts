@@ -10,6 +10,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LovSetupDialogComponent } from '../lov-setup/lov-setup-dialog.component';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { IMenuItem } from 'app/entities/util/setup.model';
+import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
+import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { DeleteMetadataComponent } from '../delete-metadata/delete-metadata.component';
 
 @Component({
   selector: 'jhi-metadata-update',
@@ -76,6 +79,7 @@ export class MetadataUpdateComponent implements OnInit {
 
   newField(): FormGroup {
     return this.fb.group({
+      id: [],
       fieldName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z ]*$')]],
       fieldType: ['String', [Validators.required]],
       fieldValue: [{ value: '', disabled: true }, Validators.required],
@@ -89,6 +93,23 @@ export class MetadataUpdateComponent implements OnInit {
   }
 
   removeField(i: number): void {
+    if (this.fieldList().length > 1) {
+      const id = this.fieldList().controls[i].get(['id'])!.value;
+      if (this.fieldList().controls[i].get(['id'])!.value === null || this.fieldList().controls[i].get(['id'])!.value === undefined) {
+        this.removeFieldConfirm(i);
+      } else {
+        const modalRef = this.modalService.open(DeleteMetadataComponent, { size: 'md', backdrop: 'static' });
+        // modalRef.componentInstance.id = id;
+        modalRef.closed.subscribe(reason => {
+          if (reason === 'deleted') {
+            this.subscribeToSaveResponseCheckFieldExist(this.service.deleteField(id), i);
+          }
+        });
+      }
+    }
+  }
+
+  removeFieldConfirm(i: number): void {
     if (this.fieldList().length > 1) {
       this.fieldList().removeAt(i);
       this.reorderFieldList();
@@ -140,6 +161,12 @@ export class MetadataUpdateComponent implements OnInit {
     }
   }
 
+  showAlertMessage(msg1: string, msg2?: string): void {
+    const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+    modalRef.componentInstance.code = msg1;
+    modalRef.componentInstance.message = msg2;
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IMetaDataHeader>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
@@ -149,15 +176,43 @@ export class MetadataUpdateComponent implements OnInit {
 
   protected onSaveSuccess(result: HttpResponse<IMetaDataHeader>): void {
     this.editForm.get(['id'])?.setValue(result.body?.id);
-    // this.previousState();
   }
 
   protected onSaveError(): void {
-    // Api for inheritance.
+    console.log('onSaveError');
   }
 
   protected onSaveFinalize(): void {
     this.isSaving = false;
+  }
+
+  protected subscribeToSaveResponseCheckFieldExist(result: Observable<HttpResponse<IReplyMessage>>, i: number): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessCheckFieldExist(res, i),
+      () => this.onSaveErrorCheckFieldExist()
+    );
+  }
+
+  protected onSaveSuccessCheckFieldExist(result: HttpResponse<IReplyMessage>, i: number): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.ERROR_E00) {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      } else {
+        this.removeFieldConfirm(i);
+      }
+    } else {
+      this.onSaveErrorCheckFieldExist();
+    }
+  }
+
+  protected onSaveErrorCheckFieldExist(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
   }
 
   protected createMetaDataDetail(data: any): IMetaData {
@@ -202,8 +257,12 @@ export class MetadataUpdateComponent implements OnInit {
 
   protected updateMetaDataDetails(metaDataDetails: IMetaData[] | undefined): void {
     let index = 0;
+
+    console.log('metaDataDetails', metaDataDetails);
+
     metaDataDetails?.forEach(data => {
       this.addField();
+      this.fieldList().controls[index].get(['id'])!.setValue(data.id);
       this.fieldList().controls[index].get(['fieldName'])!.setValue(data.fieldName);
       this.fieldList().controls[index].get(['fieldType'])!.setValue(data.fieldType);
       this.fieldList().controls[index].get(['fieldValue'])!.setValue(data.fieldValue);

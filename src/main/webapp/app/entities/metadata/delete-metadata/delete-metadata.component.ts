@@ -1,18 +1,20 @@
-import { HttpResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { Observable } from 'rxjs';
+import { IMetaData } from '../metadata.model';
+import { MetaDataService } from '../service/metadata.service';
+import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
-import { IMetaDataHeader } from '../metadata.model';
-import { MetaDataService } from '../service/metadata.service';
-
 @Component({
-  templateUrl: './metadata-delete-dialog.component.html',
+  selector: 'jhi-delete-metadata',
+  templateUrl: './delete-metadata.component.html',
+  styleUrls: ['./delete-metadata.component.scss'],
 })
-export class MetaDataDeleteDialogComponent {
-  metadata?: IMetaDataHeader;
+export class DeleteMetadataComponent {
+  metadata?: IMetaData;
+  id?: number;
 
   constructor(protected service: MetaDataService, public activeModal: NgbActiveModal) {}
 
@@ -20,16 +22,12 @@ export class MetaDataDeleteDialogComponent {
     this.activeModal.dismiss();
   }
 
-  confirmDelete(id: number): void {
-    this.subscribeToSaveResponse(this.service.delete(id));
-
-    // this.service.delete(id).subscribe(() => {
-    //   this.activeModal.close('deleted');
-    // });
+  confirmDelete(): void {
+    this.activeModal.close('deleted');
   }
 
   protected onSaveFinalize(): void {
-    console.log(' ');
+    console.log('savefinalize');
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
@@ -57,6 +55,5 @@ export class MetaDataDeleteDialogComponent {
   protected onSaveError(): void {
     const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
     const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
-    // this.showAlertMessage(replyCode, replyMsg);
   }
 }

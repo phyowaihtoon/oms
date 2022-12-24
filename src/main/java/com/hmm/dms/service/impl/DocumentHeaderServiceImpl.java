@@ -178,7 +178,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         String fileVersion = "";
 
         String[] originalFilearr = filename.split("\\.");
-        fileVersion = originalFilearr[0] + "_" + "V" + Integer.toString(versionNo) + "." + originalFilearr[1];
+        fileVersion = originalFilearr[0] + "_V" + Integer.toString(versionNo) + "." + originalFilearr[1];
 
         return fileVersion;
     }
