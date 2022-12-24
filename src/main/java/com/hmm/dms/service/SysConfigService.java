@@ -11,4 +11,6 @@ public interface SysConfigService {
     ReplyMessage<List<SysConfig>> getAllSysConfig();
 
     ReplyMessage<List<SysConfig>> saveAllSysConfig(List<SysConfig> data);
+
+    void updateFileVersion() throws Exception;
 }

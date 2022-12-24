@@ -7,7 +7,12 @@ import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.service.message.SysConfigMessage;
 import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.util.SysConfigVariables;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
+import java.util.Scanner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,5 +60,44 @@ public class SysConfigServiceImpl implements SysConfigService {
         replyMessage.setMessage("Updated Successfully");
         replyMessage.setData(configList);
         return replyMessage;
+    }
+
+    @Override
+    public void updateFileVersion() throws Exception {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter file path (For e.g, C:\\Folder\\) - ");
+        String filePath = sc.nextLine();
+
+        File file = new File(filePath + "test.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String st;
+
+        while ((st = br.readLine()) != null) {
+            System.out.println(st);
+
+            File folder = new File(st);
+            File[] listOfFiles = folder.listFiles();
+
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (listOfFiles[i].isFile()) {
+                    String newFileName = fileNameUpdate(1, listOfFiles[i].getName());
+                    File newFile = new File(st + "\\" + newFileName);
+                    listOfFiles[i].renameTo(newFile);
+                    System.out.println("File " + listOfFiles[i].getName());
+                } else if (listOfFiles[i].isDirectory()) {
+                    System.out.println("Directory " + listOfFiles[i].getName());
+                }
+            }
+        }
+    }
+
+    public static String fileNameUpdate(int versionNo, String filename) {
+        String fileVersion = "";
+
+        String[] originalFilearr = filename.split("\\.");
+        fileVersion = originalFilearr[0] + "_V" + Integer.toString(versionNo) + "." + originalFilearr[1];
+
+        return fileVersion;
     }
 }

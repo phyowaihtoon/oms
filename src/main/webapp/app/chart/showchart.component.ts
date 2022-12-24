@@ -5,6 +5,8 @@ import { DatePipe } from '@angular/common';
 import { SchowChartService } from './showchart.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
+import { HttpResponse } from '@angular/common/http';
+import { IPieHeaderDataDto } from 'app/services/pieheaderdata.model';
 
 @Component({
   selector: 'jhi-showchart',
@@ -13,8 +15,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class ShowChartComponent implements AfterViewInit {
   @Input() template: any;
-
-  constructor(private dashboard: DashboardService, protected modalService: NgbModal, protected domSanitizer: DomSanitizer) {}
+  totalCount: any;
+  constructor(
+    private dashboard: DashboardService,
+    private showChart: SchowChartService,
+    protected modalService: NgbModal,
+    protected domSanitizer: DomSanitizer
+  ) {}
 
   ngAfterViewInit(): void {
     this.showData();
@@ -29,11 +36,45 @@ export class ShowChartComponent implements AfterViewInit {
     */
 
     if (this.template.cardId === 'CARD002') {
-      this.dashboard.generatePieChart(this.template.cardId, this.preparePieData());
+      this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto[]>) => {
+        console.log('body=>', res.body);
+        if (res.body) {
+          console.log('writing data');
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
+        }
+      });
+    }
+
+    if (this.template.cardId === 'CARD003') {
+      this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto[]>) => {
+        console.log('body=>', res.body);
+        if (res.body) {
+          console.log('writing data');
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
+        }
+      });
     }
   }
 
-  preparePieData(): any {
+  preparePieData(req: any): any {
+    this.totalCount = req.totalCount;
+    const ret: any = [];
+    req.data?.forEach((d: any) => {
+      console.log(d.name);
+      ret.push({ name: d.name, y: d.data });
+      //  ret.push({ name: data.name, y: data.amount });
+    });
+
+    return [
+      {
+        name: 'Documents',
+        colorByPoint: true,
+        data: ret,
+      },
+    ];
+  }
+
+  preparePieDataOld(): any {
     return [
       {
         name: 'Documents',

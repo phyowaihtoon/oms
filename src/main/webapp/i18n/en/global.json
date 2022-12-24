@@ -1,6 +1,6 @@
 {
   "global": {
-    "title": "DMS",
+    "title": "Document Management System",
     "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
     "menu": {
       "home": "Home",
@@ -41,7 +41,8 @@
         "create": "Document Mapping",
         "update": "Document Mapping",
         "search": "Document Inquiry",
-        "trashbin": "Trash Bin"
+        "trashbin": "Trash Bin",
+        "restore": "Restore Document"
       },
       "queue": {
         "title": "Service Queue",

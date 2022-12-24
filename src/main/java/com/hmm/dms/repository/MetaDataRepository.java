@@ -19,9 +19,15 @@ public interface MetaDataRepository extends JpaRepository<MetaData, Long> {
     Stream<MetaData> findByHeaderId(Long id);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE meta_data SET del_flag='Y' " + "WHERE header_id = ?", nativeQuery = true)
+    @Query(value = "UPDATE meta_data SET del_flag='Y' " + "WHERE header_id = ?1", nativeQuery = true)
     void updateByHeaderId(Long id);
 
     @Query(value = "select md from MetaData md where md.headerId=?1")
     List<MetaData> findAllByMetaDataHeaderId(Long id);
+
+    @Query(value = "select header_id from meta_data where del_flag = 'N' and id = ?1 ", nativeQuery = true)
+    Long getHeaderIdById(Long id);
+
+    @Query(value = "select count(*) from document_header where del_flag = 'N' and meta_data_header_id = ?1", nativeQuery = true)
+    long checkHeaderId(Long id);
 }

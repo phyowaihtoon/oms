@@ -65,8 +65,8 @@ export class MetaDataService {
     return res;
   }
 
-  delete(id: number): Observable<HttpResponse<{}>> {
-    return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  delete(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.delete<IReplyMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
   addMetaDataHeaderToCollectionIfMissing(
@@ -97,6 +97,10 @@ export class MetaDataService {
         observe: 'response',
       }
     );
+  }
+
+  deleteField(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.get<IReplyMessage>(`${this.resourceUrl}/deleteFieldById/${id}`, { observe: 'response' });
   }
 
   protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
