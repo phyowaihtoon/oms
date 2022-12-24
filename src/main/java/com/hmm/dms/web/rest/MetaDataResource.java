@@ -2,7 +2,6 @@ package com.hmm.dms.web.rest;
 
 import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.service.MetaDataService;
-import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.message.BaseMessage;
@@ -169,16 +168,6 @@ public class MetaDataResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of metaData in body.
      */
-    /*
-     * @GetMapping("/meta-data") public List<MetaDataHeaderDTO> getAllMetaData() {
-     * log.debug("REST request to get all MetaData"); return
-     * metaDataService.findAll(); }
-     */
-    /**
-     * {@code GET  /meta-data} : get all the metaData.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of metaData in body.
-     */
     @GetMapping("/meta-data")
     public ResponseEntity<List<MetaDataHeaderDTO>> getAllMetaDatas(Pageable pageable) {
         log.debug("REST request to get a page of Categories");
@@ -210,15 +199,10 @@ public class MetaDataResource {
     public ResponseEntity<BaseMessage> deleteMetaData(@PathVariable Long id) {
         log.debug("REST request to delete MetaData : {}", id);
         BaseMessage result = metaDataService.deleteHeaderById(id);
-
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .body(result);
-        //        return ResponseEntity
-        //            .noContent()
-        //            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-        //            .build();
     }
 
     @PostMapping("/meta-data/search")
