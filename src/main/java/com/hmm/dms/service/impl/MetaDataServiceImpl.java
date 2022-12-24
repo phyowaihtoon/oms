@@ -1,13 +1,10 @@
 package com.hmm.dms.service.impl;
 
-import com.hmm.dms.domain.Document;
 import com.hmm.dms.domain.MetaData;
 import com.hmm.dms.domain.MetaDataHeader;
 import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.MetaDataService;
-import com.hmm.dms.service.dto.DocumentDTO;
-import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
@@ -16,7 +13,6 @@ import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.ResponseCode;
-import com.hmm.dms.web.rest.MetaDataResource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
