@@ -89,12 +89,6 @@ export class RepositoryService {
     return repositoryHeaderCollection;
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
-    }
-    return res;
-}
   restoreRepository(id: number): Observable<HttpResponse<IReplyMessage>> {
     return this.http.put<IReplyMessage>(
       `${this.resourceUrl}/restore/${id}`,
@@ -103,5 +97,12 @@ export class RepositoryService {
         observe: 'response',
       }
     );
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.createdDate = res.body.createdDate ? dayjs(res.body.createdDate) : undefined;
+    }
+    return res;
   }
 }
