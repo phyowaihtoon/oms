@@ -1,5 +1,6 @@
 package com.hmm.dms.service;
 
+import com.hmm.dms.service.dto.DashboardTemplateDto;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
@@ -16,4 +17,6 @@ public interface LoadSetupService {
     public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryMessage dto, Pageable pageable);
 
     public List<MetaDataHeaderDTO> getAllMetaDataHeaderAccessByRole(Long roleId);
+
+    public List<DashboardTemplateDto> loadAllDashboardTemplate();
 }

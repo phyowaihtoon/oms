@@ -1,5 +1,6 @@
 package com.hmm.dms.service;
 
+import com.hmm.dms.service.dto.RoleDashboardAccessDTO;
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
 import com.hmm.dms.service.message.BaseMessage;
@@ -19,8 +20,8 @@ public interface UserRoleService {
      * @param userRoleDTO the entity to save.
      * @return the persisted entity.
      */
-    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> save(
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> message
+    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> save(
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> message
     );
 
     /**

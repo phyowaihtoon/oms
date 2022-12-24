@@ -1,18 +1,22 @@
 package com.hmm.dms.service.impl;
 
+import com.hmm.dms.domain.DashboardTemplate;
 import com.hmm.dms.domain.MetaData;
 import com.hmm.dms.domain.MetaDataHeader;
 import com.hmm.dms.domain.RepositoryHeader;
 import com.hmm.dms.domain.RoleTemplateAccess;
+import com.hmm.dms.repository.DashboardTemplateRepository;
 import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.repository.RepositoryDetailRepository;
 import com.hmm.dms.repository.RepositoryHeaderRepository;
 import com.hmm.dms.repository.RoleTemplateAccessRepository;
 import com.hmm.dms.service.LoadSetupService;
+import com.hmm.dms.service.dto.DashboardTemplateDto;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
+import com.hmm.dms.service.mapper.DashboardTemplateMapper;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import com.hmm.dms.service.mapper.RepositoryHeaderMapper;
@@ -45,6 +49,9 @@ public class LoadSetupServiceImpl implements LoadSetupService {
     private final RoleTemplateAccessRepository roleTemplateAccessRepository;
     private final RoleTemplateAccessMapper roleTemplateAccessMapper;
 
+    private final DashboardTemplateRepository dashboardTemplateRepository;
+    private final DashboardTemplateMapper dashboardTemplateMapper;
+
     public LoadSetupServiceImpl(
         MetaDataHeaderRepository metaDataHeaderRepository,
         MetaDataHeaderMapper metaDataHeaderMapper,
@@ -55,7 +62,9 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         RepositoryHeaderMapper repositoryHeaderMapper,
         RepositoryMapper repositoryMapper,
         RoleTemplateAccessRepository roleTemplateAccessRepository,
-        RoleTemplateAccessMapper roleTemplateAccessMapper
+        RoleTemplateAccessMapper roleTemplateAccessMapper,
+        DashboardTemplateRepository dashboardTemplateRepository,
+        DashboardTemplateMapper dashboardTemplateMapper
     ) {
         this.metaDataHeaderRepository = metaDataHeaderRepository;
         this.metaDataHeaderMapper = metaDataHeaderMapper;
@@ -67,6 +76,8 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         this.repositoryMapper = repositoryMapper;
         this.roleTemplateAccessRepository = roleTemplateAccessRepository;
         this.roleTemplateAccessMapper = roleTemplateAccessMapper;
+        this.dashboardTemplateRepository = dashboardTemplateRepository;
+        this.dashboardTemplateMapper = dashboardTemplateMapper;
     }
 
     @Override
@@ -148,5 +159,11 @@ public class LoadSetupServiceImpl implements LoadSetupService {
             }
         }
         return metaDataHeaderList;
+    }
+
+    @Override
+    public List<DashboardTemplateDto> loadAllDashboardTemplate() {
+        List<DashboardTemplate> entityList = this.dashboardTemplateRepository.findAll();
+        return this.dashboardTemplateMapper.toDto(entityList);
     }
 }
