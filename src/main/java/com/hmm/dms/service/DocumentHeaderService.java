@@ -4,6 +4,7 @@ import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.service.message.UploadFailedException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,8 @@ public interface DocumentHeaderService {
      * @param documentDTO the entity to save.
      * @return the persisted entity.
      */
-    ReplyMessage<DocumentHeaderDTO> saveAndUploadDocuments(List<MultipartFile> multipartFiles, DocumentHeaderDTO documentHeaderDTO);
+    ReplyMessage<DocumentHeaderDTO> saveAndUploadDocuments(List<MultipartFile> multipartFiles, DocumentHeaderDTO documentHeaderDTO)
+        throws UploadFailedException;
 
     /**
      * Partially updates a document.
@@ -31,7 +33,7 @@ public interface DocumentHeaderService {
 
     ReplyMessage<DocumentInquiryMessage> partialUpdate(DocumentInquiryMessage approvalInfo, Long id);
 
-    BaseMessage restoreDocument(Long id);
+    BaseMessage restoreDocument(DocumentHeaderDTO data);
     /**
      * Get all the documents.
      *

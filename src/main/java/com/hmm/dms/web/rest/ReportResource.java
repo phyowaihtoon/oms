@@ -46,7 +46,7 @@ public class ReportResource {
     public ResponseEntity<Resource> viewPdf(@PathVariable final String fileName) throws Exception {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
-        String rptOutputPath = rptOutFolder + "\\" + loginUser.getLogin() + "\\";
+        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
         File file = new File(rptOutputPath + fileName);
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + fileName);
@@ -61,7 +61,7 @@ public class ReportResource {
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
-        String rptOutputPath = rptOutFolder + "\\" + loginUser.getLogin() + "\\";
+        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
         File file = new File(rptOutputPath + fileName);
         Path path = Paths.get(file.getAbsolutePath());
         ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
@@ -79,7 +79,7 @@ public class ReportResource {
     public ReplyMessage<RptParamsMessage> generateDocumentListRpt(@Valid @RequestBody RptParamsMessage rptParams) {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
-        String rptOutputPath = rptOutFolder + "\\" + loginUser.getLogin() + "\\";
+        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
         String rptFileName = SharedUtils.generateFileName("DocumentMappingRpt");
         rptParams.setRptFileName(rptFileName);
         rptParams.setRptOutputPath(rptOutputPath);
@@ -93,7 +93,7 @@ public class ReportResource {
     public ReplyMessage<RptParamsMessage> generateDocumentListRpt2(@Valid @RequestBody RptParamsMessage rptParams) {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
-        String rptOutputPath = rptOutFolder + "\\" + loginUser.getLogin() + "\\";
+        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
         String rptFileName = SharedUtils.generateFileName("DocumentListRpt");
         rptParams.setRptFileName(rptFileName);
         rptParams.setRptOutputPath(rptOutputPath);

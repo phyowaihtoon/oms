@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
@@ -9,24 +9,22 @@ import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.c
 import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
-import { IDocument, IDocumentHeader } from '../document.model';
-import { DocumentInquiryService } from '../service/document-inquiry.service';
+import { DMSDocument, DocumentHeader, IDocument, IDocumentHeader } from '../../document.model';
+import { DocumentInquiryService } from '../../service/document-inquiry.service';
 import { Event as NavigationEvent } from '@angular/router';
 import { IDocumentStatus, IPriority } from 'app/entities/util/setup.model';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'jhi-document-detail',
-  templateUrl: './document-detail.component.html',
-  styleUrls: ['./document-detail.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  selector: 'jhi-document-trashbin-detail',
+  templateUrl: './document-trashbin-detail.component.html',
+  styleUrls: ['./document-trashbin-detail.component.scss'],
 })
-export class DocumentDetailComponent implements OnInit {
-  _documentHeader: IDocumentHeader | null = null;
-  _documentDetails: IDocument[] | undefined;
+export class DocumentTrashbinDetailComponent implements OnInit {
+  _documentHeader?: IDocumentHeader;
   _replyMessage?: IReplyMessage | null;
   _documentStatus?: IDocumentStatus[];
   _priority?: IPriority[];
-
   _docExtensionTypes = [
     { extension: 'pdf', value: 'PDF' },
     { extension: 'docx', value: 'WORD' },
@@ -39,18 +37,23 @@ export class DocumentDetailComponent implements OnInit {
     { extension: 'csv', value: 'CSV' },
   ];
   _metaDataHdrList?: IMetaDataHeader[] | null;
-
   _modalRef?: NgbModalRef;
-
   _isDocHeaderShow = false;
   _isDocDetailShow = true;
+  _checkedItemList: number[] = [];
+
+  editForm = this.fb.group({
+    id: [],
+    docList: this.fb.array([]),
+  });
 
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected loadSetupService: LoadSetupService,
     protected documentInquiryService: DocumentInquiryService,
     protected modalService: NgbModal,
-    protected router: Router
+    protected router: Router,
+    protected fb: FormBuilder
   ) {
     this.router.events.subscribe((event: NavigationEvent) => {
       if (event instanceof NavigationStart) {
@@ -68,7 +71,9 @@ export class DocumentDetailComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ docHeader }) => {
       this._documentHeader = docHeader;
-      this._documentDetails = this._documentHeader?.docList;
+      if (this._documentHeader) {
+        this.updateForm(this._documentHeader);
+      }
     });
     this.loadAllSetup();
   }
@@ -104,6 +109,42 @@ export class DocumentDetailComponent implements OnInit {
     );
   }
 
+  restoreDocument(): void {
+    const documentHeader = this.createFromForm();
+    this.documentInquiryService.restoreDocument(documentHeader).subscribe(
+      (response: HttpResponse<IReplyMessage>) => {
+        const replyMessage: IReplyMessage | null = response.body;
+        if (replyMessage !== null) {
+          if (replyMessage.code === ResponseCode.SUCCESS) {
+            const replyCode = replyMessage.code;
+            const replyMsg = replyMessage.message;
+            this.showAlertMessage(replyCode, replyMsg);
+
+            // Remove items from list after restored
+            if (this._checkedItemList.length > 0) {
+              this._checkedItemList.forEach(value => {
+                this.docList1().removeAt(value);
+              });
+            }
+          } else {
+            const replyCode = replyMessage.code;
+            const replyMsg = replyMessage.message;
+            this.showAlertMessage(replyCode, replyMsg);
+          }
+        } else {
+          const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+          const replyMsg = 'Internal Server Error';
+          this.showAlertMessage(replyCode, replyMsg);
+        }
+      },
+      error => {
+        const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+        const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    );
+  }
+
   validate(isPreview: boolean, filePath: string): boolean {
     let message1 = '',
       message2 = '';
@@ -133,7 +174,10 @@ export class DocumentDetailComponent implements OnInit {
     modalRef.componentInstance.message = msg2;
   }
 
-  previewFile(docId?: number, fileName?: string): void {
+  previewFile(index: number): void {
+    const docId = this.docList1().controls[index].get(['id'])!.value;
+    const fileName = this.docList1().controls[index].get(['fileName'])!.value;
+
     if (docId !== undefined && fileName !== undefined && this.validate(true, fileName)) {
       this.showLoading('Loading File');
       this.documentInquiryService.previewFile(docId).subscribe(
@@ -166,7 +210,10 @@ export class DocumentDetailComponent implements OnInit {
     }
   }
 
-  downloadFile(docId?: number, fileName?: string): void {
+  downloadFile(index: number): void {
+    const docId = this.docList1().controls[index].get(['id'])!.value;
+    const fileName = this.docList1().controls[index].get(['fileName'])!.value;
+
     if (docId !== undefined && fileName !== undefined && this.validate(false, fileName)) {
       this.showLoading('Downloading File');
       this.documentInquiryService.downloadFile(docId).subscribe(
@@ -276,5 +323,92 @@ export class DocumentDetailComponent implements OnInit {
       this._isDocDetailShow = !this._isDocDetailShow;
     }
     this._isDocHeaderShow = false;
+  }
+
+  // define FormArray for document List
+  docList1(): FormArray {
+    return this.editForm.get('docList') as FormArray;
+  }
+
+  // create new field dynamically
+  newField(filePath: string, fileName: string, fileSize: number): FormGroup {
+    return this.fb.group({
+      id: [],
+      filePath: [filePath, [Validators.required]],
+      fileName: [fileName, [Validators.required]],
+      fileNameVersion: [],
+      fileSize: [fileSize, [Validators.required]],
+      version: [''],
+      remark: [''],
+      restoreChecked: [false],
+    });
+  }
+
+  // add new field dynamically
+  addField(filePath: string, fileName: string, fileSize: number): void {
+    this.docList1().push(this.newField(filePath, fileName, fileSize));
+  }
+
+  protected updateDocumentDataDetails(docList: IDocument[] | undefined): void {
+    let index = 0;
+    docList?.forEach(data => {
+      this.addField('', '', 0);
+      this.docList1().controls[index].get(['id'])!.setValue(data.id);
+      this.docList1().controls[index].get(['filePath'])!.setValue(data.filePath);
+      this.docList1().controls[index].get(['fileName'])!.setValue(data.fileName);
+      this.docList1().controls[index].get(['fileNameVersion'])!.setValue(data.fileNameVersion);
+      this.docList1().controls[index].get(['fileSize'])!.setValue(data.fileSize);
+      this.docList1().controls[index].get(['version'])!.setValue(data.version);
+      this.docList1().controls[index].get(['remark'])!.setValue(data.remark);
+      this.docList1().controls[index].get(['restoreChecked'])!.setValue(false);
+      index = index + 1;
+    });
+  }
+
+  protected updateForm(docHeaderData: IDocumentHeader): void {
+    this.editForm.patchValue({
+      id: docHeaderData.id,
+      metaDataHeaderId: docHeaderData.metaDataHeaderId,
+      message: docHeaderData.message,
+      ammendment: docHeaderData.reasonForAmend,
+      reject: docHeaderData.reasonForReject,
+      fieldValues: docHeaderData.fieldValues,
+      fieldNames: docHeaderData.fieldNames,
+      priority: docHeaderData.priority,
+      status: docHeaderData.status,
+      docList: this.updateDocumentDataDetails(docHeaderData.docList),
+    });
+  }
+
+  protected createFromForm(): IDocumentHeader {
+    return {
+      ...new DocumentHeader(),
+      id: this.editForm.get(['id'])!.value,
+      docList: this.createFileListDetails(),
+    };
+  }
+
+  protected createFileListDetails(): IDocument[] {
+    this._checkedItemList = [];
+    const fieldList: IDocument[] = [];
+    this.docList1().controls.forEach((frmControl, index) => {
+      if (frmControl.get(['restoreChecked'])!.value) {
+        fieldList.push(this.createFileListDetail(frmControl));
+        this._checkedItemList.push(index);
+      }
+    });
+    return fieldList;
+  }
+
+  protected createFileListDetail(frmControl: AbstractControl): IDocument {
+    return {
+      ...new DMSDocument(),
+      id: frmControl.get(['id'])!.value,
+      filePath: frmControl.get(['filePath'])!.value,
+      fileName: frmControl.get(['fileName'])!.value,
+      fileSize: frmControl.get(['fileSize'])!.value,
+      version: frmControl.get(['version'])!.value,
+      remark: frmControl.get(['remark'])!.value,
+    };
   }
 }

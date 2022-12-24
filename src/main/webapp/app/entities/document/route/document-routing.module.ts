@@ -4,9 +4,11 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
 import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 import { DocumentDetailComponent } from '../detail/document-detail.component';
 import { DocumentComponent } from '../list/document.component';
-import { DocumentTrashbinComponent } from '../trashbin/document-trashbin.component';
+import { DocumentTrashbinDetailComponent } from '../trashbin/detail/document-trashbin-detail.component';
+import { DocumentTrashbinComponent } from '../trashbin/list/document-trashbin.component';
 import { DocumentUpdateComponent } from '../update/document-update.component';
 import { DocumentRoutingResolveService } from './document-routing-resolve.service';
+import { DocumentTrashbinResolveService } from './document-trashbin-resolve.service';
 
 const metadataRoute: Routes = [
   {
@@ -58,6 +60,14 @@ const metadataRoute: Routes = [
     data: {
       menuCode: 'DOCTB',
     },
+  },
+  {
+    path: 'trashbin/:id/view',
+    component: DocumentTrashbinDetailComponent,
+    resolve: {
+      docHeader: DocumentTrashbinResolveService,
+    },
+    canActivate: [UserRouteAccessService],
   },
 ];
 

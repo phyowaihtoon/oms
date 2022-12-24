@@ -1,4 +1,4 @@
-<div *ngIf="template.cardId === 'CARD001'" class="row">
+<div *ngIf="template.cardId === 'CARD001'">
   <div class="col-md-12">
     <div class="dashboard-box">
       <div class="box-header bg-primary">{{ template.cardName }}</div>
@@ -26,13 +26,13 @@
   </div>
 </div>
 
-<div *ngIf="template.cardId === 'CARD002'" class="row">
+<div *ngIf="template.cardId === 'CARD002' || template.cardId === 'CARD003'">
   <div class="col-md-12">
     <div class="dashboard-box">
       <div class="box-header bg-primary">{{ template.cardName }}</div>
       <div class="box-body">
         <div class="chart-body" id="{{ template.cardId }}"></div>
-        <h4 style="padding: 8px">Total - 3000 Records</h4>
+        <h4 style="padding: 8px">Total - {{ totalCount }} Records</h4>
       </div>
     </div>
   </div>

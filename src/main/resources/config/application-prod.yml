@@ -28,7 +28,7 @@ management:
 spring:
   devtools:
     restart:
-      enabled: false
+      enabled: true
     livereload:
       enabled: false
   datasource:

@@ -18,6 +18,8 @@ public interface DocumentInquiryService {
 
     public DocumentHeaderDTO findAllDocumentsByHeaderId(Long id);
 
+    public DocumentHeaderDTO findDeletedDocumentsByHeaderId(Long id);
+
     DocumentDTO getDocumentById(Long id);
 
     public ReplyMessage<ByteArrayResource> downloadFileFromFTPServer(String filePath) throws IOException, Exception;

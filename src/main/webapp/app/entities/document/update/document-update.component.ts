@@ -17,6 +17,7 @@ import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.c
 import { IDocumentStatus, IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog.component';
 
 @Component({
   selector: 'jhi-document-update',
@@ -27,6 +28,7 @@ export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentDetails: IDocument[] | undefined;
   _documentStatus?: IDocumentStatus[];
+  _documentDetails: IDocument[] | undefined;
 
   _metaDataHdrList: MetaDataHeader[] | null = [];
   _priority: IPriority[] | null = [];
@@ -161,12 +163,20 @@ export class DocumentUpdateComponent implements OnInit {
   // remove field by given row id
   removeField(i: number): void {
     if (this.docList1().length > 0) {
-      const id = this.docList1().controls[i].get(['id'])!.value;
+      const docId = this.docList1().controls[i].get(['id'])!.value;
+      const dmsFileName = this.docList1().controls[i].get(['fileName'])!.value;
 
       if (this.docList1().controls[i].get(['id'])!.value === null || this.docList1().controls[i].get(['id'])!.value === undefined) {
         this.removeFieldConfirm(i);
       } else {
-        this.subscribeToSaveResponseCheckFileexist(this.documentHeaderService.deleteFile(id), i);
+        const dmsDocument = { ...new DMSDocument(), id: docId, fileName: dmsFileName };
+        const modalRef = this.modalService.open(DocumentDeleteDialogComponent, { size: 'md', backdrop: 'static' });
+        modalRef.componentInstance.dmsDocument = dmsDocument;
+        modalRef.componentInstance.confirmMessage.subscribe((confirmed: string) => {
+          if (confirmed && confirmed === 'YES') {
+            this.subscribeToSaveResponseCheckFileexist(this.documentHeaderService.deleteFile(docId), i);
+          }
+        });
       }
     }
   }
@@ -245,7 +255,12 @@ export class DocumentUpdateComponent implements OnInit {
             editedFileName = editedFileName.concat('.').concat(orgFileExtension!);
             dmsDoc.fileName = editedFileName;
           }
-          formData.append('files', dmsDoc.fileData, editedFileName?.concat('@').concat(dmsDoc.filePath ?? ''));
+          const docDetailInfo = editedFileName
+            ?.concat('@')
+            .concat(dmsDoc.filePath ?? '')
+            .concat('@')
+            .concat(dmsDoc.remark ?? '');
+          formData.append('files', dmsDoc.fileData, docDetailInfo);
         }
         delete dmsDoc['fileData'];
         attachedFileList.push(dmsDoc);

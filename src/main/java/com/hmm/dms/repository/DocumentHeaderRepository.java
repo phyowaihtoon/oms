@@ -70,6 +70,64 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         Pageable pageable
     );
 
+    @Query(
+        value = "SELECT distinct dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
+        "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +
+        "dh.reason_for_reject, dh.approved_date, dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
+        "FROM document_header dh,document dd " +
+        "WHERE dh.id=dd.header_id AND dd.del_flag='Y' " +
+        "AND dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
+        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        countQuery = "SELECT count(*) FROM document_header dh,document dd " +
+        "WHERE dh.id=dd.header_id AND dd.del_flag='Y' AND dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
+        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        nativeQuery = true
+    )
+    Page<DocumentHeader> findTrashItems(
+        Long headerId,
+        int fieldIndex1,
+        String fieldValue1,
+        int fieldIndex2,
+        String fieldValue2,
+        String generalValue,
+        Collection<Integer> status,
+        Pageable pageable
+    );
+
+    @Query(
+        value = "SELECT distinct dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
+        "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +
+        "dh.reason_for_reject, dh.approved_date, dh.last_modified_by, date(dh.last_modified_date) as last_modified_date " +
+        "FROM document_header dh,document dd " +
+        "WHERE dh.id=dd.header_id AND dd.del_flag='Y' AND dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
+        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
+        "AND dh.status IN ?8 ",
+        countQuery = "SELECT count(*) FROM document_header dh,document dd " +
+        "WHERE dh.id=dd.header_id AND dd.del_flag='Y' AND dh.meta_data_header_id=?1 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
+        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
+        "AND dh.status IN ?8 ",
+        nativeQuery = true
+    )
+    Page<DocumentHeader> findTrashItemsByDate(
+        Long headerId,
+        int fieldIndex1,
+        String fieldValue1,
+        int fieldIndex2,
+        String fieldValue2,
+        String generalValue,
+        String createdDate,
+        Collection<Integer> status,
+        Pageable pageable
+    );
+
     @Query(value = "SELECT dh FROM DocumentHeader dh where dh.id=?1")
     DocumentHeader findDocumentHeaderById(Long id);
 
@@ -90,8 +148,4 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document_header SET status=?1, approved_by=?2, approved_date=?3  " + "WHERE id = ?4", nativeQuery = true)
     void updateStatusById(int status, String approvedBy, Instant currentTime, Long id);
-
-    @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE document_header SET status=1 " + "WHERE id = ?1", nativeQuery = true)
-    void restoreDocument(Long id);
 }
