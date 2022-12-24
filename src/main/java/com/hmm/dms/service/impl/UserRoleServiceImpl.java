@@ -1,16 +1,20 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.ApplicationUser;
+import com.hmm.dms.domain.RoleDashboardAccess;
 import com.hmm.dms.domain.RoleMenuAccess;
 import com.hmm.dms.domain.RoleTemplateAccess;
 import com.hmm.dms.domain.UserRole;
 import com.hmm.dms.repository.ApplicationUserRepository;
+import com.hmm.dms.repository.RoleDashboardAccessRepository;
 import com.hmm.dms.repository.RoleMenuAccessRepository;
 import com.hmm.dms.repository.RoleTemplateAccessRepository;
 import com.hmm.dms.repository.UserRoleRepository;
 import com.hmm.dms.service.UserRoleService;
+import com.hmm.dms.service.dto.RoleDashboardAccessDTO;
 import com.hmm.dms.service.dto.RoleMenuAccessDTO;
 import com.hmm.dms.service.dto.UserRoleDTO;
+import com.hmm.dms.service.mapper.RoleDashboardAccessMapper;
 import com.hmm.dms.service.mapper.RoleMenuAccessMapper;
 import com.hmm.dms.service.mapper.RoleTemplateAccessMapper;
 import com.hmm.dms.service.mapper.UserRoleMapper;
@@ -45,6 +49,9 @@ public class UserRoleServiceImpl implements UserRoleService {
     private final RoleTemplateAccessMapper roleTemplateAccessMapper;
     private final RoleTemplateAccessRepository roleTemplateAccessRepository;
 
+    private final RoleDashboardAccessMapper roleDashboardAccessMapper;
+    private final RoleDashboardAccessRepository roleDashboardAccessRepository;
+
     public UserRoleServiceImpl(
         UserRoleRepository userRoleRepository,
         UserRoleMapper userRoleMapper,
@@ -52,7 +59,9 @@ public class UserRoleServiceImpl implements UserRoleService {
         RoleMenuAccessMapper roleMenuAccessMapper,
         RoleTemplateAccessRepository roleTemplateAccessRepository,
         RoleTemplateAccessMapper roleTemplateAccessMapper,
-        ApplicationUserRepository applicationUserRepository
+        ApplicationUserRepository applicationUserRepository,
+        RoleDashboardAccessMapper roleDashboardAccessMapper,
+        RoleDashboardAccessRepository roleDashboardAccessRepository
     ) {
         this.userRoleRepository = userRoleRepository;
         this.userRoleMapper = userRoleMapper;
@@ -61,14 +70,16 @@ public class UserRoleServiceImpl implements UserRoleService {
         this.roleTemplateAccessRepository = roleTemplateAccessRepository;
         this.roleTemplateAccessMapper = roleTemplateAccessMapper;
         this.applicationUserRepository = applicationUserRepository;
+        this.roleDashboardAccessMapper = roleDashboardAccessMapper;
+        this.roleDashboardAccessRepository = roleDashboardAccessRepository;
     }
 
     @Override
-    public HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> save(
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> message
+    public HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> save(
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> message
     ) {
         log.debug("Request to save UserRole : {}", message.getHeader());
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO> savedMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO>();
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> savedMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO>();
         UserRole userRole = userRoleMapper.toEntity(message.getHeader());
         userRole = userRoleRepository.save(userRole);
         UserRoleDTO savedUserDTO = userRoleMapper.toDto(userRole);
@@ -100,9 +111,25 @@ public class UserRoleServiceImpl implements UserRoleService {
         List<RoleTemplateAccess> savedTemplateList = this.roleTemplateAccessRepository.saveAll(templateEntityList);
         List<RoleTemplateAccessDTO> savedTemplateDTOList = this.roleTemplateAccessMapper.toDto(savedTemplateList);
 
+        List<RoleDashboardAccessDTO> dashboardDTOList = message.getDetails3();
+        List<RoleDashboardAccess> dashboardEntityList = this.roleDashboardAccessMapper.toEntity(dashboardDTOList);
+
+        if (dashboardEntityList != null && dashboardEntityList.size() > 0) {
+            for (RoleDashboardAccess entity : dashboardEntityList) {
+                entity.setUserRole(userRole);
+            }
+        }
+
+        /* Deleting all dashboard template access before saving */
+        this.roleDashboardAccessRepository.deleteByUserRoleId(userRole.getId());
+        /* Saving dashboard template access */
+        List<RoleDashboardAccess> savedDashboardList = this.roleDashboardAccessRepository.saveAll(dashboardEntityList);
+        List<RoleDashboardAccessDTO> savedDashboardDTOList = this.roleDashboardAccessMapper.toDto(savedDashboardList);
+
         savedMessage.setHeader(savedUserDTO);
         savedMessage.setDetails1(savedDTOList);
         savedMessage.setDetails2(savedTemplateDTOList);
+        savedMessage.setDetails3(savedDashboardDTOList);
         savedMessage.setCode(ResponseCode.SUCCESS);
         savedMessage.setMessage("User Role and Access are successfully saved");
         return savedMessage;

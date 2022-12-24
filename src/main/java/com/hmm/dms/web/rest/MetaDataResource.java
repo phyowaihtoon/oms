@@ -2,10 +2,13 @@ package com.hmm.dms.web.rest;
 
 import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.service.MetaDataService;
+import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -66,15 +69,21 @@ public class MetaDataResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/meta-data/save")
-    public ResponseEntity<MetaDataHeaderDTO> createMetaData(@Valid @RequestBody MetaDataHeaderDTO metaDataDTO) throws URISyntaxException {
+    public ResponseEntity<ReplyMessage<MetaDataHeaderDTO>> createMetaData(@Valid @RequestBody MetaDataHeaderDTO metaDataDTO)
+        throws URISyntaxException {
         log.debug("REST request to save MetaData : {}", metaDataDTO);
         if (metaDataDTO.getId() != null) {
             throw new BadRequestAlertException("A new metaData cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        MetaDataHeaderDTO result = metaDataService.save(metaDataDTO);
+        String metaDataHeaderId = "";
+        ReplyMessage<MetaDataHeaderDTO> result = metaDataService.saveMetaDataHeader(metaDataDTO);
+        if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
+            metaDataHeaderId = result.getData().getId().toString();
+        }
+
         return ResponseEntity
-            .created(new URI("/api/meta-data/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .created(new URI("/api/meta-data/" + metaDataHeaderId))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, metaDataHeaderId))
             .body(result);
     }
 
@@ -89,7 +98,7 @@ public class MetaDataResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/meta-data/{id}")
-    public ResponseEntity<MetaDataHeaderDTO> updateMetaData(
+    public ResponseEntity<ReplyMessage<MetaDataHeaderDTO>> updateMetaData(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody MetaDataHeaderDTO metaDataDTO
     ) throws URISyntaxException {
@@ -106,10 +115,16 @@ public class MetaDataResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        MetaDataHeaderDTO result = metaDataService.save(metaDataDTO);
+        // sMetaDataHeaderDTO result = metaDataService.save(metaDataDTO);
+
+        String metaDataHeaderId = "";
+        ReplyMessage<MetaDataHeaderDTO> result = metaDataService.saveMetaDataHeader(metaDataDTO);
+        if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
+            metaDataHeaderId = result.getData().getId().toString();
+        }
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, metaDataDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, metaDataHeaderId))
             .body(result);
     }
 

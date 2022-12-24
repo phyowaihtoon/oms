@@ -9,8 +9,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "role_template_access")
-public class RoleTemplateAccess {
+@Table(name = "role_dashboard_access")
+public class RoleDashboardAccess {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class RoleTemplateAccess {
 
     @ManyToOne
     @NotNull
-    private MetaDataHeader metaDataHeader;
+    private DashboardTemplate dashboardTemplate;
 
     @ManyToOne
     private UserRole userRole;
@@ -31,12 +31,12 @@ public class RoleTemplateAccess {
         this.id = id;
     }
 
-    public MetaDataHeader getMetaDataHeader() {
-        return metaDataHeader;
+    public DashboardTemplate getDashboardTemplate() {
+        return dashboardTemplate;
     }
 
-    public void setMetaDataHeader(MetaDataHeader metaDataHeader) {
-        this.metaDataHeader = metaDataHeader;
+    public void setDashboardTemplate(DashboardTemplate dashboardTemplate) {
+        this.dashboardTemplate = dashboardTemplate;
     }
 
     public UserRole getUserRole() {

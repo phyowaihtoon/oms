@@ -1,16 +1,20 @@
 package com.hmm.dms.service.impl;
 
+import com.hmm.dms.domain.Document;
 import com.hmm.dms.domain.MetaData;
 import com.hmm.dms.domain.MetaDataHeader;
 import com.hmm.dms.repository.MetaDataHeaderRepository;
 import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.MetaDataService;
+import com.hmm.dms.service.dto.DocumentDTO;
+import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.web.rest.MetaDataResource;
 import java.util.LinkedList;
@@ -41,6 +45,8 @@ public class MetaDataServiceImpl implements MetaDataService {
 
     private final MetaDataMapper metaDataMapper;
 
+    private ReplyMessage<MetaDataHeaderDTO> replyMessage;
+
     public MetaDataServiceImpl(
         MetaDataHeaderRepository metaDataHeaderRepository,
         MetaDataRepository metaDataRepository,
@@ -51,6 +57,7 @@ public class MetaDataServiceImpl implements MetaDataService {
         this.metaDataRepository = metaDataRepository;
         this.metaDataHeaderMapper = metaDataHeaderMapper;
         this.metaDataMapper = metaDataMapper;
+        this.replyMessage = new ReplyMessage<MetaDataHeaderDTO>();
     }
 
     @Override
@@ -201,6 +208,33 @@ public class MetaDataServiceImpl implements MetaDataService {
             replyMessage.setCode(ResponseCode.SUCCESS);
             replyMessage.setMessage("MetaData field is successfully deleted.");
         }
+        return replyMessage;
+    }
+
+    @Override
+    public ReplyMessage<MetaDataHeaderDTO> saveMetaDataHeader(MetaDataHeaderDTO metaDataDTO) {
+        log.debug("Request to save MetaData : {}", metaDataDTO);
+        MetaDataHeader metaDataHeader = metaDataHeaderMapper.toEntity(metaDataDTO);
+        List<MetaData> metaDataList = metaDataDTO.getMetaDataDetails().stream().map(metaDataMapper::toEntity).collect(Collectors.toList());
+
+        //MetaData metaData = metaDataMapper.toEntity(metaDataDTO);
+        metaDataHeader = metaDataHeaderRepository.save(metaDataHeader);
+        for (MetaData metaData : metaDataList) {
+            metaData.setHeaderId(metaDataHeader.getId());
+        }
+
+        // metaDataRepository.deleteByHeaderId(metaDataHeader.getId());
+
+        metaDataList = metaDataRepository.saveAll(metaDataList);
+        List<MetaDataDTO> metaDataDTOList = metaDataMapper.toDto(metaDataList);
+
+        MetaDataHeaderDTO metaDataHeaderDTO = metaDataHeaderMapper.toDto(metaDataHeader);
+        metaDataHeaderDTO.setMetaDataDetails(metaDataDTOList);
+
+        replyMessage.setCode(ResponseCode.SUCCESS);
+        replyMessage.setMessage("Document Mapping is successfully saved");
+        replyMessage.setData(metaDataHeaderDTO);
+
         return replyMessage;
     }
 }
