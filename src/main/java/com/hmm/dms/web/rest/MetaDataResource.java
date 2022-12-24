@@ -192,13 +192,18 @@ public class MetaDataResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/meta-data/{id}")
-    public ResponseEntity<Void> deleteMetaData(@PathVariable Long id) {
+    public ResponseEntity<BaseMessage> deleteMetaData(@PathVariable Long id) {
         log.debug("REST request to delete MetaData : {}", id);
-        metaDataService.delete(id);
+        BaseMessage result = metaDataService.deleteHeaderById(id);
+
         return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(result);
+        //        return ResponseEntity
+        //            .noContent()
+        //            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+        //            .build();
     }
 
     @PostMapping("/meta-data/search")
@@ -229,5 +234,13 @@ public class MetaDataResource {
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
+    }
+
+    @GetMapping("/meta-data/deleteFieldById/{id}")
+    public ResponseEntity<BaseMessage> checkFileExist(@PathVariable(value = "id", required = false) final Long id) {
+        log.debug("REST request to get file info");
+        BaseMessage result = metaDataService.deleteById(id);
+        String docId = id.toString();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docId)).body(result);
     }
 }

@@ -58,4 +58,8 @@ public interface MetaDataService {
     Page<MetaDataHeaderDTO> getAllMetaDataInTrashBin(MetaDataInquiryMessage message, Pageable pageable);
 
     BaseMessage restoreMetaData(Long id);
+
+    BaseMessage deleteById(Long id);
+
+    BaseMessage deleteHeaderById(Long id);
 }

@@ -31,4 +31,9 @@ public class SysConfigResource {
     public ReplyMessage<List<SysConfig>> saveAllSysConfig(@Valid @RequestBody List<SysConfig> data) {
         return this.sysConfigService.saveAllSysConfig(data);
     }
+
+    @GetMapping("/updateFileVersion")
+    public void updateFileVersion() {
+        this.updateFileVersion();
+    }
 }

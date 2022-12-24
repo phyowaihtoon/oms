@@ -13,6 +13,7 @@ import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { IMenuItem } from 'app/entities/util/setup.model';
+import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 
 @Component({
   selector: 'jhi-metadata',
@@ -109,6 +110,8 @@ export class MetaDataComponent implements OnInit {
     modalRef.closed.subscribe(reason => {
       if (reason === 'deleted') {
         this.loadPage();
+      } else if (reason === 'not-deleted') {
+        this.showAlertMessage('E00', "MetaData is already used in Document Mapping. Can' be deleted");
       }
     });
   }
@@ -117,6 +120,12 @@ export class MetaDataComponent implements OnInit {
     this.searchForm.reset();
     this.metadatas = [];
     this.isShowingResult = false;
+  }
+
+  showAlertMessage(msg1: string, msg2?: string): void {
+    const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+    modalRef.componentInstance.code = msg1;
+    modalRef.componentInstance.message = msg2;
   }
 
   protected sort(): string[] {

@@ -174,7 +174,6 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
 
     private String updateFileNameWithVersion(String filename, Long headerId, int versionNo) {
         int indexOfDot = filename.lastIndexOf(".");
-
         String fileNameWithVersion =
             filename.substring(0, indexOfDot) +
             "_HID" +
@@ -182,7 +181,6 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
             "_V" +
             Integer.toString(versionNo) +
             filename.substring(indexOfDot);
-
         return fileNameWithVersion;
     }
 

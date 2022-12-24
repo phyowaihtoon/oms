@@ -12,6 +12,7 @@ import com.hmm.dms.service.mapper.MetaDataMapper;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
 import com.hmm.dms.util.ResponseCode;
+import com.hmm.dms.web.rest.MetaDataResource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -167,6 +168,39 @@ public class MetaDataServiceImpl implements MetaDataService {
             replyMessage.setMessage("MetaData Restore failed : " + ex.getMessage());
         }
 
+        return replyMessage;
+    }
+
+    @Override
+    public BaseMessage deleteById(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        Long metaDataHeaderID = metaDataRepository.getHeaderIdById(id);
+        long docHeaderCount = metaDataRepository.checkHeaderId(metaDataHeaderID);
+
+        if (docHeaderCount > 0) {
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage("MetaData is already used in Document Mapping. Can' be deleted");
+        } else {
+            metaDataRepository.deleteById(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("MetaData field is successfully deleted.");
+        }
+        return replyMessage;
+    }
+
+    @Override
+    public BaseMessage deleteHeaderById(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        long docHeaderCount = metaDataRepository.checkHeaderId(id);
+
+        if (docHeaderCount > 0) {
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage("MetaData is already used in Document Mapping. Can' be deleted");
+        } else {
+            metaDataHeaderRepository.updateById(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("MetaData field is successfully deleted.");
+        }
         return replyMessage;
     }
 }

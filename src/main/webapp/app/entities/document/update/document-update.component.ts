@@ -26,6 +26,7 @@ import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog.
 })
 export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
+  _documentDetails: IDocument[] | undefined;
   _documentStatus?: IDocumentStatus[];
   _documentDetails: IDocument[] | undefined;
 
