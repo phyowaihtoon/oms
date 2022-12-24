@@ -1,10 +1,10 @@
-import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { Observable } from 'rxjs';
-import { getDocIdentifier, IDocumentHeader, IDocumentInquiry } from '../document.model';
+import { IDocumentHeader, IDocumentInquiry } from '../document.model';
 
 export type EntityArrayResponseType = HttpResponse<IMetaDataHeader[]>;
 export type EntityResponseType = HttpResponse<IDocumentHeader>;
@@ -31,16 +31,6 @@ export class DocumentService {
     return this.http.patch<IReplyMessage>(`${this.resourceUrl}/${id}`, documentInquiry, {
       observe: 'response',
     });
-  }
-
-  restoreDocument(id: number): Observable<HttpResponse<IReplyMessage>> {
-    return this.http.patch<IReplyMessage>(
-      `${this.resourceUrl}/restore/${id}`,
-      {},
-      {
-        observe: 'response',
-      }
-    );
   }
 
   deleteFile(id: number): Observable<HttpResponse<IReplyMessage>> {

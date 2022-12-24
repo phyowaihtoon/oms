@@ -49,8 +49,8 @@ export class DocumentQueueUpdateComponent implements OnInit {
 
   _modalRef?: NgbModalRef;
 
-  _isDocHeaderShow = true;
-  _isDocDetailShow = false;
+  _isDocHeaderShow = false;
+  _isDocDetailShow = true;
 
   _isSentAmmend = true;
   _isApprove = true;

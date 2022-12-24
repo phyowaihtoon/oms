@@ -203,12 +203,37 @@
     </form>
   </div>
 
-  <div *ngIf="isShowingResult" class="result-header">
-    <fa-icon icon="angle-down" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.result">Search Result</span>
+  <div *ngIf="isShowingResult" class="result-header row">
+    <span (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+      <fa-icon icon="angle-down"></fa-icon>&nbsp;
+      {{ 'dmsApp.document.result' | translate }}
+    </span>
+    <li ngbDropdown display="dynamic" style="list-style-type: none; cursor: pointer">
+      <span class="dropdown-toggle" ngbDropdownToggle>
+        <fa-icon icon="cog"></fa-icon>
+      </span>
+      <div class="dropdown-menu" ngbDropdownMenu>
+        <div class="dropdown-item" *ngFor="let staticColData of _staticMetaDataColumns" (click)="showHideStaticColumn(staticColData)">
+          <span>
+            <fa-icon icon="check" *ngIf="staticColData.isDisplayed"></fa-icon>
+            {{ staticColData.translateKey | translate }}
+          </span>
+        </div>
+        <div class="dropdown-item" *ngFor="let colData of _metaDataColumns" (click)="showHideColumn(colData)">
+          <span>
+            <fa-icon icon="check" *ngIf="colData.isDisplayed"></fa-icon>
+            {{ colData.fieldName }}
+          </span>
+        </div>
+      </div>
+    </li>
   </div>
 
   <div *ngIf="!isShowingResult" class="result-header">
-    <fa-icon icon="angle-right" (click)="showResultArea()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.result">Search Result</span>
+    <span (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+      <fa-icon icon="angle-down"></fa-icon>&nbsp;
+      {{ 'dmsApp.document.result' | translate }}
+    </span>
   </div>
 
   <div id="result-container" *ngIf="isShowingResult">
@@ -227,28 +252,17 @@
             <th scope="col">
               <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
             </th>
-            <th scope="col">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
               <span jhiTranslate="dmsApp.document.status">Status</span>
             </th>
-            <th scope="col" *ngIf="_metaData1.valid">
-              <span>{{ _metaData1.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData2.valid">
-              <span>{{ _metaData2.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData3.valid">
-              <span>{{ _metaData3.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData4.valid">
-              <span>{{ _metaData4.name }}</span>
-            </th>
-            <th scope="col" *ngIf="_metaData5.valid">
-              <span>{{ _metaData5.name }}</span>
-            </th>
-            <th scope="col">
+
+            <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
+
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
               <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
             </th>
-            <th scope="col">
+
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
               <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
             </th>
             <th scope="col"></th>
@@ -259,37 +273,33 @@
             <td>
               <a>{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a>
             </td>
+
             <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
-            <td>{{ getDocStatusDesc(documentHeader.status) }}</td>
-            <td *ngIf="_metaData1.valid">{{ _metaData1.value }}</td>
-            <td *ngIf="_metaData2.valid">{{ _metaData2.value }}</td>
-            <td *ngIf="_metaData3.valid">{{ _metaData3.value }}</td>
-            <td *ngIf="_metaData4.valid">{{ _metaData4.value }}</td>
-            <td *ngIf="_metaData5.valid">{{ _metaData5.value }}</td>
-            <td>{{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}</td>
-            <td>{{ documentHeader.createdBy }}</td>
-            <td class="text-right">
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+              {{ getDocStatusDesc(documentHeader.status) }}
+            </td>
+
+            <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+              {{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}
+            </td>
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+              {{ documentHeader.createdBy }}
+            </td>
+            <td class="text-center">
               <div class="btn-group">
                 <button
                   *ngIf="_userAuthority && _userAuthority.activeMenu.isRead === 1"
                   type="submit"
                   (click)="goToView(documentHeader.id)"
-                  class="btn btn-info btn-sm"
+                  class="btn btn-primary btn-sm"
                   data-cy="entityDetailsButton"
                 >
-                  <fa-icon icon="eye"></fa-icon>
-                  <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                </button>
-
-                <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
-                  type="submit"
-                  (click)="restoreDocument(documentHeader)"
-                  class="btn btn-primary btn-sm"
-                  data-cy="entityEditButton"
-                >
-                  <fa-icon icon="trash-restore"></fa-icon>
-                  <span class="d-none d-md-inline" jhiTranslate="entity.action.restore">Restore</span>
+                  <fa-icon icon="angle-double-right"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="entity.action.proceed">Proceed</span>
                 </button>
               </div>
             </td>

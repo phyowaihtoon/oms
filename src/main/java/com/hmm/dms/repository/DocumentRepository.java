@@ -33,4 +33,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document SET del_flag = 'Y'  " + "WHERE id = ?1", nativeQuery = true)
     void updateFlagById(Long id);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE document SET del_flag = 'N'  " + "WHERE id = ?1 and header_id=?2", nativeQuery = true)
+    void restoreDocument(Long id, Long headerId);
 }

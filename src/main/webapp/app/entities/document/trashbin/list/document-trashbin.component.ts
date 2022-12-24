@@ -8,10 +8,8 @@ import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
-import { DocumentInquiry, IDocumentHeader, IDocumentInquiry } from '../document.model';
-import { DocumentInquiryService } from '../service/document-inquiry.service';
-import { DocumentRestoreDialogComponent } from '../restore/document-restore-dialog.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DocumentInquiry, IDocumentHeader, IDocumentInquiry } from '../../document.model';
+import { DocumentInquiryService } from '../../service/document-inquiry.service';
 
 @Component({
   selector: 'jhi-document-trashbin',
@@ -23,6 +21,14 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _documentStatusList?: IDocumentStatus[];
   _selectedMetaDataList?: IMetaData[];
+  _metaDataColumns?: IMetaData[];
+  _displayedMetaDataColumns?: IMetaData[];
+  _displayedMetaDataValues?: string[] = [];
+  _staticMetaDataColumns = [
+    { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: true },
+    { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: true },
+    { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: true },
+  ];
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
   isLOV1 = false;
@@ -43,12 +49,6 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
   _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
 
-  _metaData1 = { name: '', value: '', valid: false };
-  _metaData2 = { name: '', value: '', valid: false };
-  _metaData3 = { name: '', value: '', valid: false };
-  _metaData4 = { name: '', value: '', valid: false };
-  _metaData5 = { name: '', value: '', valid: false };
-
   searchForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     createdDate: [],
@@ -66,7 +66,6 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
     protected documentInquiryService: DocumentInquiryService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
-    protected modalService: NgbModal,
     protected loadSetupService: LoadSetupService,
     protected translateService: TranslateService
   ) {}
@@ -114,6 +113,7 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+      this.bindMetaDataColumns();
     }
   }
 
@@ -145,84 +145,38 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
     }
   }
 
-  bindMetaDataNames(): void {
-    this.resetMetaDataNames();
-    if (this._selectedMetaDataList !== undefined) {
-      let arrIndex = 0;
-      while (arrIndex < this._selectedMetaDataList.length) {
-        if (arrIndex === 0) {
-          this._metaData1.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData1.valid = true;
-        }
-        if (arrIndex === 1) {
-          this._metaData2.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData2.valid = true;
-        }
-        if (arrIndex === 2) {
-          this._metaData3.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData3.valid = true;
-        }
-        if (arrIndex === 3) {
-          this._metaData4.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData4.valid = true;
-        }
-        if (arrIndex === 4) {
-          this._metaData5.name = this._selectedMetaDataList[arrIndex].fieldName!;
-          this._metaData5.valid = true;
-        }
+  showHideStaticColumn(staticData: any): void {
+    staticData.isDisplayed = staticData.isDisplayed === undefined ? true : !staticData.isDisplayed;
+  }
 
-        arrIndex++;
+  showHideColumn(metaData: IMetaData): void {
+    metaData.isDisplayed = metaData.isDisplayed === undefined ? true : !metaData.isDisplayed;
+    this._displayedMetaDataColumns = this._metaDataColumns?.filter(item => item.isDisplayed === true);
+  }
+
+  bindMetaDataColumns(): void {
+    this._displayedMetaDataColumns = [];
+    this._metaDataColumns = this._selectedMetaDataList;
+    this._metaDataColumns?.forEach((value, index) => {
+      // Initially, the first five metadata fields will be shown in list
+      if (index < 5) {
+        value.isDisplayed = true;
+        this._displayedMetaDataColumns?.push(value);
       }
-    }
-  }
-
-  resetMetaDataNames(): void {
-    this._metaData1.name = '';
-    this._metaData1.valid = false;
-    this._metaData2.name = '';
-    this._metaData2.valid = false;
-    this._metaData3.name = '';
-    this._metaData3.valid = false;
-    this._metaData4.name = '';
-    this._metaData4.valid = false;
-    this._metaData5.name = '';
-    this._metaData5.valid = false;
-  }
-
-  resetMetaDataValues(): void {
-    this._metaData1.value = '';
-    this._metaData2.value = '';
-    this._metaData3.value = '';
-    this._metaData4.value = '';
-    this._metaData5.value = '';
+    });
   }
 
   bindMetaDataValues(fValues?: string): void {
-    this.resetMetaDataValues();
-
+    this._displayedMetaDataValues = [];
     if (fValues !== undefined && fValues.trim().length > 0) {
       const fValueArray = fValues.split('|');
       if (fValueArray.length > 0) {
-        let arrIndex = 0;
-        while (arrIndex < fValueArray.length) {
-          if (arrIndex === 0) {
-            this._metaData1.value = fValueArray[arrIndex];
+        this._displayedMetaDataColumns?.forEach(item => {
+          if (item.fieldOrder) {
+            const fieldValue = fValueArray[item.fieldOrder - 1];
+            this._displayedMetaDataValues?.push(fieldValue);
           }
-          if (arrIndex === 1) {
-            this._metaData2.value = fValueArray[arrIndex];
-          }
-          if (arrIndex === 2) {
-            this._metaData3.value = fValueArray[arrIndex];
-          }
-          if (arrIndex === 3) {
-            this._metaData4.value = fValueArray[arrIndex];
-          }
-          if (arrIndex === 4) {
-            this._metaData5.value = fValueArray[arrIndex];
-          }
-
-          arrIndex++;
-        }
+        });
       }
     }
   }
@@ -268,7 +222,6 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
       this.isShowingAlert = true;
       this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
-      this.bindMetaDataNames();
       this.loadPage(page);
     }
   }
@@ -361,18 +314,7 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
 
   goToView(id?: number): void {
     this.documentInquiryService.storeSearchCriteria(this._searchCriteria);
-    this.router.navigate(['/document', id, 'view']);
-  }
-
-  restoreDocument(documentHeader: IDocumentHeader): void {
-    const modalRef = this.modalService.open(DocumentRestoreDialogComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.documentHeader = documentHeader;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed.subscribe(reason => {
-      if (reason === 'restored') {
-        this.searchDocument(1);
-      }
-    });
+    this.router.navigate(['/document/trashbin', id, 'view']);
   }
 
   protected sort(): string[] {
