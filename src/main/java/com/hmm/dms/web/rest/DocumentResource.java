@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmm.dms.repository.DocumentHeaderRepository;
 import com.hmm.dms.service.DocumentHeaderService;
 import com.hmm.dms.service.DocumentService;
-import com.hmm.dms.service.dto.DepartmentDTO;
 import com.hmm.dms.service.dto.DocumentHeaderDTO;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.DocumentInquiryMessage;
 import com.hmm.dms.service.message.ReplyMessage;
+import com.hmm.dms.service.message.UploadFailedException;
 import com.hmm.dms.util.ResponseCode;
 import com.hmm.dms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -20,9 +20,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,9 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 
 /**
  * REST controller for managing {@link com.hmm.dms.domain.Document}.
@@ -108,9 +103,19 @@ public class DocumentResource {
         if (documentHeaderDTO.getId() != null) {
             throw new BadRequestAlertException("A new document cannot already have an ID", ENTITY_NAME, "idexists");
         }
-
-        result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
         String docHeaderId = "";
+
+        try {
+            result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
+        } catch (UploadFailedException e) {
+            ReplyMessage<DocumentHeaderDTO> uploadFailedMessage = new ReplyMessage<DocumentHeaderDTO>();
+            uploadFailedMessage.setCode(e.getCode());
+            uploadFailedMessage.setMessage(e.getMessage());
+            return ResponseEntity
+                .created(new URI("/api/documentHeader/" + docHeaderId))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
+                .body(uploadFailedMessage);
+        }
         if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
             docHeaderId = result.getData().getId().toString();
         }
@@ -175,8 +180,19 @@ public class DocumentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
-        String docHeaderId = result.getData().getId().toString();
+        String docHeaderId = id.toString();
+
+        try {
+            result = documentHeaderService.saveAndUploadDocuments(multipartFiles, documentHeaderDTO);
+        } catch (UploadFailedException e) {
+            ReplyMessage<DocumentHeaderDTO> uploadFailedMessage = new ReplyMessage<DocumentHeaderDTO>();
+            uploadFailedMessage.setCode(e.getCode());
+            uploadFailedMessage.setMessage(e.getMessage());
+            return ResponseEntity
+                .created(new URI("/api/documentHeader/" + docHeaderId))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
+                .body(uploadFailedMessage);
+        }
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
@@ -196,21 +212,21 @@ public class DocumentResource {
             .body(result);
     }
 
-    @PatchMapping(value = "/documents/restore/{id}")
-    public ResponseEntity<BaseMessage> restoreDocument(@PathVariable(value = "id", required = false) final Long id)
-        throws URISyntaxException {
-        BaseMessage result = documentHeaderService.restoreDocument(id);
-        String docHeaderId = id.toString();
+    @PostMapping(value = "/documents/restore")
+    public ResponseEntity<BaseMessage> restoreDocument(@Valid @RequestBody DocumentHeaderDTO headerDTO) throws URISyntaxException {
+        BaseMessage result = documentHeaderService.restoreDocument(headerDTO);
+        String docHeaderId = headerDTO.toString();
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
     }
 
-    @GetMapping("/documents/checkfileexist/{filename}")
-    public ResponseEntity<BaseMessage> checkFileExist(@PathVariable(value = "filename", required = false) final String filename) {
+    @GetMapping("/documents/deleteFileById/{id}")
+    public ResponseEntity<BaseMessage> checkFileExist(@PathVariable(value = "id", required = false) final Long id) {
         log.debug("REST request to get file info");
-        BaseMessage result = documentService.findbyFileName(filename);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, filename)).body(result);
+        BaseMessage result = documentService.deleteFileById(id);
+        String docId = id.toString();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docId)).body(result);
     }
 }

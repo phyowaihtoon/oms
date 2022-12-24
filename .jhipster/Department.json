@@ -1,4 +1,6 @@
 {
+  "changelogDate": "20220922051600",
+  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "departmentName",
@@ -12,12 +14,10 @@
       "fieldValidateRulesMaxlength": "1"
     }
   ],
-  "relationships": [],
-  "service": "serviceImpl",
-  "dto": "mapstruct",
   "jpaMetamodelFiltering": false,
-  "readOnly": false,
-  "pagination": "pagination",
   "name": "Department",
-  "changelogDate": "20220922051600"
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceImpl"
 }

@@ -1,4 +1,3 @@
-import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
 
 export interface IUserAuthority {

@@ -118,7 +118,17 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     public DocumentHeaderDTO findAllDocumentsByHeaderId(Long id) {
         DocumentHeader docHeaderEntity = this.documentHeaderRepository.findDocumentHeaderById(id);
         DocumentHeaderDTO docHeaderDTO = this.documentHeaderMapper.toDto(docHeaderEntity);
-        List<Document> docList = this.documentRepository.findAllByHeaderId(docHeaderDTO.getId());
+        List<Document> docList = this.documentRepository.findAllByHeaderIdAndDelFlag(docHeaderDTO.getId(), "N");
+        List<DocumentDTO> docDTOList = this.documentMapper.toDto(docList);
+        docHeaderDTO.setDocList(docDTOList);
+        return docHeaderDTO;
+    }
+
+    @Override
+    public DocumentHeaderDTO findDeletedDocumentsByHeaderId(Long id) {
+        DocumentHeader docHeaderEntity = this.documentHeaderRepository.findDocumentHeaderById(id);
+        DocumentHeaderDTO docHeaderDTO = this.documentHeaderMapper.toDto(docHeaderEntity);
+        List<Document> docList = this.documentRepository.findAllByHeaderIdAndDelFlag(docHeaderDTO.getId(), "Y");
         List<DocumentDTO> docDTOList = this.documentMapper.toDto(docList);
         docHeaderDTO.setDocList(docDTOList);
         return docHeaderDTO;
@@ -163,14 +173,19 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
 
+        //Approved Item is not allowed to restore
         Set<Integer> setOfStatus = new HashSet<Integer>();
+        setOfStatus.add(0);
+        setOfStatus.add(1);
+        setOfStatus.add(2);
         setOfStatus.add(3);
+        setOfStatus.add(4);
         setOfStatus.add(6);
 
         if (dto.getCreatedDate() != null && dto.getCreatedDate().trim().length() > 0) {
             String createdDate = dto.getCreatedDate();
             Page<DocumentHeader> pageWithEntity =
-                this.documentHeaderRepository.findAllByDate(
+                this.documentHeaderRepository.findTrashItemsByDate(
                         dto.getMetaDataHeaderId(),
                         dto.getFieldIndex1(),
                         specificVal1,
@@ -185,7 +200,7 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
         }
 
         Page<DocumentHeader> pageWithEntity =
-            this.documentHeaderRepository.findAll(
+            this.documentHeaderRepository.findTrashItems(
                     dto.getMetaDataHeaderId(),
                     dto.getFieldIndex1(),
                     specificVal1,

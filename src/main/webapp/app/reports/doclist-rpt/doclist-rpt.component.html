@@ -143,11 +143,7 @@
           </div>
 
           <div class="col-7">
-            <select class="form-control" formControlName="userID">
-              <option [value]="userAuth.userID" *ngFor="let userAuth of _userAuthority">
-                {{ userAuth.userName }}
-              </option>
-            </select>
+            <input type="text" class="form-control" name="userId" formControlName="userId" />
           </div>
         </div>
       </div>

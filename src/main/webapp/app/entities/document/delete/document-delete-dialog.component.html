@@ -1,4 +1,4 @@
-<form *ngIf="document" name="deleteForm" (ngSubmit)="confirmDelete(document.id!)">
+<form *ngIf="dmsDocument" name="deleteForm" (ngSubmit)="confirmDelete()">
   <div class="modal-header">
     <h4 class="modal-title" data-cy="documentDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
 
@@ -8,8 +8,8 @@
   <div class="modal-body">
     <jhi-alert-error></jhi-alert-error>
 
-    <p id="jhi-delete-document-heading" jhiTranslate="dmsApp.document.delete.question" [translateValues]="{ id: document.id }">
-      Are you sure you want to delete this Document?
+    <p id="jhi-delete-document-heading" jhiTranslate="dmsApp.document.delete.question" [translateValues]="{ id: dmsDocument.fileName }">
+      Are you sure you want to delete this file?
     </p>
   </div>
 

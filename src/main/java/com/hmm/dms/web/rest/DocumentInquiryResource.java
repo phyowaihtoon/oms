@@ -56,6 +56,13 @@ public class DocumentInquiryResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/docinquiry/trashbin/{id}")
+    public DocumentHeaderDTO findDeletedDocumentsByHeaderId(@PathVariable Long id) {
+        log.debug("REST request to get all deleted Documents");
+        DocumentHeaderDTO headerDTO = documentInquiryService.findDeletedDocumentsByHeaderId(id);
+        return headerDTO;
+    }
+
     @PostMapping("/docinquiry/servicequeue")
     public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeadersForServiceQueue(
         @RequestBody DocumentInquiryMessage dto,
@@ -80,7 +87,7 @@ public class DocumentInquiryResource {
 
         DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
         String filePath = docDTO.getFilePath();
-        String fileName = docDTO.getFileName();
+        String fileName = docDTO.getFileNameVersion();
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
         if (extension == null || extension.isEmpty()) {
@@ -116,7 +123,7 @@ public class DocumentInquiryResource {
 
         DocumentDTO docDTO = documentInquiryService.getDocumentById(docId);
         String filePath = docDTO.getFilePath();
-        String fileName = docDTO.getFileName();
+        String fileName = docDTO.getFileNameVersion();
         int dot = fileName.lastIndexOf('.');
         String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
         if (extension == null || extension.isEmpty()) {

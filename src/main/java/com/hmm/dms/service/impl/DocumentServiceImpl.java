@@ -81,16 +81,25 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public BaseMessage findbyFileName(String filename) {
         BaseMessage replyMessage = new BaseMessage();
-        Document doc = documentRepository.findByFileName(filename);
+        List<Document> doc = documentRepository.findByFileName(filename);
 
-        if (doc != null) {
-            replyMessage.setCode(ResponseCode.ERROR_E00);
+        replyMessage.setCode(ResponseCode.ERROR_E00);
+        if (doc.size() > 0) {
             replyMessage.setMessage("Document is already stored in server. Can' be deleted");
         } else {
             replyMessage.setCode(ResponseCode.SUCCESS);
             replyMessage.setMessage("Document is not in database yet.");
         }
 
+        return replyMessage;
+    }
+
+    @Override
+    public BaseMessage deleteFileById(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        documentRepository.updateFlagById(id);
+        replyMessage.setCode(ResponseCode.ERROR_E00);
+        replyMessage.setMessage("Document is already stored in server. Can' be deleted");
         return replyMessage;
     }
 }

@@ -30,7 +30,7 @@ export class LoadSetupService {
   }
 
   loadAllMetaDataHeaderByUserRole(roleId: number): Observable<MeataDataHeaderSetupArray> {
-    const childURL = '/metadataheader';
+    const childURL = 'metadataheader';
     return this.http.get<IMetaDataHeader[]>(`${this.resourceUrl}/${childURL}/${roleId}`, { observe: 'response' });
   }
 

@@ -13,7 +13,7 @@
       "updated": "Document Mapping is successfully updated",
       "deleted": "Document Mapping is successfully deleted",
       "delete": {
-        "question": "Are you sure you want to delete Document {{ id }}?"
+        "question": "Are you sure you want to delete this document : {{ id }}?"
       },
       "restore": {
         "question": "Are you sure you want to restore Document {{ id }}?"
@@ -40,6 +40,7 @@
       "remark": "Remark",
       "preview": "Preview",
       "download": "Download",
+      "select": "Select",
       "specificMetaData1": "Specific MetaData (1)",
       "specificMetaData2": "Specific MetaData (2)",
       "otherMetaData": "Other MetaData",

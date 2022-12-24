@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { MetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { IRptParamsDTO, RptParamsDTO } from '../report.model';
 import { ReportService } from '../service/report.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'jhi-doclist-rpt',
@@ -19,7 +21,7 @@ export class DoclistRptComponent implements OnInit {
   isGenerating = false;
   _replyMessage: IReplyMessage | null = null;
   _metaDataHdrList: MetaDataHeader[] | null = [];
-  _userAuthority: IUserAuthority[] | null = [];
+  _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
   _messageCode?: string;
   _alertMessage?: string;
@@ -37,11 +39,12 @@ export class DoclistRptComponent implements OnInit {
     startDate: [null, [Validators.required]],
     endDate: [null, [Validators.required]],
     metaDataHeaderId: [],
-    userID: [],
+    userId: [''],
   });
 
   constructor(
     private reportService: ReportService,
+    protected loadSetupService: LoadSetupService,
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder,
     protected router: Router,
@@ -52,10 +55,23 @@ export class DoclistRptComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-      this._metaDataHdrList = userAuthority.templateList;
+      this.loadAllSetup();
     });
+  }
 
-    console.log('_userAuthority', this._userAuthority);
+  loadAllSetup(): void {
+    if (this._userAuthority) {
+      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
+        (res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+          }
+        },
+        error => {
+          console.log('Loading MetaData Header Failed : ', error);
+        }
+      );
+    }
   }
 
   generate(): void {
@@ -111,7 +127,9 @@ export class DoclistRptComponent implements OnInit {
     const startDate = this.editForm.get(['startDate'])!.value.format('DD-MM-YYYY');
     const endDate = this.editForm.get(['endDate'])!.value.format('DD-MM-YYYY');
     const metaDataID = this.editForm.get(['metaDataHeaderId'])!.value;
-    const userID = this.editForm.get(['userID'])!.value;
+    const userID = this.editForm.get(['userId'])!.value;
+
+    console.log('Userid', userID);
 
     return {
       ...new RptParamsDTO(),

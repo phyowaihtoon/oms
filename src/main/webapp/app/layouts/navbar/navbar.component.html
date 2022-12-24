@@ -114,6 +114,12 @@
               <span jhiTranslate="global.menu.entities.sysconfig">System Configuration</span>
             </a>
           </li>
+          <li>
+            <a class="dropdown-item" routerLink="code-definition" routerLinkActive="active" (click)="collapseNavbar()">
+              <fa-icon icon="caret-right" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.entities.codeDefinition">Code Definition</span>
+            </a>
+          </li>
 
           <!--
         <li>
@@ -156,7 +162,7 @@
       <li ngbDropdown class="nav-item dropdown pointer" display="dynamic" *ngIf="languages && languages.length > 1">
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown">
           <span>
-            <fa-icon icon="flag"></fa-icon>
+            <!--<fa-icon icon="flag"></fa-icon>-->
             <span jhiTranslate="global.menu.language">Language</span>
           </span>
         </a>
@@ -183,7 +189,7 @@
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
           <span *ngIf="!getImageUrl()">
             <fa-icon icon="user"></fa-icon>
-            <span jhiTranslate="global.menu.account.main">Account</span>
+            <!--<span jhiTranslate="global.menu.account.main">Account</span>-->
           </span>
           <span *ngIf="getImageUrl()">
             <img [src]="getImageUrl()" class="profile-image rounded-circle" alt="Avatar" />

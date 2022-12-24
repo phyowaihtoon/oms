@@ -22,6 +22,8 @@ public class DocumentDTO implements Serializable {
     @NotNull
     private String fileName;
 
+    private String fileNameVersion;
+
     private Long fileSize;
 
     private float version;
@@ -60,6 +62,14 @@ public class DocumentDTO implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFileNameVersion() {
+        return fileNameVersion;
+    }
+
+    public void setFileNameVersion(String fileNameVersion) {
+        this.fileNameVersion = fileNameVersion;
     }
 
     public Long getFileSize() {

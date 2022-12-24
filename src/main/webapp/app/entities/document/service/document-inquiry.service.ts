@@ -18,7 +18,8 @@ export type BlobType = HttpResponse<Blob>;
   providedIn: 'root',
 })
 export class DocumentInquiryService {
-  public resourceUrl = this.applicationConfigService.getEndpointFor('api/docinquiry');
+  public resourceInquiryUrl = this.applicationConfigService.getEndpointFor('api/docinquiry');
+  public resourceDocumentUrl = this.applicationConfigService.getEndpointFor('api/documents');
   private previousState: string = '';
 
   constructor(
@@ -30,36 +31,46 @@ export class DocumentInquiryService {
   query(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .post<IDocumentHeader[]>(`${this.resourceUrl}`, criteriaData, { params: options, observe: 'response' })
+      .post<IDocumentHeader[]>(`${this.resourceInquiryUrl}`, criteriaData, { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   searchInTrashBin(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .post<IDocumentHeader[]>(`${this.resourceUrl}/trashbin`, criteriaData, { params: options, observe: 'response' })
+      .post<IDocumentHeader[]>(`${this.resourceInquiryUrl}/trashbin`, criteriaData, { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   queryForQueue(criteriaData: IDocumentInquiry, req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
-      .post<IDocumentHeader[]>(`${this.resourceUrl}/servicequeue`, criteriaData, { params: options, observe: 'response' })
+      .post<IDocumentHeader[]>(`${this.resourceInquiryUrl}/servicequeue`, criteriaData, { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   getDocumentsById(id: number): Observable<EntityResponseType> {
     return this.http
-      .get(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .get(`${this.resourceInquiryUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  getDeletedDocumentsByHeaderId(id: number): Observable<EntityResponseType> {
+    return this.http
+      .get(`${this.resourceInquiryUrl}/trashbin/${id}`, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   previewFile(docId: number): Observable<BlobType> {
-    return this.http.get(`${this.resourceUrl}/preview/${docId}`, { observe: 'response', responseType: 'blob' });
+    return this.http.get(`${this.resourceInquiryUrl}/preview/${docId}`, { observe: 'response', responseType: 'blob' });
   }
 
   downloadFile(docId: number): Observable<BlobType> {
-    return this.http.get(`${this.resourceUrl}/download/${docId}`, { observe: 'response', responseType: 'blob' });
+    return this.http.get(`${this.resourceInquiryUrl}/download/${docId}`, { observe: 'response', responseType: 'blob' });
+  }
+
+  restoreDocument(data: IDocumentHeader): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.post<IReplyMessage>(`${this.resourceDocumentUrl}/restore`, data, { observe: 'response' });
   }
 
   setPreviousState(preState: string): void {

@@ -11,7 +11,6 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import * as FileSaver from 'file-saver';
 import { IDocument, IDocumentHeader } from '../document.model';
 import { DocumentInquiryService } from '../service/document-inquiry.service';
-import { filter } from 'rxjs/operators';
 import { Event as NavigationEvent } from '@angular/router';
 import { IDocumentStatus, IPriority } from 'app/entities/util/setup.model';
 
@@ -43,8 +42,8 @@ export class DocumentDetailComponent implements OnInit {
 
   _modalRef?: NgbModalRef;
 
-  _isDocHeaderShow = true;
-  _isDocDetailShow = false;
+  _isDocHeaderShow = false;
+  _isDocDetailShow = true;
 
   constructor(
     protected activatedRoute: ActivatedRoute,

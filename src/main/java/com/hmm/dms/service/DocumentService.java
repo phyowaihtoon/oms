@@ -49,4 +49,6 @@ public interface DocumentService {
     BaseMessage findbyFileName(String filename);
 
     void delete(Long id);
+
+    BaseMessage deleteFileById(Long id);
 }
