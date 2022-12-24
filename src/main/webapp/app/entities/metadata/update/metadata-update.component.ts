@@ -167,15 +167,23 @@ export class MetadataUpdateComponent implements OnInit {
     modalRef.componentInstance.message = msg2;
   }
 
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<IMetaDataHeader>>): void {
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
       () => this.onSaveError()
     );
   }
 
-  protected onSaveSuccess(result: HttpResponse<IMetaDataHeader>): void {
-    this.editForm.get(['id'])?.setValue(result.body?.id);
+  protected onSaveSuccess(result: HttpResponse<IReplyMessage>): void {
+    const replyMessage: IReplyMessage | null = result.body;
+    if (replyMessage !== null) {
+      this.editForm.get(['id'])?.setValue(replyMessage.data.id);
+      const replyCode = replyMessage.code;
+      const replyMsg = replyMessage.message;
+      this.removeAllField();
+      this.updateForm(replyMessage.data);
+      this.showAlertMessage(replyCode, replyMsg);
+    }
   }
 
   protected onSaveError(): void {
@@ -218,7 +226,7 @@ export class MetadataUpdateComponent implements OnInit {
   protected createMetaDataDetail(data: any): IMetaData {
     return {
       ...new MetaData(),
-      id: undefined,
+      id: data.get(['id'])!.value,
       headerId: undefined,
       fieldName: data.get(['fieldName'])!.value,
       fieldType: data.get(['fieldType'])!.value,

@@ -35,7 +35,7 @@
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" autocomplete="off">
     <jhi-alert-error></jhi-alert-error>
 
-    <jhi-alert></jhi-alert>
+    <!-- <jhi-alert></jhi-alert> -->
 
     <div class="form-group" [hidden]="editForm.get('id')!.value == null">
       <div class="form-group col-6">

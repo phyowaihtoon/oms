@@ -20,12 +20,12 @@ export class MetaDataService {
 
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  create(metadata: IMetaDataHeader): Observable<EntityResponseType> {
-    return this.http.post<IMetaDataHeader>(this.resourceUrl + '/save', metadata, { observe: 'response' });
+  create(metadata: IMetaDataHeader): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.post<IReplyMessage>(this.resourceUrl + '/save', metadata, { observe: 'response' });
   }
 
-  update(metadata: IMetaDataHeader): Observable<EntityResponseType> {
-    return this.http.put<IMetaDataHeader>(`${this.resourceUrl}/${getMetadataIdentifier(metadata) as number}`, metadata, {
+  update(metadata: IMetaDataHeader): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/${getMetadataIdentifier(metadata) as number}`, metadata, {
       observe: 'response',
     });
   }
