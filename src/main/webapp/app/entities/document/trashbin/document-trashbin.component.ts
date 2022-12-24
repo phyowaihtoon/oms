@@ -79,13 +79,8 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-      this._metaDataHdrList = userAuthority.templateList;
+      this.loadAllSetup();
     });
-    const searchedCriteria = this.documentInquiryService.getSearchCriteria();
-    if (searchedCriteria) {
-      this.updateSearchFormData(searchedCriteria);
-    }
-    this.loadAllSetup();
   }
 
   trackDocumentHeaderById(index: number, item: IDocumentHeader): number {
@@ -237,6 +232,23 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
   }
 
   loadAllSetup(): void {
+    if (this._userAuthority) {
+      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
+        (res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+            const searchedCriteria = this.documentInquiryService.getSearchCriteria();
+            if (searchedCriteria) {
+              this.updateSearchFormData(searchedCriteria);
+            }
+          }
+        },
+        error => {
+          console.log('Loading MetaData Header Failed : ', error);
+        }
+      );
+    }
+
     this.loadSetupService.loadDocumentStatus().subscribe(
       (res: HttpResponse<IDocumentStatus[]>) => {
         if (res.body) {

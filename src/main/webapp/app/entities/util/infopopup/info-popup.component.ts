@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { LoginService } from 'app/login/login.service';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ResponseCode } from '../reply-message.model';
 
 @Component({
@@ -10,6 +13,7 @@ import { ResponseCode } from '../reply-message.model';
 export class InfoPopupComponent implements OnInit, OnDestroy {
   code?: string;
   message?: string;
+  logoutFlag?: boolean = false;
 
   displayCode?: string;
   displayMessage?: string;
@@ -18,15 +22,29 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
   modalHeaderClass: string[] = [];
   modalButtonClass: string[] = [];
 
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(
+    public activeModal: NgbActiveModal,
+    private userAuthorityService: UserAuthorityService,
+    private loginService: LoginService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.setHeaderClass();
     this.setButtonClass();
   }
 
-  cancel(): void {
+  dismiss(): void {
     this.activeModal.dismiss();
+    if (this.logoutFlag && this.code === ResponseCode.SUCCESS) {
+      this.logout();
+    }
+  }
+
+  logout(): void {
+    this.userAuthorityService.clearUserAuthority();
+    this.loginService.logout();
+    this.router.navigate(['/login']);
   }
 
   setHeaderClass(): void {

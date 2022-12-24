@@ -161,12 +161,8 @@
 
       <div class="dms-form-group row col-12 dms-col">
         <div class="col-3">
-          <span></span>
-        </div>
-        <div class="col-4">
           <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
         </div>
-
         <div class="col-2">
           <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
         </div>
@@ -174,9 +170,6 @@
 
       <div class="dms-form-group row col-12 dms-col">
         <div class="col-3">
-          <span></span>
-        </div>
-        <div class="col-4">
           <input
             type="text"
             class="form-control"
@@ -186,6 +179,7 @@
             formControlName="generalValue"
           />
         </div>
+
         <div class="col-2">
           <div class="input-group">
             <input
@@ -263,9 +257,7 @@
         <tbody>
           <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
             <td>
-              <a [routerLink]="['/document', documentHeader.id, 'view']"
-                >{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a
-              >
+              <a>{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a>
             </td>
             <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
             <td>{{ getDocStatusDesc(documentHeader.status) }}</td>

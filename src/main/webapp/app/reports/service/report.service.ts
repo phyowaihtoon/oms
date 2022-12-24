@@ -12,6 +12,7 @@ export type EntityResponseType = HttpResponse<IReplyMessage>;
 })
 export class ReportService {
   public docMappingListRptURL = this.applicationConfigService.getEndpointFor('api/docmap-rpt');
+  public docMappingListRptURL2 = this.applicationConfigService.getEndpointFor('api/doclist-rpt');
   public showPDFUrl = this.applicationConfigService.getEndpointFor('api/viewPdf');
   public downloadUrl = this.applicationConfigService.getEndpointFor('api/download');
 
@@ -19,6 +20,10 @@ export class ReportService {
 
   generateDocMappingListRpt(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
     return this.http.post<IReplyMessage>(this.docMappingListRptURL, reportDTO, { observe: 'response' });
+  }
+
+  generateDocMappingListRpt2(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
+    return this.http.post<IReplyMessage>(this.docMappingListRptURL2, reportDTO, { observe: 'response' });
   }
 
   showPDF(fileName: string): Observable<Blob> {

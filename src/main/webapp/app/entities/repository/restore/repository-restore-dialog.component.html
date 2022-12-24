@@ -1,0 +1,29 @@
+<form *ngIf="repository" name="restoreForm" (ngSubmit)="confirmRestore(repository.id!)">
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="repositoryRestoreDialogHeading" jhiTranslate="entity.restore.title">Confirm restore operation</h4>
+
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+  </div>
+
+  <div class="modal-body">
+    <jhi-alert-error></jhi-alert-error>
+
+    <p
+      id="jhi-restore-repository-heading"
+      jhiTranslate="dmsApp.repository.restore.question"
+      [translateValues]="{ id: repository.id, valDesc: repository.repositoryName }"
+    >
+      Are you sure you want to restore this Repository?
+    </p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+      <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+    </button>
+
+    <button id="jhi-confirm-restore-repository" data-cy="entityConfirmRestoreButton" type="submit" class="btn btn-primary">
+      <fa-icon icon="times"></fa-icon>&nbsp;<span jhiTranslate="entity.action.restore">Restore</span>
+    </button>
+  </div>
+</form>

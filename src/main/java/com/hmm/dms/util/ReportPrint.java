@@ -69,9 +69,10 @@ public class ReportPrint {
 
         // Export HTML file
         /*
-        rptFilePath = rptPara.getRptOutputPath() + rptPara.getRptFileName() + ".html";
-        JasperExportManager.exportReportToHtmlFile(jasperPrint, rptFilePath);
-        */
+         * rptFilePath = rptPara.getRptOutputPath() + rptPara.getRptFileName() +
+         * ".html";
+         * JasperExportManager.exportReportToHtmlFile(jasperPrint, rptFilePath);
+         */
 
         // Export PDF file
         rptFilePath = rptPara.getRptOutputPath() + rptPara.getRptFileName() + ".pdf";

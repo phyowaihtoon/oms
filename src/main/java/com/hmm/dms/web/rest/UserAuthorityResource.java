@@ -3,11 +3,9 @@ package com.hmm.dms.web.rest;
 import com.hmm.dms.domain.User;
 import com.hmm.dms.service.ApplicationUserService;
 import com.hmm.dms.service.RoleMenuAccessService;
-import com.hmm.dms.service.RoleTemplateAccessService;
 import com.hmm.dms.service.SysConfigService;
 import com.hmm.dms.service.UserService;
 import com.hmm.dms.service.dto.ApplicationUserDTO;
-import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.message.MenuGroupMessage;
 import com.hmm.dms.service.message.SysConfigMessage;
 import com.hmm.dms.service.message.UserAuthorityMessage;
@@ -23,20 +21,17 @@ public class UserAuthorityResource {
     private final ApplicationUserService applicationUserService;
     private final UserService userService;
     private final RoleMenuAccessService roleMenuAccessService;
-    private final RoleTemplateAccessService roleTemplateAccessService;
     private final SysConfigService sysConfigService;
 
     public UserAuthorityResource(
         ApplicationUserService applicationUserService,
         UserService userService,
         RoleMenuAccessService roleMenuAccessService,
-        RoleTemplateAccessService roleTemplateAccessService,
         SysConfigService sysConfigService
     ) {
         this.applicationUserService = applicationUserService;
         this.userService = userService;
         this.roleMenuAccessService = roleMenuAccessService;
-        this.roleTemplateAccessService = roleTemplateAccessService;
         this.sysConfigService = sysConfigService;
     }
 
@@ -55,16 +50,15 @@ public class UserAuthorityResource {
                 ? loginUser.getFirstName()
                 : "" + " " + loginUser.getLastName() != null ? loginUser.getLastName() : ""
         );
+        userAuthorityMessage.setRoleID(appUserDTO.getUserRole().getId());
         userAuthorityMessage.setRoleName(appUserDTO.getUserRole().getRoleName());
+
         if (appUserDTO.getDepartment() != null) userAuthorityMessage.setDepartmentName(appUserDTO.getDepartment().getDepartmentName());
         userAuthorityMessage.setWorkflowAuthority(appUserDTO.getWorkflowAuthority());
 
         List<MenuGroupMessage> menuGroupList = this.roleMenuAccessService.getAllMenuGroupByRole(appUserDTO.getUserRole().getId());
         userAuthorityMessage.setMenuGroups(menuGroupList);
 
-        List<MetaDataHeaderDTO> templateList =
-            this.roleTemplateAccessService.getAllMetaDataHeaderAccessByRole(appUserDTO.getUserRole().getId());
-        userAuthorityMessage.setTemplateList(templateList);
         return userAuthorityMessage;
     }
 }

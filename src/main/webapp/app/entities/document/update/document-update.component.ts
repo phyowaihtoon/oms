@@ -24,7 +24,6 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 })
 export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
-  _documentDetails: IDocument[] | undefined;
   _documentStatus?: IDocumentStatus[];
 
   _metaDataHdrList: MetaDataHeader[] | null = [];
@@ -91,24 +90,32 @@ export class DocumentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadAllSetup();
     this.activatedRoute.data.subscribe(({ docHeader, userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-      this._metaDataHdrList = userAuthority.templateList;
-
       this._documentHeader = docHeader;
-      this._documentDetails = this._documentHeader?.docList;
-      if (this._documentHeader !== undefined) {
-        if (this._documentHeader.id !== undefined && docHeader.id !== null) {
-          this.removeAllField();
-        }
-        this.updateForm(docHeader);
-      }
+      this.loadAllSetup();
     });
   }
 
   loadAllSetup(): void {
+    if (this._userAuthority) {
+      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
+        (res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+            if (this._documentHeader) {
+              this.removeAllField();
+              this.updateForm(this._documentHeader);
+            }
+          }
+        },
+        error => {
+          console.log('Loading MetaData Header Failed : ', error);
+        }
+      );
+    }
+
     this.loadSetupService.loadPriority().subscribe((res_priority: HttpResponse<IPriority[]>) => {
       this._priority = res_priority.body;
     });
@@ -151,9 +158,14 @@ export class DocumentUpdateComponent implements OnInit {
   // remove field by given row id
   removeField(i: number): void {
     if (this.docList1().length > 0) {
-      this.docList1().removeAt(i);
-      this.myInputVariable!.nativeElement.value = '';
+      const filename = this.docList1().controls[i].get(['fileName'])!.value;
+      this.subscribeToSaveResponseCheckFileexist(this.documentHeaderService.checkFileExist(filename), i);
     }
+  }
+
+  removeFieldConfirm(i: number): void {
+    this.docList1().removeAt(i);
+    this.myInputVariable!.nativeElement.value = '';
   }
 
   // remove all Field of document table
@@ -176,8 +188,7 @@ export class DocumentUpdateComponent implements OnInit {
     this.isDocMap = false;
   }
 
-  // window.history.back();
-  previousState(): void {
+  clearFormData(): void {
     this.editForm.controls['id']!.setValue(undefined);
     this.editForm.controls['metaDataHeaderId']!.setValue('');
     this.editForm.controls['priority']!.setValue('');
@@ -437,6 +448,35 @@ export class DocumentUpdateComponent implements OnInit {
       this.isSentApprove = false;
       this.isCancel = false;
     }
+  }
+
+  protected subscribeToSaveResponseCheckFileexist(result: Observable<HttpResponse<IReplyMessage>>, i: number): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessCheckFileexist(res, i),
+      () => this.onSaveErrorCheckFileexist()
+    );
+  }
+
+  protected onSaveSuccessCheckFileexist(result: HttpResponse<IReplyMessage>, i: number): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.ERROR_E00) {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        this.showAlertMessage(replyCode, replyMsg);
+      } else {
+        this.removeFieldConfirm(i);
+      }
+    } else {
+      this.onSaveErrorCheckFileexist();
+    }
+  }
+
+  protected onSaveErrorCheckFileexist(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {

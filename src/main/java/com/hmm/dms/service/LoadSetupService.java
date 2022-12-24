@@ -14,4 +14,6 @@ public interface LoadSetupService {
     public List<MetaDataDTO> getMetaDatabyHeaderId(Long id);
 
     public Page<RepositoryHeaderDTO> getAllRepositoryData(RepositoryInquiryMessage dto, Pageable pageable);
+
+    public List<MetaDataHeaderDTO> getAllMetaDataHeaderAccessByRole(Long roleId);
 }
