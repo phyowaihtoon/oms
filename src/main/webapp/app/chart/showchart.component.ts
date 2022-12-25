@@ -1,30 +1,92 @@
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DashboardService } from './../services/dashboard-service';
-import { Component, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { SchowChartService } from './showchart.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpResponse } from '@angular/common/http';
 import { IPieHeaderDataDto } from 'app/services/pieheaderdata.model';
+import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { ActivatedRoute } from '@angular/router';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { IInputParam, InputParam } from 'app/services/input-param.model';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-showchart',
   templateUrl: './showchart.component.html',
   styleUrls: ['./showchart.scss'],
 })
-export class ShowChartComponent implements AfterViewInit {
+export class ShowChartComponent implements AfterViewInit, OnInit {
   @Input() template: any;
   totalCount: any;
+
+  _metaDataHdrList?: IMetaDataHeader[] | null;
+  _userAuthority?: IUserAuthority | null;
+  //_activeMenuItem?: IMenuItem;
+
+  editForm = this.fb.group({
+    metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
+    fromDate: [],
+    toDate: [],
+  });
+  dateJoined: any;
   constructor(
+    protected fb: FormBuilder,
     private dashboard: DashboardService,
     private showChart: SchowChartService,
+    protected userAuthorityService: UserAuthorityService,
     protected modalService: NgbModal,
-    protected domSanitizer: DomSanitizer
+    protected domSanitizer: DomSanitizer,
+    protected activatedRoute: ActivatedRoute,
+    protected loadSetupService: LoadSetupService
   ) {}
 
   ngAfterViewInit(): void {
     this.showData();
+  }
+
+  ngOnInit(): void {
+    this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this.loadAllSetup();
+  }
+
+  today(): any {
+    const todayDate = new Date();
+    return {
+      year: todayDate.getFullYear(),
+      month: todayDate.getMonth() + 1,
+      day: todayDate.getDate(),
+    };
+  }
+
+  loadAllSetup(): void {
+    if (this._userAuthority) {
+      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
+        (res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+          }
+        },
+        error => {
+          console.log('Loading MetaData Header Failed : ', error);
+        }
+      );
+    }
+  }
+
+  trackMetaDataByID(index: number, item: IMetaDataHeader): number {
+    return item.id!;
+  }
+
+  onChangeDocumentTemplate(): void {
+    const headerID: number = +this.editForm.get('metaDataHdrID')!.value;
+    /* const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
+    if (metaDataHeader) {
+      this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+      this.bindMetaDataColumns();
+    } */
   }
 
   showData(): any {
@@ -37,9 +99,7 @@ export class ShowChartComponent implements AfterViewInit {
 
     if (this.template.cardId === 'CARD002') {
       this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto[]>) => {
-        console.log('body=>', res.body);
         if (res.body) {
-          console.log('writing data');
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
         }
       });
@@ -47,20 +107,67 @@ export class ShowChartComponent implements AfterViewInit {
 
     if (this.template.cardId === 'CARD003') {
       this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto[]>) => {
-        console.log('body=>', res.body);
         if (res.body) {
-          console.log('writing data');
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
         }
       });
     }
+
+    if (this.template.cardId === 'CARD004') {
+      const inputParam = this.createParam();
+      this.showChart.getDataByTemplate(inputParam).subscribe((res: HttpResponse<[]>) => {
+        if (res.body) {
+          const cols: any = [];
+          // tslint:disable-next-line: typedef
+          res.body.forEach(function (e: any) {
+            // tslint:disable-next-line: typedef
+            e.detail.forEach(function (d: any) {
+              // tslint:disable-next-line: typedef
+              if (
+                cols.filter(function (t: any) {
+                  return t === d.name;
+                }).length === 0
+              ) {
+                cols.push(d.name);
+              }
+            });
+          });
+          this.dashboard.generateLineChart(this.template.cardId, this.prepareData(res.body, cols), cols, 'Count');
+        }
+      });
+    }
+  }
+
+  prepareData(data: any, cols: any): any {
+    const _tempObj: { name: any; data: any }[] = [];
+    data.forEach((d: any) => {
+      const count: any = [];
+      cols.forEach((e: any) => {
+        let value = 0;
+        d.detail.forEach((f: any) => {
+          if (e === f.name) {
+            value = f.count;
+          }
+        });
+        count.push(value);
+      });
+      _tempObj.push({ name: d.type, data: count });
+    });
+    return _tempObj;
+  }
+  createParam(): IInputParam {
+    return {
+      ...new InputParam(),
+      templateId: this.editForm.get(['metaDataHdrID'])!.value,
+      // fromDate: this.editForm.get('fromDate')!.value ? this.editForm.get('fromDate')!.value.format('DD-MM-YYYY') : '',
+      // toDate: this.editForm.get('toDate')!.value ? this.editForm.get('toDate')!.value.format('DD-MM-YYYY') : '',
+    };
   }
 
   preparePieData(req: any): any {
     this.totalCount = req.totalCount;
     const ret: any = [];
     req.data?.forEach((d: any) => {
-      console.log(d.name);
       ret.push({ name: d.name, y: d.data });
       //  ret.push({ name: data.name, y: data.amount });
     });
