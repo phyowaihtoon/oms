@@ -1,6 +1,6 @@
 package com.hmm.dms.service.message;
 
-import com.hmm.dms.service.dto.MetaDataHeaderDTO;
+import com.hmm.dms.service.dto.DashboardTemplateDto;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +16,7 @@ public class UserAuthorityMessage implements Serializable {
     private int workflowAuthority;
     private SysConfigMessage sysConfigMessage;
     private List<MenuGroupMessage> menuGroups;
+    private List<DashboardTemplateDto> dashboardTemplates;
 
     public String getUserID() {
         return userID;
@@ -79,5 +80,13 @@ public class UserAuthorityMessage implements Serializable {
 
     public void setMenuGroups(List<MenuGroupMessage> menuGroups) {
         this.menuGroups = menuGroups;
+    }
+
+    public List<DashboardTemplateDto> getDashboardTemplates() {
+        return dashboardTemplates;
+    }
+
+    public void setDashboardTemplates(List<DashboardTemplateDto> dashboardTemplates) {
+        this.dashboardTemplates = dashboardTemplates;
     }
 }

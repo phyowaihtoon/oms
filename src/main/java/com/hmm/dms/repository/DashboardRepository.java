@@ -43,9 +43,9 @@ public class DashboardRepository {
         Query query = entityManager.createNativeQuery(
             "SELECT  DATE_FORMAT(created_date, \"%Y-%m-%d\") as created_date, " +
             "	sum((case when status = 1 then 1 else 0 end ))  as new_count," +
-            "    sum((case when status = 2 then 1 else 0 end ))  as amendment_count," +
+            "    sum((case when status = 2 then 1 else 0 end ))  as approval_count," +
             "    sum((case when status = 3 then 1 else 0 end ))  as rejected_count," +
-            "    sum((case when status = 4 then 1 else 0 end ))  as approval_count," +
+            "    sum((case when status = 4 then 1 else 0 end ))  as amendment_count," +
             "    sum((case when status = 5 then 1 else 0 end ))  as approved_count," +
             "    sum((case when status = 6 then 1 else 0 end ))  as canceled_count" +
             " FROM dms.document_header" +
