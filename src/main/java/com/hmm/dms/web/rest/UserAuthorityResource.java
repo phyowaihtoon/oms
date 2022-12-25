@@ -2,10 +2,12 @@ package com.hmm.dms.web.rest;
 
 import com.hmm.dms.domain.User;
 import com.hmm.dms.service.ApplicationUserService;
+import com.hmm.dms.service.RoleDashboardAccessService;
 import com.hmm.dms.service.RoleMenuAccessService;
 import com.hmm.dms.service.SysConfigService;
 import com.hmm.dms.service.UserService;
 import com.hmm.dms.service.dto.ApplicationUserDTO;
+import com.hmm.dms.service.dto.DashboardTemplateDto;
 import com.hmm.dms.service.message.MenuGroupMessage;
 import com.hmm.dms.service.message.SysConfigMessage;
 import com.hmm.dms.service.message.UserAuthorityMessage;
@@ -22,17 +24,20 @@ public class UserAuthorityResource {
     private final UserService userService;
     private final RoleMenuAccessService roleMenuAccessService;
     private final SysConfigService sysConfigService;
+    private final RoleDashboardAccessService roleDashboardAccessService;
 
     public UserAuthorityResource(
         ApplicationUserService applicationUserService,
         UserService userService,
         RoleMenuAccessService roleMenuAccessService,
-        SysConfigService sysConfigService
+        SysConfigService sysConfigService,
+        RoleDashboardAccessService roleDashboardAccessService
     ) {
         this.applicationUserService = applicationUserService;
         this.userService = userService;
         this.roleMenuAccessService = roleMenuAccessService;
         this.sysConfigService = sysConfigService;
+        this.roleDashboardAccessService = roleDashboardAccessService;
     }
 
     @GetMapping("/userauthority")
@@ -58,6 +63,10 @@ public class UserAuthorityResource {
 
         List<MenuGroupMessage> menuGroupList = this.roleMenuAccessService.getAllMenuGroupByRole(appUserDTO.getUserRole().getId());
         userAuthorityMessage.setMenuGroups(menuGroupList);
+
+        List<DashboardTemplateDto> dashboardTemplateList =
+            this.roleDashboardAccessService.getAllDashboardTemplateByRole(appUserDTO.getUserRole().getId());
+        userAuthorityMessage.setDashboardTemplates(dashboardTemplateList);
 
         return userAuthorityMessage;
     }

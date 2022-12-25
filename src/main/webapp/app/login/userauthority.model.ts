@@ -1,4 +1,5 @@
 import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
+import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 
 export interface IUserAuthority {
   userID: string;
@@ -10,6 +11,7 @@ export interface IUserAuthority {
   sysConfigMessage: ISysConfigMessage;
   menuGroups: IMenuGroupMessage[];
   activeMenu: IRoleMenuAccess;
+  dashboardTemplates: IDashboardTemplate[];
 }
 
 export interface ISysConfigMessage {

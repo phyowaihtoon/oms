@@ -1,8 +1,8 @@
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { DashboardService } from './../services/dashboard-service';
 import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { SchowChartService } from './showchart.service';
-import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpResponse } from '@angular/common/http';
 import { IPieHeaderDataDto } from 'app/services/pieheaderdata.model';
@@ -24,7 +24,6 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
 
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _userAuthority?: IUserAuthority | null;
-  //_activeMenuItem?: IMenuItem;
 
   editForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],

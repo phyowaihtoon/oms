@@ -6,10 +6,8 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { DashboardTemplate, IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { HttpResponse } from '@angular/common/http';
-import { DashboardService } from 'app/services/dashboard-service';
 import { SchowChartService } from 'app/chart/showchart.service';
 import { IUserAuthority } from 'app/login/userauthority.model';
-import { IMenuItem } from 'app/entities/util/setup.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
@@ -20,28 +18,25 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
 export class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   authSubscription?: Subscription;
+  _userAuthority?: IUserAuthority | null;
 
-  //_activeMenuItem?: IMenuItem;
   templates?: IDashboardTemplate[];
   constructor(
     private accountService: AccountService,
     protected activatedRoute: ActivatedRoute,
     private router: Router,
-    private dashboardService: SchowChartService
+    private dashboardService: SchowChartService,
+    protected userAuthorityService: UserAuthorityService
   ) {}
 
   ngOnInit(): void {
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
-
-    this.loadPage();
-  }
-
-  loadPage(): void {
-    this.dashboardService.getAllTemplate().subscribe((res: HttpResponse<IDashboardTemplate[]>) => {
-      if (res.body) {
-        this.templates = res.body;
-      }
-    });
+    if (this.isAuthenticated()) {
+      this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
+      this.templates = this._userAuthority?.dashboardTemplates;
+      console.log('isAuthenticated : true');
+      console.log('All Dashboard Templates : ', this.templates);
+    }
   }
 
   createTemplate(cardId: string, cardName: string): IDashboardTemplate {
@@ -55,10 +50,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   isAuthenticated(): boolean {
     return this.accountService.isAuthenticated();
-  }
-
-  login(): void {
-    this.router.navigate(['/login']);
   }
 
   ngOnDestroy(): void {

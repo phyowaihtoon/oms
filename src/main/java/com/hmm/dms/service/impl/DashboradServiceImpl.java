@@ -61,18 +61,18 @@ public class DashboradServiceImpl implements DashboardService {
         List<PieData> pieData = dashboardRepository.getDocumentSummary();
         long totalCount = 0L;
         long newCount = 0L;
-        Long amendmentCount = 0L;
-        Long rejectedCount = 0L;
         Long approvalCount = 0L;
+        Long rejectedCount = 0L;
+        Long amendmentCount = 0L;
         Long approvedCount = 0L;
         Long cancelCount = 0L;
 
         for (int i = 0; i < pieData.size(); i++) {
             totalCount += pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 1) newCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 2) amendmentCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 2) approvalCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 3) rejectedCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 4) approvalCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 4) amendmentCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 5) approvedCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 6) cancelCount = pieData.get(i).getCount();
         }
@@ -137,18 +137,18 @@ public class DashboradServiceImpl implements DashboardService {
         List<PieData> pieData = dashboardRepository.getTodaySummary();
         long totalCount = 0L;
         long newCount = 0L;
-        Long amendmentCount = 0L;
-        Long rejectedCount = 0L;
         Long approvalCount = 0L;
+        Long rejectedCount = 0L;
+        Long amendmentCount = 0L;
         Long approvedCount = 0L;
         Long cancelCount = 0L;
 
         for (int i = 0; i < pieData.size(); i++) {
             totalCount += pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 1) newCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 2) amendmentCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 2) approvalCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 3) rejectedCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 4) approvalCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 4) amendmentCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 5) approvedCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 6) cancelCount = pieData.get(i).getCount();
         }
