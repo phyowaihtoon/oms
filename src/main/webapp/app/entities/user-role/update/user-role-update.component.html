@@ -47,7 +47,7 @@
     </div>
 
     <div class="row">
-      <div class="col-3">
+      <div class="col-4">
         <div *ngIf="_isMenuAccess" class="tab-header-select" (click)="switchAccess(1)">
           <fa-icon icon="angle-down" (click)="switchAccess(1)"></fa-icon>&nbsp;
           <span jhiTranslate="dmsApp.userRole.menuAccess">Menu Access</span>
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-      <div class="col-6">
+      <div class="col-4">
         <div class="div-tab" *ngIf="_isTemplateAccess" class="tab-header-select" (click)="switchAccess(2)">
           <fa-icon icon="angle-down" (click)="switchAccess(2)"></fa-icon>&nbsp;
           <span jhiTranslate="dmsApp.userRole.templateAccess">Template Access</span>
@@ -68,6 +68,18 @@
         <div *ngIf="!_isTemplateAccess" class="tab-header" (click)="switchAccess(2)">
           <fa-icon icon="angle-right" (click)="switchAccess(2)"></fa-icon>&nbsp;
           <span jhiTranslate="dmsApp.userRole.templateAccess">Template Access</span>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="div-tab" *ngIf="_isDashboardAccess" class="tab-header-select" (click)="switchAccess(3)">
+          <fa-icon icon="angle-down" (click)="switchAccess(3)"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.userRole.dashboardAccess">Dashboard Access</span>
+        </div>
+
+        <div *ngIf="!_isDashboardAccess" class="tab-header" (click)="switchAccess(3)">
+          <fa-icon icon="angle-right" (click)="switchAccess(3)"></fa-icon>&nbsp;
+          <span jhiTranslate="dmsApp.userRole.dashboardAccess">Dashboard Access</span>
         </div>
       </div>
     </div>
@@ -198,6 +210,63 @@
                 <td>{{ item.get('template')!.value.docTitle }}</td>
                 <td style="text-align: center">
                   <span title="Remove" (click)="removeTemplate(i)">
+                    <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" id="template-access" *ngIf="_isDashboardAccess">
+      <div class="row">
+        <div class="col-2 dms-label">
+          <span jhiTranslate="dmsApp.userRole.dashboardTemplate">Dashboard Template</span>
+        </div>
+        <div class="input-group col-4">
+          <select
+            class="form-control"
+            id="field_dashboardTemplate"
+            data-cy="dashboardTemplate"
+            name="dashboardTemplate"
+            formControlName="dashboardTemplate"
+          >
+            <option [value]="0"></option>
+            <option [value]="dashboardTemplate.id" *ngFor="let dashboardTemplate of _dashboardTemplateList">
+              {{ dashboardTemplate.cardName }}
+            </option>
+          </select>
+          <span class="input-group-append" style="width: 10px"></span>
+          <div class="input-group-append dms-plus">
+            <span class="input-sm input-btn-primary" (click)="addDashboardTemplate()">
+              <fa-icon icon="plus" class="fa-icon-theme"></fa-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="role-template-table">
+        <div class="tbl-container">
+          <table class="table" formArrayName="dashboardAccessList">
+            <thead>
+              <tr>
+                <th style="width: 20%">
+                  {{ 'dmsApp.userRole.dashboardId' | translate }}
+                </th>
+                <th style="width: 70%">
+                  {{ 'dmsApp.userRole.dashboardName' | translate }}
+                </th>
+                <th style="width: 10%; text-align: center">#</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of _dashboardAccessListFCA.controls; last as isLast; let i = index" [formGroupName]="i">
+                <td>{{ item.get('template')!.value.id }}</td>
+                <td>{{ item.get('template')!.value.cardName }}</td>
+                <td style="text-align: center">
+                  <span title="Remove" (click)="removeDashboardTemplate(i)">
                     <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
                   </span>
                 </td>

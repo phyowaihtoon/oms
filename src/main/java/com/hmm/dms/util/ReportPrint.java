@@ -29,7 +29,7 @@ public class ReportPrint {
         String rptFilePath = "";
         try {
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(rptData);
-            File file = ResourceUtils.getFile("classpath:jrxml/" + rptPara.getRptJrxml());
+            File file = ResourceUtils.getFile("classpath:jrxml" + File.separator + rptPara.getRptJrxml());
             JasperReport jasper = JasperCompileManager.compileReport(file.getAbsolutePath());
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasper, parameters, dataSource);
 

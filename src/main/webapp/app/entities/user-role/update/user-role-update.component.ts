@@ -4,14 +4,23 @@ import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-
-import { IRoleMenuAccess, IRoleTemplateAccess, IUserRole, RoleMenuAccess, RoleTemplateAccess, UserRole } from '../user-role.model';
+import {
+  IRoleDashboardAccess,
+  IRoleMenuAccess,
+  IRoleTemplateAccess,
+  IUserRole,
+  RoleDashboardAccess,
+  RoleMenuAccess,
+  RoleTemplateAccess,
+  UserRole,
+} from '../user-role.model';
 import { UserRoleService } from '../service/user-role.service';
 import { IHeaderDetailsMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { DashboardTemplate, IDashboardTemplate } from 'app/services/dashboard-template.model';
 
 @Component({
   selector: 'jhi-user-role-update',
@@ -22,14 +31,18 @@ export class UserRoleUpdateComponent implements OnInit {
   isSaving = false;
   _isMenuAccess = true;
   _isTemplateAccess = false;
+  _isDashboardAccess = false;
   _metaDataHdrList?: IMetaDataHeader[];
+  _dashboardTemplateList?: IDashboardTemplate[];
 
   editForm = this.fb.group({
     id: [],
     roleName: [null, [Validators.required]],
     menuAccessList: this.fb.array([]),
     templateAccessList: this.fb.array([]),
+    dashboardAccessList: this.fb.array([]),
     metaDataHeader: [],
+    dashboardTemplate: [],
     AllowAll: [],
     ReadAll: [],
     WriteAll: [],
@@ -62,6 +75,17 @@ export class UserRoleUpdateComponent implements OnInit {
         console.log('Loading MetaData Setup Failed : ', error);
       }
     );
+
+    this.loadSetupService.loadAllDashboardTemplate().subscribe(
+      (res: HttpResponse<IDashboardTemplate[]>) => {
+        if (res.body) {
+          this._dashboardTemplateList = res.body;
+        }
+      },
+      error => {
+        console.log('Loading Dashboard Template Failed : ', error);
+      }
+    );
   }
 
   get _templateAccessListFCA(): FormArray {
@@ -70,6 +94,10 @@ export class UserRoleUpdateComponent implements OnInit {
 
   get _menuAccessListFCA(): FormArray {
     return this.editForm.get('menuAccessList') as FormArray;
+  }
+
+  get _dashboardAccessListFCA(): FormArray {
+    return this.editForm.get('dashboardAccessList') as FormArray;
   }
 
   resetForm(): void {
@@ -87,6 +115,7 @@ export class UserRoleUpdateComponent implements OnInit {
     });
 
     this._templateAccessListFCA.clear();
+    this._dashboardAccessListFCA.clear();
   }
 
   onCheckAllMenuAccess(event: any, value: number): void {
@@ -139,6 +168,24 @@ export class UserRoleUpdateComponent implements OnInit {
     this._templateAccessListFCA.push(newTemplateRow);
   }
 
+  initializeNewDashboardAccessRow(): void {
+    const initialRow = this.fb.group({
+      id: [],
+      template: [],
+      userRole: [],
+    });
+    this._dashboardAccessListFCA.push(initialRow);
+  }
+
+  addNewDashboardAccessRow(data: IRoleDashboardAccess): void {
+    const newTemplateRow = this.fb.group({
+      id: [],
+      template: [data.dashboardTemplate],
+      userRole: [data.userRole],
+    });
+    this._dashboardAccessListFCA.push(newTemplateRow);
+  }
+
   save(): void {
     this.isSaving = true;
     const message = this.createFromForm();
@@ -152,10 +199,16 @@ export class UserRoleUpdateComponent implements OnInit {
   switchAccess(id: number): void {
     if (id === 1) {
       this._isMenuAccess = true;
+      this._isDashboardAccess = false;
       this._isTemplateAccess = false;
+    } else if (id === 2) {
+      this._isMenuAccess = false;
+      this._isDashboardAccess = false;
+      this._isTemplateAccess = true;
     } else {
       this._isMenuAccess = false;
-      this._isTemplateAccess = true;
+      this._isTemplateAccess = false;
+      this._isDashboardAccess = true;
     }
   }
 
@@ -177,8 +230,30 @@ export class UserRoleUpdateComponent implements OnInit {
     this.editForm.get('metaDataHeader')?.patchValue(0);
   }
 
+  addDashboardTemplate(): void {
+    const dashboardTemplateId = +this.editForm.get('dashboardTemplate')!.value;
+    const addedDashboardTemplateList = this.createDashboardAccess();
+    const addedDashboardTemplate = addedDashboardTemplateList.find(item => item.id === dashboardTemplateId);
+    if (addedDashboardTemplate === undefined) {
+      const dashboardTemp = this._dashboardTemplateList?.find(item => item.id === dashboardTemplateId);
+      if (dashboardTemp !== undefined) {
+        const roleDashboard = {
+          ...new RoleDashboardAccess(),
+          dashboardTemplate: { ...new DashboardTemplate(), id: dashboardTemp.id, cardName: dashboardTemp.cardName },
+          userRole: { ...new UserRole(), id: 0, roleName: '' },
+        };
+        this.addNewDashboardAccessRow(roleDashboard);
+      }
+    }
+    this.editForm.get('dashboardTemplate')?.patchValue(0);
+  }
+
   removeTemplate(index: number): void {
     this._templateAccessListFCA.removeAt(index);
+  }
+
+  removeDashboardTemplate(index: number): void {
+    this._dashboardAccessListFCA.removeAt(index);
   }
 
   previousState(): void {
@@ -198,6 +273,7 @@ export class UserRoleUpdateComponent implements OnInit {
         this.editForm.get(['id'])?.setValue(message.header.id);
         this.updateRoleMenuAccess(message.details1);
         this.updateTemplateAccess(message.details2);
+        this.updateDashboardAccess(message.details3);
       }
       const replyCode = message.code;
       const replyMsg = message.message;
@@ -244,6 +320,7 @@ export class UserRoleUpdateComponent implements OnInit {
       roleName: userRole.roleName,
       menuAccessList: this.updateRoleMenuAccess(message.details1),
       templateAccessList: this.updateTemplateAccess(message.details2),
+      dashboardAccessList: this.updateDashboardAccess(message.details3),
     });
   }
 
@@ -256,6 +333,7 @@ export class UserRoleUpdateComponent implements OnInit {
       },
       details1: this.createRoleMenuAccess(),
       details2: this.createTemplateAccess(),
+      details3: this.createDashboardAccess(),
     };
   }
 
@@ -321,6 +399,35 @@ export class UserRoleUpdateComponent implements OnInit {
       this._templateAccessListFCA.controls[index].get(['id'])!.setValue(data.id);
       this._templateAccessListFCA.controls[index].get(['template'])!.setValue(data.metaDataHeader);
       this._templateAccessListFCA.controls[index].get(['userRole'])!.setValue(data.userRole);
+      index = index + 1;
+    });
+  }
+
+  protected createDashboardAccess(): IRoleDashboardAccess[] {
+    const fieldList: IRoleDashboardAccess[] = [];
+    this._dashboardAccessListFCA.controls.forEach(formControl => {
+      fieldList.push(this.getDashboardAccess(formControl));
+    });
+    return fieldList;
+  }
+
+  protected getDashboardAccess(formControl: any): IRoleDashboardAccess {
+    return {
+      ...new RoleDashboardAccess(),
+      id: formControl.get(['id'])!.value,
+      dashboardTemplate: formControl.get(['template'])!.value,
+      userRole: formControl.get(['userRole'])!.value,
+    };
+  }
+
+  protected updateDashboardAccess(dashboardAccessList: IRoleDashboardAccess[] | undefined): void {
+    let index = 0;
+    this._dashboardAccessListFCA.clear();
+    dashboardAccessList?.forEach(data => {
+      this.initializeNewDashboardAccessRow();
+      this._dashboardAccessListFCA.controls[index].get(['id'])!.setValue(data.id);
+      this._dashboardAccessListFCA.controls[index].get(['template'])!.setValue(data.dashboardTemplate);
+      this._dashboardAccessListFCA.controls[index].get(['userRole'])!.setValue(data.userRole);
       index = index + 1;
     });
   }

@@ -1,19 +1,13 @@
 package com.hmm.dms.service.impl;
 
-import com.hmm.dms.domain.DocumentHeader;
 import com.hmm.dms.domain.MetaDataHeader;
-import com.hmm.dms.repository.DocumentHeaderRepository;
 import com.hmm.dms.repository.MetaDataHeaderRepository;
-import com.hmm.dms.service.MetaDataService;
 import com.hmm.dms.service.ReportService;
-import com.hmm.dms.service.dto.MetaDataDTO;
-import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.service.message.RptDataMessage;
 import com.hmm.dms.service.message.RptParamsMessage;
 import com.hmm.dms.util.ReportPrint;
 import com.hmm.dms.util.ResponseCode;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

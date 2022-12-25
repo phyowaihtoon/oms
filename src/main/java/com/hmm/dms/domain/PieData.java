@@ -1,7 +1,6 @@
 package com.hmm.dms.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class PieData implements Serializable {

@@ -29,4 +29,8 @@ export class SchowChartService {
   getTodaySummaryData(): Observable<EntityArrayResponseType> {
     return this.http.get<[]>(this.resourceUrl + '/getTodaySummary', { observe: 'response' });
   }
+
+  getDataByTemplate(inputParam: any): Observable<EntityArrayResponseType> {
+    return this.http.post<[]>(this.resourceUrl + '/getDataByTemplate', inputParam, { observe: 'response' });
+  }
 }

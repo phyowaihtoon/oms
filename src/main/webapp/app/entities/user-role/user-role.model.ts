@@ -1,3 +1,4 @@
+import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { IMetaDataHeader } from '../metadata/metadata.model';
 import { IMenuItem } from '../util/setup.model';
 
@@ -44,6 +45,16 @@ export interface IRoleTemplateAccess {
 
 export class RoleTemplateAccess implements IRoleTemplateAccess {
   constructor(public id?: number, public metaDataHeader?: IMetaDataHeader, public userRole?: IUserRole) {}
+}
+
+export interface IRoleDashboardAccess {
+  id?: number;
+  dashboardTemplate?: IDashboardTemplate;
+  userRole?: IUserRole;
+}
+
+export class RoleDashboardAccess implements IRoleDashboardAccess {
+  constructor(public id?: number, public dashboardTemplate?: IDashboardTemplate, public userRole?: IUserRole) {}
 }
 
 export interface IMenuGroupMessage {

@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { DashboardTemplate, IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { HttpResponse } from '@angular/common/http';
-import { DashboardService } from 'app/services/dashboard-service';
 import { SchowChartService } from 'app/chart/showchart.service';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-home',
@@ -17,29 +18,25 @@ import { SchowChartService } from 'app/chart/showchart.service';
 export class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   authSubscription?: Subscription;
-
-  template1 = this.createTemplate('CARD001', 'Information');
-  template2 = this.createTemplate('CARD002', 'Document Mapping Status');
+  _userAuthority?: IUserAuthority | null;
 
   templates?: IDashboardTemplate[];
-  constructor(private accountService: AccountService, private router: Router, private dashboardService: SchowChartService) {}
+  constructor(
+    private accountService: AccountService,
+    protected activatedRoute: ActivatedRoute,
+    private router: Router,
+    private dashboardService: SchowChartService,
+    protected userAuthorityService: UserAuthorityService
+  ) {}
 
   ngOnInit(): void {
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
-    this.loadPage();
-  }
-
-  loadPage(): void {
-    this.dashboardService.getAllTemplate().subscribe((res: HttpResponse<IDashboardTemplate[]>) => {
-      console.log('body=>', res.body);
-      if (res.body) {
-        console.log('writing data');
-        this.templates = res.body;
-        console.log('templatesesss =>', this.templates);
-      }
-    });
-
-    console.log('templates', this.templates);
+    if (this.isAuthenticated()) {
+      this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
+      this.templates = this._userAuthority?.dashboardTemplates;
+      console.log('isAuthenticated : true');
+      console.log('All Dashboard Templates : ', this.templates);
+    }
   }
 
   createTemplate(cardId: string, cardName: string): IDashboardTemplate {
@@ -53,10 +50,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   isAuthenticated(): boolean {
     return this.accountService.isAuthenticated();
-  }
-
-  login(): void {
-    this.router.navigate(['/login']);
   }
 
   ngOnDestroy(): void {
