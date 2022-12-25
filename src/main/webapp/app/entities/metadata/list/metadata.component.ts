@@ -111,7 +111,7 @@ export class MetaDataComponent implements OnInit {
       if (reason === 'deleted') {
         this.loadPage();
       } else if (reason === 'not-deleted') {
-        this.showAlertMessage('E00', "MetaData is already used in Document Mapping. Can' be deleted");
+        this.showAlertMessage('E00', "MetaData is already used in Document Mapping. Can't be deleted");
       }
     });
   }
