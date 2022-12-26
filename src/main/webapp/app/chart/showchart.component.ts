@@ -20,7 +20,7 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
 })
 export class ShowChartComponent implements AfterViewInit, OnInit {
   @Input() template: any;
-  totalCount: any;
+  totalCount = 0;
 
   _metaDataHdrList?: IMetaDataHeader[] | null;
   _userAuthority?: IUserAuthority | null;
@@ -60,12 +60,20 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     };
   }
 
+  getTotalRecordCount(): string {
+    return 'Total - ' + this.totalCount.toString() + (this.totalCount > 0 ? ' Records' : ' Record');
+  }
+
   loadAllSetup(): void {
     if (this._userAuthority) {
       this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
         (res: HttpResponse<IMetaDataHeader[]>) => {
           if (res.body) {
             this._metaDataHdrList = res.body;
+            if (this._metaDataHdrList.length > 0) {
+              this.editForm.get(['metaDataHdrID'])?.patchValue(this._metaDataHdrList[0].id);
+              this.onChangeDocumentTemplate();
+            }
           }
         },
         error => {
@@ -80,12 +88,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
   }
 
   onChangeDocumentTemplate(): void {
-    const headerID: number = +this.editForm.get('metaDataHdrID')!.value;
-    /* const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
-    if (metaDataHeader) {
-      this._selectedMetaDataList = metaDataHeader.metaDataDetails;
-      this.bindMetaDataColumns();
-    } */
+    this.showData();
   }
 
   showData(): any {
@@ -96,8 +99,8 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     }
     */
 
-    if (this.template.cardId === 'CARD002') {
-      this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto[]>) => {
+    if (this.template.cardId === 'CARD002' || this.template.cardId === 'CARD003') {
+      this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
         }
@@ -105,7 +108,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     }
 
     if (this.template.cardId === 'CARD003') {
-      this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto[]>) => {
+      this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
         }
@@ -132,6 +135,15 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
             });
           });
           this.dashboard.generateLineChart(this.template.cardId, this.prepareData(res.body, cols), cols, 'Count');
+        }
+      });
+    }
+
+    if (this.template.cardId === 'CARD005') {
+      const inputParam = this.createParam();
+      this.showChart.getTodaySummaryByTemplate(inputParam).subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
+        if (res.body) {
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
         }
       });
     }
@@ -168,7 +180,6 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     const ret: any = [];
     req.data?.forEach((d: any) => {
       ret.push({ name: d.name, y: d.data });
-      //  ret.push({ name: data.name, y: data.amount });
     });
 
     return [

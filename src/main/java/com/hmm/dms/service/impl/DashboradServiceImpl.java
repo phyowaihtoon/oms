@@ -58,44 +58,30 @@ public class DashboradServiceImpl implements DashboardService {
     @Override
     public Optional<PieHeaderDataDto> getAllSummary() {
         Optional<PieHeaderDataDto> pieHeaderDataDto = Optional.of(new PieHeaderDataDto());
-        List<PieData> pieData = dashboardRepository.getDocumentSummary();
-        long totalCount = 0L;
-        long newCount = 0L;
-        Long approvalCount = 0L;
-        Long rejectedCount = 0L;
-        Long amendmentCount = 0L;
-        Long approvedCount = 0L;
-        Long cancelCount = 0L;
-
+        List<PieData> pieData = dashboardRepository.getAllSummary();
+        long totalCount = 0;
+        long newCount = 0;
+        long approvalCount = 0L;
+        long rejectedCount = 0L;
+        long amendmentCount = 0L;
+        long approvedCount = 0L;
+        long cancelCount = 0L;
         for (int i = 0; i < pieData.size(); i++) {
             totalCount += pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 1) newCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 2) approvalCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 3) rejectedCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 3) cancelCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 4) amendmentCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 5) approvedCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 6) cancelCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 6) rejectedCount = pieData.get(i).getCount();
         }
         pieHeaderDataDto
             .get()
             .getData()
-            .add(new PieDataDto("New - " + newCount + (newCount > 1 ? " Records" : " Record"), (float) (newCount * 100) / totalCount));
-        pieHeaderDataDto
-            .get()
-            .getData()
             .add(
                 new PieDataDto(
-                    "Sent for Amendment - " + amendmentCount + (amendmentCount > 1 ? " Records" : " Record"),
-                    (float) (amendmentCount * 100) / totalCount
-                )
-            );
-        pieHeaderDataDto
-            .get()
-            .getData()
-            .add(
-                new PieDataDto(
-                    "Rejected - " + rejectedCount + (rejectedCount > 1 ? " Records" : " Record"),
-                    (float) (rejectedCount * 100) / totalCount
+                    "New - " + newCount + (newCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (newCount * 100) / totalCount : 0
                 )
             );
         pieHeaderDataDto
@@ -104,16 +90,17 @@ public class DashboradServiceImpl implements DashboardService {
             .add(
                 new PieDataDto(
                     "Sent for Approval - " + approvalCount + (approvalCount > 1 ? " Records" : " Record"),
-                    (float) (approvalCount * 100) / totalCount
+                    totalCount > 0 ? (float) (approvalCount * 100) / totalCount : 0
                 )
             );
+
         pieHeaderDataDto
             .get()
             .getData()
             .add(
                 new PieDataDto(
-                    "Approved - " + approvedCount + (approvedCount > 1 ? " Records" : " Record"),
-                    (float) (approvedCount * 100) / totalCount
+                    "Sent for Amendment - " + amendmentCount + (amendmentCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (amendmentCount * 100) / totalCount : 0
                 )
             );
         pieHeaderDataDto
@@ -122,7 +109,27 @@ public class DashboradServiceImpl implements DashboardService {
             .add(
                 new PieDataDto(
                     "Canceled - " + cancelCount + (cancelCount > 1 ? " Records" : " Record"),
-                    (float) (cancelCount * 100) / totalCount
+                    totalCount > 0 ? (float) (cancelCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Approved - " + approvedCount + (approvedCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (approvedCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Rejected - " + rejectedCount + (rejectedCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (rejectedCount * 100) / totalCount : 0
                 )
             );
 
@@ -135,43 +142,29 @@ public class DashboradServiceImpl implements DashboardService {
     public Optional<PieHeaderDataDto> getTodaySummary() {
         Optional<PieHeaderDataDto> pieHeaderDataDto = Optional.of(new PieHeaderDataDto());
         List<PieData> pieData = dashboardRepository.getTodaySummary();
-        long totalCount = 0L;
-        long newCount = 0L;
-        Long approvalCount = 0L;
-        Long rejectedCount = 0L;
-        Long amendmentCount = 0L;
-        Long approvedCount = 0L;
-        Long cancelCount = 0L;
-
+        long totalCount = 0;
+        long newCount = 0;
+        long approvalCount = 0L;
+        long rejectedCount = 0L;
+        long amendmentCount = 0L;
+        long approvedCount = 0L;
+        long cancelCount = 0L;
         for (int i = 0; i < pieData.size(); i++) {
             totalCount += pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 1) newCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 2) approvalCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 3) rejectedCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 3) cancelCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 4) amendmentCount = pieData.get(i).getCount();
             if (pieData.get(i).getStatus() == 5) approvedCount = pieData.get(i).getCount();
-            if (pieData.get(i).getStatus() == 6) cancelCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 6) rejectedCount = pieData.get(i).getCount();
         }
         pieHeaderDataDto
             .get()
             .getData()
-            .add(new PieDataDto("New - " + newCount + (newCount > 1 ? " Records" : " Record"), (float) (newCount * 100) / totalCount));
-        pieHeaderDataDto
-            .get()
-            .getData()
             .add(
                 new PieDataDto(
-                    "Sent for Amendment - " + amendmentCount + (amendmentCount > 1 ? " Records" : " Record"),
-                    (float) (amendmentCount * 100) / totalCount
-                )
-            );
-        pieHeaderDataDto
-            .get()
-            .getData()
-            .add(
-                new PieDataDto(
-                    "Rejected - " + rejectedCount + (rejectedCount > 1 ? " Records" : " Record"),
-                    (float) (rejectedCount * 100) / totalCount
+                    "New - " + newCount + (newCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (newCount * 100) / totalCount : 0
                 )
             );
         pieHeaderDataDto
@@ -180,16 +173,17 @@ public class DashboradServiceImpl implements DashboardService {
             .add(
                 new PieDataDto(
                     "Sent for Approval - " + approvalCount + (approvalCount > 1 ? " Records" : " Record"),
-                    (float) (approvalCount * 100) / totalCount
+                    totalCount > 0 ? (float) (approvalCount * 100) / totalCount : 0
                 )
             );
+
         pieHeaderDataDto
             .get()
             .getData()
             .add(
                 new PieDataDto(
-                    "Approved - " + approvedCount + (approvedCount > 1 ? " Records" : " Record"),
-                    (float) (approvedCount * 100) / totalCount
+                    "Sent for Amendment - " + amendmentCount + (amendmentCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (amendmentCount * 100) / totalCount : 0
                 )
             );
         pieHeaderDataDto
@@ -198,7 +192,27 @@ public class DashboradServiceImpl implements DashboardService {
             .add(
                 new PieDataDto(
                     "Canceled - " + cancelCount + (cancelCount > 1 ? " Records" : " Record"),
-                    (float) (cancelCount * 100) / totalCount
+                    totalCount > 0 ? (float) (cancelCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Approved - " + approvedCount + (approvedCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (approvedCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Rejected - " + rejectedCount + (rejectedCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (rejectedCount * 100) / totalCount : 0
                 )
             );
 
@@ -281,5 +295,88 @@ public class DashboradServiceImpl implements DashboardService {
         list.add(data);
 
         return list;
+    }
+
+    @Override
+    public Optional<PieHeaderDataDto> getTodaySummaryByTemplate(@Valid InputParamDto param) {
+        Optional<PieHeaderDataDto> pieHeaderDataDto = Optional.of(new PieHeaderDataDto());
+        List<PieData> pieData = dashboardRepository.getTodaySummaryByTemplate(param.getTemplateId());
+        long totalCount = 0;
+        long newCount = 0;
+        long approvalCount = 0L;
+        long rejectedCount = 0L;
+        long amendmentCount = 0L;
+        long approvedCount = 0L;
+        long cancelCount = 0L;
+        for (int i = 0; i < pieData.size(); i++) {
+            totalCount += pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 1) newCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 2) approvalCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 3) cancelCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 4) amendmentCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 5) approvedCount = pieData.get(i).getCount();
+            if (pieData.get(i).getStatus() == 6) rejectedCount = pieData.get(i).getCount();
+        }
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "New - " + newCount + (newCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (newCount * 100) / totalCount : 0
+                )
+            );
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Sent for Approval - " + approvalCount + (approvalCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (approvalCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Sent for Amendment - " + amendmentCount + (amendmentCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (amendmentCount * 100) / totalCount : 0
+                )
+            );
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Canceled - " + cancelCount + (cancelCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (cancelCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Approved - " + approvedCount + (approvedCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (approvedCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto
+            .get()
+            .getData()
+            .add(
+                new PieDataDto(
+                    "Rejected - " + rejectedCount + (rejectedCount > 1 ? " Records" : " Record"),
+                    totalCount > 0 ? (float) (rejectedCount * 100) / totalCount : 0
+                )
+            );
+
+        pieHeaderDataDto.get().setTotalCount(totalCount);
+
+        return pieHeaderDataDto;
     }
 }
