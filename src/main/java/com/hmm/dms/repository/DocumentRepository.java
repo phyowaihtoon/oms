@@ -30,6 +30,9 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Query(value = "SELECT count(*) FROM document where file_path = ?1 and file_name = ?2", nativeQuery = true)
     long checkFileVersion(String filepath, String filename);
 
+    @Query(value = "SELECT count(*) FROM document where version = 0 and id =  ?1", nativeQuery = true)
+    long checkVersion(Long id);
+
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document SET del_flag = 'Y'  " + "WHERE id = ?1", nativeQuery = true)
     void updateFlagById(Long id);
@@ -37,4 +40,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE document SET del_flag = 'N'  " + "WHERE id = ?1 and header_id=?2", nativeQuery = true)
     void restoreDocument(Long id, Long headerId);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE document SET file_name_version = ?2, version = ?3 where id=?1", nativeQuery = true)
+    void update_Version(Long id, String fileNameWithVersion, float versionNo);
 }

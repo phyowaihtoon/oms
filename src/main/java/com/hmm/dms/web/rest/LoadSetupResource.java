@@ -4,6 +4,7 @@ import com.hmm.dms.enumeration.CommonEnum.DocumentStatusEnum;
 import com.hmm.dms.enumeration.CommonEnum.PriorityEnum;
 import com.hmm.dms.enumeration.CommonEnum.WorkflowAuthorityEnum;
 import com.hmm.dms.service.LoadSetupService;
+import com.hmm.dms.service.dto.DashboardTemplateDto;
 import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
@@ -95,5 +96,10 @@ public class LoadSetupResource {
         Page<RepositoryHeaderDTO> page = loadSetupService.getAllRepositoryData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/dashboard")
+    public List<DashboardTemplateDto> loadAllDashboardTemplate() {
+        return this.loadSetupService.loadAllDashboardTemplate();
     }
 }

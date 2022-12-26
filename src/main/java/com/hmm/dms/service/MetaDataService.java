@@ -4,6 +4,7 @@ import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ public interface MetaDataService {
      * @return the persisted entity.
      */
     MetaDataHeaderDTO save(MetaDataHeaderDTO metaDataDTO);
+
+    ReplyMessage<MetaDataHeaderDTO> saveMetaDataHeader(MetaDataHeaderDTO metaDataDTO);
 
     /**
      * Partially updates a metaData.

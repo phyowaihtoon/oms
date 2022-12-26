@@ -12,10 +12,12 @@ export type RepositoryHeaderArrayType = HttpResponse<IRepositoryHeader[]>;
 export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
 export type DocumentStatusArrayType = HttpResponse<IDocumentStatus[]>;
 export type PriorityArrayType = HttpResponse<IPriority[]>;
+export type DashboardArrayType = HttpResponse<IDashboardTemplate[]>;
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import { IDocumentStatus, IPriority, IWorkflowAuthority } from './setup.model';
+import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 
 @Injectable({
   providedIn: 'root',
@@ -68,5 +70,10 @@ export class LoadSetupService {
   loadPriority(): Observable<PriorityArrayType> {
     const childURL = '/priority';
     return this.http.get<IPriority[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadAllDashboardTemplate(): Observable<DashboardArrayType> {
+    const childURL = '/dashboard';
+    return this.http.get<IDashboardTemplate[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }

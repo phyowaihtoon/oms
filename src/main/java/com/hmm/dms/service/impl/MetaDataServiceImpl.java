@@ -11,8 +11,8 @@ import com.hmm.dms.service.mapper.MetaDataHeaderMapper;
 import com.hmm.dms.service.mapper.MetaDataMapper;
 import com.hmm.dms.service.message.BaseMessage;
 import com.hmm.dms.service.message.MetaDataInquiryMessage;
+import com.hmm.dms.service.message.ReplyMessage;
 import com.hmm.dms.util.ResponseCode;
-import com.hmm.dms.web.rest.MetaDataResource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +41,8 @@ public class MetaDataServiceImpl implements MetaDataService {
 
     private final MetaDataMapper metaDataMapper;
 
+    private ReplyMessage<MetaDataHeaderDTO> replyMessage;
+
     public MetaDataServiceImpl(
         MetaDataHeaderRepository metaDataHeaderRepository,
         MetaDataRepository metaDataRepository,
@@ -51,6 +53,7 @@ public class MetaDataServiceImpl implements MetaDataService {
         this.metaDataRepository = metaDataRepository;
         this.metaDataHeaderMapper = metaDataHeaderMapper;
         this.metaDataMapper = metaDataMapper;
+        this.replyMessage = new ReplyMessage<MetaDataHeaderDTO>();
     }
 
     @Override
@@ -59,7 +62,6 @@ public class MetaDataServiceImpl implements MetaDataService {
         MetaDataHeader metaDataHeader = metaDataHeaderMapper.toEntity(metaDataDTO);
         List<MetaData> metaDataList = metaDataDTO.getMetaDataDetails().stream().map(metaDataMapper::toEntity).collect(Collectors.toList());
 
-        //MetaData metaData = metaDataMapper.toEntity(metaDataDTO);
         metaDataHeader = metaDataHeaderRepository.save(metaDataHeader);
         for (MetaData metaData : metaDataList) {
             metaData.setHeaderId(metaDataHeader.getId());
@@ -179,7 +181,7 @@ public class MetaDataServiceImpl implements MetaDataService {
 
         if (docHeaderCount > 0) {
             replyMessage.setCode(ResponseCode.ERROR_E00);
-            replyMessage.setMessage("MetaData is already used in Document Mapping. Can' be deleted");
+            replyMessage.setMessage("MetaData is already used in Document Mapping. It cannot be deleted.");
         } else {
             metaDataRepository.deleteById(id);
             replyMessage.setCode(ResponseCode.SUCCESS);
@@ -195,12 +197,36 @@ public class MetaDataServiceImpl implements MetaDataService {
 
         if (docHeaderCount > 0) {
             replyMessage.setCode(ResponseCode.ERROR_E00);
-            replyMessage.setMessage("MetaData is already used in Document Mapping. Can' be deleted");
+            replyMessage.setMessage("MetaData is already used in Document Mapping. It cannot be deleted");
         } else {
             metaDataHeaderRepository.updateById(id);
             replyMessage.setCode(ResponseCode.SUCCESS);
             replyMessage.setMessage("MetaData field is successfully deleted.");
         }
+        return replyMessage;
+    }
+
+    @Override
+    public ReplyMessage<MetaDataHeaderDTO> saveMetaDataHeader(MetaDataHeaderDTO metaDataDTO) {
+        log.debug("Request to save MetaData : {}", metaDataDTO);
+        MetaDataHeader metaDataHeader = metaDataHeaderMapper.toEntity(metaDataDTO);
+        List<MetaData> metaDataList = metaDataDTO.getMetaDataDetails().stream().map(metaDataMapper::toEntity).collect(Collectors.toList());
+
+        metaDataHeader = metaDataHeaderRepository.save(metaDataHeader);
+        for (MetaData metaData : metaDataList) {
+            metaData.setHeaderId(metaDataHeader.getId());
+        }
+
+        metaDataList = metaDataRepository.saveAll(metaDataList);
+        List<MetaDataDTO> metaDataDTOList = metaDataMapper.toDto(metaDataList);
+
+        MetaDataHeaderDTO metaDataHeaderDTO = metaDataHeaderMapper.toDto(metaDataHeader);
+        metaDataHeaderDTO.setMetaDataDetails(metaDataDTOList);
+
+        replyMessage.setCode(ResponseCode.SUCCESS);
+        replyMessage.setMessage("Document Mapping is successfully saved");
+        replyMessage.setData(metaDataHeaderDTO);
+
         return replyMessage;
     }
 }
