@@ -87,48 +87,42 @@ public class SysConfigServiceImpl implements SysConfigService {
     public void updateFileVersion() throws Exception {
         FtpSession ftpSession = this.ftpSessionFactory.getSession();
         System.out.println("Connected successfully to FTP Server");
-        List<DocumentDTO> documentDTO = documentMapper.toDto(documentRepository.findAll());
+        List<Document> docList = documentRepository.findAll();
+        List<DocumentDTO> documentDTO = documentMapper.toDto(docList);
 
         for (int i = 0; i < documentDTO.size(); i++) {
             boolean isPathExists = ftpSession.exists("//" + documentDTO.get(i).getFilePath());
-            // FTPFile workingDirectory = ftpSession.getFileSystemView().getWorkingDirectory();
-
-            System.out.println(documentDTO.get(i));
+            if (isPathExists) {
+                long versionExist;
+                versionExist = documentRepository.checkVersion(documentDTO.get(i).getId());
+                if (versionExist > 0) {
+                    FTPFile[] files = ftpSession.list("//" + documentDTO.get(i).getFilePath() + "//" + documentDTO.get(i).getFileName());
+                    if (files != null && files.length > 0) {
+                        for (FTPFile aFile : files) {
+                            String updatedFileName = updateFileNameWithVersion(aFile.getName(), documentDTO.get(i).getHeaderId(), 1);
+                            ftpSession.rename(
+                                "//" + documentDTO.get(i).getFilePath() + "//" + aFile.getName(),
+                                "//" + documentDTO.get(i).getFilePath() + "//" + updatedFileName
+                            );
+                            documentRepository.update_Version(documentDTO.get(i).getId(), updatedFileName, 1);
+                        }
+                    }
+                } else {
+                    return;
+                }
+            }
         }
-        //        Scanner sc = new Scanner(System.in);
-        //        System.out.print("Enter file path (For e.g, C:\\Folder\\) - ");
-        //        String filePath = sc.nextLine();
-        //
-        //        File file = new File(filePath + "test.txt");
-        //        BufferedReader br = new BufferedReader(new FileReader(file));
-        //
-        //        String st;
-        //
-        //        while ((st = br.readLine()) != null) {
-        //            System.out.println(st);
-        //
-        //            File folder = new File(st);
-        //            File[] listOfFiles = folder.listFiles();
-        //
-        //            for (int i = 0; i < listOfFiles.length; i++) {
-        //                if (listOfFiles[i].isFile()) {
-        //                    String newFileName = fileNameUpdate(1, listOfFiles[i].getName());
-        //                    File newFile = new File(st + "\\" + newFileName);
-        //                    listOfFiles[i].renameTo(newFile);
-        //                    System.out.println("File " + listOfFiles[i].getName());
-        //                } else if (listOfFiles[i].isDirectory()) {
-        //                    System.out.println("Directory " + listOfFiles[i].getName());
-        //                }
-        //            }
-        //        }
     }
 
-    public static String fileNameUpdate(int versionNo, String filename) {
-        String fileVersion = "";
-
-        String[] originalFilearr = filename.split("\\.");
-        fileVersion = originalFilearr[0] + "_V" + Integer.toString(versionNo) + "." + originalFilearr[1];
-
-        return fileVersion;
+    private String updateFileNameWithVersion(String filename, Long headerId, int versionNo) {
+        int indexOfDot = filename.lastIndexOf(".");
+        String fileNameWithVersion =
+            filename.substring(0, indexOfDot) +
+            "_HID" +
+            Long.toString(headerId) +
+            "_V" +
+            Integer.toString(versionNo) +
+            filename.substring(indexOfDot);
+        return fileNameWithVersion;
     }
 }

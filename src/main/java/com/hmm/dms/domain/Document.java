@@ -32,7 +32,7 @@ public class Document extends AbstractAuditingEntity implements Serializable {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "file_name_version", nullable = false)
+    @Column(name = "file_name_version")
     private String fileNameVersion;
 
     @Column(name = "file_size")
