@@ -188,4 +188,17 @@ public class CodeDefinitionResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    /**
+     * {@code GET  /code-definitions} : get all the codeDefinitions.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of codeDefinitions in body.
+     */
+    @GetMapping("/code-definitions/template")
+    public ResponseEntity<List<CodeDefinitionDTO>> getTemplateCodeDefinitions() {
+        log.debug("REST request to get a page of CodeDefinitions");
+        List<CodeDefinitionDTO> dtoList = codeDefinitionService.findAllTemplateCodeDefinitions();
+        return ResponseEntity.ok().body(dtoList);
+    }
 }

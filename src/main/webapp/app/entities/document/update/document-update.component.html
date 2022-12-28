@@ -6,8 +6,12 @@
         : _activeMenuItem?.menuGroup?.name
     }}</span>
     <span>
-      >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
-    >
+      >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}
+    </span>
+    <span style="width: 5px"></span>
+    <span style="cursor: pointer" (click)="showCodeInfo()">
+      <fa-icon icon="info-circle"></fa-icon>
+    </span>
   </div>
   <div class="col-6 d-flex justify-content-end">
     <button

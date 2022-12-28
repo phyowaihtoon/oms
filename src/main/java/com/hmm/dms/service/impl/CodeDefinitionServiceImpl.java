@@ -1,10 +1,12 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.CodeDefinition;
+import com.hmm.dms.enumeration.CommonEnum.CodeTypeEnum;
 import com.hmm.dms.repository.CodeDefinitionRepository;
 import com.hmm.dms.service.CodeDefinitionService;
 import com.hmm.dms.service.dto.CodeDefinitionDTO;
 import com.hmm.dms.service.mapper.CodeDefinitionMapper;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,14 +70,40 @@ public class CodeDefinitionServiceImpl implements CodeDefinitionService {
     @Transactional(readOnly = true)
     public Page<CodeDefinitionDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CodeDefinitions");
-        return codeDefinitionRepository.findAll(pageable).map(codeDefinitionMapper::toDto);
+        Page<CodeDefinitionDTO> page = codeDefinitionRepository.findAll(pageable).map(codeDefinitionMapper::toDto);
+        page.forEach(
+            data -> {
+                CodeTypeEnum codeType = CodeTypeEnum.findByName(data.getType());
+                data.setTypeDescription(codeType.description);
+            }
+        );
+        return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CodeDefinitionDTO> findAllTemplateCodeDefinitions() {
+        log.debug("Request to get all CodeDefinitions");
+        List<CodeDefinitionDTO> dtoList = this.codeDefinitionMapper.toDto(this.codeDefinitionRepository.findAllTemplates());
+        dtoList.forEach(
+            data -> {
+                CodeTypeEnum codeType = CodeTypeEnum.findByName(data.getType());
+                data.setTypeDescription(codeType.description);
+            }
+        );
+        return dtoList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<CodeDefinitionDTO> findOne(Long id) {
         log.debug("Request to get CodeDefinition : {}", id);
-        return codeDefinitionRepository.findById(id).map(codeDefinitionMapper::toDto);
+        Optional<CodeDefinition> entity = this.codeDefinitionRepository.findById(id);
+        CodeTypeEnum codeType = CodeTypeEnum.findByName(entity.get().getType());
+        CodeDefinitionDTO dto = this.codeDefinitionMapper.toDto(entity.get());
+        dto.setTypeDescription(codeType.description);
+        Optional<CodeDefinitionDTO> optional = Optional.of(dto);
+        return optional;
     }
 
     @Override

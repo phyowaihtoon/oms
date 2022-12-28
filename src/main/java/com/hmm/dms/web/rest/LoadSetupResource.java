@@ -1,5 +1,6 @@
 package com.hmm.dms.web.rest;
 
+import com.hmm.dms.enumeration.CommonEnum.CodeTypeEnum;
 import com.hmm.dms.enumeration.CommonEnum.DocumentStatusEnum;
 import com.hmm.dms.enumeration.CommonEnum.PriorityEnum;
 import com.hmm.dms.enumeration.CommonEnum.WorkflowAuthorityEnum;
@@ -60,6 +61,18 @@ public class LoadSetupResource {
             docStatusList.add(setupDTO);
         }
         return docStatusList;
+    }
+
+    @GetMapping("/codetype")
+    public List<SetupEnumMessage<String, String>> loadCodeTypes() {
+        List<SetupEnumMessage<String, String>> codeTypeList = new ArrayList<SetupEnumMessage<String, String>>();
+        for (CodeTypeEnum enumData : CodeTypeEnum.values()) {
+            SetupEnumMessage<String, String> setupDTO = new SetupEnumMessage<String, String>();
+            setupDTO.setValue(enumData.value);
+            setupDTO.setDescription(enumData.description);
+            codeTypeList.add(setupDTO);
+        }
+        return codeTypeList;
     }
 
     @GetMapping("/priority")

@@ -13,10 +13,11 @@ export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
 export type DocumentStatusArrayType = HttpResponse<IDocumentStatus[]>;
 export type PriorityArrayType = HttpResponse<IPriority[]>;
 export type DashboardArrayType = HttpResponse<IDashboardTemplate[]>;
+export type CodeTypeArrayType = HttpResponse<ICodeType[]>;
 
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
-import { IDocumentStatus, IPriority, IWorkflowAuthority } from './setup.model';
+import { ICodeType, IDocumentStatus, IPriority, IWorkflowAuthority } from './setup.model';
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 
 @Injectable({
@@ -65,6 +66,11 @@ export class LoadSetupService {
   loadDocumentStatus(): Observable<DocumentStatusArrayType> {
     const childURL = '/docstatus';
     return this.http.get<IDocumentStatus[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadCodeType(): Observable<CodeTypeArrayType> {
+    const childURL = '/codetype';
+    return this.http.get<ICodeType[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 
   loadPriority(): Observable<PriorityArrayType> {

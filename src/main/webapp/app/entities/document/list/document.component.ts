@@ -10,6 +10,8 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
+import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-document',
@@ -68,7 +70,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected loadSetupService: LoadSetupService,
-    protected translateService: TranslateService
+    protected translateService: TranslateService,
+    protected modalService: NgbModal
   ) {}
 
   ngOnDestroy(): void {
@@ -317,6 +320,10 @@ export class DocumentComponent implements OnInit, OnDestroy {
   goToView(id?: number): void {
     this.documentInquiryService.storeSearchCriteria(this._searchCriteria);
     this.router.navigate(['/document', id, 'view']);
+  }
+
+  showCodeInfo(): void {
+    this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
   }
 
   protected sort(): string[] {

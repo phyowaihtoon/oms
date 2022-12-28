@@ -18,6 +18,15 @@
         </div>
 
         <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.codeDefinition.type" for="text">Type</label>
+          <select class="form-control" formControlName="type">
+            <option [value]="codeType.value" *ngFor="let codeType of _codeTypes">
+              {{ codeType.description }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
           <label class="form-label" jhiTranslate="dmsApp.codeDefinition.code" for="field_code">Code</label>
           <input type="text" class="form-control" name="code" id="field_code" data-cy="code" formControlName="code" />
           <div *ngIf="editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)">
