@@ -18,7 +18,7 @@ public class DashboardRepository {
     @Autowired
     EntityManager entityManager;
 
-    public List<PieData> getDocumentSummary() {
+    public List<PieData> getAllSummary() {
         Query query = entityManager.createNativeQuery(
             "select  count(id) as count, status " + " from document_header " + " where del_flag = 'N' group by status order by status"
         );
@@ -29,7 +29,7 @@ public class DashboardRepository {
 
     public List<PieData> getTodaySummary() {
         Query query = entityManager.createNativeQuery(
-            "select  count(id) as count, status " +
+            " select  count(id) as count, status " +
             " from document_header " +
             " where del_flag = 'N' and created_date > DATE_FORMAT(SYSDATE(), \"%Y-%m-%d\") " +
             " group by status order by status"
@@ -53,6 +53,22 @@ public class DashboardRepository {
         );
         List<Object[]> objList = query.getResultList();
         List<LineDataDto> retList = objList.stream().map(LineDataDto::toDTO).collect(Collectors.toList());
+        return retList;
+    }
+
+    public List<PieData> getTodaySummaryByTemplate(Long templateId) {
+        String cri = " ";
+        if (templateId != null && templateId.longValue() != 0) cri = " and meta_data_header_id = " + templateId;
+
+        Query query = entityManager.createNativeQuery(
+            " select  count(id) as count, status " +
+            " from document_header " +
+            " where del_flag = 'N' and created_date > DATE_FORMAT(SYSDATE(), \"%Y-%m-%d\") " +
+            cri +
+            " group by status order by status"
+        );
+        List<Object[]> objList = query.getResultList();
+        List<PieData> retList = objList.stream().map(PieData::toDTO).collect(Collectors.toList());
         return retList;
     }
 }

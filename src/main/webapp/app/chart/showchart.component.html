@@ -32,8 +32,8 @@
       <div class="box-header bg-primary">{{ template.cardName }}</div>
       <div class="box-body">
         <div class="chart-body" id="{{ template.cardId }}"></div>
-        <h4 style="padding: 8px">Total - {{ totalCount }} Records</h4>
       </div>
+      <div class="box-footer">Total - {{ totalCount }} Records</div>
     </div>
   </div>
 </div>
@@ -98,6 +98,35 @@
         </form>
         <div class="chart-body" id="{{ template.cardId }}"></div>
       </div>
+      <div class="box-footer"></div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="template.cardId === 'CARD005'">
+  <div class="col-md-12">
+    <div class="dashboard-box">
+      <div class="box-header bg-primary">{{ template.cardName }}</div>
+      <div class="box-body">
+        <form name="editForm" role="form" novalidate [formGroup]="editForm">
+          <div class="d-flex justify-content-end">
+            <select
+              (change)="onChangeDocumentTemplate()"
+              class="form-control col-md-4"
+              id="field_metaDataHdrID"
+              data-cy="metaDataHdrID"
+              name="metaDataHdrID"
+              formControlName="metaDataHdrID"
+            >
+              <option [value]="metaData.id" *ngFor="let metaData of _metaDataHdrList; trackBy: trackMetaDataByID">
+                {{ metaData.docTitle }}
+              </option>
+            </select>
+          </div>
+        </form>
+        <div class="chart-body" id="{{ template.cardId }}"></div>
+      </div>
+      <div class="box-footer">{{ getTotalRecordCount() }}</div>
     </div>
   </div>
 </div>

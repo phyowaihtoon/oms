@@ -9,7 +9,7 @@ export interface IPieData {
 }
 
 export class PieHeaderDataDto implements IPieHeaderDataDto {
-  constructor(public totalCount?: number, public pieData?: IPieData[]) {}
+  constructor(public totalCount?: number, public data?: IPieData[]) {}
 }
 
 export class PieData implements IPieData {

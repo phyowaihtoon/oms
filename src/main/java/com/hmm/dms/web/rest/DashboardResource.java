@@ -68,4 +68,11 @@ public class DashboardResource {
         List<HashMap<String, Object>> data = dashboardService.getDataByTemplate(param);
         return ResponseEntity.ok().body(data);
     }
+
+    @PostMapping("/getTodaySummaryByTemplate")
+    public ResponseEntity<PieHeaderDataDto> getTodaySummaryByTemplate(@Valid @RequestBody InputParamDto param) throws URISyntaxException {
+        log.debug("REST request to get getTodaySummaryByTemplate ");
+        Optional<PieHeaderDataDto> pieHeaderDataDto = dashboardService.getTodaySummaryByTemplate(param);
+        return ResponseUtil.wrapOrNotFound(pieHeaderDataDto);
+    }
 }
