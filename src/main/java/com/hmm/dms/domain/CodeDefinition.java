@@ -12,7 +12,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "code_definition")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class CodeDefinition extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +20,10 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @NotNull
+    @Column(name = "type", nullable = false)
+    private String type;
 
     @NotNull
     @Column(name = "code", nullable = false, unique = true)
@@ -43,6 +46,19 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public CodeDefinition type(String type) {
+        this.setType(type);
+        return this;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCode() {
@@ -95,6 +111,7 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
     public String toString() {
         return "CodeDefinition{" +
             "id=" + getId() +
+            ", type='" + getType() + "'" +
             ", code='" + getCode() + "'" +
             ", definition='" + getDefinition() + "'" +
             "}";
