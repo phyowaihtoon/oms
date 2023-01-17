@@ -18,6 +18,7 @@
         "title": "Code Definition"
       },
       "id": "ID",
+      "type": "Type",
       "code": "Code",
       "definition": "Definition"
     }

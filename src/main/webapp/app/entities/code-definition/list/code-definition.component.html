@@ -50,6 +50,12 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
+          <th scope="col" jhiSortBy="type">
+            <div class="d-flex">
+              <span jhiTranslate="dmsApp.codeDefinition.type">Type</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -60,6 +66,7 @@
           </td>
           <td>{{ codeDefinition.code }}</td>
           <td>{{ codeDefinition.definition }}</td>
+          <td>{{ codeDefinition.typeDescription }}</td>
           <td class="text-right">
             <div class="btn-group">
               <button

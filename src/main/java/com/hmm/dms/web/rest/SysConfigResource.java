@@ -33,7 +33,7 @@ public class SysConfigResource {
     }
 
     @GetMapping("/updateFileVersion")
-    public void updateFileVersion() throws Exception {
-        this.sysConfigService.updateFileVersion();
+    public List<String> updateFileVersion() throws Exception {
+        return this.sysConfigService.updateFileVersion();
     }
 }

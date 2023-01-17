@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ICodeDefinition } from '../code-definition.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
@@ -97,7 +97,7 @@ export class CodeDefinitionComponent implements OnInit {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     if (navigate) {
-      this.router.navigate(['/definition'], {
+      this.router.navigate(['/code-definition'], {
         queryParams: {
           page: this.page,
           size: this.itemsPerPage,
