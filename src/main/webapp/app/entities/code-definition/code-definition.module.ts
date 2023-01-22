@@ -5,6 +5,7 @@ import { CodeDefinitionDetailComponent } from './detail/code-definition-detail.c
 import { CodeDefinitionUpdateComponent } from './update/code-definition-update.component';
 import { CodeDefinitionDeleteDialogComponent } from './delete/code-definition-delete-dialog.component';
 import { CodeDefinitionRoutingModule } from './route/code-definition-routing.module';
+import { CodeDefinitionPopupComponent } from './popup/code-definition-popup.component';
 
 @NgModule({
   imports: [SharedModule, CodeDefinitionRoutingModule],
@@ -13,6 +14,7 @@ import { CodeDefinitionRoutingModule } from './route/code-definition-routing.mod
     CodeDefinitionDetailComponent,
     CodeDefinitionUpdateComponent,
     CodeDefinitionDeleteDialogComponent,
+    CodeDefinitionPopupComponent,
   ],
 })
 export class CodeDefinitionModule {}

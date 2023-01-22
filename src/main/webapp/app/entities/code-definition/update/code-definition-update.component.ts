@@ -6,7 +6,8 @@ import { finalize } from 'rxjs/operators';
 import { CodeDefinition, ICodeDefinition } from '../code-definition.model';
 import { CodeDefinitionService } from '../service/code-definition.service';
 import { FormBuilder } from '@angular/forms';
-import { typeWithParameters } from '@angular/compiler/src/render3/util';
+import { ICodeType } from 'app/entities/util/setup.model';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 
 @Component({
   selector: 'jhi-code-definition-update',
@@ -15,9 +16,11 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
 export class CodeDefinitionUpdateComponent implements OnInit {
   isSaving = false;
   codeDefinition: ICodeDefinition | null = null;
+  _codeTypes?: ICodeType[];
 
   editForm = this.fb.group({
     id: [],
+    type: [],
     code: [],
     definition: [],
   });
@@ -25,7 +28,8 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   constructor(
     protected codeDefinitionService: CodeDefinitionService,
     protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected loadSetupService: LoadSetupService
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +39,20 @@ export class CodeDefinitionUpdateComponent implements OnInit {
         this.updateForm(codeDefinition);
       }
     });
+    this.loadAllSetup();
+  }
+
+  loadAllSetup(): void {
+    this.loadSetupService.loadCodeType().subscribe(
+      (res: HttpResponse<ICodeType[]>) => {
+        if (res.body) {
+          this._codeTypes = res.body;
+        }
+      },
+      error => {
+        console.log('Code Type Failed : ', error);
+      }
+    );
   }
 
   previousState(): void {
@@ -74,6 +92,7 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   protected updateForm(codeDefinition: ICodeDefinition): void {
     this.editForm.patchValue({
       id: codeDefinition.id,
+      type: codeDefinition.type,
       code: codeDefinition.code,
       definition: codeDefinition.definition,
     });
@@ -83,6 +102,7 @@ export class CodeDefinitionUpdateComponent implements OnInit {
     return {
       ...new CodeDefinition(),
       id: this.editForm.get(['id'])!.value,
+      type: this.editForm.get(['type'])!.value,
       code: this.editForm.get(['code'])!.value,
       definition: this.editForm.get(['definition'])!.value,
     };

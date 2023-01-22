@@ -44,6 +44,9 @@
         "trashbin": "Trash Bin",
         "restore": "Restore Document"
       },
+      "definition": {
+        "popupTitle": "Information"
+      },
       "queue": {
         "title": "Service Queue",
         "docmentQueue": "Document Queue"

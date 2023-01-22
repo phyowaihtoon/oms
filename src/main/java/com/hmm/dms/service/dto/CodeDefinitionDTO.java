@@ -2,15 +2,20 @@ package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the {@link com.hmm.dms.domain.CodeDefinition} entity.
  */
-@SuppressWarnings("common-java:DuplicatedBlocks")
+
 public class CodeDefinitionDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
+
+    @NotNull
+    private String type;
 
     @NotNull
     private String code;
@@ -18,12 +23,22 @@ public class CodeDefinitionDTO implements Serializable {
     @NotNull
     private String definition;
 
+    private String typeDescription;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCode() {
@@ -40,6 +55,14 @@ public class CodeDefinitionDTO implements Serializable {
 
     public void setDefinition(String definition) {
         this.definition = definition;
+    }
+
+    public String getTypeDescription() {
+        return typeDescription;
+    }
+
+    public void setTypeDescription(String typeDescription) {
+        this.typeDescription = typeDescription;
     }
 
     @Override
@@ -68,6 +91,7 @@ public class CodeDefinitionDTO implements Serializable {
     public String toString() {
         return "CodeDefinitionDTO{" +
             "id=" + getId() +
+            ", type='" + getType() + "'" +
             ", code='" + getCode() + "'" +
             ", definition='" + getDefinition() + "'" +
             "}";
