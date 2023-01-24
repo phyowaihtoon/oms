@@ -12,6 +12,10 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface CodeDefinitionRepository extends JpaRepository<CodeDefinition, Long> {
-    @Query(value = "select cd from CodeDefinition cd")
-    List<CodeDefinition> findAllTemplates();
+    @Query(
+        value = "select cd from CodeDefinition cd " +
+        "where cd.metaDataHeader.id in " +
+        "(select rta.metaDataHeader.id from RoleTemplateAccess rta where rta.userRole.id=?1)"
+    )
+    List<CodeDefinition> findCodesByRole(Long roleID);
 }

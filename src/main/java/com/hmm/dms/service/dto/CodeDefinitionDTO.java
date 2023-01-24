@@ -14,16 +14,13 @@ public class CodeDefinitionDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
-    private String type;
+    private MetaDataHeaderDTO metaDataHeader;
 
     @NotNull
     private String code;
 
     @NotNull
     private String definition;
-
-    private String typeDescription;
 
     public Long getId() {
         return id;
@@ -33,12 +30,12 @@ public class CodeDefinitionDTO implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public MetaDataHeaderDTO getMetaDataHeader() {
+        return metaDataHeader;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setMetaDataHeader(MetaDataHeaderDTO metaDataHeader) {
+        this.metaDataHeader = metaDataHeader;
     }
 
     public String getCode() {
@@ -55,14 +52,6 @@ public class CodeDefinitionDTO implements Serializable {
 
     public void setDefinition(String definition) {
         this.definition = definition;
-    }
-
-    public String getTypeDescription() {
-        return typeDescription;
-    }
-
-    public void setTypeDescription(String typeDescription) {
-        this.typeDescription = typeDescription;
     }
 
     @Override
@@ -91,7 +80,7 @@ public class CodeDefinitionDTO implements Serializable {
     public String toString() {
         return "CodeDefinitionDTO{" +
             "id=" + getId() +
-            ", type='" + getType() + "'" +
+            ", type='" + getMetaDataHeader()==null?"":getMetaDataHeader().getDocTitle() + "'" +
             ", code='" + getCode() + "'" +
             ", definition='" + getDefinition() + "'" +
             "}";

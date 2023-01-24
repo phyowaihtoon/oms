@@ -51,8 +51,8 @@ export class CodeDefinitionService {
     return this.http.get<ICodeDefinition[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  findAllTemplates(): Observable<EntityArrayResponseType> {
-    return this.http.get<ICodeDefinition[]>(`${this.resourceUrl}/template`, { observe: 'response' });
+  findCodesByRole(roleID: number): Observable<EntityArrayResponseType> {
+    return this.http.get<ICodeDefinition[]>(`${this.resourceUrl}/template/${roleID}`, { observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
