@@ -8,6 +8,7 @@ import { CodeDefinitionService } from '../service/code-definition.service';
 import { FormBuilder } from '@angular/forms';
 import { ICodeType } from 'app/entities/util/setup.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
+import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 
 @Component({
   selector: 'jhi-code-definition-update',
@@ -17,10 +18,11 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   isSaving = false;
   codeDefinition: ICodeDefinition | null = null;
   _codeTypes?: ICodeType[];
+  _metaDataHdrList?: IMetaDataHeader[];
 
   editForm = this.fb.group({
     id: [],
-    type: [],
+    metaDataHeader: [],
     code: [],
     definition: [],
   });
@@ -43,14 +45,14 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   }
 
   loadAllSetup(): void {
-    this.loadSetupService.loadCodeType().subscribe(
-      (res: HttpResponse<ICodeType[]>) => {
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
         if (res.body) {
-          this._codeTypes = res.body;
+          this._metaDataHdrList = res.body;
         }
       },
       error => {
-        console.log('Code Type Failed : ', error);
+        console.log('Loading MetaData Setup Failed : ', error);
       }
     );
   }
@@ -68,6 +70,10 @@ export class CodeDefinitionUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.codeDefinitionService.create(codeDefinition));
     }
+  }
+
+  trackTemplateById(index: number, item: IMetaDataHeader): number {
+    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICodeDefinition>>): void {
@@ -92,7 +98,7 @@ export class CodeDefinitionUpdateComponent implements OnInit {
   protected updateForm(codeDefinition: ICodeDefinition): void {
     this.editForm.patchValue({
       id: codeDefinition.id,
-      type: codeDefinition.type,
+      metaDataHeader: codeDefinition.metaDataHeader,
       code: codeDefinition.code,
       definition: codeDefinition.definition,
     });
@@ -102,7 +108,7 @@ export class CodeDefinitionUpdateComponent implements OnInit {
     return {
       ...new CodeDefinition(),
       id: this.editForm.get(['id'])!.value,
-      type: this.editForm.get(['type'])!.value,
+      metaDataHeader: this.editForm.get(['metaDataHeader'])!.value,
       code: this.editForm.get(['code'])!.value,
       definition: this.editForm.get(['definition'])!.value,
     };

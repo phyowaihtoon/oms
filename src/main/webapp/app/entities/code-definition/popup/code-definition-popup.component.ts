@@ -11,20 +11,23 @@ import { CodeDefinitionService } from '../service/code-definition.service';
 })
 export class CodeDefinitionPopupComponent implements OnInit {
   _codeDefinitionList?: ICodeDefinition[];
+  roleID?: number;
 
   constructor(protected activeModal: NgbActiveModal, protected codeDefinitionService: CodeDefinitionService) {}
 
   ngOnInit(): void {
-    this.codeDefinitionService.findAllTemplates().subscribe(
-      (res: HttpResponse<ICodeDefinition[]>) => {
-        if (res.body) {
-          this._codeDefinitionList = res.body;
+    if (this.roleID !== undefined) {
+      this.codeDefinitionService.findCodesByRole(this.roleID).subscribe(
+        (res: HttpResponse<ICodeDefinition[]>) => {
+          if (res.body) {
+            this._codeDefinitionList = res.body;
+          }
+        },
+        () => {
+          console.log(' Loading Code Definition failed');
         }
-      },
-      () => {
-        console.log(' Loading Code Definition failed');
-      }
-    );
+      );
+    }
   }
 
   cancel(): void {
