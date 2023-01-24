@@ -195,10 +195,10 @@ public class CodeDefinitionResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of codeDefinitions in body.
      */
-    @GetMapping("/code-definitions/template")
-    public ResponseEntity<List<CodeDefinitionDTO>> getTemplateCodeDefinitions() {
+    @GetMapping("/code-definitions/template/{roleID}")
+    public ResponseEntity<List<CodeDefinitionDTO>> findCodesByRole(@PathVariable Long roleID) {
         log.debug("REST request to get a page of CodeDefinitions");
-        List<CodeDefinitionDTO> dtoList = codeDefinitionService.findAllTemplateCodeDefinitions();
+        List<CodeDefinitionDTO> dtoList = codeDefinitionService.findCodesByRole(roleID);
         return ResponseEntity.ok().body(dtoList);
     }
 }

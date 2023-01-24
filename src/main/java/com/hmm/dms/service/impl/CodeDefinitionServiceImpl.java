@@ -1,7 +1,6 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.CodeDefinition;
-import com.hmm.dms.enumeration.CommonEnum.CodeTypeEnum;
 import com.hmm.dms.repository.CodeDefinitionRepository;
 import com.hmm.dms.service.CodeDefinitionService;
 import com.hmm.dms.service.dto.CodeDefinitionDTO;
@@ -71,26 +70,14 @@ public class CodeDefinitionServiceImpl implements CodeDefinitionService {
     public Page<CodeDefinitionDTO> findAll(Pageable pageable) {
         log.debug("Request to get all CodeDefinitions");
         Page<CodeDefinitionDTO> page = codeDefinitionRepository.findAll(pageable).map(codeDefinitionMapper::toDto);
-        page.forEach(
-            data -> {
-                CodeTypeEnum codeType = CodeTypeEnum.findByName(data.getType());
-                data.setTypeDescription(codeType.description);
-            }
-        );
         return page;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CodeDefinitionDTO> findAllTemplateCodeDefinitions() {
+    public List<CodeDefinitionDTO> findCodesByRole(Long roleID) {
         log.debug("Request to get all CodeDefinitions");
-        List<CodeDefinitionDTO> dtoList = this.codeDefinitionMapper.toDto(this.codeDefinitionRepository.findAllTemplates());
-        dtoList.forEach(
-            data -> {
-                CodeTypeEnum codeType = CodeTypeEnum.findByName(data.getType());
-                data.setTypeDescription(codeType.description);
-            }
-        );
+        List<CodeDefinitionDTO> dtoList = this.codeDefinitionMapper.toDto(this.codeDefinitionRepository.findCodesByRole(roleID));
         return dtoList;
     }
 
@@ -99,9 +86,7 @@ public class CodeDefinitionServiceImpl implements CodeDefinitionService {
     public Optional<CodeDefinitionDTO> findOne(Long id) {
         log.debug("Request to get CodeDefinition : {}", id);
         Optional<CodeDefinition> entity = this.codeDefinitionRepository.findById(id);
-        CodeTypeEnum codeType = CodeTypeEnum.findByName(entity.get().getType());
         CodeDefinitionDTO dto = this.codeDefinitionMapper.toDto(entity.get());
-        dto.setTypeDescription(codeType.description);
         Optional<CodeDefinitionDTO> optional = Optional.of(dto);
         return optional;
     }

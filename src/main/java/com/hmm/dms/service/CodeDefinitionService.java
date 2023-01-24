@@ -57,5 +57,5 @@ public interface CodeDefinitionService {
      */
     void delete(Long id);
 
-    List<CodeDefinitionDTO> findAllTemplateCodeDefinitions();
+    List<CodeDefinitionDTO> findCodesByRole(Long roleID);
 }

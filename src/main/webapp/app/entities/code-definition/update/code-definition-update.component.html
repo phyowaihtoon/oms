@@ -19,9 +19,21 @@
 
         <div class="form-group">
           <label class="form-control-label" jhiTranslate="dmsApp.codeDefinition.type" for="text">Type</label>
-          <select class="form-control" formControlName="type">
-            <option [value]="codeType.value" *ngFor="let codeType of _codeTypes">
-              {{ codeType.description }}
+          <select
+            class="form-control"
+            id="field_metaDataHeader"
+            data-cy="metaDataHeader"
+            name="metaDataHeader"
+            formControlName="metaDataHeader"
+          >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                templateData.id === editForm.get('metaDataHeader')!.value?.id ? editForm.get('metaDataHeader')!.value : templateData
+              "
+              *ngFor="let templateData of _metaDataHdrList; trackBy: trackTemplateById"
+            >
+              {{ templateData.docTitle }}
             </option>
           </select>
         </div>

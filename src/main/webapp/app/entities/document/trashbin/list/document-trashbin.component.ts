@@ -78,7 +78,8 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
   }
 
   showCodeInfo(): void {
-    this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
+    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
+    modelRef.componentInstance.roleID = this._userAuthority?.roleID;
   }
 
   ngOnInit(): void {
