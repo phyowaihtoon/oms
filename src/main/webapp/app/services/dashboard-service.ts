@@ -29,11 +29,11 @@ export class DashboardService {
                   );
               }
            }, */
-          point: {
+          /* point: {
             events: {
               click: this.onPointClick,
             },
-          },
+          }, */
           showInLegend: true,
         },
       },
