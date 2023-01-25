@@ -1,7 +1,9 @@
 package com.hmm.dms.repository;
 
+import com.hmm.dms.domain.DashboardTemplate;
 import com.hmm.dms.domain.MetaData;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -30,4 +32,12 @@ public interface MetaDataRepository extends JpaRepository<MetaData, Long> {
 
     @Query(value = "select count(*) from document_header where del_flag = 'N' and meta_data_header_id = ?1", nativeQuery = true)
     long checkHeaderId(Long id);
+
+    @Query(
+        value = "select * from meta_data where header_id = ?1 and " + "field_type = ?2 and del_flag = 'N' and show_dashboard = 'Y'",
+        nativeQuery = true
+    )
+    Stream<MetaData> findByHeaderIdAndFieldType(Long headerId, String fieldType);
+
+    Optional<MetaData> findByHeaderIdAndFieldTypeAndShowDashboard(Long templateId, String string, String string2);
 }

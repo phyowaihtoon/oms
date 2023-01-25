@@ -3,20 +3,25 @@ package com.hmm.dms.service.impl;
 import com.hmm.dms.domain.PieData;
 import com.hmm.dms.repository.DashboardRepository;
 import com.hmm.dms.repository.DashboardTemplateRepository;
+import com.hmm.dms.repository.MetaDataRepository;
 import com.hmm.dms.service.DashboardService;
+import com.hmm.dms.service.dto.BarDataDto;
 import com.hmm.dms.service.dto.BasicLineDto;
 import com.hmm.dms.service.dto.DashboardTemplateDto;
 import com.hmm.dms.service.dto.InputParamDto;
 import com.hmm.dms.service.dto.LineDataDto;
+import com.hmm.dms.service.dto.MetaDataDTO;
 import com.hmm.dms.service.dto.PieDataDto;
 import com.hmm.dms.service.dto.PieHeaderDataDto;
 import com.hmm.dms.service.mapper.DashboardTemplateMapper;
+import com.hmm.dms.service.mapper.MetaDataMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +40,22 @@ public class DashboradServiceImpl implements DashboardService {
 
     private final DashboardTemplateMapper dashboardTemplateMapper;
 
+    private final MetaDataRepository metaDataRepository;
+
+    private final MetaDataMapper metaDataMapper;
+
     public DashboradServiceImpl(
         DashboardTemplateRepository dashboardTemplateRepository,
         DashboardRepository dashboardRepository,
-        DashboardTemplateMapper dashboardTemplateMapper
+        DashboardTemplateMapper dashboardTemplateMapper,
+        MetaDataRepository metaDataRepository,
+        MetaDataMapper metaDataMapper
     ) {
         this.dashboardTemplateRepository = dashboardTemplateRepository;
         this.dashboardRepository = dashboardRepository;
         this.dashboardTemplateMapper = dashboardTemplateMapper;
+        this.metaDataRepository = metaDataRepository;
+        this.metaDataMapper = metaDataMapper;
     }
 
     @Override
@@ -378,5 +391,41 @@ public class DashboradServiceImpl implements DashboardService {
         pieHeaderDataDto.get().setTotalCount(totalCount);
 
         return pieHeaderDataDto;
+    }
+
+    @Override
+    public List<HashMap<String, Object>> getDataByTemplateType(@Valid InputParamDto param) {
+        List<HashMap<String, Object>> list = new ArrayList<>();
+
+        param.setTemplateId((long) 1);
+
+        Optional<MetaDataDTO> metaDataDto = metaDataRepository
+            .findByHeaderIdAndFieldTypeAndShowDashboard(param.getTemplateId(), "LOV", "Y")
+            .map(metaDataMapper::toDto);
+
+        if (metaDataDto.isPresent()) {
+            String fieldValues[] = metaDataDto.get().getFieldValue().split("\\|");
+            List<BarDataDto> dataList = dashboardRepository.getOverAllDataByTemplateAndType(
+                param.getTemplateId(),
+                metaDataDto.get().getFieldOrder()
+            );
+            HashMap<String, Object> data = new HashMap<String, Object>();
+            for (String value : fieldValues) {
+                data = new HashMap<String, Object>();
+                BasicLineDto obj = new BasicLineDto();
+                obj.setName(value);
+                obj.setCount(0L);
+                for (BarDataDto barData : dataList) {
+                    if (barData.getName().equals(value)) {
+                        obj.setCount(barData.getCount());
+                        break;
+                    }
+                }
+                data.put("type", value);
+                data.put("detail", obj);
+                list.add(data);
+            }
+        }
+        return list;
     }
 }

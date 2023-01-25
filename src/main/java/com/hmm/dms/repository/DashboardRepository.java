@@ -1,6 +1,7 @@
 package com.hmm.dms.repository;
 
 import com.hmm.dms.domain.PieData;
+import com.hmm.dms.service.dto.BarDataDto;
 import com.hmm.dms.service.dto.InputParamDto;
 import com.hmm.dms.service.dto.LineDataDto;
 import java.util.List;
@@ -69,6 +70,26 @@ public class DashboardRepository {
         );
         List<Object[]> objList = query.getResultList();
         List<PieData> retList = objList.stream().map(PieData::toDTO).collect(Collectors.toList());
+        return retList;
+    }
+
+    public List<BarDataDto> getOverAllDataByTemplateAndType(Long templateId, Integer fieldOrder) {
+        String cri = " ";
+        if (templateId != null && templateId.longValue() != 0) cri = " and meta_data_header_id = " + templateId;
+
+        Query query = entityManager.createNativeQuery(
+            " select count(id) as count, SUBSTRING_INDEX(SUBSTRING_INDEX(field_values,'|'," +
+            fieldOrder +
+            "),'|',-1) as name" +
+            " from dms.document_header " +
+            " where del_flag = 'N' " +
+            cri +
+            " group by SUBSTRING_INDEX(SUBSTRING_INDEX(field_values,'|'," +
+            fieldOrder +
+            "),'|',-1)"
+        );
+        List<Object[]> objList = query.getResultList();
+        List<BarDataDto> retList = objList.stream().map(BarDataDto::toDTO).collect(Collectors.toList());
         return retList;
     }
 }

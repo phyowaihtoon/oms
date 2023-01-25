@@ -46,6 +46,10 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
     @Column(name = "del_flag")
     private String delFlag;
 
+    @NotNull
+    @Column(name = "show_dashboard", nullable = false)
+    private String showDashboard;
+
     public Long getId() {
         return id;
     }
@@ -145,6 +149,14 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
         this.delFlag = delFlag;
     }
 
+    public String getShowDashboard() {
+        return showDashboard;
+    }
+
+    public void setShowDashboard(String showDashboard) {
+        this.showDashboard = showDashboard;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -181,6 +193,8 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
             fieldValue +
             ", delFlag=" +
             delFlag +
+            ", showDashboard=" +
+            showDashboard +
             "]"
         );
     }

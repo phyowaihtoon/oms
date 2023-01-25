@@ -28,6 +28,7 @@ export interface IMetaData {
   fieldValue?: string;
   isRequired?: string;
   fieldOrder?: number;
+  showDashboard?: string;
   delFlag?: string;
   isDisplayed?: boolean;
 }
@@ -41,6 +42,7 @@ export class MetaData implements IMetaData {
     public fieldValue?: string,
     public isRequired?: string,
     public fieldOrder?: number,
+    public showDashboard?: string,
     public delFlag?: string,
     public isDisplayed?: boolean
   ) {}

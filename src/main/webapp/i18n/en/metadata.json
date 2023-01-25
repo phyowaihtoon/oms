@@ -30,6 +30,7 @@
       "fieldValue": "Field Value",
       "fieldMandatory": "Mandatory",
       "fieldOrder": "Field Order",
+      "showDashboard": "Dashboard",
       "fieldAction": "#",
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",

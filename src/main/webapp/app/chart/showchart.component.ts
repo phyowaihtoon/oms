@@ -147,6 +147,55 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
         }
       });
     }
+
+    if (this.template.cardId === 'CARD006') {
+      const inputParam = this.createParam();
+      this.showChart.getDataByTemplateType(inputParam).subscribe((res: HttpResponse<[]>) => {
+        if (res.body) {
+          const cols: any = [];
+          // tslint:disable-next-line: typedef
+          res.body.forEach(function (e: any) {
+            // tslint:disable-next-line: typedef
+            /* e.detail.forEach(function (d: any) {
+              // tslint:disable-next-line: typedef
+              if (
+                cols.filter(function (t: any) {
+                  return t === d.name;
+                }).length === 0
+              ) {
+                cols.push(d.name);
+              }
+            }); */
+            if (
+              cols.filter(function (t: any) {
+                return t === e.detail.name;
+              }).length === 0
+            ) {
+              cols.push(e.detail.name);
+            }
+          });
+          this.dashboard.generateBarChart(this.template.cardId, this.prepareData2(res.body, cols), cols, 'Record Count');
+        }
+      });
+    }
+  }
+
+  prepareData2(data: any, cols: any): any {
+    this.totalCount = 0;
+    const _tempObj: { name: any; data: any }[] = [];
+    data.forEach((d: any) => {
+      this.totalCount = this.totalCount + Number(d.detail.count);
+      const count: any = [];
+      cols.forEach((e: any) => {
+        let value = 0;
+        if (e === d.detail.name) {
+          value = d.detail.count;
+        }
+        count.push(value);
+      });
+      _tempObj.push({ name: d.type, data: count });
+    });
+    return _tempObj;
   }
 
   prepareData(data: any, cols: any): any {
