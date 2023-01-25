@@ -397,8 +397,6 @@ public class DashboradServiceImpl implements DashboardService {
     public List<HashMap<String, Object>> getDataByTemplateType(@Valid InputParamDto param) {
         List<HashMap<String, Object>> list = new ArrayList<>();
 
-        param.setTemplateId((long) 1);
-
         Optional<MetaDataDTO> metaDataDto = metaDataRepository
             .findByHeaderIdAndFieldTypeAndShowDashboard(param.getTemplateId(), "LOV", "Y")
             .map(metaDataMapper::toDto);
