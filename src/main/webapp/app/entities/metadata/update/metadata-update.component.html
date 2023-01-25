@@ -93,6 +93,9 @@
                 <th class="text-center bg-primary" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldOrder' | translate }}<span class="required-field">*</span>
                 </th>
+                <th class="text-center bg-primary" style="width: 10%">
+                  {{ 'dmsApp.metaData.showDashboard' | translate }}
+                </th>
                 <th class="text-center bg-primary" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
               </tr>
             </thead>
@@ -231,6 +234,33 @@
                     <small
                       class="form-text text-danger"
                       *ngIf="fieldList().controls[i].get('fieldOrder')?.errors?.required"
+                      jhiTranslate="entity.validation.required"
+                    >
+                      This field is required.
+                    </small>
+                  </div>
+                </td>
+
+                <td>
+                  <select
+                    class="form-control"
+                    name="showDashboard"
+                    formControlName="showDashboard"
+                    [attr.disabled]="fieldList().controls[i].get('fieldType')?.value !== 'LOV' ? true : null"
+                    (change)="onShowDashboardChange(i)"
+                  >
+                    <option [value]="data.value" *ngFor="let data of dashboardList">{{ data.caption }}</option>
+                  </select>
+
+                  <div
+                    *ngIf="
+                      fieldList().controls[i].get('showDashboard')!.invalid &&
+                      (fieldList().controls[i].get('showDashboard')!.dirty || fieldList().controls[i].get('showDashboard')!.touched)
+                    "
+                  >
+                    <small
+                      class="form-text text-danger"
+                      *ngIf="fieldList().controls[i].get('showDashboard')?.errors?.required"
                       jhiTranslate="entity.validation.required"
                     >
                       This field is required.
