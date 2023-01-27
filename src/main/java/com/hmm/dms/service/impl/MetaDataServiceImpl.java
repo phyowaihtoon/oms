@@ -229,4 +229,18 @@ public class MetaDataServiceImpl implements MetaDataService {
 
         return replyMessage;
     }
+
+    @Override
+    public List<MetaDataHeaderDTO> findAllMetaData() {
+        List<MetaDataHeader> metaDataHeaderList = this.metaDataHeaderRepository.findByDelFlagEquals("N");
+        List<MetaDataHeaderDTO> dtoList = this.metaDataHeaderMapper.toDto(metaDataHeaderList);
+        if (dtoList != null && dtoList.size() > 0) {
+            for (MetaDataHeaderDTO data : dtoList) {
+                List<MetaData> metaDataList = this.metaDataRepository.findByHeaderId(data.getId()).collect(Collectors.toList());
+                List<MetaDataDTO> detailDTOList = this.metaDataMapper.toDto(metaDataList);
+                data.setMetaDataDetails(detailDTOList);
+            }
+        }
+        return dtoList;
+    }
 }
