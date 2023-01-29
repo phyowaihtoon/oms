@@ -58,4 +58,6 @@ public interface RepositoryService {
     Page<RepositoryHeaderDTO> getAllRepositoryDataInTrashBin(RepositoryInquiryMessage message, Pageable pageable);
 
     BaseMessage restoreRepository(Long id);
+
+    List<RepositoryHeaderDTO> findAllRepository();
 }

@@ -1,10 +1,14 @@
 package com.hmm.dms.service.impl;
 
+import com.hmm.dms.domain.MetaData;
+import com.hmm.dms.domain.MetaDataHeader;
 import com.hmm.dms.domain.RepositoryDomain;
 import com.hmm.dms.domain.RepositoryHeader;
 import com.hmm.dms.repository.RepositoryDetailRepository;
 import com.hmm.dms.repository.RepositoryHeaderRepository;
 import com.hmm.dms.service.RepositoryService;
+import com.hmm.dms.service.dto.MetaDataDTO;
+import com.hmm.dms.service.dto.MetaDataHeaderDTO;
 import com.hmm.dms.service.dto.RepositoryDTO;
 import com.hmm.dms.service.dto.RepositoryHeaderDTO;
 import com.hmm.dms.service.mapper.RepositoryHeaderMapper;
@@ -212,5 +216,19 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         return replyMessage;
+    }
+
+    @Override
+    public List<RepositoryHeaderDTO> findAllRepository() {
+        List<RepositoryHeader> dataList = this.repositoryHeaderRepository.findByDelFlagEquals("N");
+        List<RepositoryHeaderDTO> dtoList = this.repositoryHeaderMapper.toDto(dataList);
+        if (dtoList != null && dtoList.size() > 0) {
+            for (RepositoryHeaderDTO data : dtoList) {
+                List<RepositoryDomain> repositoryList = this.repositoryRepo.findByHeaderId(data.getId()).collect(Collectors.toList());
+                List<RepositoryDTO> detailDTOList = this.repositoryMapper.toDto(repositoryList);
+                data.setRepositoryDetails(detailDTOList);
+            }
+        }
+        return dtoList;
     }
 }

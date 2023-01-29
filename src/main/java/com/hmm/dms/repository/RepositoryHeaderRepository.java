@@ -1,6 +1,8 @@
 package com.hmm.dms.repository;
 
+import com.hmm.dms.domain.MetaDataHeader;
 import com.hmm.dms.domain.RepositoryHeader;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,4 +46,6 @@ public interface RepositoryHeaderRepository extends JpaRepository<RepositoryHead
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE repository_header SET del_flag='N' " + "WHERE id = ?1", nativeQuery = true)
     void restoreRepository(Long id);
+
+    List<RepositoryHeader> findByDelFlagEquals(String string);
 }
