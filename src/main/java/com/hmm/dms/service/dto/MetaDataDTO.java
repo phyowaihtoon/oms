@@ -33,6 +33,9 @@ public class MetaDataDTO implements Serializable {
     @NotNull
     private String delFlag;
 
+    @NotNull
+    private String showDashboard;
+
     public Long getId() {
         return id;
     }
@@ -97,6 +100,14 @@ public class MetaDataDTO implements Serializable {
         this.delFlag = delFlag;
     }
 
+    public String getShowDashboard() {
+        return showDashboard;
+    }
+
+    public void setShowDashboard(String showDashboard) {
+        this.showDashboard = showDashboard;
+    }
+
     @Override
     public int hashCode() {
         return getClass().hashCode();
@@ -132,6 +143,8 @@ public class MetaDataDTO implements Serializable {
             fieldValue +
             ", delFlag=" +
             delFlag +
+            ", showDashboard=" +
+            showDashboard +
             "]"
         );
     }

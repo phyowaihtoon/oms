@@ -18,4 +18,6 @@ public interface DashboardService {
     List<HashMap<String, Object>> getDataByTemplate(@Valid InputParamDto param);
 
     Optional<PieHeaderDataDto> getTodaySummaryByTemplate(@Valid InputParamDto param);
+
+    List<HashMap<String, Object>> getDataByTemplateType(@Valid InputParamDto param);
 }

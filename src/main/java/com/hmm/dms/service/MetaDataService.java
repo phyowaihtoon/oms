@@ -65,4 +65,6 @@ public interface MetaDataService {
     BaseMessage deleteById(Long id);
 
     BaseMessage deleteHeaderById(Long id);
+
+    List<MetaDataHeaderDTO> findAllMetaData();
 }

@@ -43,6 +43,11 @@ export class MetadataUpdateComponent implements OnInit {
     { value: 'NO', caption: 'NO' },
   ];
 
+  dashboardList = [
+    { value: 'Y', caption: 'YES' },
+    { value: 'N', caption: 'NO' },
+  ];
+
   constructor(
     protected service: MetaDataService,
     protected activatedRoute: ActivatedRoute,
@@ -91,6 +96,7 @@ export class MetadataUpdateComponent implements OnInit {
       fieldValue: [{ value: '', disabled: true }, Validators.required],
       isRequired: ['YES', [Validators.required]],
       fieldOrder: [this.fieldList().controls.length + 1, [Validators.required, Validators.pattern('^[0-9]*$')]],
+      showDashboard: ['N', [Validators.required]],
     });
   }
 
@@ -137,9 +143,29 @@ export class MetadataUpdateComponent implements OnInit {
   onFieldTypeChange(i: any): void {
     if (this.fieldList().controls[i].get(['fieldType'])!.value === 'LOV') {
       this.fieldList().controls[i].get(['fieldValue'])!.enable({ onlySelf: true });
+      this.fieldList().controls[i].get(['showDashboard'])!.enable({ onlySelf: true });
     } else {
       this.fieldList().controls[i].get(['fieldValue'])!.setValue('');
+      this.fieldList().controls[i].get(['showDashboard'])!.setValue('N');
       this.fieldList().controls[i].get(['fieldValue'])!.disable({ onlySelf: true });
+      this.fieldList().controls[i].get(['showDashboard'])!.disable({ onlySelf: true });
+    }
+  }
+
+  onShowDashboardChange(i: any): void {
+    if (this.fieldList().controls[i].get(['showDashboard'])!.value === 'Y') {
+      let count = 0;
+      this.fieldList().controls.forEach(data => {
+        if (data.get(['showDashboard'])!.value === 'Y') {
+          count = count + 1;
+        }
+      });
+      if (count > 1) {
+        this.fieldList().controls[i].get(['showDashboard'])!.setValue('N');
+        const replyCode = ResponseCode.ERROR_E00;
+        const replyMsg = 'Only one field can be used to see dashboard.';
+        this.showAlertMessage(replyCode, replyMsg);
+      }
     }
   }
 
@@ -158,7 +184,6 @@ export class MetadataUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const metadata = this.createForm();
-    console.log(JSON.stringify(metadata));
     const metadataID = metadata.id ?? undefined;
     if (metadataID !== undefined) {
       this.subscribeToSaveResponse(this.service.update(metadata));
@@ -239,6 +264,7 @@ export class MetadataUpdateComponent implements OnInit {
       fieldValue: data.get(['fieldValue'])!.value,
       isRequired: data.get(['isRequired'])!.value,
       fieldOrder: data.get(['fieldOrder'])!.value,
+      showDashboard: data.get(['showDashboard'])!.value,
       delFlag: 'N',
     };
   }
@@ -271,9 +297,6 @@ export class MetadataUpdateComponent implements OnInit {
 
   protected updateMetaDataDetails(metaDataDetails: IMetaData[] | undefined): void {
     let index = 0;
-
-    console.log('metaDataDetails', metaDataDetails);
-
     metaDataDetails?.forEach(data => {
       this.addField();
       this.fieldList().controls[index].get(['id'])!.setValue(data.id);
@@ -282,6 +305,7 @@ export class MetadataUpdateComponent implements OnInit {
       this.fieldList().controls[index].get(['fieldValue'])!.setValue(data.fieldValue);
       this.fieldList().controls[index].get(['isRequired'])!.setValue(data.isRequired);
       this.fieldList().controls[index].get(['fieldOrder'])!.setValue(data.fieldOrder);
+      this.fieldList().controls[index].get(['showDashboard'])!.setValue(data.showDashboard);
       this.onFieldTypeChange(index);
       index = index + 1;
     });
