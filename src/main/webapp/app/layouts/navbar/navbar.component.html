@@ -1,6 +1,5 @@
-<nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-primary" [ngSwitch]="isAuthenticated()">
+<nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md nav-bg-color" [ngSwitch]="isAuthenticated()">
   <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()" *ngSwitchCase="true">
-    <span class="logo-img"></span>
     <span jhiTranslate="global.title" class="navbar-title">DMS</span>
     <!--
     <span class="navbar-version">{{ version }}</span>
