@@ -2,16 +2,31 @@ import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 
 export interface IUserAuthority {
-  userID: string;
-  userName: string;
+  userID?: string;
+  userName?: string;
+  roleID?: number;
+  roleName?: string;
+  workflowAuthority?: number;
+  sysConfigMessage?: ISysConfigMessage;
+  menuGroups?: IMenuGroupMessage[];
+  activeMenu?: IRoleMenuAccess;
+  dashboardTemplates?: IDashboardTemplate[];
   departmentName?: string;
-  roleID: number;
-  roleName: string;
-  workflowAuthority: number;
-  sysConfigMessage: ISysConfigMessage;
-  menuGroups: IMenuGroupMessage[];
-  activeMenu: IRoleMenuAccess;
-  dashboardTemplates: IDashboardTemplate[];
+}
+
+export class UserAuthority implements IUserAuthority {
+  constructor(
+    public userID?: string,
+    public userName?: string,
+    public roleID?: number,
+    public roleName?: string,
+    public workflowAuthority?: number,
+    public sysConfigMessage?: ISysConfigMessage,
+    public menuGroups?: IMenuGroupMessage[],
+    public activeMenu?: IRoleMenuAccess,
+    public dashboardTemplates?: IDashboardTemplate[],
+    public departmentName?: string
+  ) {}
 }
 
 export interface ISysConfigMessage {

@@ -11,6 +11,9 @@ import { UserRoleService } from '../service/user-role.service';
 import { UserRoleDeleteDialogComponent } from '../delete/user-role-delete-dialog.component';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-user-role',
@@ -26,7 +29,12 @@ export class UserRoleComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
 
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
+  _isSystemUser: boolean = false;
+
   constructor(
+    private accountService: AccountService,
     protected userRoleService: UserRoleService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
@@ -57,6 +65,13 @@ export class UserRoleComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleNavigation();
+
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
+
+    this._isSystemUser = this.accountService.hasAnyAuthority('SYSTEM_USER');
   }
 
   trackId(index: number, item: IUserRole): number {

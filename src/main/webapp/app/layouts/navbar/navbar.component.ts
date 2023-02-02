@@ -9,7 +9,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
-import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
+import { IMenuGroupMessage } from 'app/entities/user-role/user-role.model';
 
 @Component({
   selector: 'jhi-navbar',
@@ -61,10 +61,18 @@ export class NavbarComponent implements OnInit {
     return this.accountService.isAuthenticated();
   }
 
-  getMenus(): IMenuGroupMessage[] {
+  getApplicationMenus(): IMenuGroupMessage[] {
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     if (userAuthority?.menuGroups) {
-      return userAuthority.menuGroups;
+      return userAuthority.menuGroups.filter(value => value.groupCode !== 'SYSMG');
+    }
+    return [];
+  }
+
+  getSystemMenus(): IMenuGroupMessage[] {
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    if (userAuthority?.menuGroups && this.accountService.hasAnyAuthority('APPLICATION_USER')) {
+      return userAuthority.menuGroups.filter(value => value.groupCode === 'SYSMG');
     }
     return [];
   }

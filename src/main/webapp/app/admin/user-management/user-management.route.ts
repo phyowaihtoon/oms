@@ -7,6 +7,7 @@ import { UserManagementService } from './service/user-management.service';
 import { UserManagementComponent } from './list/user-management.component';
 import { UserManagementDetailComponent } from './detail/user-management-detail.component';
 import { UserManagementUpdateComponent } from './update/user-management-update.component';
+import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserManagementResolve implements Resolve<IUser> {
@@ -25,8 +26,12 @@ export const userManagementRoute: Routes = [
   {
     path: '',
     component: UserManagementComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
     data: {
       defaultSort: 'id,asc',
+      menuCode: 'USRMG',
     },
   },
   {

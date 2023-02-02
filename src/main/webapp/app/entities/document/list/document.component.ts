@@ -190,7 +190,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   loadAllSetup(): void {
-    if (this._userAuthority) {
+    if (this._userAuthority?.roleID) {
       this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
         (res: HttpResponse<IMetaDataHeader[]>) => {
           if (res.body) {

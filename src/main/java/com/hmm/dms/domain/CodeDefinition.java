@@ -25,7 +25,7 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
     private MetaDataHeader metaDataHeader;
 
     @NotNull
-    @Column(name = "code", nullable = false, unique = true)
+    @Column(name = "code", nullable = false)
     private String code;
 
     @NotNull

@@ -16,6 +16,9 @@ public class MenuGroup implements Serializable {
     @Id
     private Long id;
 
+    @Column(name = "group_code")
+    private String groupCode;
+
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
@@ -35,6 +38,14 @@ public class MenuGroup implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGroupCode() {
+        return groupCode;
+    }
+
+    public void setGroupCode(String groupCode) {
+        this.groupCode = groupCode;
     }
 
     public String getName() {
