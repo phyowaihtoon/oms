@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
-import { IUserAuthority } from './userauthority.model';
+import { IUserAuthority, UserAuthority } from './userauthority.model';
 import { UserAuthorityService } from './userauthority.service';
 
 @Injectable({
@@ -20,11 +20,12 @@ export class UserAuthorityResolveService implements Resolve<IUserAuthority> {
         const selectedMenu = subMenus?.find(item => item.menuItem?.menuCode === menuCode);
         if (selectedMenu) {
           userAuthority.activeMenu = selectedMenu;
-          return of(userAuthority);
+          break;
         }
       }
+      return of(userAuthority);
     }
 
-    return EMPTY;
+    return of(new UserAuthority());
   }
 }

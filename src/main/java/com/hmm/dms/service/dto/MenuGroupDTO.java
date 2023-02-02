@@ -4,6 +4,8 @@ public class MenuGroupDTO {
 
     private Long id;
 
+    private String groupCode;
+
     private String name;
 
     private String translateKey;
@@ -18,6 +20,14 @@ public class MenuGroupDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGroupCode() {
+        return groupCode;
+    }
+
+    public void setGroupCode(String groupCode) {
+        this.groupCode = groupCode;
     }
 
     public String getName() {

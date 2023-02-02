@@ -7,6 +7,9 @@ import { ICodeDefinition } from '../code-definition.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { CodeDefinitionService } from '../service/code-definition.service';
 import { CodeDefinitionDeleteDialogComponent } from '../delete/code-definition-delete-dialog.component';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-code-definition',
@@ -22,7 +25,12 @@ export class CodeDefinitionComponent implements OnInit {
   page?: number;
   ngbPaginationPage = 1;
 
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
+  _isSystemUser: boolean = false;
+
   constructor(
+    private accountService: AccountService,
     protected codeDefinitionService: CodeDefinitionService,
     protected activatedRoute: ActivatedRoute,
     public router: Router,
@@ -53,6 +61,13 @@ export class CodeDefinitionComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleNavigation();
+
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
+
+    this._isSystemUser = this.accountService.hasAnyAuthority('SYSTEM_USER');
   }
 
   trackId(index: number, item: ICodeDefinition): number | undefined {

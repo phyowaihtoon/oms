@@ -5,11 +5,11 @@ package com.hmm.dms.security;
  */
 public final class AuthoritiesConstants {
 
-    public static final String ADMIN = "ROLE_ADMIN";
+    public static final String SYSTEM_USER = "SYSTEM_USER";
 
-    public static final String USER = "ROLE_USER";
+    public static final String APPLICATION_USER = "APPLICATION_USER";
 
-    public static final String ANONYMOUS = "ROLE_ANONYMOUS";
+    public static final String ANONYMOUS = "ANONYMOUS";
 
     private AuthoritiesConstants() {}
 }

@@ -16,7 +16,7 @@
 
   <div class="col-4 d-flex justify-content-end">
     <button
-      *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+      *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
       type="button"
       id="save-entity"
       data-cy="entityCreateSaveButton"

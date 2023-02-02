@@ -18,7 +18,7 @@ export class DepartmentUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     departmentName: [null, [Validators.required]],
-    delFlag: [null, [Validators.required, Validators.maxLength(1)]],
+    delFlag: [],
   });
 
   constructor(protected departmentService: DepartmentService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
@@ -75,7 +75,7 @@ export class DepartmentUpdateComponent implements OnInit {
       ...new Department(),
       id: this.editForm.get(['id'])!.value,
       departmentName: this.editForm.get(['departmentName'])!.value,
-      delFlag: this.editForm.get(['delFlag'])!.value,
+      delFlag: 'N',
     };
   }
 }

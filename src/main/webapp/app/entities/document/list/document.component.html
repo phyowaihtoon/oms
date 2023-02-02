@@ -307,7 +307,7 @@
             <td class="text-right">
               <div class="btn-group">
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isRead === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
                   type="submit"
                   (click)="goToView(documentHeader.id)"
                   class="btn btn-info btn-sm"
@@ -318,7 +318,7 @@
                 </button>
 
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
                   type="submit"
                   [routerLink]="['/document', documentHeader.id, 'edit']"
                   class="btn btn-primary btn-sm"

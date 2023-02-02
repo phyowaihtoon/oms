@@ -296,7 +296,7 @@
             <td class="text-center">
               <div class="btn-group">
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isRead === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
                   type="submit"
                   (click)="goToView(documentHeader.id)"
                   class="btn btn-primary btn-sm"

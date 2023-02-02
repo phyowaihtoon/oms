@@ -59,7 +59,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Transactional(readOnly = true)
     public Page<DepartmentDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Departments");
-        return departmentRepository.findAll(pageable).map(departmentMapper::toDto);
+        return departmentRepository.findAllByDelFlag("N", pageable).map(departmentMapper::toDto);
     }
 
     @Override
@@ -72,6 +72,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Department : {}", id);
-        departmentRepository.deleteById(id);
+        departmentRepository.updateDelFlag("Y", id);
     }
 }

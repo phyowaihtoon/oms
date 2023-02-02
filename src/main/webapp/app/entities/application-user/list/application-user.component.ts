@@ -10,7 +10,9 @@ import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { ApplicationUserService } from '../service/application-user.service';
 import { ApplicationUserDeleteDialogComponent } from '../delete/application-user-delete-dialog.component';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { IWorkflowAuthority } from 'app/entities/util/setup.model';
+import { IMenuItem, IWorkflowAuthority } from 'app/entities/util/setup.model';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-application-user',
@@ -27,7 +29,12 @@ export class ApplicationUserComponent implements OnInit {
   ngbPaginationPage = 1;
   workflowAuthorities: IWorkflowAuthority[] = [];
 
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
+  _isSystemUser: boolean = false;
+
   constructor(
+    private accountService: AccountService,
     protected applicationUserService: ApplicationUserService,
     protected loadSetupService: LoadSetupService,
     protected activatedRoute: ActivatedRoute,
@@ -65,6 +72,13 @@ export class ApplicationUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleNavigation();
+
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu.menuItem;
+    });
+
+    this._isSystemUser = this.accountService.hasAnyAuthority('SYSTEM_USER');
   }
 
   trackId(index: number, item: IApplicationUser): number {
