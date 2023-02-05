@@ -57,6 +57,7 @@ export class UserManagementUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     this.updateUser(this.user);
+    console.log('User Information :', this.user);
     if (this.user.id !== undefined) {
       this.userService.update(this.user).subscribe(
         () => this.onSaveSuccess(),
@@ -90,7 +91,12 @@ export class UserManagementUpdateComponent implements OnInit {
     user.email = this.editForm.get(['email'])!.value;
     user.activated = this.editForm.get(['activated'])!.value;
     user.langKey = this.editForm.get(['langKey'])!.value;
-    user.authorities = this.editForm.get(['authorities'])!.value;
+    const selectedProfile = this.editForm.get(['authorities'])!.value?.toString();
+    console.log('Selected Profile : ', selectedProfile);
+    if (selectedProfile !== undefined) {
+      const profileArr: string[] = [selectedProfile];
+      user.authorities = profileArr;
+    }
   }
 
   private onSaveSuccess(): void {

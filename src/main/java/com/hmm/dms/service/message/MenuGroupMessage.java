@@ -7,6 +7,8 @@ public class MenuGroupMessage {
 
     private Long id;
 
+    private String groupCode;
+
     private String name;
 
     private String translateKey;
@@ -23,6 +25,14 @@ public class MenuGroupMessage {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getGroupCode() {
+        return groupCode;
+    }
+
+    public void setGroupCode(String groupCode) {
+        this.groupCode = groupCode;
     }
 
     public String getName() {

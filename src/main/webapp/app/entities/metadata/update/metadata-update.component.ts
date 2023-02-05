@@ -71,7 +71,8 @@ export class MetadataUpdateComponent implements OnInit {
   }
 
   showCodeInfo(): void {
-    this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
+    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
+    modelRef.componentInstance.roleID = this._userAuthority?.roleID;
   }
 
   cancel(): void {

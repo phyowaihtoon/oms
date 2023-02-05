@@ -21,12 +21,11 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Column(name = "type", nullable = false)
-    private String type;
+    @ManyToOne
+    private MetaDataHeader metaDataHeader;
 
     @NotNull
-    @Column(name = "code", nullable = false, unique = true)
+    @Column(name = "code", nullable = false)
     private String code;
 
     @NotNull
@@ -48,17 +47,17 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public MetaDataHeader getMetaDataHeader() {
+        return metaDataHeader;
     }
 
-    public CodeDefinition type(String type) {
-        this.setType(type);
+    public CodeDefinition metaDataHeader(MetaDataHeader metaDataHeader) {
+        this.setMetaDataHeader(metaDataHeader);
         return this;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setMetaDataHeader(MetaDataHeader metaDataHeader) {
+        this.metaDataHeader = metaDataHeader;
     }
 
     public String getCode() {
@@ -111,7 +110,7 @@ public class CodeDefinition extends AbstractAuditingEntity implements Serializab
     public String toString() {
         return "CodeDefinition{" +
             "id=" + getId() +
-            ", type='" + getType() + "'" +
+            ", template='" + getMetaDataHeader()==null?"": getMetaDataHeader().getDocTitle()+ "'" +
             ", code='" + getCode() + "'" +
             ", definition='" + getDefinition() + "'" +
             "}";

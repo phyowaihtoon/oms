@@ -10,6 +10,8 @@ import { Account } from 'app/core/auth/account.model';
 import { UserManagementService } from '../service/user-management.service';
 import { User } from '../user-management.model';
 import { UserManagementDeleteDialogComponent } from '../delete/user-management-delete-dialog.component';
+import { IUserAuthority } from 'app/login/userauthority.model';
+import { IMenuItem } from 'app/entities/util/setup.model';
 
 @Component({
   selector: 'jhi-user-mgmt',
@@ -25,6 +27,10 @@ export class UserManagementComponent implements OnInit {
   predicate!: string;
   ascending!: boolean;
 
+  _userAuthority?: IUserAuthority;
+  _activeMenuItem?: IMenuItem;
+  _isSystemUser: boolean = false;
+
   constructor(
     private userService: UserManagementService,
     private accountService: AccountService,
@@ -36,6 +42,13 @@ export class UserManagementComponent implements OnInit {
   ngOnInit(): void {
     this.accountService.identity().subscribe(account => (this.currentAccount = account));
     this.handleNavigation();
+
+    this.activatedRoute.data.subscribe(({ userAuthority }) => {
+      this._userAuthority = userAuthority;
+      this._activeMenuItem = userAuthority.activeMenu?.menuItem;
+    });
+
+    this._isSystemUser = this.accountService.hasAnyAuthority('SYSTEM_USER');
   }
 
   setActive(user: User, isActivated: boolean): void {
