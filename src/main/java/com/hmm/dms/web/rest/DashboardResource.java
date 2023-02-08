@@ -83,4 +83,11 @@ public class DashboardResource {
         List<HashMap<String, Object>> data = dashboardService.getDataByTemplateType(param);
         return ResponseEntity.ok().body(data);
     }
+
+    @GetMapping("/getOverallSummaryByTemplate")
+    public ResponseEntity<PieHeaderDataDto> getOverallSummaryByTemplate() {
+        log.debug("REST request to get getOverallSummaryByTemplate Data");
+        Optional<PieHeaderDataDto> pieHeaderDataDto = dashboardService.getOverallSummaryByTemplate();
+        return ResponseUtil.wrapOrNotFound(pieHeaderDataDto);
+    }
 }
