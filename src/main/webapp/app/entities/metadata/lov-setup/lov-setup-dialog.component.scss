@@ -3,6 +3,7 @@ a {
   font-size: 12px !important;
   cursor: pointer;
 }
+
 .modal-header {
   padding: 0.5rem;
 }
@@ -20,15 +21,10 @@ a {
   width: 100%;
 }
 
-.bg-primary {
-  background-color: #691c31 !important;
-}
-
 th {
   color: white;
   border: 1px solid #716f6f;
   padding: 5px;
-  background-color: #056e7c;
 }
 
 td {
@@ -53,11 +49,6 @@ td {
 
 .fa-icon-theme:hover {
   background-color: #d58e03;
-}
-
-#page-heading {
-  font-size: 13pt;
-  padding-top: 10px;
 }
 
 .tbl-container {

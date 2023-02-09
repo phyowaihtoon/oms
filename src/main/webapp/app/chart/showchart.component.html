@@ -26,14 +26,14 @@
   </div>
 </div>
 
-<div *ngIf="template.cardId === 'CARD002' || template.cardId === 'CARD003'">
+<div *ngIf="template.cardId === 'CARD002' || template.cardId === 'CARD003' || template.cardId === 'CARD007'">
   <div class="col-md-12">
     <div class="dashboard-box">
       <div class="box-header bg-primary">{{ template.cardName }}</div>
       <div class="box-body">
         <div class="chart-body" id="{{ template.cardId }}"></div>
       </div>
-      <div class="box-footer">Total - {{ totalCount }} Records</div>
+      <div class="box-footer">{{ getTotalRecordCount() }}</div>
     </div>
   </div>
 </div>
