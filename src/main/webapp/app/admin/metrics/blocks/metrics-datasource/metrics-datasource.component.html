@@ -3,7 +3,7 @@
 <div class="table-responsive" *ngIf="!updating && datasourceMetrics">
   <table class="table table-striped" aria-describedby="datasourceMetrics">
     <thead>
-      <tr>
+      <tr class="bg-primary">
         <th scope="col">
           <span jhiTranslate="metrics.datasource.usage">Connection Pool Usage</span> (active: {{ datasourceMetrics.active.value }}, min:
           {{ datasourceMetrics.min.value }}, max: {{ datasourceMetrics.max.value }}, idle: {{ datasourceMetrics.idle.value }})

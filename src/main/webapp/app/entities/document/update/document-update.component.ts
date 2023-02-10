@@ -17,7 +17,6 @@ import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.c
 import { IDocumentStatus, IMenuItem, IPriority } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog.component';
-import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
 
 @Component({
   selector: 'jhi-document-update',
@@ -99,11 +98,6 @@ export class DocumentUpdateComponent implements OnInit {
       this._documentHeader = docHeader;
       this.loadAllSetup();
     });
-  }
-
-  showCodeInfo(): void {
-    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
-    modelRef.componentInstance.roleID = this._userAuthority?.roleID;
   }
 
   loadAllSetup(): void {

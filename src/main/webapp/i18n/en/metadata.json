@@ -21,8 +21,8 @@
         "title": "MetaData"
       },
       "id": "ID",
-      "docTitle": "Document Template",
-      "detailsField": "Please, add fields related to document template",
+      "docTitle": "Department",
+      "detailsField": "Please, add fields related to department",
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "fieldName": "Field Name",

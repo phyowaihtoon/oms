@@ -13,7 +13,6 @@ import { IMenuItem } from 'app/entities/util/setup.model';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { DeleteMetadataComponent } from '../delete-metadata/delete-metadata.component';
-import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
 
 @Component({
   selector: 'jhi-metadata-update',
@@ -68,11 +67,6 @@ export class MetadataUpdateComponent implements OnInit {
         this.updateForm(metadata);
       }
     });
-  }
-
-  showCodeInfo(): void {
-    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
-    modelRef.componentInstance.roleID = this._userAuthority?.roleID;
   }
 
   cancel(): void {
