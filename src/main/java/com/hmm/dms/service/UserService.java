@@ -3,6 +3,7 @@ package com.hmm.dms.service;
 import com.hmm.dms.config.Constants;
 import com.hmm.dms.domain.Authority;
 import com.hmm.dms.domain.User;
+import com.hmm.dms.repository.ApplicationUserRepository;
 import com.hmm.dms.repository.AuthorityRepository;
 import com.hmm.dms.repository.UserRepository;
 import com.hmm.dms.security.AuthoritiesConstants;
@@ -39,18 +40,22 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
+    private final ApplicationUserRepository applicationUserRepository;
+
     private final CacheManager cacheManager;
 
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        ApplicationUserRepository applicationUserRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.applicationUserRepository = applicationUserRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -234,15 +239,14 @@ public class UserService {
     }
 
     public void deleteUser(String login) {
-        userRepository
-            .findOneByLogin(login)
-            .ifPresent(
-                user -> {
-                    userRepository.delete(user);
-                    this.clearUserCaches(user);
-                    log.debug("Deleted User: {}", user);
-                }
-            );
+        Optional<User> userOptional = userRepository.findOneByLogin(login);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            userRepository.delete(user);
+            applicationUserRepository.deleteByUserId(user.getId());
+            this.clearUserCaches(user);
+            log.debug("Deleted User: {}", user);
+        }
     }
 
     /**

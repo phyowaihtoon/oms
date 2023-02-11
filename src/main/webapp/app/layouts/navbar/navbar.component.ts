@@ -10,6 +10,8 @@ import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { IMenuGroupMessage } from 'app/entities/user-role/user-role.model';
+import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-navbar',
@@ -30,7 +32,8 @@ export class NavbarComponent implements OnInit {
     private accountService: AccountService,
     private profileService: ProfileService,
     private userAuthorityService: UserAuthorityService,
-    private router: Router
+    private router: Router,
+    protected modalService: NgbModal
   ) {
     if (VERSION) {
       this.version = VERSION.toLowerCase().startsWith('v') ? VERSION : 'v' + VERSION;
@@ -46,6 +49,12 @@ export class NavbarComponent implements OnInit {
     if (!this.isAuthenticated()) {
       this.router.navigate(['/login']);
     }
+  }
+
+  showCodeInfo(): void {
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
+    modelRef.componentInstance.roleID = userAuthority?.roleID;
   }
 
   changeLanguage(languageKey: string): void {

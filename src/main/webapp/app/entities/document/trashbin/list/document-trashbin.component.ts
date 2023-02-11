@@ -11,7 +11,6 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 import { DocumentInquiry, IDocumentHeader, IDocumentInquiry } from '../../document.model';
 import { DocumentInquiryService } from '../../service/document-inquiry.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
 
 @Component({
   selector: 'jhi-document-trashbin',
@@ -69,17 +68,11 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
     protected loadSetupService: LoadSetupService,
-    protected translateService: TranslateService,
-    protected modalService: NgbModal
+    protected translateService: TranslateService
   ) {}
 
   ngOnDestroy(): void {
     this.documentInquiryService.clearPreviousState();
-  }
-
-  showCodeInfo(): void {
-    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
-    modelRef.componentInstance.roleID = this._userAuthority?.roleID;
   }
 
   ngOnInit(): void {
