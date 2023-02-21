@@ -10,7 +10,6 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
-import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -190,7 +189,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   loadAllSetup(): void {
-    if (this._userAuthority) {
+    if (this._userAuthority?.roleID) {
       this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
         (res: HttpResponse<IMetaDataHeader[]>) => {
           if (res.body) {
@@ -320,11 +319,6 @@ export class DocumentComponent implements OnInit, OnDestroy {
   goToView(id?: number): void {
     this.documentInquiryService.storeSearchCriteria(this._searchCriteria);
     this.router.navigate(['/document', id, 'view']);
-  }
-
-  showCodeInfo(): void {
-    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
-    modelRef.componentInstance.roleID = this._userAuthority?.roleID;
   }
 
   protected sort(): string[] {

@@ -65,7 +65,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
   }
 
   loadAllSetup(): void {
-    if (this._userAuthority) {
+    if (this._userAuthority?.roleID) {
       this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
         (res: HttpResponse<IMetaDataHeader[]>) => {
           if (res.body) {
@@ -99,7 +99,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     }
     */
 
-    if (this.template.cardId === 'CARD002' || this.template.cardId === 'CARD003') {
+    if (this.template.cardId === 'CARD002') {
       this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
@@ -109,6 +109,14 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
 
     if (this.template.cardId === 'CARD003') {
       this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
+        if (res.body) {
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
+        }
+      });
+    }
+
+    if (this.template.cardId === 'CARD007') {
+      this.showChart.getOverallSummaryByTemplate().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
         }
@@ -182,7 +190,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
 
   prepareData2(data: any, cols: any): any {
     this.totalCount = 0;
-    const _tempObj: { name: any; data: any }[] = [];
+    const _tempObj: { name: any; data: any; color: any }[] = [];
     data.forEach((d: any) => {
       this.totalCount = this.totalCount + Number(d.detail.count);
       const count: any = [];
@@ -193,7 +201,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
         }
         count.push(value);
       });
-      _tempObj.push({ name: d.type, data: count });
+      _tempObj.push({ name: d.type, data: count, color: '#c97530' });
     });
     return _tempObj;
   }

@@ -80,7 +80,7 @@ public class CodeDefinitionDTO implements Serializable {
     public String toString() {
         return "CodeDefinitionDTO{" +
             "id=" + getId() +
-            ", type='" + getMetaDataHeader()==null?"":getMetaDataHeader().getDocTitle() + "'" +
+            ", type=" + getMetaDataHeader() +
             ", code='" + getCode() + "'" +
             ", definition='" + getDefinition() + "'" +
             "}";

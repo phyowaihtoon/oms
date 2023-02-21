@@ -8,14 +8,10 @@
     <span>
       >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}
     </span>
-    <span style="width: 5px"></span>
-    <span style="cursor: pointer" (click)="showCodeInfo()">
-      <fa-icon icon="info-circle"></fa-icon>
-    </span>
   </div>
   <div class="col-6 d-flex justify-content-end">
     <button
-      *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+      *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
       type="button"
       id="save-entity"
       data-cy="entityCreateSaveButton"
@@ -30,7 +26,7 @@
     <span style="width: 5px"></span>
 
     <button
-      *ngIf="_userAuthority && _userAuthority.sysConfigMessage.workflowEnabled === 'Y'"
+      *ngIf="_userAuthority && _userAuthority.sysConfigMessage?.workflowEnabled === 'Y'"
       [disabled]="!isSentApprove"
       type="button"
       id="cancel-save"
@@ -42,7 +38,7 @@
     <span style="width: 5px"></span>
 
     <button
-      *ngIf="_userAuthority && _userAuthority.sysConfigMessage.workflowEnabled === 'Y'"
+      *ngIf="_userAuthority && _userAuthority.sysConfigMessage?.workflowEnabled === 'Y'"
       [disabled]="!isCancel"
       type="button"
       id="cancel-save"
@@ -249,7 +245,7 @@
         <div class="form-group" style="padding: 8px !important; overflow-x: auto">
           <table class="table" formArrayName="docList1">
             <thead>
-              <tr>
+              <tr class="bg-primary">
                 <th class="text-center" style="width: 20%" jhiTranslate="dmsApp.document.fileLocation">Repository URL</th>
                 <th class="text-center" style="width: 25%" jhiTranslate="dmsApp.document.fileName">File Name</th>
                 <th class="text-center" style="width: 10%" jhiTranslate="dmsApp.document.fileSize">File Size (KB)</th>

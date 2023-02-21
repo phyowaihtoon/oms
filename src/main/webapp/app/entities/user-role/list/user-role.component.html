@@ -31,7 +31,7 @@
   <div class="table-responsive" id="entities" *ngIf="userRoles && userRoles.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+        <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="roleName">
             <span jhiTranslate="dmsApp.userRole.roleName">Role Name</span> <fa-icon icon="sort"></fa-icon>
@@ -48,6 +48,7 @@
           <td class="text-right">
             <div class="btn-group">
               <button
+                *ngIf="_isSystemUser || (_userAuthority && _userAuthority.activeMenu?.isWrite === 1)"
                 type="submit"
                 [routerLink]="['/user-role', userRole.id, 'edit']"
                 class="btn btn-primary btn-sm"
@@ -57,7 +58,13 @@
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(userRole)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *ngIf="_isSystemUser || (_userAuthority && _userAuthority.activeMenu?.isDelete === 1)"
+                type="submit"
+                (click)="delete(userRole)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
               </button>

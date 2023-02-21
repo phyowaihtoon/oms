@@ -6,13 +6,18 @@ import { UserRoleComponent } from '../list/user-role.component';
 import { UserRoleDetailComponent } from '../detail/user-role-detail.component';
 import { UserRoleUpdateComponent } from '../update/user-role-update.component';
 import { UserRoleRoutingResolveService } from './user-role-routing-resolve.service';
+import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 
 const userRoleRoute: Routes = [
   {
     path: '',
     component: UserRoleComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
     data: {
       defaultSort: 'id,asc',
+      menuCode: 'URAMG',
     },
     canActivate: [UserRouteAccessService],
   },

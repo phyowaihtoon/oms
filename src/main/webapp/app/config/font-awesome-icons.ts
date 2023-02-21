@@ -54,6 +54,7 @@ import {
   faTrashRestore,
   faCog,
   faInfoCircle,
+  faKey,
   // jhipster-needle-add-icon-import
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -113,5 +114,6 @@ export const fontAwesomeIcons = [
   faTrashRestore,
   faCog,
   faInfoCircle,
+  faKey,
   // jhipster-needle-add-icon-import
 ];

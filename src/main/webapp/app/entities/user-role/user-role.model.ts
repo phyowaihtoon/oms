@@ -59,6 +59,7 @@ export class RoleDashboardAccess implements IRoleDashboardAccess {
 
 export interface IMenuGroupMessage {
   id?: number;
+  groupCode?: string;
   name?: string;
   translateKey?: string;
   faIcon?: string;

@@ -32,6 +32,10 @@ export class SchowChartService {
     return this.http.get<IPieHeaderDataDto>(this.resourceUrl + '/getTodaySummary', { observe: 'response' });
   }
 
+  getOverallSummaryByTemplate(): Observable<PieResponseType> {
+    return this.http.get<IPieHeaderDataDto>(this.resourceUrl + '/getOverallSummaryByTemplate', { observe: 'response' });
+  }
+
   getDataByTemplate(inputParam: any): Observable<EntityArrayResponseType> {
     return this.http.post<[]>(this.resourceUrl + '/getDataByTemplate', inputParam, { observe: 'response' });
   }

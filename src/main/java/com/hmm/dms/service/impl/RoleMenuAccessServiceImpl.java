@@ -90,6 +90,7 @@ public class RoleMenuAccessServiceImpl implements RoleMenuAccessService {
 
                 MenuGroupMessage message = new MenuGroupMessage();
                 message.setId(data.getId());
+                message.setGroupCode(data.getGroupCode());
                 message.setName(data.getName());
                 message.setTranslateKey(data.getTranslateKey());
                 message.setFaIcon(data.getFaIcon());

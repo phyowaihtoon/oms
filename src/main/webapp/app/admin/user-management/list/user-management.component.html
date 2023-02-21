@@ -20,7 +20,7 @@
   <div class="table-responsive" *ngIf="users">
     <table class="table table-striped" aria-describedby="user-management-page-heading">
       <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+        <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <fa-icon icon="sort"></fa-icon></th>
@@ -78,17 +78,29 @@
           <td>{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</td>
           <td class="text-right">
             <div class="btn-group">
-              <button type="submit" [routerLink]="['./', user.login, 'view']" class="btn btn-info btn-sm">
+              <button
+                *ngIf="_isSystemUser || (_userAuthority && _userAuthority.activeMenu?.isRead === 1)"
+                type="submit"
+                [routerLink]="['./', user.login, 'view']"
+                class="btn btn-info btn-sm"
+              >
                 <fa-icon icon="eye"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
               </button>
 
-              <button type="submit" [routerLink]="['./', user.login, 'edit']" queryParamsHandling="merge" class="btn btn-primary btn-sm">
+              <button
+                *ngIf="_isSystemUser || (_userAuthority && _userAuthority.activeMenu?.isWrite === 1)"
+                type="submit"
+                [routerLink]="['./', user.login, 'edit']"
+                queryParamsHandling="merge"
+                class="btn btn-primary btn-sm"
+              >
                 <fa-icon icon="pencil-alt"></fa-icon>
                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
               </button>
 
               <button
+                *ngIf="_isSystemUser || (_userAuthority && _userAuthority.activeMenu?.isDelete === 1)"
                 type="button"
                 (click)="deleteUser(user)"
                 class="btn btn-danger btn-sm"

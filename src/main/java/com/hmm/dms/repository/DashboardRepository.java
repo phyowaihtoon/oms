@@ -1,6 +1,7 @@
 package com.hmm.dms.repository;
 
 import com.hmm.dms.domain.PieData;
+import com.hmm.dms.domain.PieData2;
 import com.hmm.dms.service.dto.BarDataDto;
 import com.hmm.dms.service.dto.InputParamDto;
 import com.hmm.dms.service.dto.LineDataDto;
@@ -90,6 +91,32 @@ public class DashboardRepository {
         );
         List<Object[]> objList = query.getResultList();
         List<BarDataDto> retList = objList.stream().map(BarDataDto::toDTO).collect(Collectors.toList());
+        return retList;
+    }
+
+    public List<PieData2> getOverallSummaryByTemplate() {
+        /*
+		  Query query = entityManager.createNativeQuery(
+		  "  select  count(a.id) as count, b.doc_title as name " +
+		  " from document_header a,  meta_data_header b " +
+		  " where a.meta_data_header_id = b.id and a.del_flag = 'N'" +
+		  " group by b.doc_title order by b.doc_title"
+		  );
+		 */
+
+        Query query = entityManager.createNativeQuery(
+            "" +
+            " select sum((case when doc_id is null then 0 else 1 end )) as count, name " +
+            " from (" +
+            " select a.id, a.doc_title as name, b.id as doc_id" +
+            " from (select id, doc_title from meta_data_header where del_flag = 'N') a" +
+            " left join (select id,meta_data_header_id from document_header where del_flag = 'N') b " +
+            " on a.id = b.meta_data_header_id " +
+            " ) c  group by id, name"
+        );
+
+        List<Object[]> objList = query.getResultList();
+        List<PieData2> retList = objList.stream().map(PieData2::toDTO).collect(Collectors.toList());
         return retList;
     }
 }

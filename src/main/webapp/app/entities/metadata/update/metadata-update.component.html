@@ -8,15 +8,11 @@
     <span>
       >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
     >
-    <span style="width: 5px"></span>
-    <span style="cursor: pointer" (click)="showCodeInfo()">
-      <fa-icon icon="info-circle"></fa-icon>
-    </span>
   </div>
 
   <div class="col-4 d-flex justify-content-end">
     <button
-      *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+      *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
       type="button"
       id="save-entity"
       data-cy="entityCreateSaveButton"
@@ -77,26 +73,26 @@
         <div class="tbl-container">
           <table class="table" formArrayName="fieldList">
             <thead>
-              <tr>
-                <th class="text-center bg-primary" style="width: 25%">
+              <tr class="bg-primary">
+                <th class="text-center" style="width: 25%">
                   {{ 'dmsApp.metaData.fieldName' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center bg-primary" style="width: 10%">
+                <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldType' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center bg-primary" style="width: 30%">
+                <th class="text-center" style="width: 30%">
                   {{ 'dmsApp.metaData.fieldValue' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center bg-primary" style="width: 10%">
+                <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldMandatory' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center bg-primary" style="width: 10%">
+                <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.fieldOrder' | translate }}<span class="required-field">*</span>
                 </th>
-                <th class="text-center bg-primary" style="width: 10%">
+                <th class="text-center" style="width: 10%">
                   {{ 'dmsApp.metaData.showDashboard' | translate }}
                 </th>
-                <th class="text-center bg-primary" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
+                <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
               </tr>
             </thead>
             <tbody>

@@ -8,10 +8,6 @@
     <span>
       >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
     >
-    <span style="width: 5px"></span>
-    <span style="cursor: pointer" (click)="showCodeInfo()">
-      <fa-icon icon="info-circle"></fa-icon>
-    </span>
   </div>
 
   <div class="col-4 d-flex justify-content-end">
@@ -63,7 +59,7 @@
             name="metaDataHdrID"
             formControlName="metaDataHdrID"
           >
-            <option [value]="0">Select Document Template</option>
+            <option [value]="0">{{ 'dmsApp.document.selectDept' | translate }}</option>
             <option [value]="metaData.id" *ngFor="let metaData of _metaDataHdrList; trackBy: trackMetaDataByID">
               {{ metaData.docTitle }}
             </option>
@@ -258,8 +254,8 @@
 
     <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
       <table class="table table-bordered table-hover" aria-describedby="page-heading">
-        <thead class="thead-light">
-          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+        <thead>
+          <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
             <th scope="col">
               <span jhiTranslate="global.field.id">ID</span>
             </th>
@@ -307,7 +303,7 @@
             <td class="text-right">
               <div class="btn-group">
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isRead === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
                   type="submit"
                   (click)="goToView(documentHeader.id)"
                   class="btn btn-info btn-sm"
@@ -318,7 +314,7 @@
                 </button>
 
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
                   type="submit"
                   [routerLink]="['/document', documentHeader.id, 'edit']"
                   class="btn btn-primary btn-sm"

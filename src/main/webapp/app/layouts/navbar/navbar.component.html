@@ -1,7 +1,10 @@
-<nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-primary" [ngSwitch]="isAuthenticated()">
-  <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()" *ngSwitchCase="true">
-    <span class="logo-img"></span>
+<nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md nav-hight bg-primary" [ngSwitch]="isAuthenticated()">
+  <a class="navbar-brand logo" (click)="collapseNavbar()" *ngSwitchCase="true">
     <span jhiTranslate="global.title" class="navbar-title">DMS</span>
+    <span style="width: 5px"></span>
+    <span style="cursor: pointer" (click)="showCodeInfo()">
+      <fa-icon icon="info-circle"></fa-icon>
+    </span>
     <!--
     <span class="navbar-version">{{ version }}</span>
      -->
@@ -37,11 +40,44 @@
         display="dynamic"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        *ngFor="let menuGroup of getMenus()"
+        *ngFor="let menuGroup of getApplicationMenus()"
       >
         <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
           <span>
-            <!--<fa-icon icon="th-list"></fa-icon>-->
+            <span> {{ menuGroup && menuGroup.translateKey ? (menuGroup.translateKey | translate) : menuGroup.name }}</span>
+          </span>
+        </a>
+
+        <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
+          <li *ngFor="let menuAccess of menuGroup.subMenuItems">
+            <a
+              class="dropdown-item"
+              [routerLink]="[menuAccess.menuItem?.routerLink]"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="caret-right" [fixedWidth]="true"></fa-icon>
+              <span>{{
+                menuAccess.menuItem && menuAccess.menuItem.translateKey
+                  ? (menuAccess.menuItem.translateKey | translate)
+                  : menuAccess.menuItem?.name
+              }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li
+        ngbDropdown
+        class="nav-item dropdown pointer"
+        display="dynamic"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        *ngFor="let menuGroup of getSystemMenus()"
+      >
+        <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
+          <span>
             <span> {{ menuGroup && menuGroup.translateKey ? (menuGroup.translateKey | translate) : menuGroup.name }}</span>
           </span>
         </a>
@@ -70,7 +106,7 @@
       <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
 
       <li
-        *jhiHasAnyAuthority="'ROLE_ADMIN'"
+        *jhiHasAnyAuthority="'SYSTEM_USER'"
         ngbDropdown
         class="nav-item dropdown pointer"
         display="dynamic"

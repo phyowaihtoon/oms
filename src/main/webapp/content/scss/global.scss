@@ -183,5 +183,91 @@ body {
 }
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  //font-family: 'Roboto', sans-serif;
+  font-family: 'Arbutus Slab', serif;
+  color: black;
+}
+
+.bg-primary {
+  background: linear-gradient(to right, #5b290c 0%, #a6520a 100%) !important;
+}
+
+/* jhipster-needle-scss-add-main JHipster will add new css style */
+/* jhipster-needle-scss-add-main JHipster will add new css style */
+@font-face {
+  font-family: 'Arbutus Slab';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arbutus Slab Regular'), local('Arbutus-Slab-Regular'),
+    url(https://fonts.gstatic.com/s/lato/v16/S6uyw4BMUTPHjx4wWCWtFCc.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Arbutus Slab Bold'), local('Arbutus-Slab-Bold'),
+    url(https://fonts.gstatic.com/s/lato/v16/S6u9w4BMUTPHh6UVSwiPHw3q5d0.woff) format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Arbutus Slab Black'), local('Arbutus-Slab-Black'),
+    url(https://fonts.gstatic.com/s/arbutusslab/v16/oY1Z8e7OuLXkJGbXtr5ba7ZlYqUcFlY.woff2) format('woff2');
+}
+
+table {
+  color: black !important;
+}
+
+#dms-modal-title {
+  font-size: 13pt;
+  font-weight: bold;
+  padding-left: 0px;
+}
+
+.dms-modal-title {
+  font-size: 13pt;
+  font-weight: bold;
+  padding-left: 0px;
+}
+
+#page-heading {
+  font-size: 13pt;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+
+#page-body {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+#search-area {
+  margin-top: 3pt;
+  border: 0.5pt solid grey;
+  padding: 3pt;
+}
+
+.result-header {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.dms-icon-btn {
+  padding: 2px;
+  height: 1.5rem;
+}
+
+th {
+  color: white;
+  border: 1px solid #716f6f;
+  padding: 5px !important;
+}
+
+td {
+  padding: 2px;
 }

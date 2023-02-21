@@ -1,6 +1,7 @@
 package com.hmm.dms.service.impl;
 
 import com.hmm.dms.domain.PieData;
+import com.hmm.dms.domain.PieData2;
 import com.hmm.dms.repository.DashboardRepository;
 import com.hmm.dms.repository.DashboardTemplateRepository;
 import com.hmm.dms.repository.MetaDataRepository;
@@ -425,5 +426,32 @@ public class DashboradServiceImpl implements DashboardService {
             }
         }
         return list;
+    }
+
+    @Override
+    public Optional<PieHeaderDataDto> getOverallSummaryByTemplate() {
+        Optional<PieHeaderDataDto> pieHeaderDataDto = Optional.of(new PieHeaderDataDto());
+        List<PieData2> pieData = dashboardRepository.getOverallSummaryByTemplate();
+        long totalCount = 0;
+        for (int i = 0; i < pieData.size(); i++) {
+            totalCount += pieData.get(i).getCount();
+        }
+
+        for (int i = 0; i < pieData.size(); i++) {
+            long count = pieData.get(i).getCount();
+            pieHeaderDataDto
+                .get()
+                .getData()
+                .add(
+                    new PieDataDto(
+                        pieData.get(i).getName() + " - " + count + (count > 1 ? " Records" : " Record"),
+                        totalCount > 0 ? (float) (count * 100) / totalCount : 0
+                    )
+                );
+        }
+
+        pieHeaderDataDto.get().setTotalCount(totalCount);
+
+        return pieHeaderDataDto;
     }
 }

@@ -104,8 +104,8 @@
 
     <div class="table-responsive" id="entities" *ngIf="repositorys && repositorys.length > 0">
       <table class="table table-bordered table-hover" aria-describedby="page-heading">
-        <thead class="thead-light">
-          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+        <thead>
+          <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
             <th scope="col" jhiSortBy="id">
               <span jhiTranslate="global.field.id">ID</span>
               <!-- <fa-icon icon="sort"></fa-icon> -->
@@ -143,7 +143,7 @@
             <td class="text-right">
               <div class="btn-group">
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isRead === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
                   type="submit"
                   [routerLink]="['/repository', repository.id, 'view']"
                   class="btn btn-info btn-sm"
@@ -154,7 +154,7 @@
                 </button>
 
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isWrite === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
                   type="submit"
                   [routerLink]="['/repository', repository.id, 'edit']"
                   class="btn btn-primary btn-sm"
@@ -165,7 +165,7 @@
                 </button>
 
                 <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu.isDelete === 1"
+                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isDelete === 1"
                   type="submit"
                   (click)="delete(repository)"
                   class="btn btn-danger btn-sm"

@@ -41,6 +41,14 @@ export class MainComponent implements OnInit {
       dayjs.locale(langChangeEvent.lang);
       this.renderer.setAttribute(document.querySelector('html'), 'lang', langChangeEvent.lang);
     });
+
+    if (!this.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  isAuthenticated(): boolean {
+    return this.accountService.isAuthenticated();
   }
 
   private getPageTitle(routeSnapshot: ActivatedRouteSnapshot): string {

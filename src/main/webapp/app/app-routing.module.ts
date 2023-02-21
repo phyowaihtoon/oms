@@ -16,7 +16,7 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
         {
           path: 'admin',
           data: {
-            authorities: [Authority.ADMIN],
+            authorities: [Authority.SYSTEM_USER, Authority.APP_USER],
           },
           canActivate: [UserRouteAccessService],
           loadChildren: () => import('./admin/admin-routing.module').then(m => m.AdminRoutingModule),

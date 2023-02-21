@@ -17,10 +17,8 @@ export class CodeDefinitionDeleteDialogComponent {
   }
 
   confirmDelete(id: number): void {
-    /*
     this.codeDefinitionService.delete(id).subscribe(() => {
-      this.activeModal.close(ITEM_DELETED_EVENT);
+      this.activeModal.close('deleted');
     });
-    */
   }
 }

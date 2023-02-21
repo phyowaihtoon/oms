@@ -6,13 +6,18 @@ import { CodeDefinitionComponent } from '../list/code-definition.component';
 import { CodeDefinitionDetailComponent } from '../detail/code-definition-detail.component';
 import { CodeDefinitionUpdateComponent } from '../update/code-definition-update.component';
 import { CodeDefinitionRoutingResolveService } from './code-definition-routing-resolve.service';
+import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 
 const codeDefinitionRoute: Routes = [
   {
     path: '',
     component: CodeDefinitionComponent,
+    resolve: {
+      userAuthority: UserAuthorityResolveService,
+    },
     data: {
       defaultSort: 'id,asc',
+      menuCode: 'CODD',
     },
     canActivate: [UserRouteAccessService],
   },

@@ -39,28 +39,6 @@
             </small>
           </div>
         </div>
-
-        <div class="form-group">
-          <label class="form-control-label" jhiTranslate="dmsApp.department.delFlag" for="field_delFlag">Del Flag</label>
-          <input type="text" class="form-control" name="delFlag" id="field_delFlag" data-cy="delFlag" formControlName="delFlag" />
-          <div *ngIf="editForm.get('delFlag')!.invalid && (editForm.get('delFlag')!.dirty || editForm.get('delFlag')!.touched)">
-            <small
-              class="form-text text-danger"
-              *ngIf="editForm.get('delFlag')?.errors?.required"
-              jhiTranslate="entity.validation.required"
-            >
-              This field is required.
-            </small>
-            <small
-              class="form-text text-danger"
-              *ngIf="editForm.get('delFlag')?.errors?.maxlength"
-              jhiTranslate="entity.validation.maxlength"
-              [translateValues]="{ max: 1 }"
-            >
-              This field cannot be longer than 1 characters.
-            </small>
-          </div>
-        </div>
       </div>
 
       <div>

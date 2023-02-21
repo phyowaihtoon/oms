@@ -21,7 +21,10 @@ Navbar
   .dropdown-item.active,
   .dropdown-item.active:focus,
   .dropdown-item.active:hover {
-    background-color: $dark;
+    background-color: #a6520a;
+  }
+  .dropdown-item:hover {
+    background-color: #a6520a;
   }
 
   ul.navbar-nav {
@@ -55,4 +58,11 @@ Logo styles
 
 .navbar-title {
   font-size: 1rem;
+  padding-left: 8px;
+}
+
+.nav-hight {
+  min-height: 65px;
+  //background: linear-gradient(to right, #5b290c 0%, #a6520a 100%);
+  // background: linear-gradient(to top, rgba(57, 144, 144, 0.5) -100%, rgb(6 15 45) 50%);
 }
