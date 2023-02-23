@@ -1,7 +1,7 @@
 <div *ngIf="template.cardId === 'CARD001'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header bg-primary">{{ template.cardName }}</div>
+      <<!-- div class="box-header bg-primary">{{ template.cardName }}</div> -->
       <div class="box-body" style="background-color: #9fadc8 !important">
         <ul id="progressbar">
           <li class="active">Create MetaData</li>
@@ -29,7 +29,7 @@
 <div *ngIf="template.cardId === 'CARD002' || template.cardId === 'CARD003' || template.cardId === 'CARD007'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header bg-primary">{{ template.cardName }}</div>
+      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
       <div class="box-body">
         <div class="chart-body" id="{{ template.cardId }}"></div>
       </div>
@@ -41,11 +41,11 @@
 <div *ngIf="template.cardId === 'CARD004'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header bg-primary">{{ template.cardName }}</div>
+      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm">
           <div class="d-flex justify-content-end" style="margin-top: 8px">
-            <div class="input-group col-md-4">
+            <div class="input-group col-md-3">
               <input
                 class="form-control"
                 id="field_fromDate"
@@ -63,7 +63,7 @@
               </div>
             </div>
 
-            <div class="input-group col-md-4">
+            <div class="input-group col-md-3">
               <input
                 class="form-control"
                 id="field_toDate"
@@ -106,13 +106,13 @@
 <div *ngIf="template.cardId === 'CARD005'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header bg-primary">{{ template.cardName }}</div>
+      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm">
           <div class="d-flex justify-content-end">
             <select
               (change)="onChangeDocumentTemplate()"
-              class="form-control col-md-4"
+              class="form-control col-md-3"
               id="field_metaDataHdrID"
               data-cy="metaDataHdrID"
               name="metaDataHdrID"
@@ -134,13 +134,13 @@
 <div *ngIf="template.cardId === 'CARD006'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header bg-primary">{{ template.cardName }}</div>
+      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm">
           <div class="d-flex justify-content-end">
             <select
               (change)="onChangeDocumentTemplate()"
-              class="form-control col-md-4"
+              class="form-control col-md-3"
               id="field_metaDataHdrID"
               data-cy="metaDataHdrID"
               name="metaDataHdrID"

@@ -102,7 +102,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD002') {
       this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
         }
       });
     }
@@ -110,15 +110,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD003') {
       this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
-        }
-      });
-    }
-
-    if (this.template.cardId === 'CARD007') {
-      this.showChart.getOverallSummaryByTemplate().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
-        if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
         }
       });
     }
@@ -142,7 +134,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
               }
             });
           });
-          this.dashboard.generateLineChart(this.template.cardId, this.prepareData(res.body, cols), cols, 'Count');
+          this.dashboard.generateLineChart(this.template.cardId, this.prepareData(res.body, cols), cols, 'Count', this.template.cardName);
         }
       });
     }
@@ -151,38 +143,40 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
       const inputParam = this.createParam();
       this.showChart.getTodaySummaryByTemplate(inputParam).subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body));
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
         }
       });
     }
 
     if (this.template.cardId === 'CARD006') {
+      this.totalCount = 0;
       const inputParam = this.createParam();
       this.showChart.getDataByTemplateType(inputParam).subscribe((res: HttpResponse<[]>) => {
         if (res.body) {
           const cols: any = [];
+          const data: any[] = [];
           // tslint:disable-next-line: typedef
-          res.body.forEach(function (e: any) {
-            // tslint:disable-next-line: typedef
-            /* e.detail.forEach(function (d: any) {
-              // tslint:disable-next-line: typedef
-              if (
-                cols.filter(function (t: any) {
-                  return t === d.name;
-                }).length === 0
-              ) {
-                cols.push(d.name);
-              }
-            }); */
+          res.body.forEach((e: any) => {
+            this.totalCount = this.totalCount + Number(e.detail.count);
             if (
               cols.filter(function (t: any) {
                 return t === e.detail.name;
               }).length === 0
             ) {
               cols.push(e.detail.name);
+              data.push(e.detail.count);
             }
           });
-          this.dashboard.generateBarChart(this.template.cardId, this.prepareData2(res.body, cols), cols, 'Record Count');
+
+          this.dashboard.generateSingleBarChart(this.template.cardId, data, cols, 'Record Count', this.template.cardName);
+        }
+      });
+    }
+
+    if (this.template.cardId === 'CARD007') {
+      this.showChart.getOverallSummaryByTemplate().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
+        if (res.body) {
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
         }
       });
     }
@@ -199,7 +193,11 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
         if (e === d.detail.name) {
           value = d.detail.count;
         }
-        count.push(value);
+        if (value !== 0) {
+          count.push(value);
+        } else {
+          count.push(null);
+        }
       });
       _tempObj.push({ name: d.type, data: count, color: '#c97530' });
     });

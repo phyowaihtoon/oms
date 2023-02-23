@@ -3,10 +3,18 @@ import * as Highcharts from 'highcharts';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  generatePieChart(id: any, d: any): void {
+  generatePieChart(id: any, d: any, title: any): void {
     const options: Highcharts.Options = {
       chart: { type: 'pie' },
-      title: { text: '' },
+      title: {
+        text: title,
+        style: {
+          color: '#000000',
+          fontSize: '22px',
+          fontWeight: 'bold',
+          fontFamily: '"Arbutus Slab", serif',
+        },
+      },
       tooltip: { pointFormat: '</b>{point.percentage:.2f}%</b>' },
 
       plotOptions: {
@@ -43,11 +51,18 @@ export class DashboardService {
     Highcharts.chart(id, options);
   }
 
-  generateLineChart(id: string, data: any, col: any, ytitle: any): void {
+  generateLineChart(id: string, data: any, col: any, ytitle: any, title: any): void {
     const options: any = {
       chart: { type: 'line' },
-      title: { text: '' },
-      subtitle: { text: '' },
+      title: {
+        text: title,
+        style: {
+          color: '#000000',
+          fontSize: '22px',
+          fontWeight: 'bold',
+          fontFamily: '"Arbutus Slab", serif',
+        },
+      },
       xAxis: {
         categories: col,
       },
@@ -77,10 +92,18 @@ export class DashboardService {
     Highcharts.chart(id, options);
   }
 
-  generateBarChart(id: any, d: any, c: any, yt: any): void {
+  generateBarChart(id: any, d: any, c: any, ytitle: any, title: any): void {
     Highcharts.chart(id, {
       chart: { type: 'column' },
-      title: { text: '' },
+      title: {
+        text: title,
+        style: {
+          color: '#000000',
+          fontSize: '22px',
+          fontWeight: 'bold',
+          fontFamily: '"Arbutus Slab", serif',
+        },
+      },
       subtitle: { text: '' },
       xAxis: {
         categories: c,
@@ -88,7 +111,7 @@ export class DashboardService {
       },
       yAxis: {
         min: 0,
-        title: { text: yt },
+        title: { text: ytitle },
       },
       credits: { enabled: false },
       tooltip: {
@@ -103,10 +126,71 @@ export class DashboardService {
         column: {
           pointPadding: 0.2,
           borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            color: '#000000',
+            crop: false,
+          },
         },
       },
       series: d,
     });
+  }
+
+  generateSingleBarChart(id: any, dataseries: any, col: any, ytitle: any, title: any): void {
+    const options: any = {
+      chart: { type: 'column' },
+      title: {
+        text: title,
+        style: {
+          color: '#000000',
+          fontSize: '22px',
+          fontWeight: 'bold',
+          fontFamily: '"Arbutus Slab", serif',
+        },
+      },
+
+      xAxis: {
+        categories: col,
+        crosshair: true,
+      },
+
+      yAxis: {
+        min: 0,
+        title: { text: ytitle },
+      },
+      tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat:
+          '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + '<td style="padding:0"><b>{point.y:.2f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true,
+        enabled: false,
+      },
+      plotOptions: {
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            color: '#000000',
+            crop: false,
+          },
+        },
+      },
+      series: [
+        {
+          name: '',
+          colorByPoint: true,
+          data: dataseries,
+          colors: ['#c97530'],
+        },
+      ],
+      legend: false,
+      credits: { enabled: false },
+    };
+    Highcharts.chart(id, options);
   }
 
   pieClick(): any {
