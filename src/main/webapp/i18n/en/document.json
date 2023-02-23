@@ -23,7 +23,7 @@
       },
       "id": "ID",
       "no": "No.",
-      "docTitle": "Document Template",
+      "docTitle": "Department",
       "message": "Remark",
       "ammendment": "Reason for Amendment",
       "reject": "Reason for Reject",
@@ -51,7 +51,8 @@
       "docDetailMapLabel": "Document Mapping Details",
       "docDetailLabel": "Document Mapping Details",
       "fieldAction": "#",
-      "chooseFile": "Choose File"
+      "chooseFile": "Choose File",
+      "selectDept": "Select Department"
     }
   }
 }
