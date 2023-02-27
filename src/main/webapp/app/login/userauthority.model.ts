@@ -6,6 +6,7 @@ export interface IUserAuthority {
   userName?: string;
   roleID?: number;
   roleName?: string;
+  roleType?: number;
   workflowAuthority?: number;
   sysConfigMessage?: ISysConfigMessage;
   menuGroups?: IMenuGroupMessage[];
@@ -20,6 +21,7 @@ export class UserAuthority implements IUserAuthority {
     public userName?: string,
     public roleID?: number,
     public roleName?: string,
+    public roleType?: number,
     public workflowAuthority?: number,
     public sysConfigMessage?: ISysConfigMessage,
     public menuGroups?: IMenuGroupMessage[],
