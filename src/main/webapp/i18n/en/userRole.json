@@ -19,6 +19,7 @@
       },
       "id": "ID",
       "roleName": "Role Name",
+      "roleType": "Super Admin",
       "menuAccess": "Menu Access",
       "templateAccess": "Department Access",
       "dashboardAccess": "Dashboard Access",

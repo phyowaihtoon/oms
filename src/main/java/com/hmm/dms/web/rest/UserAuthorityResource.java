@@ -57,6 +57,7 @@ public class UserAuthorityResource {
         );
         userAuthorityMessage.setRoleID(appUserDTO.getUserRole().getId());
         userAuthorityMessage.setRoleName(appUserDTO.getUserRole().getRoleName());
+        userAuthorityMessage.setRoleType(appUserDTO.getUserRole().getRoleType());
 
         if (appUserDTO.getDepartment() != null) userAuthorityMessage.setDepartmentName(appUserDTO.getDepartment().getDepartmentName());
         userAuthorityMessage.setWorkflowAuthority(appUserDTO.getWorkflowAuthority());

@@ -44,6 +44,14 @@
           </small>
         </div>
       </div>
+      <div class="form-group col-4">
+        <label class="form-control-label" jhiTranslate="dmsApp.userRole.roleType" for="field_roleType">Super Admin</label>
+        <select type="number" class="form-control" name="roleType" id="field_id" data-cy="roleType" formControlName="roleType">
+          <option [ngValue]="roleType.value" *ngFor="let roleType of _roleTypes">
+            {{ roleType.description }}
+          </option>
+        </select>
+      </div>
     </div>
 
     <div class="row">

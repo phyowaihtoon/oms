@@ -34,10 +34,15 @@ export class UserRoleUpdateComponent implements OnInit {
   _isDashboardAccess = false;
   _metaDataHdrList?: IMetaDataHeader[];
   _dashboardTemplateList?: IDashboardTemplate[];
+  _roleTypes = [
+    { value: 0, description: 'NO' },
+    { value: 1, description: 'YES' },
+  ];
 
   editForm = this.fb.group({
     id: [],
     roleName: [null, [Validators.required]],
+    roleType: [0, [Validators.required]],
     menuAccessList: this.fb.array([]),
     templateAccessList: this.fb.array([]),
     dashboardAccessList: this.fb.array([]),
@@ -103,6 +108,7 @@ export class UserRoleUpdateComponent implements OnInit {
   resetForm(): void {
     this.editForm.get('id')?.setValue(undefined);
     this.editForm.get('roleName')?.setValue('');
+    this.editForm.get('roleType')?.setValue(0);
     this.editForm.get('AllowAll')?.setValue(false);
     this.editForm.get('ReadAll')?.setValue(false);
     this.editForm.get('WriteAll')?.setValue(false);
@@ -318,6 +324,7 @@ export class UserRoleUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: userRole.id,
       roleName: userRole.roleName,
+      roleType: userRole.roleType,
       menuAccessList: this.updateRoleMenuAccess(message.details1),
       templateAccessList: this.updateTemplateAccess(message.details2),
       dashboardAccessList: this.updateDashboardAccess(message.details3),
@@ -330,6 +337,7 @@ export class UserRoleUpdateComponent implements OnInit {
         ...new UserRole(),
         id: this.editForm.get(['id'])!.value,
         roleName: this.editForm.get(['roleName'])!.value,
+        roleType: this.editForm.get(['roleType'])!.value,
       },
       details1: this.createRoleMenuAccess(),
       details2: this.createTemplateAccess(),

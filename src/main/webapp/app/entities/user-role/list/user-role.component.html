@@ -36,6 +36,9 @@
           <th scope="col" jhiSortBy="roleName">
             <span jhiTranslate="dmsApp.userRole.roleName">Role Name</span> <fa-icon icon="sort"></fa-icon>
           </th>
+          <th scope="col" jhiSortBy="roleType">
+            <span jhiTranslate="dmsApp.userRole.roleType">Super Admin</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -45,6 +48,7 @@
             <a [routerLink]="['/user-role', userRole.id, 'view']">{{ userRole.id }}</a>
           </td>
           <td>{{ userRole.roleName }}</td>
+          <td>{{ getRoleTypeDesc(userRole.roleType) }}</td>
           <td class="text-right">
             <div class="btn-group">
               <button

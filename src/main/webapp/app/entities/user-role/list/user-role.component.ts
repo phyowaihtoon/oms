@@ -78,6 +78,13 @@ export class UserRoleComponent implements OnInit {
     return item.id!;
   }
 
+  getRoleTypeDesc(value?: number): string {
+    if (value === 1) {
+      return 'YES';
+    }
+    return 'NO';
+  }
+
   delete(userRole: IUserRole): void {
     if (userRole.id) {
       this.userRoleService.checkDependency(userRole.id).subscribe((res: HttpResponse<IReplyMessage>) => {
