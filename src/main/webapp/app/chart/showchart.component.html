@@ -29,7 +29,7 @@
 <div *ngIf="template.cardId === 'CARD002' || template.cardId === 'CARD003' || template.cardId === 'CARD007'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
+      <div class="box-header">{{ template.cardName }}</div>
       <div class="box-body">
         <div class="chart-body" id="{{ template.cardId }}"></div>
       </div>
@@ -41,9 +41,9 @@
 <div *ngIf="template.cardId === 'CARD004'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
+      <div class="box-header">{{ template.cardName }}</div>
       <div class="box-body">
-        <form name="editForm" role="form" novalidate [formGroup]="editForm">
+        <form name="editForm" role="form" novalidate [formGroup]="editForm" *ngIf="_userAuthority?.roleType === 1">
           <div class="d-flex justify-content-end" style="margin-top: 8px">
             <div class="input-group col-md-3">
               <input
@@ -106,9 +106,9 @@
 <div *ngIf="template.cardId === 'CARD005'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
+      <div class="box-header">{{ template.cardName }}</div>
       <div class="box-body">
-        <form name="editForm" role="form" novalidate [formGroup]="editForm">
+        <form name="editForm" role="form" novalidate [formGroup]="editForm" *ngIf="_userAuthority?.roleType === 1">
           <div class="d-flex justify-content-end">
             <select
               (change)="onChangeDocumentTemplate()"
@@ -134,9 +134,9 @@
 <div *ngIf="template.cardId === 'CARD006'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <!-- <div class="box-header bg-primary">{{ template.cardName }}</div> -->
+      <div class="box-header">{{ template.cardName }}</div>
       <div class="box-body">
-        <form name="editForm" role="form" novalidate [formGroup]="editForm">
+        <form name="editForm" role="form" novalidate [formGroup]="editForm" *ngIf="_userAuthority?.roleType === 1">
           <div class="d-flex justify-content-end">
             <select
               (change)="onChangeDocumentTemplate()"
