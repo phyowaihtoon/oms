@@ -25,11 +25,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   _metaDataColumns?: IMetaData[];
   _displayedMetaDataColumns?: IMetaData[];
   _displayedMetaDataValues?: string[] = [];
-  _staticMetaDataColumns = [
-    { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: true },
-    { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: true },
-    { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: true },
-  ];
+  _staticMetaDataColumns: any;
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
   isLOV1 = false;
@@ -81,6 +77,13 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
+      this._staticMetaDataColumns = [
+        { fieldName: 'ID', translateKey: 'global.field.id', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'DN', translateKey: 'dmsApp.document.docTitle', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+      ];
       this.loadAllSetup();
     });
   }
@@ -112,11 +115,23 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   onChangeDocumentTemplate(): void {
+    this._documentHeaders = [];
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
       this.bindMetaDataColumns();
+    }
+  }
+
+  bindDefaultDepartment(): void {
+    if (this._userAuthority?.departmentId) {
+      this.searchForm.get('metaDataHdrID')?.patchValue(this._userAuthority.departmentId);
+      const metaDataHeader = this._metaDataHdrList?.find(item => item.id === this._userAuthority?.departmentId);
+      if (metaDataHeader) {
+        this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+        this.bindMetaDataColumns();
+      }
     }
   }
 
@@ -197,6 +212,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
             const searchedCriteria = this.documentInquiryService.getSearchCriteria();
             if (searchedCriteria) {
               this.updateSearchFormData(searchedCriteria);
+            } else {
+              this.bindDefaultDepartment();
             }
           }
         },

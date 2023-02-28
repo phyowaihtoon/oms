@@ -9,6 +9,8 @@ import javax.validation.constraints.*;
  */
 public class ApplicationUserDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     @NotNull
@@ -18,7 +20,7 @@ public class ApplicationUserDTO implements Serializable {
 
     private UserRoleDTO userRole;
 
-    private DepartmentDTO department;
+    private MetaDataHeaderDTO department;
 
     public Long getId() {
         return id;
@@ -52,11 +54,11 @@ public class ApplicationUserDTO implements Serializable {
         this.userRole = userRole;
     }
 
-    public DepartmentDTO getDepartment() {
+    public MetaDataHeaderDTO getDepartment() {
         return department;
     }
 
-    public void setDepartment(DepartmentDTO department) {
+    public void setDepartment(MetaDataHeaderDTO department) {
         this.department = department;
     }
 

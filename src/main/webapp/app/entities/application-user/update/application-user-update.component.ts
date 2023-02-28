@@ -11,10 +11,10 @@ import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/user.service';
 import { IUserRole } from 'app/entities/user-role/user-role.model';
 import { UserRoleService } from 'app/entities/user-role/service/user-role.service';
-import { IDepartment } from 'app/entities/department/department.model';
 import { DepartmentService } from 'app/entities/department/service/department.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IWorkflowAuthority } from 'app/entities/util/setup.model';
+import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 
 @Component({
   selector: 'jhi-application-user-update',
@@ -26,7 +26,7 @@ export class ApplicationUserUpdateComponent implements OnInit {
   usersSharedCollection: IUser[] = [];
   workflowAuthorityCollection: IWorkflowAuthority[] = [];
   userRolesSharedCollection: IUserRole[] = [];
-  departmentsSharedCollection: IDepartment[] = [];
+  departmentsSharedCollection: IMetaDataHeader[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -76,7 +76,7 @@ export class ApplicationUserUpdateComponent implements OnInit {
     return item.id!;
   }
 
-  trackDepartmentById(index: number, item: IDepartment): number {
+  trackDepartmentById(index: number, item: IMetaDataHeader): number {
     return item.id!;
   }
 
@@ -113,10 +113,6 @@ export class ApplicationUserUpdateComponent implements OnInit {
       this.userRolesSharedCollection,
       applicationUser.userRole
     );
-    this.departmentsSharedCollection = this.departmentService.addDepartmentToCollectionIfMissing(
-      this.departmentsSharedCollection,
-      applicationUser.department
-    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -136,15 +132,16 @@ export class ApplicationUserUpdateComponent implements OnInit {
       )
       .subscribe((userRoles: IUserRole[]) => (this.userRolesSharedCollection = userRoles));
 
-    this.departmentService
-      .query()
-      .pipe(map((res: HttpResponse<IDepartment[]>) => res.body ?? []))
-      .pipe(
-        map((departments: IDepartment[]) =>
-          this.departmentService.addDepartmentToCollectionIfMissing(departments, this.editForm.get('department')!.value)
-        )
-      )
-      .subscribe((departments: IDepartment[]) => (this.departmentsSharedCollection = departments));
+    this.loadSetupService.loadAllMetaDataHeader().subscribe(
+      (res: HttpResponse<IMetaDataHeader[]>) => {
+        if (res.body) {
+          this.departmentsSharedCollection = res.body;
+        }
+      },
+      error => {
+        console.log('Loading MetaData Setup Failed : ', error);
+      }
+    );
 
     this.loadSetupService.loadWorkflowAuthority().subscribe(res => {
       if (res.body) {

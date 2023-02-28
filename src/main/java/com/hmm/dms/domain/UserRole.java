@@ -24,6 +24,9 @@ public class UserRole implements Serializable {
     @Column(name = "role_name", nullable = false)
     private String roleName;
 
+    @Column(name = "role_type")
+    private int roleType;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -51,6 +54,19 @@ public class UserRole implements Serializable {
         this.roleName = roleName;
     }
 
+    public int getRoleType() {
+        return roleType;
+    }
+
+    public UserRole roleType(int roleType) {
+        this.roleType = roleType;
+        return this;
+    }
+
+    public void setRoleType(int roleType) {
+        this.roleType = roleType;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -76,6 +92,7 @@ public class UserRole implements Serializable {
         return "UserRole{" +
             "id=" + getId() +
             ", roleName='" + getRoleName() + "'" +
+            ", roleType='" + getRoleType() + "'" +
             "}";
     }
 }
