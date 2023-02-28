@@ -59,7 +59,10 @@ public class UserAuthorityResource {
         userAuthorityMessage.setRoleName(appUserDTO.getUserRole().getRoleName());
         userAuthorityMessage.setRoleType(appUserDTO.getUserRole().getRoleType());
 
-        if (appUserDTO.getDepartment() != null) userAuthorityMessage.setDepartmentName(appUserDTO.getDepartment().getDepartmentName());
+        if (appUserDTO.getDepartment() != null) {
+            userAuthorityMessage.setDepartmentId(appUserDTO.getDepartment().getId());
+            userAuthorityMessage.setDepartmentName(appUserDTO.getDepartment().getDocTitle());
+        }
         userAuthorityMessage.setWorkflowAuthority(appUserDTO.getWorkflowAuthority());
 
         List<MenuGroupMessage> menuGroupList = this.roleMenuAccessService.getAllMenuGroupByRole(appUserDTO.getUserRole().getId());

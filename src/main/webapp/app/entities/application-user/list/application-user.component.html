@@ -59,12 +59,12 @@
           <td>{{ getWorkFlowDescription(applicationUser.workflowAuthority) }}</td>
           <td>
             <div *ngIf="applicationUser.userRole">
-              <a [routerLink]="['/user-role', applicationUser.userRole?.id, 'view']">{{ applicationUser.userRole?.roleName }}</a>
+              <a>{{ applicationUser.userRole?.roleName }}</a>
             </div>
           </td>
           <td>
             <div *ngIf="applicationUser.department">
-              <a [routerLink]="['/department', applicationUser.department?.id, 'view']">{{ applicationUser.department?.departmentName }}</a>
+              <a>{{ applicationUser.department?.docTitle }}</a>
             </div>
           </td>
           <td class="text-right">
