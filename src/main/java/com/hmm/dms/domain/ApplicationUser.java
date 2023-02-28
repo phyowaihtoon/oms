@@ -34,7 +34,8 @@ public class ApplicationUser implements Serializable {
     private UserRole userRole;
 
     @ManyToOne
-    private Department department;
+    @JoinColumn(name = "department_id")
+    private MetaDataHeader department;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -89,16 +90,16 @@ public class ApplicationUser implements Serializable {
         this.userRole = userRole;
     }
 
-    public Department getDepartment() {
+    public MetaDataHeader getDepartment() {
         return this.department;
     }
 
-    public ApplicationUser department(Department department) {
+    public ApplicationUser department(MetaDataHeader department) {
         this.setDepartment(department);
         return this;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(MetaDataHeader department) {
         this.department = department;
     }
 

@@ -10,6 +10,7 @@ public class UserAuthorityMessage implements Serializable {
 
     private String userID;
     private String userName;
+    private Long departmentId;
     private String departmentName;
     private Long roleID;
     private String roleName;
@@ -33,6 +34,14 @@ public class UserAuthorityMessage implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 
     public String getDepartmentName() {

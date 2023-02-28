@@ -12,6 +12,7 @@ export interface IUserAuthority {
   menuGroups?: IMenuGroupMessage[];
   activeMenu?: IRoleMenuAccess;
   dashboardTemplates?: IDashboardTemplate[];
+  departmentId?: number;
   departmentName?: string;
 }
 
@@ -27,6 +28,7 @@ export class UserAuthority implements IUserAuthority {
     public menuGroups?: IMenuGroupMessage[],
     public activeMenu?: IRoleMenuAccess,
     public dashboardTemplates?: IDashboardTemplate[],
+    public departmentId?: number,
     public departmentName?: string
   ) {}
 }

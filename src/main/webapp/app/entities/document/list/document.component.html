@@ -35,7 +35,7 @@
     <form name="searchForm" role="form" novalidate [formGroup]="searchForm" autocomplete="off">
       <div class="dms-form-group row col-12 dms-col">
         <div class="col-3">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Template</label>
+          <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Department</label>
           <span class="text-danger">*</span>
         </div>
         <div class="col-4">
@@ -256,23 +256,23 @@
       <table class="table table-bordered table-hover" aria-describedby="page-heading">
         <thead>
           <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-            <th scope="col">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
               <span jhiTranslate="global.field.id">ID</span>
             </th>
-            <th scope="col">
-              <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+              <span jhiTranslate="dmsApp.document.docTitle">Department</span>
             </th>
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
               <span jhiTranslate="dmsApp.document.status">Status</span>
             </th>
 
             <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
 
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
               <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
             </th>
 
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
               <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
             </th>
             <th scope="col"></th>
@@ -280,23 +280,27 @@
         </thead>
         <tbody>
           <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
-            <td>
-              <a>{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a>
-            </td>
-
-            <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
+            <td [hidden]="true">{{ bindMetaDataValues(documentHeader.fieldValues) }}</td>
 
             <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+              <a>{{ documentHeader.id }}</a>
+            </td>
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+              {{ getDocTitleByID(documentHeader.metaDataHeaderId) }}
+            </td>
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
               {{ getDocStatusDesc(documentHeader.status) }}
             </td>
 
             <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
               {{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}
             </td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
               {{ documentHeader.createdBy }}
             </td>
 
