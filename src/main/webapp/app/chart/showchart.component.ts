@@ -102,7 +102,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD002') {
       this.showChart.getAllSummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), '');
         }
       });
     }
@@ -110,7 +110,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD003') {
       this.showChart.getTodaySummaryData().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), '');
         }
       });
     }
@@ -134,7 +134,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
               }
             });
           });
-          this.dashboard.generateLineChart(this.template.cardId, this.prepareData(res.body, cols), cols, 'Count', this.template.cardName);
+          this.dashboard.generateLineChart(this.template.cardId, this.prepareData(res.body, cols), cols, 'Count', '');
         }
       });
     }
@@ -143,7 +143,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
       const inputParam = this.createParam();
       this.showChart.getTodaySummaryByTemplate(inputParam).subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), '');
         }
       });
     }
@@ -151,6 +151,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD006') {
       this.totalCount = 0;
       const inputParam = this.createParam();
+      console.log('abcdefg   ', inputParam.templateId?.toString());
       this.showChart.getDataByTemplateType(inputParam).subscribe((res: HttpResponse<[]>) => {
         if (res.body) {
           const cols: any = [];
@@ -168,7 +169,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
             }
           });
 
-          this.dashboard.generateSingleBarChart(this.template.cardId, data, cols, 'Record Count', this.template.cardName);
+          this.dashboard.generateSingleBarChart(this.template.cardId, data, cols, 'Record Count', '');
         }
       });
     }
@@ -176,7 +177,7 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD007') {
       this.showChart.getOverallSummaryByTemplate().subscribe((res: HttpResponse<IPieHeaderDataDto>) => {
         if (res.body) {
-          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), this.template.cardName);
+          this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), '');
         }
       });
     }
