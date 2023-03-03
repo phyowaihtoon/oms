@@ -5,10 +5,11 @@ import { IMenuItem } from '../util/setup.model';
 export interface IUserRole {
   id?: number;
   roleName?: string;
+  roleType?: number;
 }
 
 export class UserRole implements IUserRole {
-  constructor(public id?: number, public roleName?: string) {}
+  constructor(public id?: number, public roleName?: string, public roleType?: number) {}
 }
 
 export function getUserRoleIdentifier(userRole: IUserRole): number | undefined {

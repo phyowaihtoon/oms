@@ -9,33 +9,22 @@
       >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
     >
   </div>
-
-  <div class="col-4 d-flex justify-content-end">
-    <button class="btn btn-primary btn-sm" (click)="searchDocument(1)" [disabled]="isLoading">
-      <fa-icon icon="search"></fa-icon>
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
-    </button>
-    <span style="width: 5px"></span>
-    <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
-    </button>
-  </div>
 </div>
 
 <div id="page-body">
-  <div *ngIf="isShowingFilters">
+  <div *ngIf="isShowingFilters" class="row">
     <fa-icon icon="angle-down" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.search">Search Document</span>
   </div>
 
-  <div *ngIf="!isShowingFilters">
+  <div *ngIf="!isShowingFilters" class="row">
     <fa-icon icon="angle-right" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.search">Search Document</span>
   </div>
 
-  <div *ngIf="isShowingFilters" id="search-area">
-    <form name="searchForm" role="form" novalidate [formGroup]="searchForm" autocomplete="off">
+  <form name="searchForm" role="form" novalidate [formGroup]="searchForm" autocomplete="off">
+    <div *ngIf="isShowingFilters" id="search-area">
       <div class="dms-form-group row col-12 dms-col">
         <div class="col-3">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Template</label>
+          <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Department</label>
           <span class="text-danger">*</span>
         </div>
         <div class="col-4">
@@ -53,6 +42,7 @@
         <div class="col-3">
           <select
             (change)="onChangeDocumentTemplate()"
+            (keydown.enter)="searchDocument()"
             class="form-control"
             id="field_metaDataHdrID"
             data-cy="metaDataHdrID"
@@ -83,6 +73,7 @@
         <div class="col-4 row dms-row">
           <select
             (change)="onChangeMetaDataField1($event)"
+            (keydown.enter)="searchDocument()"
             class="form-control col-6"
             id="field_metaDataID1"
             data-cy="metaDataID1"
@@ -95,6 +86,7 @@
             </option>
           </select>
           <select
+            (keydown.enter)="searchDocument()"
             *ngIf="isLOV1"
             class="form-control col-6"
             id="field_fieldValue1"
@@ -122,6 +114,7 @@
         <div class="col-4 row dms-row">
           <select
             (change)="onChangeMetaDataField2($event)"
+            (keydown.enter)="searchDocument()"
             class="form-control col-6"
             id="field_metaDataID2"
             data-cy="metaDataID2"
@@ -134,6 +127,7 @@
             </option>
           </select>
           <select
+            (keydown.enter)="searchDocument()"
             *ngIf="isLOV2"
             class="form-control col-6"
             id="field_fieldValue2"
@@ -174,7 +168,14 @@
 
       <div class="dms-form-group row col-12 dms-col">
         <div class="col-3">
-          <select class="form-control" id="field_docStatus" data-cy="docStatus" name="docStatus" formControlName="docStatus">
+          <select
+            (keydown.enter)="searchDocument()"
+            class="form-control"
+            id="field_docStatus"
+            data-cy="docStatus"
+            name="docStatus"
+            formControlName="docStatus"
+          >
             <option [value]="documentStatus.value" *ngFor="let documentStatus of _documentStatusList">
               {{ documentStatus.description }}
             </option>
@@ -210,41 +211,61 @@
           </div>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
 
-  <div *ngIf="isShowingResult" class="result-header row">
-    <span (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
-      <fa-icon icon="angle-down"></fa-icon>&nbsp;
-      {{ 'dmsApp.document.result' | translate }}
-    </span>
-    <li ngbDropdown display="dynamic" style="list-style-type: none; cursor: pointer">
-      <span class="dropdown-toggle" ngbDropdownToggle>
-        <fa-icon icon="cog"></fa-icon>
+    <div class="result-header row">
+      <span *ngIf="isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+        <fa-icon icon="angle-down"></fa-icon>
+        {{ 'dmsApp.document.result' | translate }}
       </span>
-      <div class="dropdown-menu" ngbDropdownMenu>
-        <div class="dropdown-item" *ngFor="let staticColData of _staticMetaDataColumns" (click)="showHideStaticColumn(staticColData)">
-          <span>
-            <fa-icon icon="check" *ngIf="staticColData.isDisplayed"></fa-icon>
-            {{ staticColData.translateKey | translate }}
-          </span>
+      <span *ngIf="!isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+        <fa-icon icon="angle-right"></fa-icon>&nbsp;
+        {{ 'dmsApp.document.result' | translate }}
+      </span>
+      <li ngbDropdown display="dynamic" style="list-style-type: none; cursor: pointer">
+        <span class="dropdown-toggle" ngbDropdownToggle>
+          <fa-icon icon="cog"></fa-icon>
+        </span>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <div class="dropdown-item" *ngFor="let staticColData of _staticMetaDataColumns" (click)="showHideStaticColumn(staticColData)">
+            <span>
+              <fa-icon icon="check" *ngIf="staticColData.isDisplayed"></fa-icon>
+              {{ staticColData.translateKey | translate }}
+            </span>
+          </div>
+          <div class="dropdown-item" *ngFor="let colData of _metaDataColumns" (click)="showHideColumn(colData)">
+            <span>
+              <fa-icon icon="check" *ngIf="colData.isDisplayed"></fa-icon>
+              {{ colData.fieldName }}
+            </span>
+          </div>
         </div>
-        <div class="dropdown-item" *ngFor="let colData of _metaDataColumns" (click)="showHideColumn(colData)">
-          <span>
-            <fa-icon icon="check" *ngIf="colData.isDisplayed"></fa-icon>
-            {{ colData.fieldName }}
-          </span>
-        </div>
+      </li>
+      <div class="col-3 d-flex justify-content-end">
+        <label jhiTranslate="dmsApp.document.enterPage" for="field_pageNo">Page No.</label>
+        <span style="width: 3px"></span>
+        <input
+          type="number"
+          class="form-control"
+          style="width: 80px"
+          name="pageNo"
+          id="field_pageNo"
+          data-cy="pageNo"
+          formControlName="pageNo"
+        />
       </div>
-    </li>
-  </div>
-
-  <div *ngIf="!isShowingResult" class="result-header">
-    <span (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
-      <fa-icon icon="angle-down"></fa-icon>&nbsp;
-      {{ 'dmsApp.document.result' | translate }}
-    </span>
-  </div>
+      <div class="col-4 d-flex">
+        <button class="btn btn-primary btn-sm" (click)="searchDocument()" [disabled]="isLoading">
+          <fa-icon icon="search"></fa-icon>
+          <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+        </button>
+        <span style="width: 5px"></span>
+        <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
+          <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+        </button>
+      </div>
+    </div>
+  </form>
 
   <div id="result-container" *ngIf="isShowingResult">
     <div class="alert alert-info" *ngIf="isShowingAlert">
@@ -256,23 +277,23 @@
       <table class="table table-bordered table-hover" aria-describedby="page-heading">
         <thead>
           <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-            <th scope="col">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
               <span jhiTranslate="global.field.id">ID</span>
             </th>
-            <th scope="col">
-              <span jhiTranslate="dmsApp.document.docTitle">Document Title</span>
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+              <span jhiTranslate="dmsApp.document.docTitle">Department</span>
             </th>
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
               <span jhiTranslate="dmsApp.document.status">Status</span>
             </th>
 
             <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
 
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
               <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
             </th>
 
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
               <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
             </th>
             <th scope="col"></th>
@@ -280,23 +301,27 @@
         </thead>
         <tbody>
           <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
-            <td>
-              <a>{{ documentHeader.id }} {{ bindMetaDataValues(documentHeader.fieldValues) }}</a>
-            </td>
-
-            <td>{{ getDocTitleByID(documentHeader.metaDataHeaderId) }}</td>
+            <td [hidden]="true">{{ bindMetaDataValues(documentHeader.fieldValues) }}</td>
 
             <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+              <a>{{ documentHeader.id }}</a>
+            </td>
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+              {{ getDocTitleByID(documentHeader.metaDataHeaderId) }}
+            </td>
+
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
               {{ getDocStatusDesc(documentHeader.status) }}
             </td>
 
             <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
               {{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}
             </td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
               {{ documentHeader.createdBy }}
             </td>
 

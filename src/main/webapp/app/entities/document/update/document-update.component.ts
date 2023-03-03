@@ -27,7 +27,6 @@ export class DocumentUpdateComponent implements OnInit {
   _documentHeader: IDocumentHeader | undefined;
   _documentDetails: IDocument[] | undefined;
   _documentStatus?: IDocumentStatus[];
-
   _metaDataHdrList: MetaDataHeader[] | null = [];
   _priority: IPriority[] | null = [];
   _fieldValue?: string[] = [];
@@ -109,6 +108,8 @@ export class DocumentUpdateComponent implements OnInit {
             if (this._documentHeader) {
               this.removeAllField();
               this.updateForm(this._documentHeader);
+            } else {
+              this.bindDefaultDepartment();
             }
           }
         },
@@ -206,14 +207,13 @@ export class DocumentUpdateComponent implements OnInit {
 
   clearFormData(): void {
     this.editForm.controls['id']!.setValue(undefined);
-    this.editForm.controls['metaDataHeaderId']!.setValue('');
     this.editForm.controls['priority']!.setValue('');
     this.editForm.controls['message']!.setValue('');
     this.editForm.controls['reject']!.setValue('');
     this.editForm.controls['ammendment']!.setValue('');
     this.editForm.controls['reposistory']!.setValue('');
     this.removeAllField();
-    this.loadMetaDatabyMetadaHeaderID(0);
+    this.bindDefaultDepartment();
     this.isDocMap = true;
     this.isUploadDetail = false;
     this.isNA = true;
@@ -294,6 +294,15 @@ export class DocumentUpdateComponent implements OnInit {
   onDocTemplateChange(e: any): void {
     this.metaHeaderId = e.target.value;
     this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
+  }
+
+  // bind department of login user as default
+  bindDefaultDepartment(): void {
+    if (this._userAuthority?.departmentId) {
+      this.metaHeaderId = this._userAuthority.departmentId;
+      this.editForm.controls['metaDataHeaderId']!.setValue(this.metaHeaderId);
+      this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
+    }
   }
 
   // load metadata by metadaheader ID

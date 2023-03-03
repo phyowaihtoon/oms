@@ -16,6 +16,8 @@ public class UserRoleDTO implements Serializable {
     @NotNull
     private String roleName;
 
+    private int roleType;
+
     public Long getId() {
         return id;
     }
@@ -30,6 +32,14 @@ public class UserRoleDTO implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public int getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(int roleType) {
+        this.roleType = roleType;
     }
 
     @Override
@@ -59,6 +69,7 @@ public class UserRoleDTO implements Serializable {
         return "UserRoleDTO{" +
             "id=" + getId() +
             ", roleName='" + getRoleName() + "'" +
+            ", roleType='" + getRoleType() + "'" +
             "}";
     }
 }

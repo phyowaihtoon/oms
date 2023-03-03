@@ -6,11 +6,13 @@ export interface IUserAuthority {
   userName?: string;
   roleID?: number;
   roleName?: string;
+  roleType?: number;
   workflowAuthority?: number;
   sysConfigMessage?: ISysConfigMessage;
   menuGroups?: IMenuGroupMessage[];
   activeMenu?: IRoleMenuAccess;
   dashboardTemplates?: IDashboardTemplate[];
+  departmentId?: number;
   departmentName?: string;
 }
 
@@ -20,11 +22,13 @@ export class UserAuthority implements IUserAuthority {
     public userName?: string,
     public roleID?: number,
     public roleName?: string,
+    public roleType?: number,
     public workflowAuthority?: number,
     public sysConfigMessage?: ISysConfigMessage,
     public menuGroups?: IMenuGroupMessage[],
     public activeMenu?: IRoleMenuAccess,
     public dashboardTemplates?: IDashboardTemplate[],
+    public departmentId?: number,
     public departmentName?: string
   ) {}
 }

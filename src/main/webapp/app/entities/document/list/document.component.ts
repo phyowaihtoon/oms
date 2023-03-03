@@ -25,11 +25,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   _metaDataColumns?: IMetaData[];
   _displayedMetaDataColumns?: IMetaData[];
   _displayedMetaDataValues?: string[] = [];
-  _staticMetaDataColumns = [
-    { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: true },
-    { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: true },
-    { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: true },
-  ];
+  _staticMetaDataColumns: any;
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
   isLOV1 = false;
@@ -59,6 +55,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
     fieldValue2: [{ value: '', disabled: true }],
     generalValue: [],
     docStatus: [0],
+    pageNo: [],
   });
 
   _searchCriteria?: IDocumentInquiry;
@@ -81,6 +78,13 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
+      this._staticMetaDataColumns = [
+        { fieldName: 'ID', translateKey: 'global.field.id', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'DN', translateKey: 'dmsApp.document.docTitle', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+      ];
       this.loadAllSetup();
     });
   }
@@ -112,11 +116,23 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   onChangeDocumentTemplate(): void {
+    this.clearSearchCriteriaData();
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
       this.bindMetaDataColumns();
+    }
+  }
+
+  bindDefaultDepartment(): void {
+    if (this._userAuthority?.departmentId) {
+      this.searchForm.get('metaDataHdrID')?.patchValue(this._userAuthority.departmentId);
+      const metaDataHeader = this._metaDataHdrList?.find(item => item.id === this._userAuthority?.departmentId);
+      if (metaDataHeader) {
+        this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+        this.bindMetaDataColumns();
+      }
     }
   }
 
@@ -197,6 +213,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
             const searchedCriteria = this.documentInquiryService.getSearchCriteria();
             if (searchedCriteria) {
               this.updateSearchFormData(searchedCriteria);
+            } else {
+              this.bindDefaultDepartment();
             }
           }
         },
@@ -218,14 +236,19 @@ export class DocumentComponent implements OnInit, OnDestroy {
     );
   }
 
-  searchDocument(page?: number): void {
+  searchDocument(): void {
     if (this.searchForm.invalid) {
       this.searchForm.get('metaDataHdrID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
       this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
-      this.loadPage(page);
+      const pageNo = this.searchForm.get('pageNo')!.value;
+      if (pageNo && pageNo > 0) {
+        this.loadPage(pageNo);
+      } else {
+        this.loadPage(1);
+      }
     }
   }
 
@@ -285,7 +308,24 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.searchForm.get('metaDataID2')?.patchValue(0);
     this.searchForm.get('fieldValue2')?.disable();
     this.searchForm.get('docStatus')?.patchValue(0);
+    this.searchForm.get('pageNo')?.patchValue('');
     this.documentInquiryService.clearSearchCriteria();
+  }
+
+  clearSearchCriteriaData(): void {
+    this._documentHeaders = [];
+    this.isShowingResult = false;
+    this.isLOV1 = false;
+    this.isLOV2 = false;
+    this._selectedMetaDataList = [];
+    this.searchForm.get('metaDataID1')?.patchValue(0);
+    this.searchForm.get('fieldValue1')?.patchValue('');
+    this.searchForm.get('fieldValue1')?.disable();
+    this.searchForm.get('metaDataID2')?.patchValue(0);
+    this.searchForm.get('fieldValue2')?.patchValue('');
+    this.searchForm.get('fieldValue2')?.disable();
+    this.searchForm.get('docStatus')?.patchValue(0);
+    this.searchForm.get('pageNo')?.patchValue('');
   }
 
   updateSearchFormData(criteriaData: IDocumentInquiry): void {
@@ -313,7 +353,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.searchForm.get('fieldValue2')?.patchValue(criteriaData.fieldValue2);
     this.searchForm.get('generalValue')?.patchValue(criteriaData.generalValue);
     this.searchForm.get('docStatus')?.patchValue(criteriaData.status);
-    this.searchDocument(1);
+    this.searchDocument();
   }
 
   goToView(id?: number): void {

@@ -1,10 +1,13 @@
-<!-- <div class="row" style="margin-top: 10px">
-  <jhi-showchart class="col-md-6" [template]="template1"></jhi-showchart>
-  <jhi-showchart class="col-md-6" [template]="template2"></jhi-showchart>
-</div>
- -->
+<!--
 <div class="row" style="margin-top: 10px">
   <div class="col-md-6" *ngFor="let template of templates; let i = index">
     <jhi-showchart [template]="template"></jhi-showchart>
+  </div>
+</div>
+-->
+
+<div style="margin-top: 16px" *ngIf="templates !== null && templates !== undefined">
+  <div *ngFor="let template of templates; let i = index">
+    <jhi-showchart [template]="templates[i]"></jhi-showchart>
   </div>
 </div>
