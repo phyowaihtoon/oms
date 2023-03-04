@@ -11,3 +11,13 @@
 .dms-form-group {
   margin-bottom: 0.3rem;
 }
+
+.dms-icon-btn {
+  padding: 2px;
+  height: 1.8rem;
+}
+
+//Override Form Control CSS
+.form-control {
+  height: 1.8rem;
+}
