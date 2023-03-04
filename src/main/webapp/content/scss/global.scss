@@ -1,6 +1,5 @@
 @import 'bootstrap-variables';
 @import '~bootstrap/scss/functions';
-@import '~bootswatch/dist/spacelab/variables';
 @import '~bootstrap/scss/variables';
 
 // @import '~bootswatch/dist/superhero/variables'; spacelab
@@ -8,14 +7,6 @@
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/
-
-body,
-h1,
-h2,
-h3,
-h4 {
-  font-weight: 300;
-}
 
 a:hover {
   /* make sure browsers use the pointer cursor for anchors, even with no href */
@@ -180,19 +171,15 @@ ui bootstrap tweaks
 html,
 body {
   height: 100%;
-}
-body {
   margin: 0;
-  //font-family: 'Roboto', sans-serif;
-  font-family: 'Arbutus Slab', serif;
   color: black;
+  font-family: 'Arbutus Slab', serif;
 }
 
 .bg-primary {
   background: linear-gradient(to right, #5b290c 0%, #a6520a 100%) !important;
 }
 
-/* jhipster-needle-scss-add-main JHipster will add new css style */
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 @font-face {
   font-family: 'Arbutus Slab';
@@ -270,4 +257,8 @@ th {
 
 td {
   padding: 2px;
+}
+
+select {
+  font-family: Pyidaungsu;
 }
