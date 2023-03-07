@@ -12,12 +12,15 @@
 </div>
 
 <div id="page-body">
-  <div *ngIf="isShowingFilters" class="row">
-    <fa-icon icon="angle-down" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.search">Search Document</span>
-  </div>
-
-  <div *ngIf="!isShowingFilters" class="row">
-    <fa-icon icon="angle-right" (click)="showFilters()"></fa-icon>&nbsp;<span jhiTranslate="dmsApp.document.search">Search Document</span>
+  <div class="row">
+    <span *ngIf="isShowingFilters" (click)="showFilters()" style="cursor: pointer">
+      <fa-icon icon="angle-down"></fa-icon>
+      {{ 'dmsApp.document.search' | translate }}
+    </span>
+    <span *ngIf="!isShowingFilters" (click)="showFilters()" style="cursor: pointer">
+      <fa-icon icon="angle-right"></fa-icon>&nbsp;
+      {{ 'dmsApp.document.search' | translate }}
+    </span>
   </div>
 
   <form name="searchForm" role="form" novalidate [formGroup]="searchForm" autocomplete="off">
@@ -241,19 +244,7 @@
           </div>
         </div>
       </li>
-      <div class="col-3 d-flex justify-content-end">
-        <label jhiTranslate="dmsApp.document.enterPage" for="field_pageNo">Page No.</label>
-        <span style="width: 3px"></span>
-        <input
-          type="number"
-          class="form-control"
-          style="width: 80px"
-          name="pageNo"
-          id="field_pageNo"
-          data-cy="pageNo"
-          formControlName="pageNo"
-        />
-      </div>
+
       <div class="col-4 d-flex">
         <button class="btn btn-primary btn-sm" (click)="searchDocument()" [disabled]="isLoading">
           <fa-icon icon="search"></fa-icon>
@@ -265,110 +256,123 @@
         </button>
       </div>
     </div>
-  </form>
 
-  <div id="result-container" *ngIf="isShowingResult">
-    <div class="alert alert-info" *ngIf="isShowingAlert">
-      <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
-      <span>{{ _alertMessage }}</span>
-    </div>
+    <div id="result-container" *ngIf="isShowingResult">
+      <div class="alert alert-info" *ngIf="isShowingAlert">
+        <a class="close" aria-label="close" (click)="closeAlert()">&times;</a>
+        <span>{{ _alertMessage }}</span>
+      </div>
 
-    <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
-      <table class="table table-bordered table-hover" aria-describedby="page-heading">
-        <thead>
-          <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
-              <span jhiTranslate="global.field.id">ID</span>
-            </th>
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
-              <span jhiTranslate="dmsApp.document.docTitle">Department</span>
-            </th>
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
-              <span jhiTranslate="dmsApp.document.status">Status</span>
-            </th>
+      <div class="table-responsive" id="entities" *ngIf="_documentHeaders && _documentHeaders.length > 0">
+        <table class="table table-bordered table-hover" aria-describedby="page-heading">
+          <thead>
+            <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+              <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+                <span jhiTranslate="global.field.id">ID</span>
+              </th>
+              <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+                <span jhiTranslate="dmsApp.document.docTitle">Department</span>
+              </th>
+              <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+                <span jhiTranslate="dmsApp.document.status">Status</span>
+              </th>
 
-            <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
+              <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
 
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
-              <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
-            </th>
+              <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
+                <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
+              </th>
 
-            <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
-              <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
-            </th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
-            <td [hidden]="true">{{ bindMetaDataValues(documentHeader.fieldValues) }}</td>
+              <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
+                <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+              </th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
+              <td [hidden]="true">{{ bindMetaDataValues(documentHeader.fieldValues) }}</td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
-              <a>{{ documentHeader.id }}</a>
-            </td>
+              <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+                <a>{{ documentHeader.id }}</a>
+              </td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
-              {{ getDocTitleByID(documentHeader.metaDataHeaderId) }}
-            </td>
+              <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+                {{ getDocTitleByID(documentHeader.metaDataHeaderId) }}
+              </td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
-              {{ getDocStatusDesc(documentHeader.status) }}
-            </td>
+              <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+                {{ getDocStatusDesc(documentHeader.status) }}
+              </td>
 
-            <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
+              <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
-              {{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}
-            </td>
+              <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
+                {{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}
+              </td>
 
-            <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
-              {{ documentHeader.createdBy }}
-            </td>
+              <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
+                {{ documentHeader.createdBy }}
+              </td>
 
-            <td class="text-right">
-              <div class="btn-group">
-                <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
-                  type="submit"
-                  (click)="goToView(documentHeader.id)"
-                  class="btn btn-info btn-sm"
-                  data-cy="entityDetailsButton"
-                >
-                  <fa-icon icon="eye"></fa-icon>
-                  <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                </button>
+              <td class="text-right">
+                <div class="btn-group">
+                  <button
+                    *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
+                    type="submit"
+                    (click)="goToView(documentHeader.id)"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </button>
 
-                <button
-                  *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
-                  type="submit"
-                  [routerLink]="['/document', documentHeader.id, 'edit']"
-                  class="btn btn-primary btn-sm"
-                  data-cy="entityEditButton"
-                >
-                  <fa-icon icon="pencil-alt"></fa-icon>
-                  <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                  <button
+                    *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
+                    type="submit"
+                    [routerLink]="['/document', documentHeader.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div *ngIf="_documentHeaders && _documentHeaders.length > 0">
-      <div class="row justify-content-center">
-        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-        <span style="width: 30px">&nbsp;&nbsp;</span>
-        <ngb-pagination
-          [collectionSize]="totalItems"
-          [(page)]="ngbPaginationPage"
-          [pageSize]="itemsPerPage"
-          [maxSize]="5"
-          [rotate]="true"
-          [boundaryLinks]="true"
-          (pageChange)="loadPage($event)"
-        ></ngb-pagination>
+      <div *ngIf="_documentHeaders && _documentHeaders.length > 0">
+        <div class="row justify-content-center">
+          <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+          <span style="width: 30px">&nbsp;&nbsp;</span>
+          <ngb-pagination
+            [collectionSize]="totalItems"
+            [(page)]="ngbPaginationPage"
+            [pageSize]="itemsPerPage"
+            [maxSize]="5"
+            [rotate]="true"
+            [boundaryLinks]="true"
+            (pageChange)="loadPage($event)"
+          ></ngb-pagination>
+          <div class="col-3 d-flex">
+            <label jhiTranslate="dmsApp.document.enterPage" for="field_pageNo">Page No.</label>
+            <span style="width: 3px"></span>
+            <input
+              type="number"
+              class="form-control"
+              style="width: 80px"
+              name="pageNo"
+              id="field_pageNo"
+              data-cy="pageNo"
+              formControlName="pageNo"
+            />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </form>
 </div>

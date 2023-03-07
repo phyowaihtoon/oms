@@ -1,14 +1,14 @@
 <nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md nav-hight bg-primary" [ngSwitch]="isAuthenticated()">
   <a class="navbar-brand logo" (click)="collapseNavbar()" *ngSwitchCase="true">
     <span jhiTranslate="global.title" class="navbar-title">DMS</span>
-    <span style="width: 5px"></span>
-    <span style="cursor: pointer" (click)="showCodeInfo()">
-      <fa-icon icon="info-circle"></fa-icon>
-    </span>
     <!--
     <span class="navbar-version">{{ version }}</span>
      -->
   </a>
+  <span style="width: 5px"></span>
+  <span style="cursor: pointer; color: #fff" (click)="showCodeInfo()">
+    <fa-icon icon="info-circle"></fa-icon>
+  </span>
   <a
     class="navbar-toggler d-lg-none"
     href="javascript:void(0);"
@@ -138,12 +138,12 @@
               <span jhiTranslate="global.menu.entities.applicationUser">User Authority</span>
             </a>
           </li>
-          <li>
+          <!-- <li>
             <a class="dropdown-item" routerLink="department" routerLinkActive="active" (click)="collapseNavbar()">
               <fa-icon icon="caret-right" [fixedWidth]="true"></fa-icon>
               <span jhiTranslate="global.menu.entities.department">Department</span>
             </a>
-          </li>
+          </li> -->
           <li>
             <a class="dropdown-item" routerLink="sysconfig" routerLinkActive="active" (click)="collapseNavbar()">
               <fa-icon icon="caret-right" [fixedWidth]="true"></fa-icon>
