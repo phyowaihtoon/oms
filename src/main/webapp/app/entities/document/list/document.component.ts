@@ -55,6 +55,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
     fieldValue2: [{ value: '', disabled: true }],
     generalValue: [],
     docStatus: [0],
+    pageNo: [],
   });
 
   _searchCriteria?: IDocumentInquiry;
@@ -115,7 +116,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   onChangeDocumentTemplate(): void {
-    this._documentHeaders = [];
+    this.clearSearchCriteriaData();
     const headerID: number = +this.searchForm.get('metaDataHdrID')!.value;
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
@@ -235,14 +236,19 @@ export class DocumentComponent implements OnInit, OnDestroy {
     );
   }
 
-  searchDocument(page?: number): void {
+  searchDocument(): void {
     if (this.searchForm.invalid) {
       this.searchForm.get('metaDataHdrID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
       this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
-      this.loadPage(page);
+      const pageNo = this.searchForm.get('pageNo')!.value;
+      if (pageNo && pageNo > 0) {
+        this.loadPage(pageNo);
+      } else {
+        this.loadPage(1);
+      }
     }
   }
 
@@ -302,7 +308,24 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.searchForm.get('metaDataID2')?.patchValue(0);
     this.searchForm.get('fieldValue2')?.disable();
     this.searchForm.get('docStatus')?.patchValue(0);
+    this.searchForm.get('pageNo')?.patchValue('');
     this.documentInquiryService.clearSearchCriteria();
+  }
+
+  clearSearchCriteriaData(): void {
+    this._documentHeaders = [];
+    this.isShowingResult = false;
+    this.isLOV1 = false;
+    this.isLOV2 = false;
+    this._selectedMetaDataList = [];
+    this.searchForm.get('metaDataID1')?.patchValue(0);
+    this.searchForm.get('fieldValue1')?.patchValue('');
+    this.searchForm.get('fieldValue1')?.disable();
+    this.searchForm.get('metaDataID2')?.patchValue(0);
+    this.searchForm.get('fieldValue2')?.patchValue('');
+    this.searchForm.get('fieldValue2')?.disable();
+    this.searchForm.get('docStatus')?.patchValue(0);
+    this.searchForm.get('pageNo')?.patchValue('');
   }
 
   updateSearchFormData(criteriaData: IDocumentInquiry): void {
@@ -330,7 +353,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.searchForm.get('fieldValue2')?.patchValue(criteriaData.fieldValue2);
     this.searchForm.get('generalValue')?.patchValue(criteriaData.generalValue);
     this.searchForm.get('docStatus')?.patchValue(criteriaData.status);
-    this.searchDocument(1);
+    this.searchDocument();
   }
 
   goToView(id?: number): void {
