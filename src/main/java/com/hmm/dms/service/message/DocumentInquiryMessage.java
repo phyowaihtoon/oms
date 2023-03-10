@@ -11,10 +11,12 @@ public class DocumentInquiryMessage implements Serializable {
     private String createdDate;
     private String fieldValue1;
     private String fieldValue2;
+    private String fieldValue3;
     private String reason;
     private int status;
     private int fieldIndex1;
     private int fieldIndex2;
+    private int fieldIndex3;
     private String generalValue;
     private String approvedBy;
 
@@ -58,6 +60,14 @@ public class DocumentInquiryMessage implements Serializable {
         this.fieldValue2 = fieldValue2;
     }
 
+    public String getFieldValue3() {
+        return fieldValue3;
+    }
+
+    public void setFieldValue3(String fieldValue3) {
+        this.fieldValue3 = fieldValue3;
+    }
+
     public String getReason() {
         return reason;
     }
@@ -88,6 +98,14 @@ public class DocumentInquiryMessage implements Serializable {
 
     public void setFieldIndex2(int fieldIndex2) {
         this.fieldIndex2 = fieldIndex2;
+    }
+
+    public int getFieldIndex3() {
+        return fieldIndex3;
+    }
+
+    public void setFieldIndex3(int fieldIndex3) {
+        this.fieldIndex3 = fieldIndex3;
     }
 
     public String getGeneralValue() {
