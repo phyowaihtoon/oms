@@ -60,12 +60,22 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
         String specificVal1 = dto.getFieldValue1();
-        if (specificVal1 == null || specificVal1.equals("null") || specificVal1.isEmpty()) specificVal1 = ""; else specificVal1 =
-            specificVal1.trim();
+        if (specificVal1 == null || specificVal1.equals("null") || specificVal1.isEmpty()) {
+            specificVal1 = "";
+            dto.setFieldIndex1(0);
+        } else specificVal1 = specificVal1.trim();
 
         String specificVal2 = dto.getFieldValue2();
-        if (specificVal2 == null || specificVal2.equals("null") || specificVal2.isEmpty()) specificVal2 = ""; else specificVal2 =
-            specificVal2.trim();
+        if (specificVal2 == null || specificVal2.equals("null") || specificVal2.isEmpty()) {
+            specificVal2 = "";
+            dto.setFieldIndex2(0);
+        } else specificVal2 = specificVal2.trim();
+
+        String specificVal3 = dto.getFieldValue3();
+        if (specificVal3 == null || specificVal3.equals("null") || specificVal3.isEmpty()) {
+            specificVal3 = "";
+            dto.setFieldIndex3(0);
+        } else specificVal3 = specificVal3.trim();
 
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
@@ -86,6 +96,8 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                         specificVal1,
                         dto.getFieldIndex2(),
                         specificVal2,
+                        dto.getFieldIndex3(),
+                        specificVal3,
                         generalVal,
                         createdDate,
                         setOfStatus,
@@ -101,6 +113,8 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                     specificVal1,
                     dto.getFieldIndex2(),
                     specificVal2,
+                    dto.getFieldIndex3(),
+                    specificVal3,
                     generalVal,
                     setOfStatus,
                     pageable
@@ -163,12 +177,22 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderInTrashBin(DocumentInquiryMessage dto, Pageable pageable) {
         String specificVal1 = dto.getFieldValue1();
-        if (specificVal1 == null || specificVal1.equals("null") || specificVal1.isEmpty()) specificVal1 = ""; else specificVal1 =
-            specificVal1.trim();
+        if (specificVal1 == null || specificVal1.equals("null") || specificVal1.isEmpty()) {
+            specificVal1 = "";
+            dto.setFieldIndex1(0);
+        } else specificVal1 = specificVal1.trim();
 
         String specificVal2 = dto.getFieldValue2();
-        if (specificVal2 == null || specificVal2.equals("null") || specificVal2.isEmpty()) specificVal2 = ""; else specificVal2 =
-            specificVal2.trim();
+        if (specificVal2 == null || specificVal2.equals("null") || specificVal2.isEmpty()) {
+            specificVal2 = "";
+            dto.setFieldIndex2(0);
+        } else specificVal2 = specificVal2.trim();
+
+        String specificVal3 = dto.getFieldValue3();
+        if (specificVal3 == null || specificVal3.equals("null") || specificVal3.isEmpty()) {
+            specificVal3 = "";
+            dto.setFieldIndex3(0);
+        } else specificVal3 = specificVal3.trim();
 
         String generalVal = dto.getGeneralValue();
         if (generalVal == null || generalVal.equals("null") || generalVal.isEmpty()) generalVal = ""; else generalVal = generalVal.trim();
@@ -191,6 +215,8 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                         specificVal1,
                         dto.getFieldIndex2(),
                         specificVal2,
+                        dto.getFieldIndex3(),
+                        specificVal3,
                         generalVal,
                         createdDate,
                         setOfStatus,
@@ -206,6 +232,8 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
                     specificVal1,
                     dto.getFieldIndex2(),
                     specificVal2,
+                    dto.getFieldIndex3(),
+                    specificVal3,
                     generalVal,
                     setOfStatus,
                     pageable

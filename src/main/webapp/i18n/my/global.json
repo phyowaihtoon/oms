@@ -20,7 +20,7 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
-        "title": "ရီပို့",
+        "title": "အစီရင်ခံစာ",
         "docmaprpt": "Document Mapping Report"
       },
       "metadata": {
@@ -39,7 +39,7 @@
         "create": "အချက်အလက် ထည့်သွင်းခြင်း",
         "update": "အချက်အလက် ပြင်ဆင်ခြင်း",
         "search": "အချက်အလက် ရှာဖွေခြင်း",
-        "trashbin": "အမှိုက်ပုံး",
+        "trashbin": "Trash Bin",
         "restore": "Restore Document"
       },
       "queue": {
@@ -48,11 +48,11 @@
       },
       "account": {
         "main": "အကောင့်",
-        "settings": "Setting များ",
+        "settings": "ပြင်ဆင်ရန်",
         "password": "လျှို့ဝှက်ကုဒ်",
         "sessions": "Session များ",
-        "login": "ဆိုင်းအင်",
-        "logout": "ဆိုင်းအောက်",
+        "login": "ဝင်ရန်",
+        "logout": "ထွက်ရန်",
         "register": "မှတ်ပုံတင်မည်"
       },
       "admin": {

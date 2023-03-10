@@ -24,11 +24,13 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         "FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND dh.status IN ?9 ",
         countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND dh.status IN ?9 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findAll(
@@ -37,6 +39,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         String fieldValue1,
         int fieldIndex2,
         String fieldValue2,
+        int fieldIndex3,
+        String fieldValue3,
         String generalValue,
         Collection<Integer> status,
         Pageable pageable
@@ -49,13 +53,15 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         "FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
-        "AND dh.status IN ?8 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND date(dh.created_date) = str_to_date(?9,'%d-%m-%Y') " +
+        "AND dh.status IN ?10 ",
         countQuery = "SELECT count(*) FROM document_header dh WHERE dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
-        "AND dh.status IN ?8 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND date(dh.created_date) = str_to_date(?9,'%d-%m-%Y') " +
+        "AND dh.status IN ?10 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findAllByDate(
@@ -64,6 +70,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         String fieldValue1,
         int fieldIndex2,
         String fieldValue2,
+        int fieldIndex3,
+        String fieldValue3,
         String generalValue,
         String createdDate,
         Collection<Integer> status,
@@ -79,12 +87,14 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         "AND dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND dh.status IN ?9 ",
         countQuery = "SELECT count(*) FROM document_header dh,document dd " +
         "WHERE dh.id=dd.header_id AND dd.del_flag='Y' AND dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND dh.status IN ?7 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND dh.status IN ?9 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findTrashItems(
@@ -93,6 +103,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         String fieldValue1,
         int fieldIndex2,
         String fieldValue2,
+        int fieldIndex3,
+        String fieldValue3,
         String generalValue,
         Collection<Integer> status,
         Pageable pageable
@@ -106,14 +118,16 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         "WHERE dh.id=dd.header_id AND dd.del_flag='Y' AND dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
-        "AND dh.status IN ?8 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND date(dh.created_date) = str_to_date(?9,'%d-%m-%Y') " +
+        "AND dh.status IN ?10 ",
         countQuery = "SELECT count(*) FROM document_header dh,document dd " +
         "WHERE dh.id=dd.header_id AND dd.del_flag='Y' AND dh.meta_data_header_id=?1 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?2),'|',-1) =?3 " +
         "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?4),'|',-1) =?5 " +
-        "AND dh.field_values LIKE %?6% AND date(dh.created_date) = str_to_date(?7,'%d-%m-%Y') " +
-        "AND dh.status IN ?8 ",
+        "AND SUBSTRING_INDEX(SUBSTRING_INDEX(dh.field_values,'|',?6),'|',-1) =?7 " +
+        "AND dh.field_values LIKE %?8% AND date(dh.created_date) = str_to_date(?9,'%d-%m-%Y') " +
+        "AND dh.status IN ?10 ",
         nativeQuery = true
     )
     Page<DocumentHeader> findTrashItemsByDate(
@@ -122,6 +136,8 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
         String fieldValue1,
         int fieldIndex2,
         String fieldValue2,
+        int fieldIndex3,
+        String fieldValue3,
         String generalValue,
         String createdDate,
         Collection<Integer> status,

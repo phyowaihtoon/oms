@@ -9,17 +9,6 @@
       >> {{ _activeMenuItem && _activeMenuItem.translateKey ? (_activeMenuItem.translateKey | translate) : _activeMenuItem?.name }}</span
     >
   </div>
-
-  <div class="col-4 d-flex justify-content-end">
-    <button class="btn btn-primary btn-sm" (click)="searchDocument(1)" [disabled]="isLoading">
-      <fa-icon icon="search"></fa-icon>
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
-    </button>
-    <span style="width: 5px"></span>
-    <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
-      <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
-    </button>
-  </div>
 </div>
 
 <div id="page-body">
@@ -38,15 +27,14 @@
           <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Document Template</label>
           <span class="text-danger">*</span>
         </div>
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.specificMetaData1" for="field_fieldValues"
-            >Specific MetaData</label
-          >
+        <div class="col-3">
+          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel1 }}</label>
         </div>
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.specificMetaData2" for="field_fieldValues"
-            >Specific MetaData</label
-          >
+        <div class="col-3">
+          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel2 }}</label>
+        </div>
+        <div class="col-3">
+          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel3 }}</label>
         </div>
       </div>
       <div class="dms-form-group row col-12 dms-col">
@@ -80,23 +68,10 @@
           </div>
         </div>
 
-        <div class="col-4 row dms-row">
-          <select
-            (change)="onChangeMetaDataField1($event)"
-            class="form-control col-6"
-            id="field_metaDataID1"
-            data-cy="metaDataID1"
-            name="metaDataID1"
-            formControlName="metaDataID1"
-          >
-            <option [value]="0">Select Field Name</option>
-            <option [value]="metaData.id" *ngFor="let metaData of _selectedMetaDataList">
-              {{ metaData.fieldName }}
-            </option>
-          </select>
+        <div class="col-3 row dms-row">
           <select
             *ngIf="isLOV1"
-            class="form-control col-6"
+            class="form-control"
             id="field_fieldValue1"
             data-cy="fieldValue1"
             name="fieldValue1"
@@ -110,7 +85,7 @@
           <input
             *ngIf="!isLOV1"
             type="text"
-            class="form-control col-6"
+            class="form-control"
             name="fieldValue1"
             id="field_fieldValue1"
             data-cy="fieldValue1"
@@ -119,23 +94,10 @@
           />
         </div>
 
-        <div class="col-4 row dms-row">
-          <select
-            (change)="onChangeMetaDataField2($event)"
-            class="form-control col-6"
-            id="field_metaDataID2"
-            data-cy="metaDataID2"
-            name="metaDataID2"
-            formControlName="metaDataID2"
-          >
-            <option [value]="0">Select Field Name</option>
-            <option [value]="metaData.id" *ngFor="let metaData of _selectedMetaDataList">
-              {{ metaData.fieldName }}
-            </option>
-          </select>
+        <div class="col-3 row dms-row">
           <select
             *ngIf="isLOV2"
-            class="form-control col-6"
+            class="form-control"
             id="field_fieldValue2"
             data-cy="fieldValue2"
             name="fieldValue2"
@@ -149,11 +111,37 @@
           <input
             *ngIf="!isLOV2"
             type="text"
-            class="form-control col-6"
+            class="form-control"
             name="fieldValue2"
             id="field_fieldValue2"
             data-cy="fieldValue2"
             formControlName="fieldValue2"
+            placeholder="Enter Data"
+          />
+        </div>
+
+        <div class="col-3 row dms-row">
+          <select
+            *ngIf="isLOV3"
+            class="form-control"
+            id="field_fieldValue3"
+            data-cy="fieldValue3"
+            name="fieldValue3"
+            formControlName="fieldValue3"
+          >
+            <option [value]=""></option>
+            <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF3">
+              {{ lovValue }}
+            </option>
+          </select>
+          <input
+            *ngIf="!isLOV3"
+            type="text"
+            class="form-control"
+            name="fieldValue3"
+            id="field_fieldValue3"
+            data-cy="fieldValue3"
+            formControlName="fieldValue3"
             placeholder="Enter Data"
           />
         </div>
@@ -203,11 +191,16 @@
     </form>
   </div>
 
-  <div *ngIf="isShowingResult" class="result-header row">
-    <span (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
-      <fa-icon icon="angle-down"></fa-icon>&nbsp;
+  <div class="result-header row">
+    <span *ngIf="isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+      <fa-icon icon="angle-down"></fa-icon>
       {{ 'dmsApp.document.result' | translate }}
     </span>
+    <span *ngIf="!isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+      <fa-icon icon="angle-right"></fa-icon>&nbsp;
+      {{ 'dmsApp.document.result' | translate }}
+    </span>
+
     <li ngbDropdown display="dynamic" style="list-style-type: none; cursor: pointer">
       <span class="dropdown-toggle" ngbDropdownToggle>
         <fa-icon icon="cog"></fa-icon>
@@ -227,13 +220,17 @@
         </div>
       </div>
     </li>
-  </div>
 
-  <div *ngIf="!isShowingResult" class="result-header">
-    <span (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
-      <fa-icon icon="angle-down"></fa-icon>&nbsp;
-      {{ 'dmsApp.document.result' | translate }}
-    </span>
+    <div class="col-4 d-flex">
+      <button class="btn btn-primary btn-sm" (click)="searchDocument(1)" [disabled]="isLoading">
+        <fa-icon icon="search"></fa-icon>
+        <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+      </button>
+      <span style="width: 5px"></span>
+      <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
+        <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+      </button>
+    </div>
   </div>
 
   <div id="result-container" *ngIf="isShowingResult">
