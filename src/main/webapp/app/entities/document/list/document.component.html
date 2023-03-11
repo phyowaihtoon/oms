@@ -30,15 +30,14 @@
           <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Department</label>
           <span class="text-danger">*</span>
         </div>
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.specificMetaData1" for="field_fieldValues"
-            >Specific MetaData</label
-          >
+        <div class="col-3">
+          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel1 }}</label>
         </div>
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.specificMetaData2" for="field_fieldValues"
-            >Specific MetaData</label
-          >
+        <div class="col-3">
+          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel2 }}</label>
+        </div>
+        <div class="col-3">
+          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel3 }}</label>
         </div>
       </div>
       <div class="dms-form-group row col-12 dms-col">
@@ -73,25 +72,11 @@
           </div>
         </div>
 
-        <div class="col-4 row dms-row">
-          <select
-            (change)="onChangeMetaDataField1($event)"
-            (keydown.enter)="searchDocument()"
-            class="form-control col-6"
-            id="field_metaDataID1"
-            data-cy="metaDataID1"
-            name="metaDataID1"
-            formControlName="metaDataID1"
-          >
-            <option [value]="0">Select Field Name</option>
-            <option [value]="metaData.id" *ngFor="let metaData of _selectedMetaDataList">
-              {{ metaData.fieldName }}
-            </option>
-          </select>
+        <div class="col-3 row dms-row">
           <select
             (keydown.enter)="searchDocument()"
             *ngIf="isLOV1"
-            class="form-control col-6"
+            class="form-control"
             id="field_fieldValue1"
             data-cy="fieldValue1"
             name="fieldValue1"
@@ -105,7 +90,7 @@
           <input
             *ngIf="!isLOV1"
             type="text"
-            class="form-control col-6"
+            class="form-control"
             name="fieldValue1"
             id="field_fieldValue1"
             data-cy="fieldValue1"
@@ -114,25 +99,11 @@
           />
         </div>
 
-        <div class="col-4 row dms-row">
-          <select
-            (change)="onChangeMetaDataField2($event)"
-            (keydown.enter)="searchDocument()"
-            class="form-control col-6"
-            id="field_metaDataID2"
-            data-cy="metaDataID2"
-            name="metaDataID2"
-            formControlName="metaDataID2"
-          >
-            <option [value]="0">Select Field Name</option>
-            <option [value]="metaData.id" *ngFor="let metaData of _selectedMetaDataList">
-              {{ metaData.fieldName }}
-            </option>
-          </select>
+        <div class="col-3 row dms-row">
           <select
             (keydown.enter)="searchDocument()"
             *ngIf="isLOV2"
-            class="form-control col-6"
+            class="form-control"
             id="field_fieldValue2"
             data-cy="fieldValue2"
             name="fieldValue2"
@@ -146,11 +117,38 @@
           <input
             *ngIf="!isLOV2"
             type="text"
-            class="form-control col-6"
+            class="form-control"
             name="fieldValue2"
             id="field_fieldValue2"
             data-cy="fieldValue2"
             formControlName="fieldValue2"
+            placeholder="Enter Data"
+          />
+        </div>
+
+        <div class="col-3 row dms-row">
+          <select
+            (keydown.enter)="searchDocument()"
+            *ngIf="isLOV3"
+            class="form-control"
+            id="field_fieldValue3"
+            data-cy="fieldValue3"
+            name="fieldValue3"
+            formControlName="fieldValue3"
+          >
+            <option [value]=""></option>
+            <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF3">
+              {{ lovValue }}
+            </option>
+          </select>
+          <input
+            *ngIf="!isLOV3"
+            type="text"
+            class="form-control"
+            name="fieldValue3"
+            id="field_fieldValue3"
+            data-cy="fieldValue3"
+            formControlName="fieldValue3"
             placeholder="Enter Data"
           />
         </div>
@@ -160,8 +158,8 @@
         <div class="col-3">
           <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="field_fieldValues">Status</label>
         </div>
-        <div class="col-4">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">Other MetaData</label>
+        <div class="col-3">
+          <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">General Search</label>
         </div>
 
         <div class="col-2">
@@ -184,7 +182,7 @@
             </option>
           </select>
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <input
             type="text"
             class="form-control"
