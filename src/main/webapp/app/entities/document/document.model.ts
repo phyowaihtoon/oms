@@ -78,6 +78,8 @@ export interface IDocumentInquiry {
   metaDataID2?: number;
   fieldValue2?: string;
   fieldIndex2?: number;
+  fieldValue3?: string;
+  fieldIndex3?: number;
   status?: number;
   reason?: string;
   generalValue?: string;
@@ -95,6 +97,8 @@ export class DocumentInquiry implements IDocumentInquiry {
     public metaDataID2?: number,
     public fieldValue2?: string,
     public fieldIndex2?: number,
+    public fieldValue3?: string,
+    public fieldIndex3?: number,
     public status?: number,
     public reason?: string,
     public generalValue?: string,

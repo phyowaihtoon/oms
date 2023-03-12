@@ -38,9 +38,9 @@
       },
       "document": {
         "title": "Document",
-        "create": "Document Mapping",
-        "update": "Document Mapping",
-        "search": "Document Inquiry",
+        "create": "Entry",
+        "update": "Entry",
+        "search": "Inquiry",
         "trashbin": "Trash Bin",
         "restore": "Restore Document"
       },

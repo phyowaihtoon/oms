@@ -28,8 +28,17 @@ export class DocumentComponent implements OnInit, OnDestroy {
   _staticMetaDataColumns: any;
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
+  _lovValuesF3?: string[] = [];
   isLOV1 = false;
   isLOV2 = false;
+  isLOV3 = false;
+  _fieldLabel1?: string = '';
+  _fieldLabel2?: string = '';
+  _fieldLabel3?: string = '';
+  _fieldOrder1: number = 0;
+  _fieldOrder2: number = 0;
+  _fieldOrder3: number = 0;
+
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -49,10 +58,9 @@ export class DocumentComponent implements OnInit, OnDestroy {
   searchForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     createdDate: [],
-    metaDataID1: [0],
     fieldValue1: [{ value: '', disabled: true }],
-    metaDataID2: [0],
     fieldValue2: [{ value: '', disabled: true }],
+    fieldValue3: [{ value: '', disabled: true }],
     generalValue: [],
     docStatus: [0],
     pageNo: [],
@@ -121,6 +129,7 @@ export class DocumentComponent implements OnInit, OnDestroy {
     const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
     if (metaDataHeader) {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+      this.bindSearchCriteria();
       this.bindMetaDataColumns();
     }
   }
@@ -131,36 +140,54 @@ export class DocumentComponent implements OnInit, OnDestroy {
       const metaDataHeader = this._metaDataHdrList?.find(item => item.id === this._userAuthority?.departmentId);
       if (metaDataHeader) {
         this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+        this.bindSearchCriteria();
         this.bindMetaDataColumns();
       }
     }
   }
 
-  onChangeMetaDataField1(event: any): void {
+  bindSearchCriteria(): void {
     this.isLOV1 = false;
-    this.searchForm.get('fieldValue1')?.patchValue('');
-    const metaDataID: number = +this.searchForm.get('metaDataID1')!.value;
-    if (metaDataID !== 0) {
-      this.searchForm.get('fieldValue1')?.enable();
-    }
-    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
-    if (metaData?.fieldType === 'LOV') {
-      this.isLOV1 = true;
-      this._lovValuesF1 = metaData.fieldValue?.split('|');
-    }
-  }
-
-  onChangeMetaDataField2(event: any): void {
     this.isLOV2 = false;
+    this.isLOV3 = false;
+    this.searchForm.get('fieldValue1')?.patchValue('');
     this.searchForm.get('fieldValue2')?.patchValue('');
-    const metaDataID: number = +this.searchForm.get('metaDataID2')!.value;
-    if (metaDataID !== 0) {
-      this.searchForm.get('fieldValue2')?.enable();
+    this.searchForm.get('fieldValue3')?.patchValue('');
+    this._fieldLabel1 = '';
+    this._fieldLabel2 = '';
+    this._fieldLabel3 = '';
+
+    const metaData1 = this._selectedMetaDataList?.find(item => item.fieldOrder === 1);
+    if (metaData1) {
+      this.searchForm.get('fieldValue1')?.enable();
+      this._fieldLabel1 = metaData1.fieldName;
+      this._fieldOrder1 = 1;
+      if (metaData1.fieldType === 'LOV') {
+        this.isLOV1 = true;
+        this._lovValuesF1 = metaData1.fieldValue?.split('|');
+      }
     }
-    const metaData = this._selectedMetaDataList?.find(item => item.id === metaDataID);
-    if (metaData?.fieldType === 'LOV') {
-      this.isLOV2 = true;
-      this._lovValuesF2 = metaData.fieldValue?.split('|');
+
+    const metaData2 = this._selectedMetaDataList?.find(item => item.fieldOrder === 2);
+    if (metaData2) {
+      this.searchForm.get('fieldValue2')?.enable();
+      this._fieldLabel2 = metaData2.fieldName;
+      this._fieldOrder2 = 2;
+      if (metaData2.fieldType === 'LOV') {
+        this.isLOV2 = true;
+        this._lovValuesF2 = metaData2.fieldValue?.split('|');
+      }
+    }
+
+    const metaData3 = this._selectedMetaDataList?.find(item => item.fieldOrder === 3);
+    if (metaData3) {
+      this.searchForm.get('fieldValue3')?.enable();
+      this._fieldLabel3 = metaData3.fieldName;
+      this._fieldOrder3 = 3;
+      if (metaData3.fieldType === 'LOV') {
+        this.isLOV3 = true;
+        this._lovValuesF3 = metaData3.fieldValue?.split('|');
+      }
     }
   }
 
@@ -263,22 +290,16 @@ export class DocumentComponent implements OnInit, OnDestroy {
       // sort: this.sort(),
     };
 
-    const metaDataID1: number = +this.searchForm.get('metaDataID1')!.value;
-    const metaDataField1 = this._selectedMetaDataList?.find(item => item.id === metaDataID1);
-
-    const metaDataID2: number = +this.searchForm.get('metaDataID2')!.value;
-    const metaDataField2 = this._selectedMetaDataList?.find(item => item.id === metaDataID2);
-
     this._searchCriteria = {
       ...new DocumentInquiry(),
       metaDataHeaderId: this.searchForm.get('metaDataHdrID')!.value,
       createdDate: this.searchForm.get('createdDate')!.value ? this.searchForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
-      metaDataID1: this.searchForm.get('metaDataID1')!.value,
       fieldValue1: this.searchForm.get('fieldValue1')!.value,
-      fieldIndex1: metaDataField1?.fieldOrder,
-      metaDataID2: this.searchForm.get('metaDataID2')!.value,
+      fieldIndex1: this._fieldOrder1,
       fieldValue2: this.searchForm.get('fieldValue2')!.value,
-      fieldIndex2: metaDataField2?.fieldOrder,
+      fieldIndex2: this._fieldOrder2,
+      fieldValue3: this.searchForm.get('fieldValue3')!.value,
+      fieldIndex3: this._fieldOrder3,
       generalValue: this.searchForm.get('generalValue')!.value,
       status: this.searchForm.get('docStatus')!.value,
     };
@@ -301,12 +322,15 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.isShowingResult = false;
     this.isLOV1 = false;
     this.isLOV2 = false;
+    this.isLOV3 = false;
+    this._fieldLabel1 = '';
+    this._fieldLabel2 = '';
+    this._fieldLabel3 = '';
     this._selectedMetaDataList = [];
     this.searchForm.get('metaDataHdrID')?.patchValue(0);
-    this.searchForm.get('metaDataID1')?.patchValue(0);
     this.searchForm.get('fieldValue1')?.disable();
-    this.searchForm.get('metaDataID2')?.patchValue(0);
     this.searchForm.get('fieldValue2')?.disable();
+    this.searchForm.get('fieldValue3')?.disable();
     this.searchForm.get('docStatus')?.patchValue(0);
     this.searchForm.get('pageNo')?.patchValue('');
     this.documentInquiryService.clearSearchCriteria();
@@ -318,12 +342,12 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.isLOV1 = false;
     this.isLOV2 = false;
     this._selectedMetaDataList = [];
-    this.searchForm.get('metaDataID1')?.patchValue(0);
     this.searchForm.get('fieldValue1')?.patchValue('');
     this.searchForm.get('fieldValue1')?.disable();
-    this.searchForm.get('metaDataID2')?.patchValue(0);
     this.searchForm.get('fieldValue2')?.patchValue('');
     this.searchForm.get('fieldValue2')?.disable();
+    this.searchForm.get('fieldValue3')?.patchValue('');
+    this.searchForm.get('fieldValue3')?.disable();
     this.searchForm.get('docStatus')?.patchValue(0);
     this.searchForm.get('pageNo')?.patchValue('');
   }
@@ -331,26 +355,9 @@ export class DocumentComponent implements OnInit, OnDestroy {
   updateSearchFormData(criteriaData: IDocumentInquiry): void {
     this.searchForm.get('metaDataHdrID')?.patchValue(criteriaData.metaDataHeaderId);
     this.onChangeDocumentTemplate();
-    const metaData1 = this._selectedMetaDataList?.find(item => item.id?.toString() === criteriaData.metaDataID1?.toString());
-    if (metaData1 !== undefined) {
-      this.searchForm.get('fieldValue1')?.enable();
-    }
-    if (metaData1?.fieldType === 'LOV') {
-      this.isLOV1 = true;
-      this._lovValuesF1 = metaData1.fieldValue?.split('|');
-    }
-    const metaData2 = this._selectedMetaDataList?.find(item => item.id?.toString() === criteriaData.metaDataID2?.toString());
-    if (metaData2 !== undefined) {
-      this.searchForm.get('fieldValue2')?.enable();
-    }
-    if (metaData2?.fieldType === 'LOV') {
-      this.isLOV2 = true;
-      this._lovValuesF2 = metaData2.fieldValue?.split('|');
-    }
-    this.searchForm.get('metaDataID1')?.patchValue(criteriaData.metaDataID1);
     this.searchForm.get('fieldValue1')?.patchValue(criteriaData.fieldValue1);
-    this.searchForm.get('metaDataID2')?.patchValue(criteriaData.metaDataID2);
     this.searchForm.get('fieldValue2')?.patchValue(criteriaData.fieldValue2);
+    this.searchForm.get('fieldValue3')?.patchValue(criteriaData.fieldValue3);
     this.searchForm.get('generalValue')?.patchValue(criteriaData.generalValue);
     this.searchForm.get('docStatus')?.patchValue(criteriaData.status);
     this.searchDocument();
