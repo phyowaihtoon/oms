@@ -14,6 +14,9 @@ public class RptDataMessage implements Serializable {
     private String dataS3;
     private String dataS4;
     private String dataS5;
+    private String dataS6;
+    private String dataS7;
+    private String dataS8;
 
     private int dataInt1;
     private int dataInt2;
@@ -66,8 +69,33 @@ public class RptDataMessage implements Serializable {
     public void setDataS5(String dataS5) {
         this.dataS5 = dataS5;
     }
+    
+    
+    public String getDataS6() {
+		return dataS6;
+	}
 
-    public int getDataInt1() {
+	public void setDataS6(String dataS6) {
+		this.dataS6 = dataS6;
+	}
+
+	public String getDataS7() {
+		return dataS7;
+	}
+
+	public void setDataS7(String dataS7) {
+		this.dataS7 = dataS7;
+	}
+
+	public String getDataS8() {
+		return dataS8;
+	}
+
+	public void setDataS8(String dataS8) {
+		this.dataS8 = dataS8;
+	}
+
+	public int getDataInt1() {
         return dataInt1;
     }
 
