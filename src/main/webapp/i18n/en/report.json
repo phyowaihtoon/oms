@@ -8,12 +8,12 @@
       "datePattern": "Date must be entered in DD-MM-YYYY"
     },
     "docmapping": {
-      "criteriaLbl": "Report Criteria",
+      "criteriaLbl": "REPORT CRITERIA",
       "startdate": "Start Date",
       "enddate": "End Date",
       "uploadfromdate": "Upload From Date",
       "uploadtodate": "Upload To Date",
-      "template": "Template",
+      "template": "Department",
       "user": "User"
     }
   }

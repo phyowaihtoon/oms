@@ -17,6 +17,8 @@ public class MenuGroupMessage {
 
     private int orderNo;
 
+    private String routerLink;
+
     private List<RoleMenuAccessDTO> subMenuItems;
 
     public Long getId() {
@@ -65,6 +67,14 @@ public class MenuGroupMessage {
 
     public void setOrderNo(int orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public String getRouterLink() {
+        return routerLink;
+    }
+
+    public void setRouterLink(String routerLink) {
+        this.routerLink = routerLink;
     }
 
     public List<RoleMenuAccessDTO> getSubMenuItems() {
