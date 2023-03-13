@@ -23,6 +23,7 @@
 .dashboard-box .box-body {
   width: 100%;
   min-height: 70vh;
+  max-height: 150vh;
 }
 
 .chart-body {
@@ -145,4 +146,23 @@ fieldset {
 
 form {
   margin: 8px !important;
+}
+
+.dms-col {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.dms-row {
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.dms-form-group {
+  margin-bottom: 0.3rem;
+}
+
+.dms-icon-btn {
+  padding: 2px;
+  height: 1.8rem;
 }
