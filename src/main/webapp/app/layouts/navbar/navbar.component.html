@@ -42,13 +42,35 @@
         [routerLinkActiveOptions]="{ exact: true }"
         *ngFor="let menuGroup of getApplicationMenus()"
       >
-        <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu" data-cy="entity">
+        <a
+          *ngIf="menuGroup && menuGroup.routerLink && menuGroup.routerLink.length > 1"
+          class="nav-link"
+          [routerLink]="[menuGroup.routerLink]"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span> {{ menuGroup && menuGroup.translateKey ? (menuGroup.translateKey | translate) : menuGroup.name }}</span>
+        </a>
+
+        <a
+          *ngIf="!(menuGroup && menuGroup.routerLink && menuGroup.routerLink.length > 1)"
+          class="nav-link dropdown-toggle"
+          ngbDropdownToggle
+          href="javascript:void(0);"
+          id="entity-menu"
+          data-cy="entity"
+        >
           <span>
             <span> {{ menuGroup && menuGroup.translateKey ? (menuGroup.translateKey | translate) : menuGroup.name }}</span>
           </span>
         </a>
 
-        <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
+        <ul
+          *ngIf="!(menuGroup && menuGroup.routerLink && menuGroup.routerLink.length > 1)"
+          class="dropdown-menu"
+          ngbDropdownMenu
+          aria-labelledby="entity-menu"
+        >
           <li *ngFor="let menuAccess of menuGroup.subMenuItems">
             <a
               class="dropdown-item"

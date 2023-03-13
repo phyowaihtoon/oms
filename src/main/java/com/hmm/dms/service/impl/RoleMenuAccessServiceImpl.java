@@ -95,6 +95,7 @@ public class RoleMenuAccessServiceImpl implements RoleMenuAccessService {
                 message.setTranslateKey(data.getTranslateKey());
                 message.setFaIcon(data.getFaIcon());
                 message.setOrderNo(data.getOrderNo());
+                message.setRouterLink(data.getRouterLink());
                 message.setSubMenuItems(roleMenuAccessList);
 
                 menuGroupMessageList.add(message);

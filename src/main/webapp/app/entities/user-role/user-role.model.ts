@@ -65,5 +65,6 @@ export interface IMenuGroupMessage {
   translateKey?: string;
   faIcon?: string;
   orderNo?: number;
+  routerLink?: string;
   subMenuItems?: IRoleMenuAccess[];
 }
