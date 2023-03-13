@@ -123,6 +123,8 @@ public class ReportServiceImpl implements ReportService {
                     dto.setDataS3(String.valueOf(arr[2]));
                     dto.setDataS4(String.valueOf(arr[3]));
                     dto.setDataS5(String.valueOf(arr[4]));
+                    dto.setDataS6(String.valueOf(arr[5]));
+                    dto.setDataS7(String.valueOf(arr[6]));
                     documentList.add(dto);
                 }
             }
