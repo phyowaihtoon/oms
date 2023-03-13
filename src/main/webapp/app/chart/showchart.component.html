@@ -158,3 +158,317 @@
     </div>
   </div>
 </div>
+
+<div *ngIf="template.cardId === 'CARD008'">
+  <div class="col-md-12">
+    <div class="dashboard-box">
+      <div class="box-header">{{ template.cardName }}</div>
+      <div class="box-body">
+        <form name="editForm" role="form" novalidate [formGroup]="editForm" autocomplete="off">
+          <div id="search-area">
+            <div class="dms-form-group row col-12 dms-col">
+              <div class="col-3">
+                <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Department</label>
+                <span class="text-danger">*</span>
+              </div>
+              <div class="col-3">
+                <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel1 }}</label>
+              </div>
+              <div class="col-3">
+                <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel2 }}</label>
+              </div>
+              <div class="col-3">
+                <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel3 }}</label>
+              </div>
+            </div>
+            <div class="dms-form-group row col-12 dms-col">
+              <div class="col-3">
+                <select
+                  (change)="onChangeDocumentTemplate2()"
+                  (keydown.enter)="searchDocument()"
+                  class="form-control"
+                  id="field_metaDataHdrID"
+                  data-cy="metaDataHdrID"
+                  name="metaDataHdrID"
+                  formControlName="metaDataHdrID"
+                >
+                  <option [value]="0">{{ 'dmsApp.document.selectDept' | translate }}</option>
+                  <option [value]="metaData.id" *ngFor="let metaData of _metaDataHdrList; trackBy: trackMetaDataByID">
+                    {{ metaData.docTitle }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-3 row dms-row">
+                <select
+                  (change)="searchDocument()"
+                  (keydown.enter)="searchDocument()"
+                  *ngIf="isLOV1"
+                  class="form-control"
+                  id="field_fieldValue1"
+                  data-cy="fieldValue1"
+                  name="fieldValue1"
+                  formControlName="fieldValue1"
+                >
+                  <option [value]=""></option>
+                  <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF1">
+                    {{ lovValue }}
+                  </option>
+                </select>
+                <input
+                  *ngIf="!isLOV1"
+                  type="text"
+                  class="form-control"
+                  name="fieldValue1"
+                  id="field_fieldValue1"
+                  data-cy="fieldValue1"
+                  formControlName="fieldValue1"
+                  placeholder="Enter Data"
+                  (keydown.enter)="searchDocument()"
+                />
+              </div>
+
+              <div class="col-3 row dms-row">
+                <select
+                  (change)="searchDocument()"
+                  (keydown.enter)="searchDocument()"
+                  *ngIf="isLOV2"
+                  class="form-control"
+                  id="field_fieldValue2"
+                  data-cy="fieldValue2"
+                  name="fieldValue2"
+                  formControlName="fieldValue2"
+                >
+                  <option [value]=""></option>
+                  <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF2">
+                    {{ lovValue }}
+                  </option>
+                </select>
+                <input
+                  *ngIf="!isLOV2"
+                  type="text"
+                  class="form-control"
+                  name="fieldValue2"
+                  id="field_fieldValue2"
+                  data-cy="fieldValue2"
+                  formControlName="fieldValue2"
+                  placeholder="Enter Data"
+                  (keydown.enter)="searchDocument()"
+                />
+              </div>
+
+              <div class="col-3 row dms-row">
+                <select
+                  (change)="searchDocument()"
+                  (keydown.enter)="searchDocument()"
+                  *ngIf="isLOV3"
+                  class="form-control"
+                  id="field_fieldValue3"
+                  data-cy="fieldValue3"
+                  name="fieldValue3"
+                  formControlName="fieldValue3"
+                >
+                  <option [value]=""></option>
+                  <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF3">
+                    {{ lovValue }}
+                  </option>
+                </select>
+                <input
+                  *ngIf="!isLOV3"
+                  type="text"
+                  class="form-control"
+                  name="fieldValue3"
+                  id="field_fieldValue3"
+                  data-cy="fieldValue3"
+                  formControlName="fieldValue3"
+                  placeholder="Enter Data"
+                  (keydown.enter)="searchDocument()"
+                />
+              </div>
+            </div>
+
+            <div class="dms-form-group row col-12 dms-col">
+              <div class="col-3">
+                <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="field_fieldValues">Status</label>
+              </div>
+              <div class="col-3">
+                <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues"
+                  >General Search</label
+                >
+              </div>
+
+              <!--  <div class="col-2">
+                <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
+              </div> -->
+            </div>
+
+            <div class="dms-form-group row col-12 dms-col">
+              <div class="col-3">
+                <select
+                  (change)="searchDocument()"
+                  (keydown.enter)="searchDocument()"
+                  class="form-control"
+                  id="field_docStatus"
+                  data-cy="docStatus"
+                  name="docStatus"
+                  formControlName="docStatus"
+                >
+                  <option [value]="documentStatus.value" *ngFor="let documentStatus of _documentStatusList">
+                    {{ documentStatus.description }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="generalValue"
+                  id="field_generalValue"
+                  data-cy="generalValue"
+                  formControlName="generalValue"
+                  (keydown.enter)="searchDocument()"
+                />
+              </div>
+
+              <!-- <div class="col-2">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    id="field_createdDate"
+                    data-cy="createdDate"
+                    placeholder="DD-MM-YYYY"
+                    name="createdDate"
+                    formControlName="createdDate"
+                    ngbDatepicker
+                    #createdDate="ngbDatepicker"
+                    (keydown.enter)="searchDocument()"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
+                      <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+          <div class="chart-body" style="margin-top: '16px'">
+            <div class="table-responsive" id="entities">
+              <table class="table table-bordered table-hover" aria-describedby="page-heading">
+                <thead>
+                  <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+                    <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+                      <span jhiTranslate="global.field.id">ID</span>
+                    </th>
+                    <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+                      <span jhiTranslate="dmsApp.document.docTitle">Department</span>
+                    </th>
+                    <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+                      <span jhiTranslate="dmsApp.document.status">Status</span>
+                    </th>
+
+                    <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
+
+                    <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
+                      <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>
+                    </th>
+
+                    <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
+                      <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
+                    </th>
+                    <!--  <th scope="col"></th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
+                    <td [hidden]="true">{{ bindMetaDataValues(documentHeader.fieldValues) }}</td>
+
+                    <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+                      <a>{{ documentHeader.id }}</a>
+                    </td>
+
+                    <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+                      {{ getDocTitleByID(documentHeader.metaDataHeaderId) }}
+                    </td>
+
+                    <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+                      {{ getDocStatusDesc(documentHeader.status) }}
+                    </td>
+
+                    <td *ngFor="let mdValue of _displayedMetaDataValues">{{ mdValue }}</td>
+
+                    <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
+                      {{ documentHeader.createdDate ? documentHeader.createdDate.format('DD-MM-YYYY') : '-' }}
+                    </td>
+
+                    <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
+                      {{ documentHeader.createdBy }}
+                    </td>
+                    <!--
+                    <td class="text-right">
+                      <div class="btn-group">
+                        <button
+                          *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
+                          type="submit"
+                          (click)="goToView(documentHeader.id)"
+                          class="btn btn-info btn-sm"
+                          data-cy="entityDetailsButton"
+                        >
+                          <fa-icon icon="eye"></fa-icon>
+                          <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+      
+                        <button
+                          *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
+                          type="submit"
+                          [routerLink]="['/document', documentHeader.id, 'edit']"
+                          class="btn btn-primary btn-sm"
+                          data-cy="entityEditButton"
+                        >
+                          <fa-icon icon="pencil-alt"></fa-icon>
+                          <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                      </div>
+                    </td>
+                    -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="_documentHeaders && _documentHeaders.length > 0">
+              <div class="row justify-content-center">
+                <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+                <span style="width: 30px">&nbsp;&nbsp;</span>
+                <ngb-pagination
+                  [collectionSize]="totalItems"
+                  [(page)]="ngbPaginationPage"
+                  [pageSize]="itemsPerPage"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="loadPage($event)"
+                ></ngb-pagination>
+                <div class="col-3 d-flex">
+                  <label jhiTranslate="dmsApp.document.enterPage" for="field_pageNo">Page No.</label>
+                  <span style="width: 3px"></span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    style="width: 80px"
+                    name="pageNo"
+                    id="field_pageNo"
+                    data-cy="pageNo"
+                    formControlName="pageNo"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- <div class="box-footer">{{ getTotalRecordCount() }}</div> -->
+    </div>
+  </div>
+</div>
