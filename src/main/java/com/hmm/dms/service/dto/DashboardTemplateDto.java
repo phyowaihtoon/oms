@@ -1,6 +1,7 @@
 package com.hmm.dms.service.dto;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 public class DashboardTemplateDto implements Serializable {
@@ -20,6 +21,8 @@ public class DashboardTemplateDto implements Serializable {
 
     @NotNull
     private String serviceUrl;
+
+    private String nameInMyanmar;
 
     public Long getId() {
         return id;
@@ -59,6 +62,14 @@ public class DashboardTemplateDto implements Serializable {
 
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
+
+    public String getNameInMyanmar() {
+        return nameInMyanmar;
+    }
+
+    public void setNameInMyanmar(String nameInMyanmar) {
+        this.nameInMyanmar = nameInMyanmar;
     }
 
     @Override

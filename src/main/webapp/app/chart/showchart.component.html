@@ -29,7 +29,7 @@
 <div *ngIf="template.cardId === 'CARD002' || template.cardId === 'CARD003' || template.cardId === 'CARD007'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header">{{ template.cardName }}</div>
+      <div class="box-header">{{ _selectedLanguage === 'my' ? template.nameInMyanmar : template.cardName }}</div>
       <div class="box-body">
         <div class="chart-body" id="{{ template.cardId }}"></div>
       </div>
@@ -41,7 +41,7 @@
 <div *ngIf="template.cardId === 'CARD004'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header">{{ template.cardName }}</div>
+      <div class="box-header">{{ _selectedLanguage === 'my' ? template.nameInMyanmar : template.cardName }}</div>
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm" *ngIf="_userAuthority?.roleType === 1">
           <div class="d-flex justify-content-end" style="margin-top: 8px">
@@ -106,7 +106,7 @@
 <div *ngIf="template.cardId === 'CARD005'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header">{{ template.cardName }}</div>
+      <div class="box-header">{{ _selectedLanguage === 'my' ? template.nameInMyanmar : template.cardName }}</div>
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm" *ngIf="_userAuthority?.roleType === 1">
           <div class="d-flex justify-content-end">
@@ -134,7 +134,7 @@
 <div *ngIf="template.cardId === 'CARD006'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header">{{ template.cardName }}</div>
+      <div class="box-header">{{ _selectedLanguage === 'my' ? template.nameInMyanmar : template.cardName }}</div>
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm" *ngIf="_userAuthority?.roleType === 1">
           <div class="d-flex justify-content-end">
@@ -162,7 +162,7 @@
 <div *ngIf="template.cardId === 'CARD008'">
   <div class="col-md-12">
     <div class="dashboard-box">
-      <div class="box-header">{{ template.cardName }}</div>
+      <div class="box-header">{{ _selectedLanguage === 'my' ? template.nameInMyanmar : template.cardName }}</div>
       <div class="box-body">
         <form name="editForm" role="form" novalidate [formGroup]="editForm" autocomplete="off">
           <div id="search-area">
