@@ -32,6 +32,9 @@ public class MenuGroup implements Serializable {
     @Column(name = "fa_icon")
     private String faIcon;
 
+    @Column(name = "router_link")
+    private String routerLink;
+
     public Long getId() {
         return id;
     }
@@ -78,6 +81,14 @@ public class MenuGroup implements Serializable {
 
     public void setFaIcon(String faIcon) {
         this.faIcon = faIcon;
+    }
+
+    public String getRouterLink() {
+        return routerLink;
+    }
+
+    public void setRouterLink(String routerLink) {
+        this.routerLink = routerLink;
     }
 
     @Override

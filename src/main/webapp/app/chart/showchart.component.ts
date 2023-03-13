@@ -56,6 +56,7 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
   ngbPaginationPage = 1;
 
   _userAuthority?: IUserAuthority | null;
+  _selectedLanguage: string = 'my';
 
   editForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
@@ -90,6 +91,7 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this._selectedLanguage = this.translateService.currentLang;
     this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
     if (this.template.cardId !== 'CARD008') {
       this.loadAllSetup();
@@ -251,7 +253,7 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
     }
 
     if (this.template.cardId === 'CARD008') {
-      //this.searchDocument();
+      // this.searchDocument();
     }
   }
 

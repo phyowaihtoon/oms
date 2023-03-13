@@ -38,6 +38,9 @@ public class DashboardTemplate {
     @Column(name = "service_url", nullable = false)
     private String serviceUrl;
 
+    @Column(name = "name_in_myanmar")
+    private String nameInMyanmar;
+
     public Long getId() {
         return id;
     }
@@ -76,6 +79,14 @@ public class DashboardTemplate {
 
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
+
+    public String getNameInMyanmar() {
+        return nameInMyanmar;
+    }
+
+    public void setNameInMyanmar(String nameInMyanmar) {
+        this.nameInMyanmar = nameInMyanmar;
     }
 
     @Override
