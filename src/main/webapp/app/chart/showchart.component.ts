@@ -14,7 +14,7 @@ import { IInputParam, InputParam } from 'app/services/input-param.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { DocumentInquiry, IDocumentHeader, IDocumentInquiry } from 'app/entities/document/document.model';
 import { DocumentInquiryService } from 'app/entities/document/service/document-inquiry.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 enableProdMode();
@@ -92,6 +92,10 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this._selectedLanguage = this.translateService.currentLang;
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this._selectedLanguage = this.translateService.currentLang;
+    });
+
     this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
     if (this.template.cardId !== 'CARD008') {
       this.loadAllSetup();
