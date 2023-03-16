@@ -38,9 +38,9 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
   _fieldLabel1?: string = '';
   _fieldLabel2?: string = '';
   _fieldLabel3?: string = '';
-  _fieldOrder1: number = 0;
-  _fieldOrder2: number = 0;
-  _fieldOrder3: number = 0;
+  _fieldOrder1?: number = 0;
+  _fieldOrder2?: number = 0;
+  _fieldOrder3?: number = 0;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -136,36 +136,38 @@ export class DocumentTrashbinComponent implements OnInit, OnDestroy {
     this._fieldLabel2 = '';
     this._fieldLabel3 = '';
 
-    const metaData1 = this._selectedMetaDataList?.find(item => item.fieldOrder === 1);
-    if (metaData1) {
+    const searchFieldList = this._selectedMetaDataList?.filter(item => item.searchBy === 'Y');
+
+    if (searchFieldList && searchFieldList.length > 0) {
+      const metaData1 = searchFieldList[0];
       this.searchForm.get('fieldValue1')?.enable();
       this._fieldLabel1 = metaData1.fieldName;
-      this._fieldOrder1 = 1;
+      this._fieldOrder1 = metaData1.fieldOrder;
       if (metaData1.fieldType === 'LOV') {
         this.isLOV1 = true;
         this._lovValuesF1 = metaData1.fieldValue?.split('|');
       }
-    }
 
-    const metaData2 = this._selectedMetaDataList?.find(item => item.fieldOrder === 2);
-    if (metaData2) {
-      this.searchForm.get('fieldValue2')?.enable();
-      this._fieldLabel2 = metaData2.fieldName;
-      this._fieldOrder2 = 2;
-      if (metaData2.fieldType === 'LOV') {
-        this.isLOV2 = true;
-        this._lovValuesF2 = metaData2.fieldValue?.split('|');
+      if (searchFieldList.length > 1) {
+        const metaData2 = searchFieldList[1];
+        this.searchForm.get('fieldValue2')?.enable();
+        this._fieldLabel2 = metaData2.fieldName;
+        this._fieldOrder2 = metaData2.fieldOrder;
+        if (metaData2.fieldType === 'LOV') {
+          this.isLOV2 = true;
+          this._lovValuesF2 = metaData2.fieldValue?.split('|');
+        }
       }
-    }
 
-    const metaData3 = this._selectedMetaDataList?.find(item => item.fieldOrder === 3);
-    if (metaData3) {
-      this.searchForm.get('fieldValue3')?.enable();
-      this._fieldLabel3 = metaData3.fieldName;
-      this._fieldOrder3 = 3;
-      if (metaData3.fieldType === 'LOV') {
-        this.isLOV3 = true;
-        this._lovValuesF3 = metaData3.fieldValue?.split('|');
+      if (searchFieldList.length > 2) {
+        const metaData3 = searchFieldList[2];
+        this.searchForm.get('fieldValue3')?.enable();
+        this._fieldLabel3 = metaData3.fieldName;
+        this._fieldOrder3 = metaData3.fieldOrder;
+        if (metaData3.fieldType === 'LOV') {
+          this.isLOV3 = true;
+          this._lovValuesF3 = metaData3.fieldValue?.split('|');
+        }
       }
     }
   }

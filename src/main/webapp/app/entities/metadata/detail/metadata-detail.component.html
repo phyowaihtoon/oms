@@ -62,7 +62,8 @@
             <th class="text-center" style="width: 30%">{{ 'dmsApp.metaData.fieldValue' | translate }}</th>
             <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldMandatory' | translate }}</th>
             <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldOrder' | translate }}</th>
-            <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.showDashboard' | translate }}</th>
+            <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.showDashboard' | translate }}</th>
+            <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.searchBy' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -73,6 +74,7 @@
             <td><input type="text" readonly class="form-control" value="{{ detail?.isRequired }}" /></td>
             <td><input type="text" readonly class="form-control text-right" value="{{ detail?.fieldOrder }}" /></td>
             <td><input type="text" readonly class="form-control" value="{{ detail?.showDashboard === 'Y' ? 'YES' : 'NO' }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.searchBy === 'Y' ? 'YES' : 'NO' }}" /></td>
           </tr>
         </tbody>
       </table>

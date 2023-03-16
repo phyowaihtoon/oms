@@ -47,6 +47,11 @@ export class MetadataUpdateComponent implements OnInit {
     { value: 'N', caption: 'NO' },
   ];
 
+  searchByList = [
+    { value: 'Y', caption: 'YES' },
+    { value: 'N', caption: 'NO' },
+  ];
+
   constructor(
     protected service: MetaDataService,
     protected activatedRoute: ActivatedRoute,
@@ -91,6 +96,7 @@ export class MetadataUpdateComponent implements OnInit {
       isRequired: ['YES', [Validators.required]],
       fieldOrder: [this.fieldList().controls.length + 1, [Validators.required, Validators.pattern('^[0-9]*$')]],
       showDashboard: ['N', [Validators.required]],
+      searchBy: ['N', [Validators.required]],
     });
   }
 
@@ -259,6 +265,7 @@ export class MetadataUpdateComponent implements OnInit {
       isRequired: data.get(['isRequired'])!.value,
       fieldOrder: data.get(['fieldOrder'])!.value,
       showDashboard: data.get(['showDashboard'])!.value,
+      searchBy: data.get(['searchBy'])!.value,
       delFlag: 'N',
     };
   }
@@ -300,6 +307,7 @@ export class MetadataUpdateComponent implements OnInit {
       this.fieldList().controls[index].get(['isRequired'])!.setValue(data.isRequired);
       this.fieldList().controls[index].get(['fieldOrder'])!.setValue(data.fieldOrder);
       this.fieldList().controls[index].get(['showDashboard'])!.setValue(data.showDashboard);
+      this.fieldList().controls[index].get(['searchBy'])!.setValue(data.searchBy);
       this.onFieldTypeChange(index);
       index = index + 1;
     });

@@ -14,6 +14,8 @@ public class MenuGroupDTO {
 
     private String faIcon;
 
+    private String routerLink;
+
     public Long getId() {
         return id;
     }
@@ -60,5 +62,13 @@ public class MenuGroupDTO {
 
     public void setFaIcon(String faIcon) {
         this.faIcon = faIcon;
+    }
+
+    public String getRouterLink() {
+        return routerLink;
+    }
+
+    public void setRouterLink(String routerLink) {
+        this.routerLink = routerLink;
     }
 }

@@ -99,7 +99,7 @@ public class ReportResource {
         rptParams.setRptOutputPath(rptOutputPath);
         rptParams.setRptJrxml("DocumentListRpt.jrxml");
         rptParams.setRptJasper("DocumentListRpt.jrxml");
-        ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentListRpt2(rptParams);
+        ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateUploadedDocumentListRpt(rptParams, loginUser.getId());
         return replyMessage;
     }
 }

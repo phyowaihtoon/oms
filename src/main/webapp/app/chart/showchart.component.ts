@@ -1,36 +1,79 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { DashboardService } from './../services/dashboard-service';
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, AfterContentInit, enableProdMode } from '@angular/core';
 import { SchowChartService } from './showchart.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
-import { HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { IPieHeaderDataDto } from 'app/services/pieheaderdata.model';
-import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
-import { ActivatedRoute } from '@angular/router';
+import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IInputParam, InputParam } from 'app/services/input-param.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
-
+import { DocumentInquiry, IDocumentHeader, IDocumentInquiry } from 'app/entities/document/document.model';
+import { DocumentInquiryService } from 'app/entities/document/service/document-inquiry.service';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
+import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
+enableProdMode();
 @Component({
   selector: 'jhi-showchart',
   templateUrl: './showchart.component.html',
   styleUrls: ['./showchart.scss'],
 })
-export class ShowChartComponent implements AfterViewInit, OnInit {
+export class ShowChartComponent implements OnInit, AfterViewInit {
   @Input() template: any;
   totalCount = 0;
 
+  _documentHeaders?: IDocumentHeader[];
   _metaDataHdrList?: IMetaDataHeader[] | null;
+  _documentStatusList?: IDocumentStatus[];
+  _selectedMetaDataList?: IMetaData[];
+  _metaDataColumns?: IMetaData[];
+  _displayedMetaDataColumns?: IMetaData[];
+  _displayedMetaDataValues?: string[] = [];
+  _staticMetaDataColumns: any;
+  _lovValuesF1?: string[] = [];
+  _lovValuesF2?: string[] = [];
+  _lovValuesF3?: string[] = [];
+  isLOV1 = false;
+  isLOV2 = false;
+  isLOV3 = false;
+  _fieldLabel1?: string = '';
+  _fieldLabel2?: string = '';
+  _fieldLabel3?: string = '';
+  _fieldOrder1?: number = 0;
+  _fieldOrder2?: number = 0;
+  _fieldOrder3?: number = 0;
+
+  totalItems = 0;
+  itemsPerPage = ITEMS_PER_PAGE;
+  page?: number;
+  predicate!: string;
+  ascending!: boolean;
+  ngbPaginationPage = 1;
+
   _userAuthority?: IUserAuthority | null;
+  _selectedLanguage: string = 'my';
+  isLoading = false;
 
   editForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     fromDate: [],
     toDate: [],
+    createdDate: [],
+    fieldValue1: [{ value: '', disabled: true }],
+    fieldValue2: [{ value: '', disabled: true }],
+    fieldValue3: [{ value: '', disabled: true }],
+    generalValue: [],
+    docStatus: [0],
+    pageNo: [],
   });
-  dateJoined: any;
+
+  _searchCriteria?: IDocumentInquiry;
+
   constructor(
     protected fb: FormBuilder,
     private dashboard: DashboardService,
@@ -39,7 +82,10 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     protected modalService: NgbModal,
     protected domSanitizer: DomSanitizer,
     protected activatedRoute: ActivatedRoute,
-    protected loadSetupService: LoadSetupService
+    protected loadSetupService: LoadSetupService,
+    protected documentInquiryService: DocumentInquiryService,
+    protected translateService: TranslateService,
+    protected router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -47,8 +93,40 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+    this._selectedLanguage = this.translateService.currentLang;
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this._selectedLanguage = this.translateService.currentLang;
+    });
+
     this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
-    this.loadAllSetup();
+    if (this._userAuthority?.menuGroups) {
+      const menuGroups = this._userAuthority.menuGroups;
+      for (const menuGroup of menuGroups) {
+        const subMenus = menuGroup.subMenuItems;
+        const selectedMenu = subMenus?.find(item => item.menuItem?.menuCode === 'DOCMI');
+        if (selectedMenu) {
+          this._userAuthority.activeMenu = selectedMenu;
+          break;
+        }
+      }
+    }
+
+    if (this.template.cardId !== 'CARD008') {
+      this.loadAllSetup();
+    }
+
+    if (this.template.cardId === 'CARD008') {
+      this.activatedRoute.data.subscribe(({ userAuthority }) => {
+        this._staticMetaDataColumns = [
+          { fieldName: 'ID', translateKey: 'global.field.id', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+          { fieldName: 'DN', translateKey: 'dmsApp.document.docTitle', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+          { fieldName: 'DS', translateKey: 'dmsApp.document.status', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+          { fieldName: 'CD', translateKey: 'dmsApp.document.createdDate', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+          { fieldName: 'CB', translateKey: 'dmsApp.document.createdBy', isDisplayed: this._userAuthority?.roleType === 1 ? true : false },
+        ];
+      });
+      this.loadAllSetup2();
+    }
   }
 
   today(): any {
@@ -66,8 +144,9 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
 
   loadAllSetup(): void {
     if (this._userAuthority?.roleID) {
-      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
-        (res: HttpResponse<IMetaDataHeader[]>) => {
+      this.loadSetupService
+        .loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID)
+        .subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
           if (res.body) {
             this._metaDataHdrList = res.body;
             if (this._metaDataHdrList.length > 0) {
@@ -75,16 +154,50 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
               this.onChangeDocumentTemplate();
             }
           }
-        },
-        error => {
-          console.log('Loading MetaData Header Failed : ', error);
-        }
-      );
+        });
     }
+  }
+
+  loadAllSetup2(): void {
+    if (this._userAuthority?.roleID) {
+      this.loadSetupService
+        .loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID)
+        .subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+            const searchedCriteria = this.documentInquiryService.getSearchCriteria();
+            if (searchedCriteria) {
+              this.updateSearchFormData(searchedCriteria);
+            } else {
+              this.bindDefaultDepartment();
+            }
+          }
+        });
+    }
+
+    this.loadSetupService.loadDocumentStatus().subscribe((res: HttpResponse<IDocumentStatus[]>) => {
+      if (res.body) {
+        this._documentStatusList = res.body;
+      }
+    });
+  }
+
+  trackDocumentHeaderById(index: number, item: IDocumentHeader): number {
+    return item.id!;
   }
 
   trackMetaDataByID(index: number, item: IMetaDataHeader): number {
     return item.id!;
+  }
+
+  getDocTitleByID(id?: number): string | undefined {
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === id);
+    return metaDataHeader?.docTitle;
+  }
+
+  getDocStatusDesc(value?: number): string | undefined {
+    const documentStatus = this._documentStatusList?.find(item => item.value === value);
+    return documentStatus?.description;
   }
 
   onChangeDocumentTemplate(): void {
@@ -151,7 +264,6 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     if (this.template.cardId === 'CARD006') {
       this.totalCount = 0;
       const inputParam = this.createParam();
-      console.log('abcdefg   ', inputParam.templateId?.toString());
       this.showChart.getDataByTemplateType(inputParam).subscribe((res: HttpResponse<[]>) => {
         if (res.body) {
           const cols: any = [];
@@ -180,6 +292,10 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
           this.dashboard.generatePieChart(this.template.cardId, this.preparePieData(res.body), '');
         }
       });
+    }
+
+    if (this.template.cardId === 'CARD008') {
+      // this.searchDocument();
     }
   }
 
@@ -303,4 +419,224 @@ export class ShowChartComponent implements AfterViewInit, OnInit {
     return _tempObj;
   }
   */
+
+  clearFormData(): void {
+    this.editForm.reset();
+    this._documentHeaders = [];
+    this.isLOV1 = false;
+    this.isLOV2 = false;
+    this.isLOV3 = false;
+    this._fieldLabel1 = '';
+    this._fieldLabel2 = '';
+    this._fieldLabel3 = '';
+    this._selectedMetaDataList = [];
+    this.editForm.get('metaDataHdrID')?.patchValue(0);
+    this.editForm.get('fieldValue1')?.disable();
+    this.editForm.get('fieldValue2')?.disable();
+    this.editForm.get('fieldValue3')?.disable();
+    this.editForm.get('docStatus')?.patchValue(0);
+    this.editForm.get('pageNo')?.patchValue('');
+    this.documentInquiryService.clearSearchCriteria();
+  }
+
+  goToView(id?: number): void {
+    this.documentInquiryService.storeSearchCriteria(this._searchCriteria);
+    this.router.navigate(['/document', id, 'view']);
+  }
+
+  onChangeDocumentTemplate2(): void {
+    this.clearSearchCriteriaData();
+    const headerID: number = +this.editForm.get('metaDataHdrID')!.value;
+    const metaDataHeader = this._metaDataHdrList?.find(item => item.id === headerID);
+    if (metaDataHeader) {
+      this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+      this.bindSearchCriteria();
+      this.bindMetaDataColumns();
+    }
+  }
+
+  bindDefaultDepartment(): void {
+    if (this._userAuthority?.departmentId) {
+      this.editForm.get('metaDataHdrID')?.patchValue(this._userAuthority.departmentId);
+      const metaDataHeader = this._metaDataHdrList?.find(item => item.id === this._userAuthority?.departmentId);
+      if (metaDataHeader) {
+        this._selectedMetaDataList = metaDataHeader.metaDataDetails;
+        this.bindSearchCriteria();
+        this.bindMetaDataColumns();
+      }
+    }
+  }
+
+  bindSearchCriteria(): void {
+    this.isLOV1 = false;
+    this.isLOV2 = false;
+    this.isLOV3 = false;
+    this.editForm.get('fieldValue1')?.patchValue('');
+    this.editForm.get('fieldValue2')?.patchValue('');
+    this.editForm.get('fieldValue3')?.patchValue('');
+    this._fieldLabel1 = '';
+    this._fieldLabel2 = '';
+    this._fieldLabel3 = '';
+
+    const searchFieldList = this._selectedMetaDataList?.filter(item => item.searchBy === 'Y');
+
+    if (searchFieldList && searchFieldList.length > 0) {
+      const metaData1 = searchFieldList[0];
+      this.editForm.get('fieldValue1')?.enable();
+      this._fieldLabel1 = metaData1.fieldName;
+      this._fieldOrder1 = metaData1.fieldOrder;
+      if (metaData1.fieldType === 'LOV') {
+        this.isLOV1 = true;
+        this._lovValuesF1 = metaData1.fieldValue?.split('|');
+      }
+
+      if (searchFieldList.length > 1) {
+        const metaData2 = searchFieldList[1];
+        this.editForm.get('fieldValue2')?.enable();
+        this._fieldLabel2 = metaData2.fieldName;
+        this._fieldOrder2 = metaData2.fieldOrder;
+        if (metaData2.fieldType === 'LOV') {
+          this.isLOV2 = true;
+          this._lovValuesF2 = metaData2.fieldValue?.split('|');
+        }
+      }
+
+      if (searchFieldList.length > 2) {
+        const metaData3 = searchFieldList[2];
+        this.editForm.get('fieldValue3')?.enable();
+        this._fieldLabel3 = metaData3.fieldName;
+        this._fieldOrder3 = metaData3.fieldOrder;
+        if (metaData3.fieldType === 'LOV') {
+          this.isLOV3 = true;
+          this._lovValuesF3 = metaData3.fieldValue?.split('|');
+        }
+      }
+    }
+  }
+
+  showHideStaticColumn(staticData: any): void {
+    staticData.isDisplayed = staticData.isDisplayed === undefined ? true : !staticData.isDisplayed;
+  }
+
+  showHideColumn(metaData: IMetaData): void {
+    metaData.isDisplayed = metaData.isDisplayed === undefined ? true : !metaData.isDisplayed;
+    this._displayedMetaDataColumns = this._metaDataColumns?.filter(item => item.isDisplayed === true);
+  }
+
+  bindMetaDataColumns(): void {
+    this._displayedMetaDataColumns = [];
+    this._metaDataColumns = this._selectedMetaDataList;
+    this._metaDataColumns?.forEach((value, index) => {
+      // Initially, the first five metadata fields will be shown in list
+      if (index < 5) {
+        value.isDisplayed = true;
+        this._displayedMetaDataColumns?.push(value);
+      }
+    });
+  }
+
+  bindMetaDataValues(fValues?: string): void {
+    this._displayedMetaDataValues = [];
+    if (fValues !== undefined && fValues.trim().length > 0) {
+      const fValueArray = fValues.split('|');
+      if (fValueArray.length > 0) {
+        this._displayedMetaDataColumns?.forEach(item => {
+          if (item.fieldOrder) {
+            const fieldValue = fValueArray[item.fieldOrder - 1];
+            this._displayedMetaDataValues?.push(fieldValue);
+          }
+        });
+      }
+    }
+  }
+
+  searchDocument(): void {
+    const pageNo = this.editForm.get('pageNo')!.value;
+    if (pageNo && pageNo > 0) {
+      this.loadPage(pageNo);
+    } else {
+      this.loadPage(1);
+    }
+  }
+
+  loadPage(page?: number, dontNavigate?: boolean): void {
+    this.isLoading = true;
+    this._documentHeaders = [];
+    const pageToLoad: number = page ?? this.page ?? 1;
+    const paginationReqParams = {
+      page: pageToLoad - 1,
+      size: this.itemsPerPage,
+      // sort: this.sort(),
+    };
+
+    this._searchCriteria = {
+      ...new DocumentInquiry(),
+      metaDataHeaderId: this.editForm.get('metaDataHdrID')!.value,
+      createdDate: this.editForm.get('createdDate')!.value ? this.editForm.get('createdDate')!.value.format('DD-MM-YYYY') : '',
+      fieldValue1: this.editForm.get('fieldValue1')!.value,
+      fieldIndex1: this._fieldOrder1,
+      fieldValue2: this.editForm.get('fieldValue2')!.value,
+      fieldIndex2: this._fieldOrder2,
+      fieldValue3: this.editForm.get('fieldValue3')!.value,
+      fieldIndex3: this._fieldOrder3,
+      generalValue: this.editForm.get('generalValue')!.value,
+      status: this.editForm.get('docStatus')!.value,
+    };
+
+    this.documentInquiryService.query(this._searchCriteria, paginationReqParams).subscribe(
+      (res: HttpResponse<IDocumentHeader[]>) => {
+        this.isLoading = false;
+        this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
+      },
+      () => {
+        this.isLoading = false;
+        this.onError();
+      }
+    );
+  }
+
+  clearSearchCriteriaData(): void {
+    this._documentHeaders = [];
+    this.isLOV1 = false;
+    this.isLOV2 = false;
+    this._selectedMetaDataList = [];
+    this.editForm.get('fieldValue1')?.patchValue('');
+    this.editForm.get('fieldValue1')?.disable();
+    this.editForm.get('fieldValue2')?.patchValue('');
+    this.editForm.get('fieldValue2')?.disable();
+    this.editForm.get('fieldValue3')?.patchValue('');
+    this.editForm.get('fieldValue3')?.disable();
+    this.editForm.get('docStatus')?.patchValue(0);
+    this.editForm.get('pageNo')?.patchValue('');
+  }
+
+  updateSearchFormData(criteriaData: IDocumentInquiry): void {
+    this.editForm.get('metaDataHdrID')?.patchValue(criteriaData.metaDataHeaderId);
+    this.onChangeDocumentTemplate2();
+    this.editForm.get('fieldValue1')?.patchValue(criteriaData.fieldValue1);
+    this.editForm.get('fieldValue2')?.patchValue(criteriaData.fieldValue2);
+    this.editForm.get('fieldValue3')?.patchValue(criteriaData.fieldValue3);
+    this.editForm.get('generalValue')?.patchValue(criteriaData.generalValue);
+    this.editForm.get('docStatus')?.patchValue(criteriaData.status);
+    this.searchDocument();
+  }
+
+  protected sort(): string[] {
+    const result = [this.predicate + ',' + (this.ascending ? 'asc' : 'desc')];
+    if (this.predicate !== 'id') {
+      result.push('id');
+    }
+    return result;
+  }
+
+  protected onSuccess(data: IDocumentHeader[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
+    this.totalItems = Number(headers.get('X-Total-Count'));
+    this.page = page;
+    this._documentHeaders = data ?? [];
+    this.ngbPaginationPage = this.page;
+  }
+
+  protected onError(): void {
+    this.ngbPaginationPage = this.page ?? 1;
+  }
 }

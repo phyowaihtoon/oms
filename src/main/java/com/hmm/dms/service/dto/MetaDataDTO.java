@@ -36,6 +36,9 @@ public class MetaDataDTO implements Serializable {
     @NotNull
     private String showDashboard;
 
+    @NotNull
+    private String searchBy;
+
     public Long getId() {
         return id;
     }
@@ -106,6 +109,14 @@ public class MetaDataDTO implements Serializable {
 
     public void setShowDashboard(String showDashboard) {
         this.showDashboard = showDashboard;
+    }
+
+    public String getSearchBy() {
+        return searchBy;
+    }
+
+    public void setSearchBy(String searchBy) {
+        this.searchBy = searchBy;
     }
 
     @Override
