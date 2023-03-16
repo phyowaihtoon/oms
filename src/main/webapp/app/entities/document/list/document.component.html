@@ -74,7 +74,7 @@
 
         <div class="col-3 row dms-row">
           <select
-            (keydown.enter)="searchDocument()"
+            (change)="searchDocument()"
             *ngIf="isLOV1"
             class="form-control"
             id="field_fieldValue1"
@@ -101,7 +101,7 @@
 
         <div class="col-3 row dms-row">
           <select
-            (keydown.enter)="searchDocument()"
+            (change)="searchDocument()"
             *ngIf="isLOV2"
             class="form-control"
             id="field_fieldValue2"
@@ -128,7 +128,7 @@
 
         <div class="col-3 row dms-row">
           <select
-            (keydown.enter)="searchDocument()"
+            (change)="searchDocument()"
             *ngIf="isLOV3"
             class="form-control"
             id="field_fieldValue3"
@@ -170,7 +170,7 @@
       <div class="dms-form-group row col-12 dms-col">
         <div class="col-3">
           <select
-            (keydown.enter)="searchDocument()"
+            (change)="searchDocument()"
             class="form-control"
             id="field_docStatus"
             data-cy="docStatus"

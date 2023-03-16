@@ -330,6 +330,17 @@
                 />
               </div>
 
+              <div class="col-3 d-flex">
+                <button class="btn btn-primary btn-sm" (click)="searchDocument()" [disabled]="isLoading">
+                  <fa-icon icon="search"></fa-icon>
+                  <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+                </button>
+                <span style="width: 5px"></span>
+                <button class="btn btn-primary btn-sm" (click)="clearFormData()" [disabled]="isLoading">
+                  <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+                </button>
+              </div>
+
               <!-- <div class="col-2">
                 <div class="input-group">
                   <input
@@ -377,7 +388,7 @@
                     <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
                       <span jhiTranslate="dmsApp.document.createdBy">Created By</span>
                     </th>
-                    <!--  <th scope="col"></th> -->
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -405,7 +416,7 @@
                     <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
                       {{ documentHeader.createdBy }}
                     </td>
-                    <!--
+
                     <td class="text-right">
                       <div class="btn-group">
                         <button
@@ -418,7 +429,7 @@
                           <fa-icon icon="eye"></fa-icon>
                           <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
-      
+
                         <button
                           *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
                           type="submit"
@@ -431,7 +442,6 @@
                         </button>
                       </div>
                     </td>
-                    -->
                   </tr>
                 </tbody>
               </table>

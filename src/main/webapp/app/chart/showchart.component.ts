@@ -7,7 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { IPieHeaderDataDto } from 'app/services/pieheaderdata.model';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IInputParam, InputParam } from 'app/services/input-param.model';
@@ -44,9 +44,9 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
   _fieldLabel1?: string = '';
   _fieldLabel2?: string = '';
   _fieldLabel3?: string = '';
-  _fieldOrder1: number = 0;
-  _fieldOrder2: number = 0;
-  _fieldOrder3: number = 0;
+  _fieldOrder1?: number = 0;
+  _fieldOrder2?: number = 0;
+  _fieldOrder3?: number = 0;
 
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -57,6 +57,7 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
 
   _userAuthority?: IUserAuthority | null;
   _selectedLanguage: string = 'my';
+  isLoading = false;
 
   editForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
@@ -83,7 +84,8 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
     protected activatedRoute: ActivatedRoute,
     protected loadSetupService: LoadSetupService,
     protected documentInquiryService: DocumentInquiryService,
-    protected translateService: TranslateService
+    protected translateService: TranslateService,
+    protected router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -97,6 +99,18 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
     });
 
     this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    if (this._userAuthority?.menuGroups) {
+      const menuGroups = this._userAuthority.menuGroups;
+      for (const menuGroup of menuGroups) {
+        const subMenus = menuGroup.subMenuItems;
+        const selectedMenu = subMenus?.find(item => item.menuItem?.menuCode === 'DOCMI');
+        if (selectedMenu) {
+          this._userAuthority.activeMenu = selectedMenu;
+          break;
+        }
+      }
+    }
+
     if (this.template.cardId !== 'CARD008') {
       this.loadAllSetup();
     }
@@ -142,6 +156,30 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
           }
         });
     }
+  }
+
+  loadAllSetup2(): void {
+    if (this._userAuthority?.roleID) {
+      this.loadSetupService
+        .loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID)
+        .subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
+          if (res.body) {
+            this._metaDataHdrList = res.body;
+            const searchedCriteria = this.documentInquiryService.getSearchCriteria();
+            if (searchedCriteria) {
+              this.updateSearchFormData(searchedCriteria);
+            } else {
+              this.bindDefaultDepartment();
+            }
+          }
+        });
+    }
+
+    this.loadSetupService.loadDocumentStatus().subscribe((res: HttpResponse<IDocumentStatus[]>) => {
+      if (res.body) {
+        this._documentStatusList = res.body;
+      }
+    });
   }
 
   trackDocumentHeaderById(index: number, item: IDocumentHeader): number {
@@ -382,6 +420,30 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
   }
   */
 
+  clearFormData(): void {
+    this.editForm.reset();
+    this._documentHeaders = [];
+    this.isLOV1 = false;
+    this.isLOV2 = false;
+    this.isLOV3 = false;
+    this._fieldLabel1 = '';
+    this._fieldLabel2 = '';
+    this._fieldLabel3 = '';
+    this._selectedMetaDataList = [];
+    this.editForm.get('metaDataHdrID')?.patchValue(0);
+    this.editForm.get('fieldValue1')?.disable();
+    this.editForm.get('fieldValue2')?.disable();
+    this.editForm.get('fieldValue3')?.disable();
+    this.editForm.get('docStatus')?.patchValue(0);
+    this.editForm.get('pageNo')?.patchValue('');
+    this.documentInquiryService.clearSearchCriteria();
+  }
+
+  goToView(id?: number): void {
+    this.documentInquiryService.storeSearchCriteria(this._searchCriteria);
+    this.router.navigate(['/document', id, 'view']);
+  }
+
   onChangeDocumentTemplate2(): void {
     this.clearSearchCriteriaData();
     const headerID: number = +this.editForm.get('metaDataHdrID')!.value;
@@ -390,7 +452,6 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
       this._selectedMetaDataList = metaDataHeader.metaDataDetails;
       this.bindSearchCriteria();
       this.bindMetaDataColumns();
-      this.searchDocument();
     }
   }
 
@@ -403,7 +464,6 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
         this.bindSearchCriteria();
         this.bindMetaDataColumns();
       }
-      this.searchDocument();
     }
   }
 
@@ -418,36 +478,38 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
     this._fieldLabel2 = '';
     this._fieldLabel3 = '';
 
-    const metaData1 = this._selectedMetaDataList?.find(item => item.fieldOrder === 1);
-    if (metaData1) {
+    const searchFieldList = this._selectedMetaDataList?.filter(item => item.searchBy === 'Y');
+
+    if (searchFieldList && searchFieldList.length > 0) {
+      const metaData1 = searchFieldList[0];
       this.editForm.get('fieldValue1')?.enable();
       this._fieldLabel1 = metaData1.fieldName;
-      this._fieldOrder1 = 1;
+      this._fieldOrder1 = metaData1.fieldOrder;
       if (metaData1.fieldType === 'LOV') {
         this.isLOV1 = true;
         this._lovValuesF1 = metaData1.fieldValue?.split('|');
       }
-    }
 
-    const metaData2 = this._selectedMetaDataList?.find(item => item.fieldOrder === 2);
-    if (metaData2) {
-      this.editForm.get('fieldValue2')?.enable();
-      this._fieldLabel2 = metaData2.fieldName;
-      this._fieldOrder2 = 2;
-      if (metaData2.fieldType === 'LOV') {
-        this.isLOV2 = true;
-        this._lovValuesF2 = metaData2.fieldValue?.split('|');
+      if (searchFieldList.length > 1) {
+        const metaData2 = searchFieldList[1];
+        this.editForm.get('fieldValue2')?.enable();
+        this._fieldLabel2 = metaData2.fieldName;
+        this._fieldOrder2 = metaData2.fieldOrder;
+        if (metaData2.fieldType === 'LOV') {
+          this.isLOV2 = true;
+          this._lovValuesF2 = metaData2.fieldValue?.split('|');
+        }
       }
-    }
 
-    const metaData3 = this._selectedMetaDataList?.find(item => item.fieldOrder === 3);
-    if (metaData3) {
-      this.editForm.get('fieldValue3')?.enable();
-      this._fieldLabel3 = metaData3.fieldName;
-      this._fieldOrder3 = 3;
-      if (metaData3.fieldType === 'LOV') {
-        this.isLOV3 = true;
-        this._lovValuesF3 = metaData3.fieldValue?.split('|');
+      if (searchFieldList.length > 2) {
+        const metaData3 = searchFieldList[2];
+        this.editForm.get('fieldValue3')?.enable();
+        this._fieldLabel3 = metaData3.fieldName;
+        this._fieldOrder3 = metaData3.fieldOrder;
+        if (metaData3.fieldType === 'LOV') {
+          this.isLOV3 = true;
+          this._lovValuesF3 = metaData3.fieldValue?.split('|');
+        }
       }
     }
   }
@@ -488,30 +550,6 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
     }
   }
 
-  loadAllSetup2(): void {
-    if (this._userAuthority?.roleID) {
-      this.loadSetupService
-        .loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID)
-        .subscribe((res: HttpResponse<IMetaDataHeader[]>) => {
-          if (res.body) {
-            this._metaDataHdrList = res.body;
-            const searchedCriteria = this.documentInquiryService.getSearchCriteria();
-            if (searchedCriteria) {
-              this.updateSearchFormData(searchedCriteria);
-            } else {
-              this.bindDefaultDepartment();
-            }
-          }
-        });
-    }
-
-    this.loadSetupService.loadDocumentStatus().subscribe((res: HttpResponse<IDocumentStatus[]>) => {
-      if (res.body) {
-        this._documentStatusList = res.body;
-      }
-    });
-  }
-
   searchDocument(): void {
     const pageNo = this.editForm.get('pageNo')!.value;
     if (pageNo && pageNo > 0) {
@@ -522,6 +560,7 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
+    this.isLoading = true;
     this._documentHeaders = [];
     const pageToLoad: number = page ?? this.page ?? 1;
     const paginationReqParams = {
@@ -546,9 +585,11 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
 
     this.documentInquiryService.query(this._searchCriteria, paginationReqParams).subscribe(
       (res: HttpResponse<IDocumentHeader[]>) => {
+        this.isLoading = false;
         this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
       },
       () => {
+        this.isLoading = false;
         this.onError();
       }
     );
@@ -571,7 +612,7 @@ export class ShowChartComponent implements OnInit, AfterViewInit {
 
   updateSearchFormData(criteriaData: IDocumentInquiry): void {
     this.editForm.get('metaDataHdrID')?.patchValue(criteriaData.metaDataHeaderId);
-    this.onChangeDocumentTemplate();
+    this.onChangeDocumentTemplate2();
     this.editForm.get('fieldValue1')?.patchValue(criteriaData.fieldValue1);
     this.editForm.get('fieldValue2')?.patchValue(criteriaData.fieldValue2);
     this.editForm.get('fieldValue3')?.patchValue(criteriaData.fieldValue3);

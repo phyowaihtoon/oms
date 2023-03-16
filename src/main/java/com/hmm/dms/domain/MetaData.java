@@ -50,6 +50,10 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
     @Column(name = "show_dashboard", nullable = false)
     private String showDashboard;
 
+    @NotNull
+    @Column(name = "search_by", nullable = false)
+    private String searchBy;
+
     public Long getId() {
         return id;
     }
@@ -155,6 +159,14 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
 
     public void setShowDashboard(String showDashboard) {
         this.showDashboard = showDashboard;
+    }
+
+    public String getSearchBy() {
+        return searchBy;
+    }
+
+    public void setSearchBy(String searchBy) {
+        this.searchBy = searchBy;
     }
 
     @Override

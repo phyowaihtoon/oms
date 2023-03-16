@@ -34,7 +34,8 @@
       "fieldAction": "#",
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",
-      "metadataLabel": "MetaData Information"
+      "metadataLabel": "MetaData Information",
+      "searchBy": "Search By"
     }
   }
 }
