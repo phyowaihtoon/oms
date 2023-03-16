@@ -91,7 +91,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ReplyMessage<RptParamsMessage> generateDocumentListRpt2(RptParamsMessage rptPara) {
+    public ReplyMessage<RptParamsMessage> generateUploadedDocumentListRpt(RptParamsMessage rptPara, Long loginUserId) {
         ReplyMessage<RptParamsMessage> replyMessage = new ReplyMessage<RptParamsMessage>();
         Optional<MetaDataHeader> metaDtaHeader = Optional.empty();
 
@@ -101,11 +101,13 @@ public class ReportServiceImpl implements ReportService {
             query.registerStoredProcedureParameter("toDate", String.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("metadata", Long.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("userid", String.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("loginUserId", Long.class, ParameterMode.IN);
 
             query.setParameter("frmDate", rptPara.getRptPS1());
             query.setParameter("toDate", rptPara.getRptPS2());
             query.setParameter("metadata", Long.parseLong(rptPara.getRptPS3() == null ? "0" : rptPara.getRptPS3()));
             query.setParameter("userid", rptPara.getRptPS4().trim());
+            query.setParameter("loginUserId", loginUserId);
 
             List<Object[]> resultList = query.getResultList();
             if (resultList == null || resultList.size() == 0) {

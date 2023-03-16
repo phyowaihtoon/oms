@@ -1,0 +1,1 @@
+alter table meta_data add column search_by varchar(1) default('N') after show_dashboard;
