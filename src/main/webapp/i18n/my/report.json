@@ -1,0 +1,20 @@
+{
+  "report": {
+    "action": {
+      "download": "Download",
+      "close": "Close"
+    },
+    "validation": {
+      "datePattern": "Date must be entered in DD-MM-YYYY"
+    },
+    "docmapping": {
+      "criteriaLbl": "REPORT CRITERIA",
+      "startdate": "နေ့ရက်မှ",
+      "enddate": "နေ့ရက်ထိ",
+      "uploadfromdate": "နေ့ရက်မှ",
+      "uploadtodate": "နေ့ရက်ထိ",
+      "template": "ဌာန",
+      "user": "ထည့်သွင်းသူ"
+    }
+  }
+}

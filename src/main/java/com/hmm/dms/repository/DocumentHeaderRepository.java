@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, Long> {
+public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, Long>, CustomDocumentInquiryRepository {
     @Query(
         value = "SELECT dh.id,dh.meta_data_header_id,dh.field_names,dh.field_values,dh.message,dh.del_flag," +
         "dh.created_by, date(dh.created_date) as created_date,dh.approved_by, dh.priority, dh.status, dh.reason_for_amend," +

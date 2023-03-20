@@ -4,7 +4,7 @@
     <span> >> Document List Report</span>
   </div>
 
-  <div class="col-4 d-flex justify-content-end" >
+  <div class="col-4 d-flex justify-content-end">
     <button
       type="button"
       (click)="generate()"
@@ -28,12 +28,23 @@
 
   <div class="col-12" style="padding-top: 10px">
     <form name="editForm" role="form" novalidate (ngSubmit)="generate()" [formGroup]="editForm">
-      <div id="search-area" class="row form-group"> 
-        <div class="row col-6">
-          <div class="col-5">
+      <div id="rpt-search-area" class="row form-group">
+        <div class="row col-12">
+          <div class="col-3">
             <label class="form-control-label" jhiTranslate="report.docmapping.uploadfromdate" for="field_startDate"> Start Date </label>
           </div>
-          <div class="col-7">
+          <div class="col-3">
+            <label class="form-control-label" jhiTranslate="report.docmapping.uploadtodate" for="field_endDate"> End Date </label>
+          </div>
+          <div class="col-3">
+            <label class="form-control-label" jhiTranslate="report.docmapping.template" for="field_docType">Department</label>
+          </div>
+          <div class="col-3">
+            <label class="form-control-label" jhiTranslate="report.docmapping.user" for="field_docType">User</label>
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-3">
             <div class="input-group">
               <input
                 class="form-control"
@@ -51,35 +62,30 @@
                 </button>
               </div>
             </div>
-          </div>
-          <div
-            class="col-12"
-            *ngIf="editForm.get('startDate')!.invalid && (editForm.get('startDate')!.dirty || editForm.get('startDate')!.touched)"
-          >
-            <small
-              style="text-align: right"
-              class="form-text text-danger"
-              *ngIf="editForm.get('startDate')?.errors?.required"
-              jhiTranslate="entity.validation.required"
+            <div
+              class="col-12"
+              *ngIf="editForm.get('startDate')!.invalid && (editForm.get('startDate')!.dirty || editForm.get('startDate')!.touched)"
             >
-              This field is required.
-            </small>
-            <small
-              style="text-align: right"
-              class="form-text text-danger"
-              [hidden]="!editForm.get('startDate')?.errors?.ngbDate"
-              jhiTranslate="report.validation.datePattern"
-            >
-              Date should be entered in DD-MM-YYYY.
-            </small>
+              <small
+                style="text-align: right"
+                class="form-text text-danger"
+                *ngIf="editForm.get('startDate')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+              <small
+                style="text-align: right"
+                class="form-text text-danger"
+                [hidden]="!editForm.get('startDate')?.errors?.ngbDate"
+                jhiTranslate="report.validation.datePattern"
+              >
+                Date should be entered in DD-MM-YYYY.
+              </small>
+            </div>
           </div>
-        </div>
 
-        <div class="row col-6">
-          <div class="col-5">
-            <label class="form-control-label" jhiTranslate="report.docmapping.uploadtodate" for="field_endDate"> End Date </label>
-          </div>
-          <div class="col-7">
+          <div class="col-3">
             <div class="input-group">
               <input
                 class="form-control"
@@ -97,52 +103,37 @@
                 </button>
               </div>
             </div>
-          </div>
-          <div
-            class="col-12"
-            *ngIf="editForm.get('endDate')!.invalid && (editForm.get('endDate')!.dirty || editForm.get('endDate')!.touched)"
-          >
-            <small
-              style="text-align: right"
-              class="form-text text-danger"
-              *ngIf="editForm.get('endDate')?.errors?.required"
-              jhiTranslate="entity.validation.required"
+            <div
+              class="col-12"
+              *ngIf="editForm.get('endDate')!.invalid && (editForm.get('endDate')!.dirty || editForm.get('endDate')!.touched)"
             >
-              This field is required.
-            </small>
-            <small
-              style="text-align: right"
-              class="form-text text-danger"
-              [hidden]="!editForm.get('endDate')?.errors?.ngbDate"
-              jhiTranslate="report.validation.datePattern"
-            >
-              Date should be entered in DD-MM-YYYY.
-            </small>
+              <small
+                style="text-align: right"
+                class="form-text text-danger"
+                *ngIf="editForm.get('endDate')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+              <small
+                style="text-align: right"
+                class="form-text text-danger"
+                [hidden]="!editForm.get('endDate')?.errors?.ngbDate"
+                jhiTranslate="report.validation.datePattern"
+              >
+                Date should be entered in DD-MM-YYYY.
+              </small>
+            </div>
           </div>
-        </div>
 
-        <!-- end of to date -->
-
-        <div class="row col-6">
-          <div class="col-5">
-            <label class="form-control-label" jhiTranslate="report.docmapping.template" for="field_docType">Documnet Template</label>
-          </div>
-
-          <div class="col-7">
+          <div class="col-3">
             <select class="form-control" formControlName="metaDataHeaderId">
               <option [value]="doctype.id" *ngFor="let doctype of _metaDataHdrList">
                 {{ doctype.docTitle }}
               </option>
             </select>
           </div>
-        </div>
-
-        <div class="row col-6">
-          <div class="col-5">
-            <label class="form-control-label" jhiTranslate="report.docmapping.user" for="field_docType">User</label>
-          </div>
-
-          <div class="col-7">
+          <div class="col-3">
             <input type="text" class="form-control" name="userId" formControlName="userId" />
           </div>
         </div>

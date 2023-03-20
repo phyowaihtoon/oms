@@ -58,6 +58,12 @@ public class DocumentInquiryServiceImpl implements DocumentInquiryService {
     }
 
     @Override
+    public Page<DocumentHeaderDTO> findAllDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
+        Page<DocumentHeader> pageWithEntity = this.documentHeaderRepository.findDocumentHeaderByMetaData(dto, pageable);
+        return pageWithEntity.map(documentHeaderMapper::toDto);
+    }
+
+    @Override
     public Page<DocumentHeaderDTO> searchDocumentHeaderByMetaData(DocumentInquiryMessage dto, Pageable pageable) {
         String specificVal1 = dto.getFieldValue1();
         if (specificVal1 == null || specificVal1.equals("null") || specificVal1.isEmpty()) {
