@@ -215,35 +215,36 @@
     </div>
 
     <div class="result-header row">
-      <span *ngIf="isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
-        <fa-icon icon="angle-down"></fa-icon>
-        {{ 'dmsApp.document.result' | translate }}
-      </span>
-      <span *ngIf="!isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
-        <fa-icon icon="angle-right"></fa-icon>&nbsp;
-        {{ 'dmsApp.document.result' | translate }}
-      </span>
-      <li ngbDropdown display="dynamic" style="list-style-type: none; cursor: pointer">
-        <span class="dropdown-toggle" ngbDropdownToggle>
-          <fa-icon icon="cog"></fa-icon>
+      <div class="col-4 d-flex" style="padding: 0px">
+        <span *ngIf="isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+          <fa-icon icon="angle-down"></fa-icon>
+          {{ 'dmsApp.document.result' | translate }}
         </span>
-        <div class="dropdown-menu" ngbDropdownMenu>
-          <div class="dropdown-item" *ngFor="let staticColData of _staticMetaDataColumns" (click)="showHideStaticColumn(staticColData)">
-            <span>
-              <fa-icon icon="check" *ngIf="staticColData.isDisplayed"></fa-icon>
-              {{ staticColData.translateKey | translate }}
-            </span>
+        <span *ngIf="!isShowingResult" (click)="showResultArea()" style="cursor: pointer; padding-right: 10px">
+          <fa-icon icon="angle-right"></fa-icon>&nbsp;
+          {{ 'dmsApp.document.result' | translate }}
+        </span>
+        <li ngbDropdown display="dynamic" style="list-style-type: none; cursor: pointer">
+          <span class="dropdown-toggle" ngbDropdownToggle>
+            <fa-icon icon="cog"></fa-icon>
+          </span>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <div class="dropdown-item" *ngFor="let staticColData of _staticMetaDataColumns" (click)="showHideStaticColumn(staticColData)">
+              <span>
+                <fa-icon icon="check" *ngIf="staticColData.isDisplayed"></fa-icon>
+                {{ staticColData.translateKey | translate }}
+              </span>
+            </div>
+            <div class="dropdown-item" *ngFor="let colData of _metaDataColumns" (click)="showHideColumn(colData)">
+              <span>
+                <fa-icon icon="check" *ngIf="colData.isDisplayed"></fa-icon>
+                {{ colData.fieldName }}
+              </span>
+            </div>
           </div>
-          <div class="dropdown-item" *ngFor="let colData of _metaDataColumns" (click)="showHideColumn(colData)">
-            <span>
-              <fa-icon icon="check" *ngIf="colData.isDisplayed"></fa-icon>
-              {{ colData.fieldName }}
-            </span>
-          </div>
-        </div>
-      </li>
-
-      <div class="col-4 d-flex">
+        </li>
+      </div>
+      <div class="col-4 d-flex justify-content-center">
         <button class="btn btn-primary btn-sm" (click)="searchDocument()" [disabled]="isLoading">
           <fa-icon icon="search"></fa-icon>
           <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>

@@ -118,7 +118,7 @@
           <div class="form-group col-6">
             <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docType">Documnet Template</label>
             <span class="text-danger">*</span>
-            <select (change)="onDocTemplateChange($event)" class="form-control" formControlName="metaDataHeaderId">
+            <select (change)="onDepartmentChange($event)" class="form-control" formControlName="metaDataHeaderId">
               <option [value]="doctype.id" *ngFor="let doctype of _metaDataHdrList">
                 {{ doctype.docTitle }}
               </option>
@@ -152,36 +152,26 @@
           </div>
         </div>
 
-        <div class="row col-12" *ngFor="let metaitem of metaData">
+        <div class="row col-12" *ngFor="let metaitem of _metaDataFieldList">
           <div class="form-group col-6" *ngIf="metaitem.fieldType == 'String'">
             <label class="form-control-label" for="text"> {{ metaitem.fieldName }} </label>
             <span *ngIf="metaitem.isRequired == 'YES'" class="text-danger">*</span>
 
-            <input
-              type="text"
-              class="form-control"
-              [name]="metaitem.fieldName"
-              [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'"
-            />
+            <input type="text" class="form-control" [name]="metaitem.fieldName" [formControlName]="PREFIX_FORM_CONTROL + metaitem.id" />
           </div>
 
           <div class="form-group col-6" *ngIf="metaitem.fieldType == 'Number'">
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" class="text-danger">*</span></label
             >
-            <input
-              type="number"
-              class="form-control"
-              [name]="metaitem.fieldName"
-              [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'"
-            />
+            <input type="number" class="form-control" [name]="metaitem.fieldName" [formControlName]="PREFIX_FORM_CONTROL + metaitem.id" />
           </div>
 
           <div class="form-group col-6" *ngIf="metaitem.fieldType == 'LOV'">
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" class="text-danger">*</span></label
             >
-            <select class="form-control" [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'">
+            <select class="form-control" [formControlName]="PREFIX_FORM_CONTROL + metaitem.id">
               <option [value]="f_value" *ngFor="let f_value of getFieldValues(metaitem.fieldValue)">
                 {{ f_value }}
               </option>
@@ -192,12 +182,7 @@
             <label class="form-control-label" for="text">
               {{ metaitem.fieldName }} <span *ngIf="metaitem.isRequired == 'YES'" class="text-danger">*</span></label
             >
-            <input
-              type="date"
-              class="form-control"
-              [name]="metaitem.fieldName"
-              [formControlName]="metaitem.fieldName! + '_' + metaitem.id + '_fieldName'"
-            />
+            <input type="date" class="form-control" [name]="metaitem.fieldName" [formControlName]="PREFIX_FORM_CONTROL + metaitem.id" />
           </div>
         </div>
       </div>

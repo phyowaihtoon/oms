@@ -40,7 +40,7 @@ public class DocumentInquiryResource {
     @PostMapping("/docinquiry")
     public ResponseEntity<List<DocumentHeaderDTO>> getAllDocumentHeaders(@RequestBody DocumentInquiryMessage dto, Pageable pageable) {
         log.debug("REST request to get all Documents");
-        Page<DocumentHeaderDTO> page = documentInquiryService.searchDocumentHeaderByMetaData(dto, pageable);
+        Page<DocumentHeaderDTO> page = documentInquiryService.findAllDocumentHeaderByMetaData(dto, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
