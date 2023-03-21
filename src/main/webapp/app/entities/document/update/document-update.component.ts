@@ -30,17 +30,8 @@ export class DocumentUpdateComponent implements OnInit {
   _metaDataHdrList: MetaDataHeader[] | null = [];
   _priority: IPriority[] | null = [];
   _fieldValue?: string[] = [];
-  metaData?: IMetaData[];
-  metaDataUpdate: IMetaData[] | null = [];
-
+  _metaDataFieldList?: IMetaData[];
   metaHeaderId: number = 0;
-
-  fNames: string[] = [];
-  fName: string = '';
-
-  fValues: string[] = [];
-  fValue: string = '';
-
   isSaving = false;
   _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
@@ -60,6 +51,7 @@ export class DocumentUpdateComponent implements OnInit {
   isCancel = false;
   docStatus: string = '';
   docStatus_number: number = 0;
+  PREFIX_FORM_CONTROL = 'fieldName_';
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
@@ -290,8 +282,8 @@ export class DocumentUpdateComponent implements OnInit {
     this.subscribeTeUpdateStatusResponse(this.documentHeaderService.updateDocumentStatus(approvalInfo, docHeaderId));
   }
 
-  // change event for doc template select box
-  onDocTemplateChange(e: any): void {
+  // change event in department
+  onDepartmentChange(e: any): void {
     this.metaHeaderId = e.target.value;
     this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
   }
@@ -308,35 +300,34 @@ export class DocumentUpdateComponent implements OnInit {
   // load metadata by metadaheader ID
   loadMetaDatabyMetadaHeaderID(metaDataHeaderId: number): void {
     if (metaDataHeaderId === 0) {
-      this.metaData = [];
-      this.forControlBind();
+      this._metaDataFieldList = [];
+      this.createDynamicFormControls();
     } else {
       this._metaDataHdrList!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
         if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
-          this.metaData = metaDataHeaderItem.metaDataDetails;
-          this.forControlBind();
+          this._metaDataFieldList = metaDataHeaderItem.metaDataDetails;
+          this.createDynamicFormControls();
         }
       });
     }
   }
 
-  forControlBind(): void {
+  createDynamicFormControls(): void {
     Object.keys(this.editForm.controls).forEach((key: string) => {
-      if (key.includes('_fieldName')) {
+      if (key.includes(this.PREFIX_FORM_CONTROL)) {
         const fieldName: string = key;
         this.editForm.removeControl(fieldName);
       }
     });
 
-    this.metaData?.forEach((metaDataItem: IMetaData) => {
+    this._metaDataFieldList?.forEach((metaDataItem: IMetaData) => {
       const id: number = metaDataItem.id!;
       const idStr: string = id.toString();
-      const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr;
-
+      const frmCtrlNameForField = this.PREFIX_FORM_CONTROL + idStr;
       if (metaDataItem.isRequired === 'YES') {
-        this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl('', Validators.required));
+        this.editForm.addControl(frmCtrlNameForField, new FormControl('', Validators.required));
       } else {
-        this.editForm.addControl(fcnforFieldName + '_fieldName', new FormControl(''));
+        this.editForm.addControl(frmCtrlNameForField, new FormControl(''));
       }
     });
   }
@@ -349,42 +340,29 @@ export class DocumentUpdateComponent implements OnInit {
   }
 
   getFieldName(group: FormGroup): string {
-    this.fNames = [];
-    this.fName = '';
-
+    let fNames = '';
     Object.keys(group.controls).forEach((key: string) => {
-      const abstractControl = group.get(key);
-      if (key.includes('_fieldName')) {
-        const fieldName: string = key.split('_', 1).toString();
-        this.fNames.push(fieldName);
+      if (key.includes(this.PREFIX_FORM_CONTROL)) {
+        const fieldId: number = +key.split('_')[1];
+        const updatedMetaData = this._metaDataFieldList?.find((metaData: IMetaData) => metaData.id === fieldId);
+        fNames += updatedMetaData?.fieldName;
+        fNames += '|';
       }
     });
-
-    this.fNames.forEach(Name => {
-      this.fName += Name;
-      this.fName += '|';
-    });
-    return this.fName.slice(0, -1);
+    return fNames.slice(0, -1);
   }
 
   getFieldValue(group: FormGroup): string {
-    this.fValues = [];
-    this.fValue = '';
-
+    let fValues = '';
     Object.keys(group.controls).forEach((key: string) => {
       const abstractControl = group.get(key);
-      if (key.includes('_fieldName')) {
+      if (key.includes(this.PREFIX_FORM_CONTROL)) {
         const fieldValue: string = abstractControl?.value;
-        this.fValues.push(fieldValue);
+        fValues += fieldValue;
+        fValues += '|';
       }
     });
-
-    this.fValues.forEach(value => {
-      this.fValue += value;
-      this.fValue += '|';
-    });
-
-    return this.fValue.slice(0, -1);
+    return fValues.slice(0, -1);
   }
 
   showAlertMessage(msg1: string, msg2?: string): void {
@@ -638,7 +616,7 @@ export class DocumentUpdateComponent implements OnInit {
 
   protected updateForm(docHeaderData: IDocumentHeader): void {
     this.loadMetaDatabyMetadaHeaderID(docHeaderData.metaDataHeaderId!);
-    this.updateDynamicField(docHeaderData.metaDataHeaderId!, docHeaderData.fieldValues!, docHeaderData.fieldNames!);
+    this.updateDynamicField(docHeaderData.metaDataHeaderId!, docHeaderData.fieldValues!);
     this.statusUpdate(docHeaderData.status!);
 
     this.editForm.patchValue({
@@ -655,26 +633,26 @@ export class DocumentUpdateComponent implements OnInit {
     });
   }
 
-  protected updateDynamicField(metaDataHeaderId: number, fieldValue: string, fieldName: string): void {
-    const fn = fieldName.split('|');
-    const fv = fieldValue.split('|');
+  protected updateDynamicField(metaDataHeaderId: number, fieldValues: string): void {
+    const fv = fieldValues.split('|');
 
     this._metaDataHdrList!.forEach((metaDataHeaderItem: IMetaDataHeader) => {
       if (metaDataHeaderId.toString() === metaDataHeaderItem.id?.toString()) {
-        this.metaDataUpdate = metaDataHeaderItem.metaDataDetails!;
-      }
+        const updatedMetaDataFields = metaDataHeaderItem.metaDataDetails!;
+        updatedMetaDataFields.forEach(metaDataItem => {
+          const id: number = metaDataItem.id!;
+          const idStr: string = id.toString();
+          const fcnforFieldName: string = this.PREFIX_FORM_CONTROL + idStr;
 
-      this.metaDataUpdate?.forEach(metaDataItem => {
-        const id: number = metaDataItem.id!;
-        const idStr: string = id.toString();
-        const fcnforFieldName: string = metaDataItem.fieldName! + '_' + idStr + '_fieldName';
-
-        for (let i = 0; i < fn.length; i++) {
-          if (fn[i].includes(metaDataItem.fieldName!)) {
-            this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
+          for (let i = 0; i < fv.length; i++) {
+            const orderNo = i + 1;
+            if (orderNo === metaDataItem.fieldOrder) {
+              this.editForm.get([fcnforFieldName])!.setValue(fv[i]);
+              break;
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 

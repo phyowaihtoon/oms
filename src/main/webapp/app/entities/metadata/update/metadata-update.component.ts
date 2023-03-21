@@ -90,7 +90,7 @@ export class MetadataUpdateComponent implements OnInit {
   newField(): FormGroup {
     return this.fb.group({
       id: [],
-      fieldName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z ]*$')]],
+      fieldName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u1000-\u109F ]*$')]],
       fieldType: ['String', [Validators.required]],
       fieldValue: [{ value: '', disabled: true }, Validators.required],
       isRequired: ['YES', [Validators.required]],
