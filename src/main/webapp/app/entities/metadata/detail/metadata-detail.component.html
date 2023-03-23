@@ -28,53 +28,57 @@
 
   <div class="row" id="metadataView" *ngIf="_isShow">
     <div class="row col-12 form-group">
-      <div class="col-2 dms-label">
-        <span jhiTranslate="dmsApp.metaData.docTitle">Document Template</span>
+      <div class="col-2">
+        <span jhiTranslate="dmsApp.metaData.docTitle">Department</span>
       </div>
-      <div class="col-4 dms-view-data">
+      <div class="col-2">
         <input type="text" readonly class="form-control" value="{{ metadata?.docTitle }}" />
       </div>
-      <div class="col-2 dms-label">
+      <div class="col-2">
         <span jhiTranslate="dmsApp.metaData.createdDate">Created Date</span>
       </div>
-      <div class="col-1 dms-view-data">
+      <div class="col-2">
         <input type="text" readonly class="form-control" value="{{ metadata?.createdDate?.format('DD-MM-YYYY') }}" />
       </div>
-      <div class="col-2 dms-label">
+      <div class="col-2">
         <span jhiTranslate="dmsApp.metaData.createdBy">Created By</span>
       </div>
-      <div class="col-1 dms-view-data">
+      <div class="col-2">
         <input type="text" readonly class="form-control" value="{{ metadata?.createdBy }}" />
       </div>
     </div>
 
-    <div class="row col-12 form-group">
-      <div class="col-12 dms-label">
-        <span jhiTranslate="dmsApp.metaData.detailsField">Please, add fields related to document template</span>
-      </div>
+    <div class="row col-12">
+      <span jhiTranslate="dmsApp.metaData.detailsForView" style="padding-bottom: 3px">Fields related to department</span>
     </div>
     <div class="row col-12 tbl-container" style="margin-bottom: 3px">
       <table class="table">
         <thead>
           <tr class="bg-primary">
-            <th class="text-center" style="width: 30%">{{ 'dmsApp.metaData.fieldName' | translate }}</th>
+            <th class="text-center" style="width: 20%">{{ 'dmsApp.metaData.fieldName' | translate }}</th>
+            <th class="text-center" style="width: 15%">{{ 'dmsApp.metaData.fieldNameInMyanmar' | translate }}</th>
             <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldType' | translate }}</th>
-            <th class="text-center" style="width: 30%">{{ 'dmsApp.metaData.fieldValue' | translate }}</th>
-            <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldMandatory' | translate }}</th>
-            <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldOrder' | translate }}</th>
+            <th class="text-center" style="width: 15%">{{ 'dmsApp.metaData.fieldValue' | translate }}</th>
+            <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.fieldMandatory' | translate }}</th>
             <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.showDashboard' | translate }}</th>
-            <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.searchBy' | translate }}</th>
+            <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.searchBy' | translate }}</th>
+            <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.searchType' | translate }}</th>
+            <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.sortBy' | translate }}</th>
+            <th class="text-center" style="width: 5%">{{ 'dmsApp.metaData.fieldOrder' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let detail of metadata?.metaDataDetails">
             <td><input type="text" readonly class="form-control" value="{{ detail?.fieldName }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.fieldNameInMyanmar }}" /></td>
             <td><input type="text" readonly class="form-control" value="{{ detail?.fieldType }}" /></td>
             <td><input type="text" readonly class="form-control" value="{{ detail?.fieldValue }}" /></td>
             <td><input type="text" readonly class="form-control" value="{{ detail?.isRequired }}" /></td>
-            <td><input type="text" readonly class="form-control text-right" value="{{ detail?.fieldOrder }}" /></td>
             <td><input type="text" readonly class="form-control" value="{{ detail?.showDashboard === 'Y' ? 'YES' : 'NO' }}" /></td>
             <td><input type="text" readonly class="form-control" value="{{ detail?.searchBy === 'Y' ? 'YES' : 'NO' }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.searchType === 'Y' ? 'YES' : 'NO' }}" /></td>
+            <td><input type="text" readonly class="form-control" value="{{ detail?.sortBy === 'Y' ? 'YES' : 'NO' }}" /></td>
+            <td><input type="text" readonly class="form-control text-right" value="{{ detail?.fieldOrder }}" /></td>
           </tr>
         </tbody>
       </table>

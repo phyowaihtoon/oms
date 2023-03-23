@@ -31,20 +31,16 @@
   </div>
 </div>
 
-<div id="page-body" class="row">
+<div id="page-body">
   <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" autocomplete="off">
     <jhi-alert-error></jhi-alert-error>
 
     <!-- <jhi-alert></jhi-alert> -->
-
-    <div class="form-group" [hidden]="editForm.get('id')!.value == null">
-      <div class="form-group col-6">
+    <div class="row">
+      <div class="form-group col-6" [hidden]="editForm.get('id')!.value == null">
         <label class="form-control-label" jhiTranslate="global.field.id" for="field_id">ID</label>
         <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
       </div>
-    </div>
-
-    <div class="form-group">
       <div class="form-group col-6">
         <label class="form-control-label" for="field_docTitle"
           >{{ 'dmsApp.metaData.docTitle' | translate }}<span class="text-danger required-field">*</span></label
@@ -68,238 +64,302 @@
     </div>
 
     <div class="form-group">
-      <div class="form-group col-12">
-        <label class="form-control-label" jhiTranslate="dmsApp.metaData.detailsField" for="field_docTitle">Please Add Detail Fields</label>
-        <div class="tbl-container">
-          <table class="table" formArrayName="fieldList">
-            <thead>
-              <tr class="bg-primary">
-                <th class="text-center" style="width: 20%">
-                  {{ 'dmsApp.metaData.fieldName' | translate }}<span class="required-field">*</span>
-                </th>
-                <th class="text-center" style="width: 10%">
-                  {{ 'dmsApp.metaData.fieldType' | translate }}<span class="required-field">*</span>
-                </th>
-                <th class="text-center" style="width: 30%">
-                  {{ 'dmsApp.metaData.fieldValue' | translate }}<span class="required-field">*</span>
-                </th>
-                <th class="text-center" style="width: 10%">
-                  {{ 'dmsApp.metaData.fieldMandatory' | translate }}<span class="required-field">*</span>
-                </th>
-                <th class="text-center" style="width: 10%">
-                  {{ 'dmsApp.metaData.fieldOrder' | translate }}<span class="required-field">*</span>
-                </th>
-                <th class="text-center" style="width: 5%">
-                  {{ 'dmsApp.metaData.showDashboard' | translate }}
-                </th>
-                <th class="text-center" style="width: 5%">
-                  {{ 'dmsApp.metaData.searchBy' | translate }}
-                </th>
-                <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
-                <td>
-                  <input type="text" class="col-12 form-control" placeholder="Field Name" formControlName="fieldName" />
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('fieldName')!.invalid &&
-                      (fieldList().controls[i].get('fieldName')!.dirty || fieldList().controls[i].get('fieldName')!.touched)
-                    "
+      <label class="form-control-label" jhiTranslate="dmsApp.metaData.detailsField" for="field_docTitle">Please Add Detail Fields</label>
+      <div class="tbl-container">
+        <table class="table" formArrayName="fieldList">
+          <thead>
+            <tr class="bg-primary">
+              <th class="text-center" style="width: 20%">
+                {{ 'dmsApp.metaData.fieldName' | translate }}<span class="required-field">*</span>
+              </th>
+              <th class="text-center" style="width: 15%">
+                {{ 'dmsApp.metaData.fieldNameInMyanmar' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">
+                {{ 'dmsApp.metaData.fieldType' | translate }}<span class="required-field">*</span>
+              </th>
+              <th class="text-center" style="width: 15%">
+                {{ 'dmsApp.metaData.fieldValue' | translate }}<span class="required-field">*</span>
+              </th>
+              <th class="text-center" style="width: 5%">
+                {{ 'dmsApp.metaData.fieldMandatory' | translate }}
+              </th>
+              <th class="text-center" style="width: 5%">
+                {{ 'dmsApp.metaData.showDashboard' | translate }}
+              </th>
+              <th class="text-center" style="width: 5%">
+                {{ 'dmsApp.metaData.searchBy' | translate }}
+              </th>
+              <th class="text-center" style="width: 5%">
+                {{ 'dmsApp.metaData.searchType' | translate }}
+              </th>
+              <th class="text-center" style="width: 5%">
+                {{ 'dmsApp.metaData.sortBy' | translate }}
+              </th>
+              <th class="text-center" style="width: 5%">
+                {{ 'dmsApp.metaData.fieldOrder' | translate }}
+              </th>
+              <th class="text-center" style="width: 10%">{{ 'dmsApp.metaData.fieldAction' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of fieldList().controls; last as isLast; let i = index" [formGroupName]="i">
+              <td style="width: 20%">
+                <input type="text" class="col-12 form-control" placeholder="Field Name" formControlName="fieldName" />
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('fieldName')!.invalid &&
+                    (fieldList().controls[i].get('fieldName')!.dirty || fieldList().controls[i].get('fieldName')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('fieldName')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('fieldName')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
+                    This field is required.
+                  </small>
 
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('fieldName')?.errors?.pattern"
-                      jhiTranslate="entity.validation.patternLetter"
-                    >
-                      This field can only contain letters.
-                    </small>
-
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('fieldName')?.errors?.maxlength"
-                      jhiTranslate="entity.validation.maxlength"
-                      [translateValues]="{ max: 50 }"
-                    >
-                      This field cannot be longer than 50 characters.
-                    </small>
-                  </div>
-                </td>
-                <td>
-                  <select class="form-control" name="fieldType" formControlName="fieldType" (change)="onFieldTypeChange(i)">
-                    <option [value]="data.value" *ngFor="let data of fieldTyepList">{{ data.caption }}</option>
-                  </select>
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('fieldType')!.invalid &&
-                      (fieldList().controls[i].get('fieldType')!.dirty || fieldList().controls[i].get('fieldType')!.touched)
-                    "
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('fieldName')?.errors?.pattern"
+                    jhiTranslate="entity.validation.patternLetter"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('fieldType')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
-                  </div>
-                </td>
+                    This field can only contain letters.
+                  </small>
 
-                <td>
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('fieldName')?.errors?.maxlength"
+                    jhiTranslate="entity.validation.maxlength"
+                    [translateValues]="{ max: 50 }"
+                  >
+                    This field cannot be longer than 50 characters.
+                  </small>
+                </div>
+              </td>
+              <td style="width: 15%">
+                <input type="text" class="col-12 form-control" formControlName="fieldNameInMyanmar" />
+              </td>
+              <td style="width: 10%">
+                <select class="form-control" name="fieldType" formControlName="fieldType" (change)="onFieldTypeChange(i)">
+                  <option [value]="data.value" *ngFor="let data of fieldTyepList">{{ data.caption }}</option>
+                </select>
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('fieldType')!.invalid &&
+                    (fieldList().controls[i].get('fieldType')!.dirty || fieldList().controls[i].get('fieldType')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('fieldType')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
+                  >
+                    This field is required.
+                  </small>
+                </div>
+              </td>
+
+              <td style="width: 15%">
+                <input
+                  *ngIf="fieldList().controls[i].get('fieldType')?.value !== 'LOV'"
+                  type="text"
+                  class="col-12 form-control"
+                  placeholder="Field Value"
+                  formControlName="fieldValue"
+                />
+
+                <div
+                  *ngIf="fieldList().controls[i].get('fieldType')?.value === 'LOV'"
+                  class="input-group col-12"
+                  style="padding: 0px !important"
+                >
                   <input
-                    *ngIf="fieldList().controls[i].get('fieldType')?.value !== 'LOV'"
                     type="text"
-                    class="col-12 form-control"
+                    readonly
                     placeholder="Field Value"
                     formControlName="fieldValue"
+                    class="form-control input-sm"
+                    style="background: white"
+                    (click)="addLovValue(i)"
                   />
-
-                  <div
-                    *ngIf="fieldList().controls[i].get('fieldType')?.value === 'LOV'"
-                    class="input-group col-12"
-                    style="padding: 0px !important"
-                  >
-                    <input
-                      type="text"
-                      readonly
-                      placeholder="Field Value"
-                      formControlName="fieldValue"
-                      class="form-control input-sm"
-                      style="background: white"
-                      (click)="addLovValue(i)"
-                    />
-                    <div class="input-group-append">
-                      <span class="input-sm input-btn-primary" (click)="addLovValue(i)">
-                        <fa-icon icon="plus"></fa-icon>
-                      </span>
-                    </div>
+                  <div class="input-group-append">
+                    <span class="input-sm input-btn-primary" (click)="addLovValue(i)">
+                      <fa-icon icon="plus"></fa-icon>
+                    </span>
                   </div>
+                </div>
 
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('fieldType')?.value === 'LOV' &&
-                      fieldList().controls[i].get('fieldValue')!.invalid &&
-                      (fieldList().controls[i].get('fieldValue')!.dirty || fieldList().controls[i].get('fieldValue')!.touched)
-                    "
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('fieldType')?.value === 'LOV' &&
+                    fieldList().controls[i].get('fieldValue')!.invalid &&
+                    (fieldList().controls[i].get('fieldValue')!.dirty || fieldList().controls[i].get('fieldValue')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('fieldValue')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('fieldValue')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
-                  </div>
-                </td>
+                    This field is required.
+                  </small>
+                </div>
+              </td>
 
-                <td>
-                  <select class="form-control" name="isRequired" formControlName="isRequired">
-                    <option [value]="data.value" *ngFor="let data of mendatoryList">{{ data.caption }}</option>
-                  </select>
+              <td style="width: 5%">
+                <select class="form-control" name="isRequired" formControlName="isRequired">
+                  <option [value]="data.value" *ngFor="let data of mendatoryList">{{ data.caption }}</option>
+                </select>
 
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('isRequired')!.invalid &&
-                      (fieldList().controls[i].get('isRequired')!.dirty || fieldList().controls[i].get('isRequired')!.touched)
-                    "
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('isRequired')!.invalid &&
+                    (fieldList().controls[i].get('isRequired')!.dirty || fieldList().controls[i].get('isRequired')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('isRequired')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('isRequired')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
-                  </div>
-                </td>
+                    This field is required.
+                  </small>
+                </div>
+              </td>
+              <td style="width: 5%">
+                <select
+                  style="padding: 0px"
+                  class="form-control"
+                  name="showDashboard"
+                  formControlName="showDashboard"
+                  [attr.disabled]="fieldList().controls[i].get('fieldType')?.value !== 'LOV' ? true : null"
+                  (change)="onShowDashboardChange(i)"
+                >
+                  <option [value]="data.value" *ngFor="let data of dashboardList">{{ data.caption }}</option>
+                </select>
 
-                <td>
-                  <input type="number" class="col-12 form-control" readonly placeholder="Field Order" formControlName="fieldOrder" />
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('fieldOrder')!.invalid &&
-                      (fieldList().controls[i].get('fieldOrder')!.dirty || fieldList().controls[i].get('fieldOrder')!.touched)
-                    "
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('showDashboard')!.invalid &&
+                    (fieldList().controls[i].get('showDashboard')!.dirty || fieldList().controls[i].get('showDashboard')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('showDashboard')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('fieldOrder')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
-                  </div>
-                </td>
+                    This field is required.
+                  </small>
+                </div>
+              </td>
 
-                <td>
-                  <select
-                    class="form-control"
-                    name="showDashboard"
-                    formControlName="showDashboard"
-                    [attr.disabled]="fieldList().controls[i].get('fieldType')?.value !== 'LOV' ? true : null"
-                    (change)="onShowDashboardChange(i)"
+              <td style="width: 5%">
+                <select
+                  class="form-control"
+                  name="searchBy"
+                  formControlName="searchBy"
+                  style="padding: 0px"
+                  (change)="onShowSearchByChange(i)"
+                >
+                  <option [value]="data.value" *ngFor="let data of searchByList">{{ data.caption }}</option>
+                </select>
+
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('searchBy')!.invalid &&
+                    (fieldList().controls[i].get('searchBy')!.dirty || fieldList().controls[i].get('searchBy')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('searchBy')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <option [value]="data.value" *ngFor="let data of dashboardList">{{ data.caption }}</option>
-                  </select>
+                    This field is required.
+                  </small>
+                </div>
+              </td>
 
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('showDashboard')!.invalid &&
-                      (fieldList().controls[i].get('showDashboard')!.dirty || fieldList().controls[i].get('showDashboard')!.touched)
-                    "
+              <td style="width: 5%">
+                <select
+                  class="form-control"
+                  name="searchType"
+                  formControlName="searchType"
+                  style="padding: 0px"
+                  (change)="onShowSearchTypeChange(i)"
+                >
+                  <option [value]="data.value" *ngFor="let data of searchTypeList">{{ data.caption }}</option>
+                </select>
+
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('searchType')!.invalid &&
+                    (fieldList().controls[i].get('searchType')!.dirty || fieldList().controls[i].get('searchType')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('searchType')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('showDashboard')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
-                  </div>
-                </td>
+                    This field is required.
+                  </small>
+                </div>
+              </td>
 
-                <td>
-                  <select class="form-control" name="searchBy" formControlName="searchBy">
-                    <option [value]="data.value" *ngFor="let data of searchByList">{{ data.caption }}</option>
-                  </select>
+              <td style="width: 5%">
+                <select class="form-control" name="sortBy" formControlName="sortBy" style="padding: 0px" (change)="onShowSortByChange(i)">
+                  <option [value]="data.value" *ngFor="let data of sortByList">{{ data.caption }}</option>
+                </select>
 
-                  <div
-                    *ngIf="
-                      fieldList().controls[i].get('searchBy')!.invalid &&
-                      (fieldList().controls[i].get('searchBy')!.dirty || fieldList().controls[i].get('searchBy')!.touched)
-                    "
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('sortBy')!.invalid &&
+                    (fieldList().controls[i].get('sortBy')!.dirty || fieldList().controls[i].get('sortBy')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('sortBy')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
                   >
-                    <small
-                      class="form-text text-danger"
-                      *ngIf="fieldList().controls[i].get('searchBy')?.errors?.required"
-                      jhiTranslate="entity.validation.required"
-                    >
-                      This field is required.
-                    </small>
-                  </div>
-                </td>
+                    This field is required.
+                  </small>
+                </div>
+              </td>
 
-                <td>
-                  <span title="Remove" (click)="removeField(i)">
-                    <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
-                  </span>
-                  <span *ngIf="isLast" title="Add" (click)="addField()">
-                    <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+              <td style="width: 5%">
+                <input type="number" class="col-12 form-control" readonly placeholder="Field Order" formControlName="fieldOrder" />
+                <div
+                  *ngIf="
+                    fieldList().controls[i].get('fieldOrder')!.invalid &&
+                    (fieldList().controls[i].get('fieldOrder')!.dirty || fieldList().controls[i].get('fieldOrder')!.touched)
+                  "
+                >
+                  <small
+                    class="form-text text-danger"
+                    *ngIf="fieldList().controls[i].get('fieldOrder')?.errors?.required"
+                    jhiTranslate="entity.validation.required"
+                  >
+                    This field is required.
+                  </small>
+                </div>
+              </td>
+
+              <td style="width: 10%">
+                <span title="Remove" (click)="removeField(i)">
+                  <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                </span>
+                <span *ngIf="isLast" title="Add" (click)="addField()">
+                  <fa-icon icon="plus" class="fa-icon-theme text-success"></fa-icon>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </form>

@@ -9,16 +9,30 @@ public class DocumentInquiryMessage implements Serializable {
     private Long metaDataHeaderId;
     private String repositoryURL;
     private String createdDate;
+    private String generalValue;
+    private String approvedBy;
+    private String reason;
+    private int status;
+    // Field Value
     private String fieldValue1;
     private String fieldValue2;
     private String fieldValue3;
-    private String reason;
-    private int status;
+    private String fieldValue4;
+    // Field Order
     private int fieldIndex1;
     private int fieldIndex2;
     private int fieldIndex3;
-    private String generalValue;
-    private String approvedBy;
+    private int fieldIndex4;
+    // Search Type for each field
+    private String fieldSearchType1;
+    private String fieldSearchType2;
+    private String fieldSearchType3;
+    private String fieldSearchType4;
+    // Field for sorting
+    private int fieldSortBy1;
+    private int fieldSortBy2;
+    private int fieldSortBy3;
+    private int fieldSortBy4;
 
     public Long getMetaDataHeaderId() {
         return metaDataHeaderId;
@@ -42,6 +56,38 @@ public class DocumentInquiryMessage implements Serializable {
 
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getGeneralValue() {
+        return generalValue;
+    }
+
+    public void setGeneralValue(String generalValue) {
+        this.generalValue = generalValue;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getFieldValue1() {
@@ -68,20 +114,12 @@ public class DocumentInquiryMessage implements Serializable {
         this.fieldValue3 = fieldValue3;
     }
 
-    public String getReason() {
-        return reason;
+    public String getFieldValue4() {
+        return fieldValue4;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
+    public void setFieldValue4(String fieldValue4) {
+        this.fieldValue4 = fieldValue4;
     }
 
     public int getFieldIndex1() {
@@ -108,19 +146,75 @@ public class DocumentInquiryMessage implements Serializable {
         this.fieldIndex3 = fieldIndex3;
     }
 
-    public String getGeneralValue() {
-        return generalValue;
+    public int getFieldIndex4() {
+        return fieldIndex4;
     }
 
-    public void setGeneralValue(String generalValue) {
-        this.generalValue = generalValue;
+    public void setFieldIndex4(int fieldIndex4) {
+        this.fieldIndex4 = fieldIndex4;
     }
 
-    public String getApprovedBy() {
-        return approvedBy;
+    public String getFieldSearchType1() {
+        return fieldSearchType1;
     }
 
-    public void setApprovedBy(String approvedBy) {
-        this.approvedBy = approvedBy;
+    public void setFieldSearchType1(String fieldSearchType1) {
+        this.fieldSearchType1 = fieldSearchType1;
+    }
+
+    public String getFieldSearchType2() {
+        return fieldSearchType2;
+    }
+
+    public void setFieldSearchType2(String fieldSearchType2) {
+        this.fieldSearchType2 = fieldSearchType2;
+    }
+
+    public String getFieldSearchType3() {
+        return fieldSearchType3;
+    }
+
+    public void setFieldSearchType3(String fieldSearchType3) {
+        this.fieldSearchType3 = fieldSearchType3;
+    }
+
+    public String getFieldSearchType4() {
+        return fieldSearchType4;
+    }
+
+    public void setFieldSearchType4(String fieldSearchType4) {
+        this.fieldSearchType4 = fieldSearchType4;
+    }
+
+    public int getFieldSortBy1() {
+        return fieldSortBy1;
+    }
+
+    public void setFieldSortBy1(int fieldSortBy1) {
+        this.fieldSortBy1 = fieldSortBy1;
+    }
+
+    public int getFieldSortBy2() {
+        return fieldSortBy2;
+    }
+
+    public void setFieldSortBy2(int fieldSortBy2) {
+        this.fieldSortBy2 = fieldSortBy2;
+    }
+
+    public int getFieldSortBy3() {
+        return fieldSortBy3;
+    }
+
+    public void setFieldSortBy3(int fieldSortBy3) {
+        this.fieldSortBy3 = fieldSortBy3;
+    }
+
+    public int getFieldSortBy4() {
+        return fieldSortBy4;
+    }
+
+    public void setFieldSortBy4(int fieldSortBy4) {
+        this.fieldSortBy4 = fieldSortBy4;
     }
 }

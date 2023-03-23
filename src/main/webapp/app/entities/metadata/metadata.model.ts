@@ -24,12 +24,15 @@ export interface IMetaData {
   id?: number;
   headerId?: number;
   fieldName?: string;
+  fieldNameInMyanmar?: string;
   fieldType?: string;
   fieldValue?: string;
   isRequired?: string;
   fieldOrder?: number;
   showDashboard?: string;
   searchBy?: string;
+  searchType?: string;
+  sortBy?: string;
   delFlag?: string;
   isDisplayed?: boolean;
 }
@@ -39,12 +42,15 @@ export class MetaData implements IMetaData {
     public id?: number,
     public headerId?: number,
     public fieldName?: string,
+    public fieldNameInMyanmar?: string,
     public fieldType?: string,
     public fieldValue?: string,
     public isRequired?: string,
     public fieldOrder?: number,
     public showDashboard?: string,
     public searchBy?: string,
+    public searchType?: string,
+    public sortBy?: string,
     public delFlag?: string,
     public isDisplayed?: boolean
   ) {}

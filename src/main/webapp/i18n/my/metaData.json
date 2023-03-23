@@ -23,19 +23,23 @@
       "id": "ID",
       "docTitle": "ဌာန",
       "detailsField": "ကျေးဇူးပြု၍ ဌာနနဲ့ဆက်စပ်သော အသေးစိတ်အချက်အလက်များ ဖြည့်စွက်ပါ။",
+      "detailsForView": "ဌာနနဲ့ဆက်စပ်သော အသေးစိတ်အချက်အလက်များ",
       "createdDate": "ဖန်တီးသော ရက်စွဲ",
       "createdBy": "ဖန်တီးသူ",
-      "fieldName": "အချက်အလက် အမည်",
+      "fieldName": "အမည် (အင်္ဂလိပ်စာဖြင့်)",
+      "fieldNameInMyanmar": "အမည် (မြန်မာစာဖြင့်)",
       "fieldType": "အမျိုးအစား",
       "fieldValue": "Field Value",
       "fieldMandatory": "Mandatory",
-      "fieldOrder": "Field Order",
+      "fieldOrder": "Order",
       "showDashboard": "Dashboard",
       "fieldAction": "#",
       "search": "ရှာဖွေလိုသော အချက်အလက်",
       "result": "ရှာဖွေမှုရလဒ်",
       "metadataLabel": "MetaData အချက်အလက်",
-      "searchBy": "Search By"
+      "searchBy": "Search By",
+      "searchType": "Search Type",
+      "sortBy": "Sort By"
     }
   }
 }

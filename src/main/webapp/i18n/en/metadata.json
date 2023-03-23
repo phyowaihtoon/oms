@@ -23,19 +23,23 @@
       "id": "ID",
       "docTitle": "Department",
       "detailsField": "Please, add fields related to department",
+      "detailsForView": "Fields related to department",
       "createdDate": "Created Date",
       "createdBy": "Created By",
       "fieldName": "Field Name",
+      "fieldNameInMyanmar": "In Myanmar",
       "fieldType": "Field Type",
       "fieldValue": "Field Value",
       "fieldMandatory": "Mandatory",
-      "fieldOrder": "Field Order",
+      "fieldOrder": "Order",
       "showDashboard": "Dashboard",
       "fieldAction": "#",
       "search": "SEARCH CRITERIA",
       "result": "SEARCH RESULT",
       "metadataLabel": "MetaData Information",
-      "searchBy": "Search By"
+      "searchBy": "Search By",
+      "searchType": "Search Type",
+      "sortBy": "Sort By"
     }
   }
 }

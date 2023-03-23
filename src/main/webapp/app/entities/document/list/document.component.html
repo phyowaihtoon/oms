@@ -26,22 +26,43 @@
   <form name="searchForm" role="form" novalidate [formGroup]="searchForm" autocomplete="off">
     <div *ngIf="isShowingFilters" id="search-area">
       <div class="dms-form-group row col-12 dms-col">
-        <div class="col-3">
+        <div class="col-2">
           <label class="form-control-label" jhiTranslate="dmsApp.document.docTitle" for="field_docTitle">Department</label>
           <span class="text-danger">*</span>
         </div>
-        <div class="col-3">
-          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel1 }}</label>
-        </div>
-        <div class="col-3">
-          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel2 }}</label>
-        </div>
-        <div class="col-3">
-          <label class="form-control-label" for="field_fieldValues">{{ _fieldLabel3 }}</label>
+        <div class="col-10 row">
+          <div class="col-3">
+            <label class="form-control-label" for="field_fieldValues">{{
+              _selectedLanguage === 'my' && _metaDataField1 && _metaDataField1.fieldNameInMyanmar
+                ? _metaDataField1.fieldNameInMyanmar
+                : _metaDataField1?.fieldName
+            }}</label>
+          </div>
+          <div class="col-3">
+            <label class="form-control-label" for="field_fieldValues">{{
+              _selectedLanguage === 'my' && _metaDataField2 && _metaDataField2.fieldNameInMyanmar
+                ? _metaDataField2.fieldNameInMyanmar
+                : _metaDataField2?.fieldName
+            }}</label>
+          </div>
+          <div class="col-3">
+            <label class="form-control-label" for="field_fieldValues">{{
+              _selectedLanguage === 'my' && _metaDataField3 && _metaDataField3.fieldNameInMyanmar
+                ? _metaDataField3.fieldNameInMyanmar
+                : _metaDataField3?.fieldName
+            }}</label>
+          </div>
+          <div class="col-3">
+            <label class="form-control-label" for="field_fieldValues">{{
+              _selectedLanguage === 'my' && _metaDataField4 && _metaDataField4.fieldNameInMyanmar
+                ? _metaDataField4.fieldNameInMyanmar
+                : _metaDataField4?.fieldName
+            }}</label>
+          </div>
         </div>
       </div>
       <div class="dms-form-group row col-12 dms-col">
-        <div class="col-3">
+        <div class="col-2">
           <select
             (change)="onChangeDocumentTemplate()"
             (keydown.enter)="searchDocument()"
@@ -71,104 +92,185 @@
             </small>
           </div>
         </div>
+        <div class="col-10 row">
+          <div class="col-3 d-flex">
+            <select
+              *ngIf="_isShowSearchType1"
+              class="form-control"
+              id="field_fieldSearchType1"
+              data-cy="fieldSearchType1"
+              name="fieldSearchType1"
+              formControlName="fieldSearchType1"
+              style="width: 80px; padding: 0px"
+            >
+              <option [value]="searchType.value" *ngFor="let searchType of _searchTypeList">
+                {{ searchType.description }}
+              </option>
+            </select>
+            <select
+              (change)="searchDocument()"
+              *ngIf="isLOV1"
+              class="form-control"
+              id="field_fieldValue1"
+              data-cy="fieldValue1"
+              name="fieldValue1"
+              formControlName="fieldValue1"
+            >
+              <option [value]=""></option>
+              <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF1">
+                {{ lovValue }}
+              </option>
+            </select>
+            <input
+              *ngIf="!isLOV1"
+              type="text"
+              class="form-control"
+              name="fieldValue1"
+              id="field_fieldValue1"
+              data-cy="fieldValue1"
+              formControlName="fieldValue1"
+              placeholder="Enter Data"
+            />
+          </div>
 
-        <div class="col-3 row dms-row">
-          <select
-            (change)="searchDocument()"
-            *ngIf="isLOV1"
-            class="form-control"
-            id="field_fieldValue1"
-            data-cy="fieldValue1"
-            name="fieldValue1"
-            formControlName="fieldValue1"
-          >
-            <option [value]=""></option>
-            <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF1">
-              {{ lovValue }}
-            </option>
-          </select>
-          <input
-            *ngIf="!isLOV1"
-            type="text"
-            class="form-control"
-            name="fieldValue1"
-            id="field_fieldValue1"
-            data-cy="fieldValue1"
-            formControlName="fieldValue1"
-            placeholder="Enter Data"
-          />
-        </div>
+          <div class="col-3 d-flex">
+            <select
+              *ngIf="_isShowSearchType2"
+              class="form-control"
+              id="field_fieldSearchType2"
+              data-cy="fieldSearchType2"
+              name="fieldSearchType2"
+              formControlName="fieldSearchType2"
+              style="width: 80px; padding: 0px"
+            >
+              <option [value]="searchType.value" *ngFor="let searchType of _searchTypeList">
+                {{ searchType.description }}
+              </option>
+            </select>
+            <select
+              (change)="searchDocument()"
+              *ngIf="isLOV2"
+              class="form-control"
+              id="field_fieldValue2"
+              data-cy="fieldValue2"
+              name="fieldValue2"
+              formControlName="fieldValue2"
+            >
+              <option [value]=""></option>
+              <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF2">
+                {{ lovValue }}
+              </option>
+            </select>
+            <input
+              *ngIf="!isLOV2"
+              type="text"
+              class="form-control"
+              name="fieldValue2"
+              id="field_fieldValue2"
+              data-cy="fieldValue2"
+              formControlName="fieldValue2"
+              placeholder="Enter Data"
+            />
+          </div>
 
-        <div class="col-3 row dms-row">
-          <select
-            (change)="searchDocument()"
-            *ngIf="isLOV2"
-            class="form-control"
-            id="field_fieldValue2"
-            data-cy="fieldValue2"
-            name="fieldValue2"
-            formControlName="fieldValue2"
-          >
-            <option [value]=""></option>
-            <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF2">
-              {{ lovValue }}
-            </option>
-          </select>
-          <input
-            *ngIf="!isLOV2"
-            type="text"
-            class="form-control"
-            name="fieldValue2"
-            id="field_fieldValue2"
-            data-cy="fieldValue2"
-            formControlName="fieldValue2"
-            placeholder="Enter Data"
-          />
-        </div>
-
-        <div class="col-3 row dms-row">
-          <select
-            (change)="searchDocument()"
-            *ngIf="isLOV3"
-            class="form-control"
-            id="field_fieldValue3"
-            data-cy="fieldValue3"
-            name="fieldValue3"
-            formControlName="fieldValue3"
-          >
-            <option [value]=""></option>
-            <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF3">
-              {{ lovValue }}
-            </option>
-          </select>
-          <input
-            *ngIf="!isLOV3"
-            type="text"
-            class="form-control"
-            name="fieldValue3"
-            id="field_fieldValue3"
-            data-cy="fieldValue3"
-            formControlName="fieldValue3"
-            placeholder="Enter Data"
-          />
+          <div class="col-3 d-flex">
+            <select
+              *ngIf="_isShowSearchType3"
+              class="form-control"
+              id="field_fieldSearchType3"
+              data-cy="fieldSearchType3"
+              name="fieldSearchType3"
+              formControlName="fieldSearchType3"
+              style="width: 80px; padding: 0px"
+            >
+              <option [value]="searchType.value" *ngFor="let searchType of _searchTypeList">
+                {{ searchType.description }}
+              </option>
+            </select>
+            <select
+              (change)="searchDocument()"
+              *ngIf="isLOV3"
+              class="form-control"
+              id="field_fieldValue3"
+              data-cy="fieldValue3"
+              name="fieldValue3"
+              formControlName="fieldValue3"
+            >
+              <option [value]=""></option>
+              <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF3">
+                {{ lovValue }}
+              </option>
+            </select>
+            <input
+              *ngIf="!isLOV3"
+              type="text"
+              class="form-control"
+              name="fieldValue3"
+              id="field_fieldValue3"
+              data-cy="fieldValue3"
+              formControlName="fieldValue3"
+              placeholder="Enter Data"
+            />
+          </div>
+          <div class="col-3 d-flex">
+            <select
+              *ngIf="_isShowSearchType4"
+              class="form-control"
+              id="field_fieldSearchType4"
+              data-cy="fieldSearchType4"
+              name="fieldSearchType4"
+              formControlName="fieldSearchType4"
+              style="width: 80px; padding: 0px"
+            >
+              <option [value]="searchType.value" *ngFor="let searchType of _searchTypeList">
+                {{ searchType.description }}
+              </option>
+            </select>
+            <select
+              (change)="searchDocument()"
+              *ngIf="isLOV4"
+              class="form-control"
+              id="field_fieldValue4"
+              data-cy="fieldValue4"
+              name="fieldValue4"
+              formControlName="fieldValue4"
+            >
+              <option [value]=""></option>
+              <option [value]="lovValue" *ngFor="let lovValue of _lovValuesF4">
+                {{ lovValue }}
+              </option>
+            </select>
+            <input
+              *ngIf="!isLOV4"
+              type="text"
+              class="form-control"
+              name="fieldValue4"
+              id="field_fieldValue4"
+              data-cy="fieldValue4"
+              formControlName="fieldValue4"
+              placeholder="Enter Data"
+            />
+          </div>
         </div>
       </div>
 
       <div class="dms-form-group row col-12 dms-col">
-        <div class="col-3">
+        <div class="col-2">
           <label class="form-control-label" jhiTranslate="dmsApp.document.status" for="field_fieldValues">Status</label>
         </div>
-        <div class="col-3">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">General Search</label>
-        </div>
+        <div class="col-10 row">
+          <div class="col-3">
+            <label class="form-control-label" jhiTranslate="dmsApp.document.otherMetaData" for="field_fieldValues">General Search</label>
+          </div>
 
-        <div class="col-2">
-          <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
+          <div class="col-3">
+            <label class="form-control-label" jhiTranslate="dmsApp.document.createdDate" for="field_createdDate">Created Date</label>
+          </div>
         </div>
       </div>
 
       <div class="dms-form-group row col-12 dms-col">
-        <div class="col-3">
+        <div class="col-2">
           <select
             (change)="searchDocument()"
             class="form-control"
@@ -182,32 +284,34 @@
             </option>
           </select>
         </div>
-        <div class="col-3">
-          <input
-            type="text"
-            class="form-control"
-            name="generalValue"
-            id="field_generalValue"
-            data-cy="generalValue"
-            formControlName="generalValue"
-          />
-        </div>
-        <div class="col-2">
-          <div class="input-group">
+        <div class="col-10 row">
+          <div class="col-3">
             <input
+              type="text"
               class="form-control"
-              id="field_createdDate"
-              data-cy="createdDate"
-              placeholder="DD-MM-YYYY"
-              name="createdDate"
-              formControlName="createdDate"
-              ngbDatepicker
-              #createdDate="ngbDatepicker"
+              name="generalValue"
+              id="field_generalValue"
+              data-cy="generalValue"
+              formControlName="generalValue"
             />
-            <div class="input-group-append">
-              <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
-                <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
-              </button>
+          </div>
+          <div class="col-3">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="field_createdDate"
+                data-cy="createdDate"
+                placeholder="DD-MM-YYYY"
+                name="createdDate"
+                formControlName="createdDate"
+                ngbDatepicker
+                #createdDate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="createdDate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -238,7 +342,7 @@
             <div class="dropdown-item" *ngFor="let colData of _metaDataColumns" (click)="showHideColumn(colData)">
               <span>
                 <fa-icon icon="check" *ngIf="colData.isDisplayed"></fa-icon>
-                {{ colData.fieldName }}
+                {{ _selectedLanguage === 'my' && colData.fieldNameInMyanmar ? colData.fieldNameInMyanmar : colData?.fieldName }}
               </span>
             </div>
           </div>
@@ -276,7 +380,9 @@
                 <span jhiTranslate="dmsApp.document.status">Status</span>
               </th>
 
-              <th scope="col" *ngFor="let data of _displayedMetaDataColumns">{{ data.fieldName }}</th>
+              <th scope="col" *ngFor="let data of _displayedMetaDataColumns">
+                {{ _selectedLanguage === 'my' && data.fieldNameInMyanmar ? data.fieldNameInMyanmar : data?.fieldName }}
+              </th>
 
               <th scope="col" *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
                 <span jhiTranslate="dmsApp.document.createdDate">Created Date</span>

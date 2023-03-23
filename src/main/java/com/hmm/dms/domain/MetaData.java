@@ -28,6 +28,9 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
     @Column(name = "field_name", nullable = false)
     private String fieldName;
 
+    @Column(name = "fieldname_in_myanmar")
+    private String fieldNameInMyanmar;
+
     @NotNull
     @Column(name = "field_type", nullable = false)
     private String fieldType;
@@ -53,6 +56,14 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(name = "search_by", nullable = false)
     private String searchBy;
+
+    @NotNull
+    @Column(name = "search_type", nullable = false)
+    private String searchType;
+
+    @NotNull
+    @Column(name = "sort_by", nullable = false)
+    private String sortBy;
 
     public Long getId() {
         return id;
@@ -91,6 +102,14 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    public String getFieldNameInMyanmar() {
+        return fieldNameInMyanmar;
+    }
+
+    public void setFieldNameInMyanmar(String fieldNameInMyanmar) {
+        this.fieldNameInMyanmar = fieldNameInMyanmar;
     }
 
     public String getFieldType() {
@@ -167,6 +186,22 @@ public class MetaData extends AbstractAuditingEntity implements Serializable {
 
     public void setSearchBy(String searchBy) {
         this.searchBy = searchBy;
+    }
+
+    public String getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
     }
 
     @Override

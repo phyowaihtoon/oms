@@ -7,7 +7,7 @@ import { DocumentInquiryService } from '../service/document-inquiry.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IMetaData, IMetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { IDocumentStatus, IMenuItem } from 'app/entities/util/setup.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -26,18 +26,36 @@ export class DocumentComponent implements OnInit, OnDestroy {
   _displayedMetaDataColumns?: IMetaData[];
   _displayedMetaDataValues?: string[] = [];
   _staticMetaDataColumns: any;
+
+  _metaDataField1?: IMetaData;
+  _metaDataField2?: IMetaData;
+  _metaDataField3?: IMetaData;
+  _metaDataField4?: IMetaData;
+
   _lovValuesF1?: string[] = [];
   _lovValuesF2?: string[] = [];
   _lovValuesF3?: string[] = [];
+  _lovValuesF4?: string[] = [];
+
   isLOV1 = false;
   isLOV2 = false;
   isLOV3 = false;
-  _fieldLabel1?: string = '';
-  _fieldLabel2?: string = '';
-  _fieldLabel3?: string = '';
+  isLOV4 = false;
+
+  _isShowSearchType1 = false;
+  _isShowSearchType2 = false;
+  _isShowSearchType3 = false;
+  _isShowSearchType4 = false;
+
   _fieldOrder1?: number = 0;
   _fieldOrder2?: number = 0;
   _fieldOrder3?: number = 0;
+  _fieldOrder4?: number = 0;
+
+  _fieldSortBy1?: number = 0;
+  _fieldSortBy2?: number = 0;
+  _fieldSortBy3?: number = 0;
+  _fieldSortBy4?: number = 0;
 
   isLoading = false;
   totalItems = 0;
@@ -54,6 +72,14 @@ export class DocumentComponent implements OnInit, OnDestroy {
 
   _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
+  _selectedLanguage: string = 'my';
+
+  _searchTypeList = [
+    { value: 'EQ', description: 'Equal' },
+    { value: 'CO', description: 'Contain' },
+    { value: 'SW', description: 'Start With' },
+    { value: 'EW', description: 'End With' },
+  ];
 
   searchForm = this.fb.group({
     metaDataHdrID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
@@ -61,6 +87,11 @@ export class DocumentComponent implements OnInit, OnDestroy {
     fieldValue1: [{ value: '', disabled: true }],
     fieldValue2: [{ value: '', disabled: true }],
     fieldValue3: [{ value: '', disabled: true }],
+    fieldValue4: [{ value: '', disabled: true }],
+    fieldSearchType1: ['EQ'],
+    fieldSearchType2: ['EQ'],
+    fieldSearchType3: ['EQ'],
+    fieldSearchType4: ['EQ'],
     generalValue: [],
     docStatus: [0],
     pageNo: [],
@@ -83,6 +114,11 @@ export class DocumentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this._selectedLanguage = this.translateService.currentLang;
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this._selectedLanguage = this.translateService.currentLang;
+    });
+
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
@@ -150,45 +186,97 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.isLOV1 = false;
     this.isLOV2 = false;
     this.isLOV3 = false;
+    this.isLOV4 = false;
+
+    this._isShowSearchType1 = false;
+    this._isShowSearchType2 = false;
+    this._isShowSearchType3 = false;
+    this._isShowSearchType4 = false;
+
+    this._metaDataField1 = undefined;
+    this._metaDataField2 = undefined;
+    this._metaDataField3 = undefined;
+    this._metaDataField4 = undefined;
+
     this.searchForm.get('fieldValue1')?.patchValue('');
     this.searchForm.get('fieldValue2')?.patchValue('');
     this.searchForm.get('fieldValue3')?.patchValue('');
-    this._fieldLabel1 = '';
-    this._fieldLabel2 = '';
-    this._fieldLabel3 = '';
+    this.searchForm.get('fieldValue4')?.patchValue('');
+
+    this._fieldSortBy1 = 0;
+    this._fieldSortBy2 = 0;
+    this._fieldSortBy3 = 0;
+    this._fieldSortBy4 = 0;
 
     const searchFieldList = this._selectedMetaDataList?.filter(item => item.searchBy === 'Y');
 
     if (searchFieldList && searchFieldList.length > 0) {
-      const metaData1 = searchFieldList[0];
+      this._metaDataField1 = searchFieldList[0];
       this.searchForm.get('fieldValue1')?.enable();
-      this._fieldLabel1 = metaData1.fieldName;
-      this._fieldOrder1 = metaData1.fieldOrder;
-      if (metaData1.fieldType === 'LOV') {
+      this._fieldOrder1 = this._metaDataField1.fieldOrder;
+      if (this._metaDataField1.fieldType === 'LOV') {
         this.isLOV1 = true;
-        this._lovValuesF1 = metaData1.fieldValue?.split('|');
+        this._lovValuesF1 = this._metaDataField1.fieldValue?.split('|');
+      }
+      if (this._metaDataField1.searchType === 'Y') {
+        this._isShowSearchType1 = true;
       }
 
       if (searchFieldList.length > 1) {
-        const metaData2 = searchFieldList[1];
+        this._metaDataField2 = searchFieldList[1];
         this.searchForm.get('fieldValue2')?.enable();
-        this._fieldLabel2 = metaData2.fieldName;
-        this._fieldOrder2 = metaData2.fieldOrder;
-        if (metaData2.fieldType === 'LOV') {
+        this._fieldOrder2 = this._metaDataField2.fieldOrder;
+        if (this._metaDataField2.fieldType === 'LOV') {
           this.isLOV2 = true;
-          this._lovValuesF2 = metaData2.fieldValue?.split('|');
+          this._lovValuesF2 = this._metaDataField2.fieldValue?.split('|');
+        }
+        if (this._metaDataField2.searchType === 'Y') {
+          this._isShowSearchType2 = true;
         }
       }
 
       if (searchFieldList.length > 2) {
-        const metaData3 = searchFieldList[2];
+        this._metaDataField3 = searchFieldList[2];
         this.searchForm.get('fieldValue3')?.enable();
-        this._fieldLabel3 = metaData3.fieldName;
-        this._fieldOrder3 = metaData3.fieldOrder;
-        if (metaData3.fieldType === 'LOV') {
+        this._fieldOrder3 = this._metaDataField3.fieldOrder;
+        if (this._metaDataField3.fieldType === 'LOV') {
           this.isLOV3 = true;
-          this._lovValuesF3 = metaData3.fieldValue?.split('|');
+          this._lovValuesF3 = this._metaDataField3.fieldValue?.split('|');
         }
+        if (this._metaDataField3.searchType === 'Y') {
+          this._isShowSearchType3 = true;
+        }
+      }
+
+      if (searchFieldList.length > 3) {
+        this._metaDataField4 = searchFieldList[3];
+        this.searchForm.get('fieldValue4')?.enable();
+        this._fieldOrder4 = this._metaDataField4.fieldOrder;
+        if (this._metaDataField4.fieldType === 'LOV') {
+          this.isLOV4 = true;
+          this._lovValuesF4 = this._metaDataField4.fieldValue?.split('|');
+        }
+        if (this._metaDataField4.searchType === 'Y') {
+          this._isShowSearchType4 = true;
+        }
+      }
+    }
+
+    const sortByList = this._selectedMetaDataList?.filter(item => item.sortBy === 'Y');
+    if (sortByList && sortByList.length > 0) {
+      const sortMetaData1 = sortByList[0];
+      this._fieldSortBy1 = sortMetaData1.fieldOrder;
+      if (sortByList.length > 1) {
+        const sortMetaData2 = sortByList[1];
+        this._fieldSortBy2 = sortMetaData2.fieldOrder;
+      }
+      if (sortByList.length > 2) {
+        const sortMetaData3 = sortByList[2];
+        this._fieldSortBy3 = sortMetaData3.fieldOrder;
+      }
+      if (sortByList.length > 3) {
+        const sortMetaData4 = sortByList[3];
+        this._fieldSortBy4 = sortMetaData4.fieldOrder;
       }
     }
   }
@@ -302,6 +390,16 @@ export class DocumentComponent implements OnInit, OnDestroy {
       fieldIndex2: this._fieldOrder2,
       fieldValue3: this.searchForm.get('fieldValue3')!.value,
       fieldIndex3: this._fieldOrder3,
+      fieldValue4: this.searchForm.get('fieldValue4')!.value,
+      fieldIndex4: this._fieldOrder4,
+      fieldSearchType1: this.searchForm.get('fieldSearchType1')!.value,
+      fieldSearchType2: this.searchForm.get('fieldSearchType2')!.value,
+      fieldSearchType3: this.searchForm.get('fieldSearchType3')!.value,
+      fieldSearchType4: this.searchForm.get('fieldSearchType4')!.value,
+      fieldSortBy1: this._fieldSortBy1,
+      fieldSortBy2: this._fieldSortBy2,
+      fieldSortBy3: this._fieldSortBy3,
+      fieldSortBy4: this._fieldSortBy4,
       generalValue: this.searchForm.get('generalValue')!.value,
       status: this.searchForm.get('docStatus')!.value,
     };
@@ -325,14 +423,21 @@ export class DocumentComponent implements OnInit, OnDestroy {
     this.isLOV1 = false;
     this.isLOV2 = false;
     this.isLOV3 = false;
-    this._fieldLabel1 = '';
-    this._fieldLabel2 = '';
-    this._fieldLabel3 = '';
+    this.isLOV4 = false;
+    this._isShowSearchType1 = false;
+    this._isShowSearchType2 = false;
+    this._isShowSearchType3 = false;
+    this._isShowSearchType4 = false;
+    this._metaDataField1 = undefined;
+    this._metaDataField2 = undefined;
+    this._metaDataField3 = undefined;
+    this._metaDataField4 = undefined;
     this._selectedMetaDataList = [];
     this.searchForm.get('metaDataHdrID')?.patchValue(0);
     this.searchForm.get('fieldValue1')?.disable();
     this.searchForm.get('fieldValue2')?.disable();
     this.searchForm.get('fieldValue3')?.disable();
+    this.searchForm.get('fieldValue4')?.disable();
     this.searchForm.get('docStatus')?.patchValue(0);
     this.searchForm.get('pageNo')?.patchValue('');
     this.documentInquiryService.clearSearchCriteria();

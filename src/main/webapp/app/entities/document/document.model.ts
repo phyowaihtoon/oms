@@ -80,6 +80,16 @@ export interface IDocumentInquiry {
   fieldIndex2?: number;
   fieldValue3?: string;
   fieldIndex3?: number;
+  fieldValue4?: string;
+  fieldIndex4?: number;
+  fieldSearchType1?: string;
+  fieldSearchType2?: string;
+  fieldSearchType3?: string;
+  fieldSearchType4?: string;
+  fieldSortBy1?: number;
+  fieldSortBy2?: number;
+  fieldSortBy3?: number;
+  fieldSortBy4?: number;
   status?: number;
   reason?: string;
   generalValue?: string;
@@ -99,6 +109,16 @@ export class DocumentInquiry implements IDocumentInquiry {
     public fieldIndex2?: number,
     public fieldValue3?: string,
     public fieldIndex3?: number,
+    public fieldValue4?: string,
+    public fieldIndex4?: number,
+    public fieldSearchType1?: string,
+    public fieldSearchType2?: string,
+    public fieldSearchType3?: string,
+    public fieldSearchType4?: string,
+    public fieldSortBy1?: number,
+    public fieldSortBy2?: number,
+    public fieldSortBy3?: number,
+    public fieldSortBy4?: number,
     public status?: number,
     public reason?: string,
     public generalValue?: string,
