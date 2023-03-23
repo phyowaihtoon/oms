@@ -72,8 +72,18 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
             replyMessage.setMessage("There is no attached document.");
             return replyMessage;
         }
-
+        
+        if(documentHeaderDTO.getId()==null) {
+        	 if(checkDuplication(documentHeaderDTO)) {
+             	replyMessage.setCode(ResponseCode.ERROR_E00);
+                 replyMessage.setMessage("Record already existed.");
+                 return replyMessage;
+             }
+        }
+       
+        
         try {
+        	
             log.debug("Saving Document Header: {}", documentHeaderDTO);
             DocumentHeader documentHeader = documentHeaderMapper.toEntity(documentHeaderDTO);
             List<Document> documentList = documentHeaderDTO
@@ -357,4 +367,18 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
         }
         return replyMessage;
     }
+    
+    public boolean checkDuplication(DocumentHeaderDTO documentHeaderDTO) {
+    	boolean isDuplicate = false;
+    	
+    	long duplicateCount = this.documentHeaderRepository.checkDuplication(documentHeaderDTO.getMetaDataHeaderId(), 
+    			documentHeaderDTO.getFieldNames(), documentHeaderDTO.getFieldValues(), documentHeaderDTO.getPriority());
+    	
+    	if (duplicateCount > 0)
+    		isDuplicate = true;
+    	
+    	return isDuplicate;
+    }
+    
+    
 }
