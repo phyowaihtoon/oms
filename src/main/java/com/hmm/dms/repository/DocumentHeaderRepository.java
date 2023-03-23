@@ -165,6 +165,6 @@ public interface DocumentHeaderRepository extends JpaRepository<DocumentHeader, 
     @Query(value = "UPDATE document_header SET status=?1, approved_by=?2, approved_date=?3  " + "WHERE id = ?4", nativeQuery = true)
     void updateStatusById(int status, String approvedBy, Instant currentTime, Long id);
     
-    @Query(value = "Select count(*) from document_header where meta_data_header_id=?1 and field_names=?2 and field_values=?3 and priority=?4", nativeQuery = true)
-    long checkDuplication(long meta_data_header_id, String field_name, String field_value, int priority);
+    @Query(value = "Select count(*) from document_header where meta_data_header_id=?1 and field_values=?2 ", nativeQuery = true)
+    long checkDuplication(long meta_data_header_id, String field_value);
 }

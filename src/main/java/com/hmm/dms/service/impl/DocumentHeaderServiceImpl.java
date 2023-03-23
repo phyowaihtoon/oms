@@ -372,7 +372,7 @@ public class DocumentHeaderServiceImpl implements DocumentHeaderService {
     	boolean isDuplicate = false;
     	
     	long duplicateCount = this.documentHeaderRepository.checkDuplication(documentHeaderDTO.getMetaDataHeaderId(), 
-    			documentHeaderDTO.getFieldNames(), documentHeaderDTO.getFieldValues(), documentHeaderDTO.getPriority());
+    			 documentHeaderDTO.getFieldValues());
     	
     	if (duplicateCount > 0)
     		isDuplicate = true;
