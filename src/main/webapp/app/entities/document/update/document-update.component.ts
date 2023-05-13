@@ -88,6 +88,8 @@ export class DocumentUpdateComponent implements OnInit {
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
       this._documentHeader = docHeader;
       this.loadAllSetup();
+
+
     });
   }
 
@@ -294,7 +296,7 @@ export class DocumentUpdateComponent implements OnInit {
       this.metaHeaderId = this._userAuthority.departmentId;
       this.editForm.controls['metaDataHeaderId']!.setValue(this.metaHeaderId);
       this.loadMetaDatabyMetadaHeaderID(this.metaHeaderId);
-    }
+    } 
   }
 
   // load metadata by metadaheader ID
@@ -507,7 +509,6 @@ export class DocumentUpdateComponent implements OnInit {
         this.removeAllField();
         this.updateForm(replyMessage.data);
 
-        console.log('Document Header xxxxxxxx', this._documentHeader);
 
         this.statusUpdate(replyMessage.data.status);
         const replyCode = replyMessage.code;

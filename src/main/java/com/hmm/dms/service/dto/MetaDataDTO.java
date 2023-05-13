@@ -8,9 +8,6 @@ import javax.validation.constraints.NotNull;
  */
 public class MetaDataDTO implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private Long id;
@@ -19,6 +16,8 @@ public class MetaDataDTO implements Serializable {
 
     @NotNull
     private String fieldName;
+
+    private String fieldNameInMyanmar;
 
     @NotNull
     private String fieldType;
@@ -38,6 +37,12 @@ public class MetaDataDTO implements Serializable {
 
     @NotNull
     private String searchBy;
+
+    @NotNull
+    private String searchType;
+
+    @NotNull
+    private String sortBy;
 
     public Long getId() {
         return id;
@@ -61,6 +66,14 @@ public class MetaDataDTO implements Serializable {
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    public String getFieldNameInMyanmar() {
+        return fieldNameInMyanmar;
+    }
+
+    public void setFieldNameInMyanmar(String fieldNameInMyanmar) {
+        this.fieldNameInMyanmar = fieldNameInMyanmar;
     }
 
     public String getFieldType() {
@@ -117,6 +130,22 @@ public class MetaDataDTO implements Serializable {
 
     public void setSearchBy(String searchBy) {
         this.searchBy = searchBy;
+    }
+
+    public String getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
     }
 
     @Override

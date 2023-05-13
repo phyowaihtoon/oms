@@ -15,6 +15,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,9 @@ public class CustomDocumentInquiryRepositoryImpl implements CustomDocumentInquir
         CriteriaQuery<DocumentHeader> cq = cb.createQuery(DocumentHeader.class);
         Root<DocumentHeader> root = cq.from(DocumentHeader.class);
         List<Predicate> predicates = new ArrayList<Predicate>();
+        List<Order> orderList = new ArrayList<Order>();
 
+        // Prepare for Filtering or Predicates
         Predicate predicateForMetaDataHrId = cb.equal(root.get("metaDataHeaderId"), dto.getMetaDataHeaderId());
         predicates.add(predicateForMetaDataHrId);
 
@@ -50,6 +53,10 @@ public class CustomDocumentInquiryRepositoryImpl implements CustomDocumentInquir
                 cb.literal(-1)
             );
             Predicate predicate = cb.equal(sqlExpression, specificVal1);
+            String searchType = dto.getFieldSearchType1();
+            if (searchType != null && searchType.equals("CO")) predicate = cb.like(sqlExpression, "%" + specificVal1 + "%");
+            if (searchType != null && searchType.equals("SW")) predicate = cb.like(sqlExpression, specificVal1 + "%");
+            if (searchType != null && searchType.equals("EW")) predicate = cb.like(sqlExpression, "%" + specificVal1);
             predicates.add(predicate);
         }
 
@@ -64,6 +71,10 @@ public class CustomDocumentInquiryRepositoryImpl implements CustomDocumentInquir
                 cb.literal(-1)
             );
             Predicate predicate = cb.equal(sqlExpression, specificVal2);
+            String searchType = dto.getFieldSearchType2();
+            if (searchType != null && searchType.equals("CO")) predicate = cb.like(sqlExpression, "%" + specificVal2 + "%");
+            if (searchType != null && searchType.equals("SW")) predicate = cb.like(sqlExpression, specificVal2 + "%");
+            if (searchType != null && searchType.equals("EW")) predicate = cb.like(sqlExpression, "%" + specificVal2);
             predicates.add(predicate);
         }
 
@@ -78,6 +89,28 @@ public class CustomDocumentInquiryRepositoryImpl implements CustomDocumentInquir
                 cb.literal(-1)
             );
             Predicate predicate = cb.equal(sqlExpression, specificVal3);
+            String searchType = dto.getFieldSearchType3();
+            if (searchType != null && searchType.equals("CO")) predicate = cb.like(sqlExpression, "%" + specificVal3 + "%");
+            if (searchType != null && searchType.equals("SW")) predicate = cb.like(sqlExpression, specificVal3 + "%");
+            if (searchType != null && searchType.equals("EW")) predicate = cb.like(sqlExpression, "%" + specificVal3);
+            predicates.add(predicate);
+        }
+
+        String specificVal4 = dto.getFieldValue4();
+        if (specificVal4 != null && !specificVal4.equals("null") && !specificVal4.isEmpty()) {
+            specificVal4 = specificVal4.trim();
+            Expression<String> sqlExpression = cb.function(
+                "SUBSTRING_INDEX",
+                String.class,
+                cb.function("SUBSTRING_INDEX", String.class, root.get("fieldValues"), cb.literal("|"), cb.literal(dto.getFieldIndex4())),
+                cb.literal("|"),
+                cb.literal(-1)
+            );
+            Predicate predicate = cb.equal(sqlExpression, specificVal4);
+            String searchType = dto.getFieldSearchType4();
+            if (searchType != null && searchType.equals("CO")) predicate = cb.like(sqlExpression, "%" + specificVal4 + "%");
+            if (searchType != null && searchType.equals("SW")) predicate = cb.like(sqlExpression, specificVal4 + "%");
+            if (searchType != null && searchType.equals("EW")) predicate = cb.like(sqlExpression, "%" + specificVal4);
             predicates.add(predicate);
         }
 
@@ -110,7 +143,54 @@ public class CustomDocumentInquiryRepositoryImpl implements CustomDocumentInquir
             }
         }
 
+        // Prepare for Ordering
+        if (dto.getFieldSortBy1() != 0) {
+            Expression<String> orderByExpression = cb.function(
+                "SUBSTRING_INDEX",
+                String.class,
+                cb.function("SUBSTRING_INDEX", String.class, root.get("fieldValues"), cb.literal("|"), cb.literal(dto.getFieldSortBy1())),
+                cb.literal("|"),
+                cb.literal(-1)
+            );
+            Order orderBy = cb.asc(orderByExpression);
+            orderList.add(orderBy);
+        }
+        if (dto.getFieldSortBy2() != 0) {
+            Expression<String> orderByExpression = cb.function(
+                "SUBSTRING_INDEX",
+                String.class,
+                cb.function("SUBSTRING_INDEX", String.class, root.get("fieldValues"), cb.literal("|"), cb.literal(dto.getFieldSortBy2())),
+                cb.literal("|"),
+                cb.literal(-1)
+            );
+            Order orderBy = cb.asc(orderByExpression);
+            orderList.add(orderBy);
+        }
+        if (dto.getFieldSortBy3() != 0) {
+            Expression<String> orderByExpression = cb.function(
+                "SUBSTRING_INDEX",
+                String.class,
+                cb.function("SUBSTRING_INDEX", String.class, root.get("fieldValues"), cb.literal("|"), cb.literal(dto.getFieldSortBy3())),
+                cb.literal("|"),
+                cb.literal(-1)
+            );
+            Order orderBy = cb.asc(orderByExpression);
+            orderList.add(orderBy);
+        }
+        if (dto.getFieldSortBy4() != 0) {
+            Expression<String> orderByExpression = cb.function(
+                "SUBSTRING_INDEX",
+                String.class,
+                cb.function("SUBSTRING_INDEX", String.class, root.get("fieldValues"), cb.literal("|"), cb.literal(dto.getFieldSortBy4())),
+                cb.literal("|"),
+                cb.literal(-1)
+            );
+            Order orderBy = cb.asc(orderByExpression);
+            orderList.add(orderBy);
+        }
+
         cq.where(predicates.toArray(new Predicate[0]));
+        cq.orderBy(orderList);
         TypedQuery<DocumentHeader> query = em.createQuery(cq);
 
         if (pageable != null) {

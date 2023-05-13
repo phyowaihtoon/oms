@@ -26,7 +26,8 @@
       "metadata": {
         "title": "မက်တာဒေတာ",
         "create": "မက်တာဒေတာ သတ်မှတ်ခြင်း",
-        "search": "မက်တာဒေတာ ရှာဖွေခြင်း"
+        "search": "မက်တာဒေတာ ရှာဖွေခြင်း",
+        "popupLOVTitle": "LOV Setup"
       },
       "repository": {
         "title": "ဖိုင်သိမ်းမည့်နေရာ",

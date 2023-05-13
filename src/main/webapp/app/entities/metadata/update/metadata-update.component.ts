@@ -23,6 +23,8 @@ export class MetadataUpdateComponent implements OnInit {
   isSaving = false;
   _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
+  readonly FIELD_LIMIT_SEARCHBY: number = 4;
+  readonly FIELD_LIMIT_SORTBY: number = 4;
 
   editForm = this.fb.group({
     id: [],
@@ -48,6 +50,16 @@ export class MetadataUpdateComponent implements OnInit {
   ];
 
   searchByList = [
+    { value: 'Y', caption: 'YES' },
+    { value: 'N', caption: 'NO' },
+  ];
+
+  searchTypeList = [
+    { value: 'Y', caption: 'YES' },
+    { value: 'N', caption: 'NO' },
+  ];
+
+  sortByList = [
     { value: 'Y', caption: 'YES' },
     { value: 'N', caption: 'NO' },
   ];
@@ -91,12 +103,15 @@ export class MetadataUpdateComponent implements OnInit {
     return this.fb.group({
       id: [],
       fieldName: ['', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z\u1000-\u109F ]*$')]],
+      fieldNameInMyanmar: [''],
       fieldType: ['String', [Validators.required]],
       fieldValue: [{ value: '', disabled: true }, Validators.required],
       isRequired: ['YES', [Validators.required]],
       fieldOrder: [this.fieldList().controls.length + 1, [Validators.required, Validators.pattern('^[0-9]*$')]],
       showDashboard: ['N', [Validators.required]],
       searchBy: ['N', [Validators.required]],
+      searchType: ['N', [Validators.required]],
+      sortBy: ['N', [Validators.required]],
     });
   }
 
@@ -144,6 +159,7 @@ export class MetadataUpdateComponent implements OnInit {
     if (this.fieldList().controls[i].get(['fieldType'])!.value === 'LOV') {
       this.fieldList().controls[i].get(['fieldValue'])!.enable({ onlySelf: true });
       this.fieldList().controls[i].get(['showDashboard'])!.enable({ onlySelf: true });
+      this.fieldList().controls[i].get(['searchType'])!.setValue('N');
     } else {
       this.fieldList().controls[i].get(['fieldValue'])!.setValue('');
       this.fieldList().controls[i].get(['showDashboard'])!.setValue('N');
@@ -164,6 +180,55 @@ export class MetadataUpdateComponent implements OnInit {
         this.fieldList().controls[i].get(['showDashboard'])!.setValue('N');
         const replyCode = ResponseCode.ERROR_E00;
         const replyMsg = 'Only one field can be used to see dashboard.';
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    }
+  }
+
+  onShowSearchByChange(i: any): void {
+    if (this.fieldList().controls[i].get(['searchBy'])!.value === 'Y') {
+      // Validation - exceeding maximum limit or not
+      let count = 0;
+      this.fieldList().controls.forEach(data => {
+        if (data.get(['searchBy'])!.value === 'Y') {
+          count = count + 1;
+        }
+      });
+      if (count > this.FIELD_LIMIT_SEARCHBY) {
+        this.fieldList().controls[i].get(['searchBy'])!.setValue('N');
+        const replyCode = ResponseCode.ERROR_E00;
+        const replyMsg = `Exceeding maximum field limit(${this.FIELD_LIMIT_SEARCHBY}) for 'Search By'.`;
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    }
+  }
+
+  onShowSearchTypeChange(i: any): void {
+    if (this.fieldList().controls[i].get(['searchType'])!.value === 'Y') {
+      // Validation - checking whether data type is LOV or not
+      const dataType = this.fieldList().controls[i].get(['fieldType'])!.value;
+      if (dataType === 'LOV') {
+        this.fieldList().controls[i].get(['searchType'])!.setValue('N');
+        const replyCode = ResponseCode.ERROR_E00;
+        const replyMsg = 'Search Type is not allowed for '.concat(dataType).concat(' data type');
+        this.showAlertMessage(replyCode, replyMsg);
+      }
+    }
+  }
+
+  onShowSortByChange(i: any): void {
+    if (this.fieldList().controls[i].get(['sortBy'])!.value === 'Y') {
+      // Validation - exceeding maximum limit or not
+      let count = 0;
+      this.fieldList().controls.forEach(data => {
+        if (data.get(['sortBy'])!.value === 'Y') {
+          count = count + 1;
+        }
+      });
+      if (count > this.FIELD_LIMIT_SORTBY) {
+        this.fieldList().controls[i].get(['sortBy'])!.setValue('N');
+        const replyCode = ResponseCode.ERROR_E00;
+        const replyMsg = `Exceeding maximum field limit(${this.FIELD_LIMIT_SORTBY}) for 'Sort By'.`;
         this.showAlertMessage(replyCode, replyMsg);
       }
     }
@@ -260,12 +325,15 @@ export class MetadataUpdateComponent implements OnInit {
       id: data.get(['id'])!.value,
       headerId: undefined,
       fieldName: data.get(['fieldName'])!.value,
+      fieldNameInMyanmar: data.get(['fieldNameInMyanmar'])!.value,
       fieldType: data.get(['fieldType'])!.value,
       fieldValue: data.get(['fieldValue'])!.value,
       isRequired: data.get(['isRequired'])!.value,
       fieldOrder: data.get(['fieldOrder'])!.value,
       showDashboard: data.get(['showDashboard'])!.value,
       searchBy: data.get(['searchBy'])!.value,
+      searchType: data.get(['searchType'])!.value,
+      sortBy: data.get(['sortBy'])!.value,
       delFlag: 'N',
     };
   }
@@ -302,12 +370,15 @@ export class MetadataUpdateComponent implements OnInit {
       this.addField();
       this.fieldList().controls[index].get(['id'])!.setValue(data.id);
       this.fieldList().controls[index].get(['fieldName'])!.setValue(data.fieldName);
+      this.fieldList().controls[index].get(['fieldNameInMyanmar'])!.setValue(data.fieldNameInMyanmar);
       this.fieldList().controls[index].get(['fieldType'])!.setValue(data.fieldType);
       this.fieldList().controls[index].get(['fieldValue'])!.setValue(data.fieldValue);
       this.fieldList().controls[index].get(['isRequired'])!.setValue(data.isRequired);
       this.fieldList().controls[index].get(['fieldOrder'])!.setValue(data.fieldOrder);
       this.fieldList().controls[index].get(['showDashboard'])!.setValue(data.showDashboard);
       this.fieldList().controls[index].get(['searchBy'])!.setValue(data.searchBy);
+      this.fieldList().controls[index].get(['searchType'])!.setValue(data.searchType);
+      this.fieldList().controls[index].get(['sortBy'])!.setValue(data.sortBy);
       this.onFieldTypeChange(index);
       index = index + 1;
     });
