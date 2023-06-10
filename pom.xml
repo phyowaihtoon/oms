@@ -3,11 +3,11 @@
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.hmm.dms</groupId>
-	<artifactId>dms</artifactId>
+	<groupId>creatip.oms</groupId>
+	<artifactId>oms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>Dms</name>
+	<name>oms</name>
 
 	<repositories>
 		<!-- jhipster-needle-maven-repository -->
@@ -32,7 +32,7 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<start-class>com.hmm.dms.DmsApp</start-class>
+		<start-class>creatip.oms.OMSApp</start-class>
 		<argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 		<run.addResources>false</run.addResources>
@@ -618,7 +618,7 @@
 							<image>adoptopenjdk:11-jre-hotspot</image>
 						</from>
 						<to>
-							<image>dms:latest</image>
+							<image>oms:latest</image>
 						</to>
 						<container>
 							<entrypoint>
@@ -655,11 +655,11 @@
 						<changeLogFile>${project.basedir}/src/main/resources/config/liquibase/master.xml</changeLogFile>
 						<diffChangeLogFile>${project.basedir}/src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
 						<driver>com.mysql.cj.jdbc.Driver</driver>
-						<url>jdbc:mysql://localhost:3306/dms</url>
-						<defaultSchemaName>dms</defaultSchemaName>
+						<url>jdbc:mysql://localhost:3306/oms</url>
+						<defaultSchemaName>oms</defaultSchemaName>
 						<username>root</username>
 						<password></password>
-						<referenceUrl>hibernate:spring:com.hmm.dms.domain?dialect=org.hibernate.dialect.MySQL8Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
+						<referenceUrl>hibernate:spring:creatip.oms.domain?dialect=org.hibernate.dialect.MySQL8Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
 						<verbose>true</verbose>
 						<logging>debug</logging>
 						<contexts>!test</contexts>
@@ -846,14 +846,14 @@
 							<configuration>
 								<inputSpec>${project.basedir}/src/main/resources/swagger/api.yml</inputSpec>
 								<generatorName>spring</generatorName>
-								<apiPackage>com.hmm.dms.web.api</apiPackage>
-								<modelPackage>com.hmm.dms.web.api.model</modelPackage>
+								<apiPackage>creatip.oms.web.api</apiPackage>
+								<modelPackage>creatip.oms.web.api.model</modelPackage>
 								<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
 								<importMappings>Problem=org.zalando.problem.Problem</importMappings>
 								<skipValidateSpec>false</skipValidateSpec>
 								<configOptions>
 									<delegatePattern>true</delegatePattern>
-									<title>dms</title>
+									<title>oms</title>
 								</configOptions>
 							</configuration>
 						</execution>

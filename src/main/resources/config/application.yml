@@ -67,7 +67,7 @@ management:
 
 spring:
   application:
-    name: dms
+    name: oms
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file
@@ -111,13 +111,13 @@ spring:
     allow-bean-definition-overriding: true
   task:
     execution:
-      thread-name-prefix: dms-task-
+      thread-name-prefix: oms-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: dms-scheduling-
+      thread-name-prefix: oms-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -155,12 +155,12 @@ jhipster:
   #   allow-credentials: true
   #   max-age: 1800
   mail:
-    from: dms@localhost
+    from: oms@localhost
   api-docs:
     default-include-pattern: ${server.servlet.context-path:}/api/.*
     management-include-pattern: ${server.servlet.context-path:}/management/.*
-    title: dms API
-    description: dms API documentation
+    title: oms API
+    description: oms API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:

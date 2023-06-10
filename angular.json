@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dms": {
+    "oms": {
       "root": "",
       "sourceRoot": "src/main/webapp",
       "projectType": "application",
@@ -66,12 +66,12 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "dms:build",
+            "browserTarget": "oms:build",
             "proxyConfig": "./webpack/proxy.conf.js"
           },
           "configurations": {
             "production": {
-              "browserTarget": "dms:build:production"
+              "browserTarget": "oms:build:production"
             }
           }
         },
@@ -93,7 +93,7 @@
       "prefix": "jhi"
     }
   },
-  "defaultProject": "dms",
+  "defaultProject": "oms",
   "cli": {
     "analytics": false,
     "packageManager": "npm"
