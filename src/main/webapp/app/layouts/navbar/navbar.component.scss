@@ -21,10 +21,10 @@ Navbar
   .dropdown-item.active,
   .dropdown-item.active:focus,
   .dropdown-item.active:hover {
-    background-color: #a6520a;
+    background-color: #343435 !important;
   }
   .dropdown-item:hover {
-    background-color: #a6520a;
+    background-color: #343435 !important;
     color: white;
   }
 
@@ -71,4 +71,21 @@ Logo styles
 //Override
 .navbar-brand {
   padding-top: 0px;
+}
+
+//CSS for Notification
+.icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 1px 4px;
+  font-size: 12px;
 }

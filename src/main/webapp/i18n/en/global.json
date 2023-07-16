@@ -10,11 +10,6 @@
         "main": "Entities",
         "category": "Category",
         "department": "Department",
-        "metaDataHeader": "Meta Data Header",
-        "metaData": "Meta Data",
-        "documentHeader": "Document Header",
-        "document": "Document",
-        "repository": "Repository",
         "applicationUser": "User Authority",
         "userRole": "Role Access",
         "sysconfig": "System Configuration",
@@ -22,28 +17,27 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
-        "title": "Report",
-        "docmaprpt": "Document Mapping Report"
+        "title": "Report"
       },
-      "metadata": {
-        "title": "MetaData",
-        "create": "MetaData Creation",
-        "search": "MetaData Inquiry",
-        "popupLOVTitle": "LOV Setup"
+      "inbox": {
+        "title": "Inbox",
+        "DocumentReceived": "Document Received"
       },
-      "repository": {
-        "title": "Repository",
-        "create": "Repository Creation",
-        "search": "Repository Inquiry",
-        "popupTitle": "Repository Inquiry"
+      "delivery": {
+        "title": "Delivery",
+        "DocumentDelivery": "Document Delivery",
+        "Sent": "Sent"
       },
-      "document": {
-        "title": "Document",
-        "create": "Entry",
-        "update": "Entry",
-        "search": "Inquiry",
-        "trashbin": "Trash Bin",
-        "restore": "Restore Document"
+      "meeting": {
+        "title": "Meeting",
+        "MeetingInvitation": "Meeting Invitation",
+        "Sent": "Sent",
+        "MeetingReceived": "Meeting Received"
+      },
+      "draft": {
+        "title": "Drafts",
+        "DeliveryDraft": "Delivery Draft",
+        "MeetingDraft": "Meeting Draft"
       },
       "definition": {
         "popupTitle": "Information"

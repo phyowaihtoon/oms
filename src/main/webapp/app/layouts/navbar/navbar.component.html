@@ -11,6 +11,12 @@
     <fa-icon icon="info-circle"></fa-icon>
   </span>
   -->
+  <span style="width: 5px"></span>
+  <a *ngSwitchCase="true" class="nav-link" routerLink="/">
+    <span>
+      <fa-icon icon="home"></fa-icon>
+    </span>
+  </a>
   <a
     class="navbar-toggler d-lg-none"
     href="javascript:void(0);"
@@ -27,8 +33,9 @@
     <ul class="navbar-nav ml-auto">
       <li *ngSwitchCase="true" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
-          <span>
-            <fa-icon icon="home"></fa-icon>
+          <span class="icon-container">
+            <fa-icon icon="bell"></fa-icon>
+            <span class="notification-count">3</span>
           </span>
         </a>
       </li>
@@ -74,13 +81,7 @@
           aria-labelledby="entity-menu"
         >
           <li *ngFor="let menuAccess of menuGroup.subMenuItems">
-            <a
-              class="dropdown-item"
-              [routerLink]="[menuAccess.menuItem?.routerLink]"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="collapseNavbar()"
-            >
+            <a class="dropdown-item" [routerLink]="[menuAccess.menuItem?.routerLink]" (click)="collapseNavbar()">
               <fa-icon icon="caret-right" [fixedWidth]="true"></fa-icon>
               <span>{{
                 menuAccess.menuItem && menuAccess.menuItem.translateKey
