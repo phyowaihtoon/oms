@@ -49,12 +49,13 @@ Navbar
 Logo styles
 ========================================================================== */
 .logo-img {
-  height: 40px;
-  width: 45px;
+  height: 45px;
+  width: 50px;
   display: inline-block;
   vertical-align: middle;
   background: url('../../../content/images/logo.png') no-repeat center center;
   background-size: contain;
+  margin-left: 16px;
 }
 
 .navbar-title {
