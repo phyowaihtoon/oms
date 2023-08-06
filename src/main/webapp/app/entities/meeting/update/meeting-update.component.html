@@ -1,1 +1,213 @@
-<p>meeting-update works!</p>
+
+<html>
+   <body>
+
+   <h3>{{ name}}</h3>
+
+   <form name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="editForm" autocomplete="off">
+      <div class="container" >
+         <span *ngFor="let item of counts;let i = index" >
+            <span class="circle-desc" [class.circle-desc-active]="status == item">{{ item }}</span>
+            <span class="circles" [class.active]="status == item"></span>
+            <span class="bar" *ngIf="(i != counts.length-1)"></span>
+         </span>
+      </div>
+
+      <div id="info" 
+           *ngIf="isInfo" 
+           class="row col-8 form-group">
+
+         <div class="col-12">           
+            <input type="text" 
+            formControlName="subject"
+            placeholder="Subject"
+            class="form-control div-padding"
+            name="subject"
+            id="subject"
+            placeholder="Subject"/>
+
+            <textarea 
+            class="form-control div-padding"
+            name="body" 
+            placeholder="Body"   
+            style="height: 300px"
+            id="body"                  
+            formControlName="body"  
+            ></textarea>
+
+            <button class="btn btn-primary" 
+            type="submit"
+            style="float: right;"
+            (click)="goToStep2()"
+            > 
+               <span class="btn-text-padding-right">Next</span> 
+               <fa-icon icon="forward"></fa-icon>
+            </button>
+         </div>    
+      </div>
+
+      <div id="receiver" *ngIf="isReceiver" class="row col-8 form-group">    
+           
+         <div class="col-12" > 
+               <div class="textbox-wrapper div-padding"  >
+                  <input type="text" 
+                  placeholder="Main: Department" 
+                  class="textbox form-control" />
+                  <button class="form-control textbox-button">
+                     <span class="btn-text-padding-right">Browse Main Department</span> 
+                     <i class="fa-solid fa-magnifying-glass-plus" style="color: #7692e5;"></i>
+                  </button>
+               </div>
+
+               <div class="textbox-wrapper div-padding">
+                  <textarea 
+                     class="form-control"
+                     name="body" 
+                     placeholder="CC: Department"   
+                     style="height: 300px"
+                     id="body"       
+                     ></textarea>
+
+                  <button class="form-control textbox-button">
+                     <span class="btn-text-padding-right">Browse CC Department</span> 
+                     <i class="fa-solid fa-magnifying-glass-plus" style="color: #7692e5;"></i>
+                  </button>
+
+               </div>
+   
+               <button class="btn btn-primary" 
+               type="submit"
+               style="float: left;"
+               (click)="goToStep1()"
+               >                  
+                  <fa-icon icon="backward"></fa-icon>
+                  <span class="btn-text-padding-left">Back</span> 
+               </button>
+
+               <button class="btn btn-primary" 
+               type="submit"
+               style="float: right;"
+               (click)="goToStep3()"
+               > 
+                  <span class="btn-text-padding-right">Next</span>                   
+                  <fa-icon icon="forward"></fa-icon>
+
+               </button>
+            </div>
+      </div>
+
+      
+      <div id="attachment"   class="row col-8 form-group">         
+         
+         <div class="col-12 " *ngIf="isAttachment" >
+
+
+            <label class="form-control-label" for="text">&nbsp;</label>
+            <form enctype="multipart/form-data">
+              <fieldset>
+                <div class="form-group div-padding">
+                  <input 
+                  #inputFileElement type="file" 
+                  (change)="onUploadFiles($event)" 
+                  name="files" 
+                  class="form-control"
+                  multiple />
+                </div>
+              </fieldset>
+            </form>
+
+            <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+               <table class="table" formArrayName="fileList">
+                 <thead>
+                   <tr class="bg-primary">
+                     <th class="text-center" style="width: 25%" >File Name</th>
+                     <th class="text-center" style="width: 10%" >File Size (KB)</th>
+                     <th class="text-center" style="width: 5%" >#</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   <tr *ngFor="let item of fileList().controls; last as isLast; let i = index" [formGroupName]="i">
+                     <td>
+                       <input
+                         [title]="item.get(['fileName'])!.value"
+                         type="text"
+                         class="col-12 form-control"
+                         placeholder="fileName"
+                         formControlName="fileName"
+                         [readonly]="item.get(['id'])!.value != null"
+                       />
+                     </td>
+                     <td>
+                       <input type="number" class="col-12 form-control" placeholder="filesize" formControlName="fileSize" readonly />
+                     </td>
+                     <td style="padding-left: 10px">
+                       <span title="Remove" (click)="removeField(i)">
+                        <i class="fas fa-danger"></i>
+                       </span>
+                     </td>
+                   </tr>
+                 </tbody>
+               </table>
+             </div>
+         
+            <div class="col-12 " style="text-align: center;">
+               <button class="btn btn-primary" 
+               type="submit"
+               style="float: left;"
+               (click)="goToStep2()"
+               > 
+                  <fa-icon icon="backward"></fa-icon>
+                  <span class="btn-text-padding-left">Back</span> 
+                  
+            </button>
+
+            <button class="btn btn-primary" 
+               type="submit"
+               (click)="submit()"
+               > 
+                  
+                  <span class="btn-text-padding-right">Send</span>       
+                  <fa-icon icon="paper-plane"></fa-icon>         
+            </button>
+
+            <button class="btn btn-primary" 
+               type="submit"
+               style="float: right;"
+               (click)="goToStep4()"
+               > 
+                  <span class="btn-text-padding-right">Next</span> 
+                  <fa-icon icon="forward"></fa-icon>
+                  
+            </button>
+            </div>            
+         </div>
+      </div>
+
+      <div id="success" *ngIf="isSuccess" class="row col-8 form-group" >
+         <div class="col-12">
+         
+         <input type="text" placeholder="" class="textbox form-control div-padding" />
+         <input type="text" placeholder="" class="textbox form-control div-padding" />
+         <input type="text" placeholder="" class="textbox form-control div-padding" />
+         <input type="text" placeholder="" class="textbox form-control div-padding" />
+         <textarea 
+                     class="form-control  div-padding"
+                     name="body" 
+                     placeholder=""   
+                     style="height: 300px"
+                     id="body"        
+                     ></textarea>
+
+            <button class="btn btn-primary" 
+            type="submit"
+            style="float: left; "
+            (click)="goToStep3()"
+            > 
+               <fa-icon icon="backward"></fa-icon>
+               <span class="btn-text-padding-left">Back</span> 
+            </button>
+         </div>         
+      </div>
+   </form> 
+   </body>
+</html>
