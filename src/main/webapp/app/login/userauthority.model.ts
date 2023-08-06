@@ -1,3 +1,4 @@
+import { IDepartment } from 'app/entities/department/department.model';
 import { IMenuGroupMessage, IRoleMenuAccess } from 'app/entities/user-role/user-role.model';
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 
@@ -7,13 +8,11 @@ export interface IUserAuthority {
   roleID?: number;
   roleName?: string;
   roleType?: number;
-  workflowAuthority?: number;
   sysConfigMessage?: ISysConfigMessage;
   menuGroups?: IMenuGroupMessage[];
   activeMenu?: IRoleMenuAccess;
   dashboardTemplates?: IDashboardTemplate[];
-  departmentId?: number;
-  departmentName?: string;
+  department?: IDepartment;
 }
 
 export class UserAuthority implements IUserAuthority {
@@ -23,13 +22,11 @@ export class UserAuthority implements IUserAuthority {
     public roleID?: number,
     public roleName?: string,
     public roleType?: number,
-    public workflowAuthority?: number,
     public sysConfigMessage?: ISysConfigMessage,
     public menuGroups?: IMenuGroupMessage[],
     public activeMenu?: IRoleMenuAccess,
     public dashboardTemplates?: IDashboardTemplate[],
-    public departmentId?: number,
-    public departmentName?: string
+    public department?: IDepartment
   ) {}
 }
 

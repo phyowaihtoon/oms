@@ -3,14 +3,12 @@ package creatip.oms.web.rest;
 import creatip.oms.repository.UserRoleRepository;
 import creatip.oms.service.RoleDashboardAccessService;
 import creatip.oms.service.RoleMenuAccessService;
-import creatip.oms.service.RoleTemplateAccessService;
 import creatip.oms.service.UserRoleService;
 import creatip.oms.service.dto.RoleDashboardAccessDTO;
 import creatip.oms.service.dto.RoleMenuAccessDTO;
 import creatip.oms.service.dto.UserRoleDTO;
 import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.HeaderDetailsMessage;
-import creatip.oms.service.message.RoleTemplateAccessDTO;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,8 +56,6 @@ public class UserRoleResource {
 
     private final RoleMenuAccessService roleMenuAccessService;
 
-    private final RoleTemplateAccessService roleTemplateAccessService;
-
     private final RoleDashboardAccessService roleDashboardAccessService;
 
     private final UserRoleRepository userRoleRepository;
@@ -68,13 +64,11 @@ public class UserRoleResource {
         UserRoleService userRoleService,
         UserRoleRepository userRoleRepository,
         RoleMenuAccessService roleMenuAccessService,
-        RoleTemplateAccessService roleTemplateAccessService,
         RoleDashboardAccessService roleDashboardAccessService
     ) {
         this.userRoleService = userRoleService;
         this.userRoleRepository = userRoleRepository;
         this.roleMenuAccessService = roleMenuAccessService;
-        this.roleTemplateAccessService = roleTemplateAccessService;
         this.roleDashboardAccessService = roleDashboardAccessService;
     }
 
@@ -86,16 +80,14 @@ public class UserRoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/user-roles")
-    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO>> createUserRole(
-        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> message
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO>> createUserRole(
+        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> message
     ) throws URISyntaxException {
         log.debug("REST request to save UserRole : {}", message.getHeader());
         if (message.getHeader().getId() != null) {
             throw new BadRequestAlertException("A new userRole cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> result = userRoleService.save(
-            message
-        );
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> result = userRoleService.save(message);
         return ResponseEntity
             .created(new URI("/api/user-roles/" + result.getHeader().getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getHeader().getId().toString()))
@@ -113,9 +105,9 @@ public class UserRoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/user-roles/{id}")
-    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO>> updateUserRole(
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO>> updateUserRole(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> message
+        @Valid @RequestBody HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> message
     ) throws URISyntaxException {
         log.debug("REST request to update UserRole : {}, {}", id, message);
         if (message.getHeader().getId() == null) {
@@ -129,9 +121,7 @@ public class UserRoleResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> result = userRoleService.save(
-            message
-        );
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> result = userRoleService.save(message);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, message.getHeader().getId().toString()))
@@ -195,20 +185,16 @@ public class UserRoleResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userRoleDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/user-roles/{id}")
-    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO>> getUserRole(
-        @PathVariable Long id
-    ) {
+    public ResponseEntity<HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO>> getUserRole(@PathVariable Long id) {
         log.debug("REST request to get UserRole : {}", id);
         Optional<UserRoleDTO> userRoleDTO = userRoleService.findOne(id);
         List<RoleMenuAccessDTO> menuAccessList = roleMenuAccessService.getAllMenuAccessByRole(id);
-        List<RoleTemplateAccessDTO> templateAccessList = roleTemplateAccessService.getAllTemplateAccessByRole(id);
         List<RoleDashboardAccessDTO> dashboardAccessList = roleDashboardAccessService.getAllDashboardAccessByRole(id);
 
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> replyMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO>();
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> replyMessage = new HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO>();
         replyMessage.setHeader(userRoleDTO.get());
         replyMessage.setDetails1(menuAccessList);
-        replyMessage.setDetails2(templateAccessList);
-        replyMessage.setDetails3(dashboardAccessList);
+        replyMessage.setDetails2(dashboardAccessList);
         return ResponseEntity.ok().body(replyMessage);
     }
 

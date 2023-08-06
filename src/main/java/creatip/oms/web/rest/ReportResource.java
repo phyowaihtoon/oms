@@ -88,18 +88,4 @@ public class ReportResource {
         ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
         return replyMessage;
     }
-
-    @PostMapping("/doclist-rpt")
-    public ReplyMessage<RptParamsMessage> generateDocumentListRpt2(@Valid @RequestBody RptParamsMessage rptParams) {
-        User loginUser = userService.getUserWithAuthorities().get();
-        String rptOutFolder = context.getRealPath("RPT_OUTPUT");
-        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
-        String rptFileName = SharedUtils.generateFileName("DocumentListRpt");
-        rptParams.setRptFileName(rptFileName);
-        rptParams.setRptOutputPath(rptOutputPath);
-        rptParams.setRptJrxml("DocumentListRpt.jrxml");
-        rptParams.setRptJasper("DocumentListRpt.jrxml");
-        ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateUploadedDocumentListRpt(rptParams, loginUser.getId());
-        return replyMessage;
-    }
 }

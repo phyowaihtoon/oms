@@ -13,17 +13,11 @@ export class ApplicationUserDetailComponent implements OnInit {
   applicationUser: IApplicationUser | null = null;
   workflowAuthorities: IWorkflowAuthority[] = [];
 
-  constructor(protected activatedRoute: ActivatedRoute, protected loadSetupService: LoadSetupService) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ applicationUser }) => {
       this.applicationUser = applicationUser;
-    });
-
-    this.loadSetupService.loadWorkflowAuthority().subscribe(res => {
-      if (res.body) {
-        this.workflowAuthorities = res.body;
-      }
     });
   }
 

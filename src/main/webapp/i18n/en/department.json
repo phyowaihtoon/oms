@@ -18,7 +18,8 @@
         "title": "Department"
       },
       "id": "ID",
-      "departmentName": "Department Name",
+      "department": "Department",
+      "subdepartment": "Sub-Department",
       "delFlag": "Del Flag"
     }
   }

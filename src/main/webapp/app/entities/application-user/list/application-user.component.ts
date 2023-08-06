@@ -62,12 +62,6 @@ export class ApplicationUserComponent implements OnInit {
           this.onError();
         }
       );
-
-    this.loadSetupService.loadWorkflowAuthority().subscribe(res => {
-      if (res.body) {
-        this.workflowAuthorities = res.body;
-      }
-    });
   }
 
   ngOnInit(): void {

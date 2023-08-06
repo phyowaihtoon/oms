@@ -40,10 +40,6 @@
       "definition": {
         "popupTitle": "Information"
       },
-      "queue": {
-        "title": "Service Queue",
-        "docmentQueue": "Document Queue"
-      },
       "account": {
         "main": "အကောင့်",
         "settings": "ပြင်ဆင်ရန်",

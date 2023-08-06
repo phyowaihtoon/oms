@@ -5,8 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { IDepartment, Department } from '../department.model';
+import { IDepartment, Department, IHeadDepartment } from '../department.model';
 import { DepartmentService } from '../service/department.service';
+import { LoadSetupService } from 'app/entities/util/load-setup.service';
 
 @Component({
   selector: 'jhi-department-update',
@@ -15,18 +16,37 @@ import { DepartmentService } from '../service/department.service';
 export class DepartmentUpdateComponent implements OnInit {
   isSaving = false;
 
+  headDepartmentList: IHeadDepartment[] = [];
+
   editForm = this.fb.group({
     id: [],
     departmentName: [null, [Validators.required]],
     delFlag: [],
+    headDepartment: [],
   });
 
-  constructor(protected departmentService: DepartmentService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(
+    protected departmentService: DepartmentService,
+    protected loadSetupService: LoadSetupService,
+    protected activatedRoute: ActivatedRoute,
+    protected fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ department }) => {
       this.updateForm(department);
     });
+
+    this.loadSetupService.loadAllHeadDepartments().subscribe(
+      (res: HttpResponse<IHeadDepartment[]>) => {
+        if (res.body) {
+          this.headDepartmentList = res.body;
+        }
+      },
+      error => {
+        console.log('Loading Head Department Failed : ', error);
+      }
+    );
   }
 
   previousState(): void {
@@ -41,6 +61,10 @@ export class DepartmentUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.departmentService.create(department));
     }
+  }
+
+  trackDepartmentById(index: number, item: IHeadDepartment): number {
+    return item.id!;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IDepartment>>): void {
@@ -67,6 +91,7 @@ export class DepartmentUpdateComponent implements OnInit {
       id: department.id,
       departmentName: department.departmentName,
       delFlag: department.delFlag,
+      headDepartment: department.headDepartment,
     });
   }
 
@@ -76,6 +101,7 @@ export class DepartmentUpdateComponent implements OnInit {
       id: this.editForm.get(['id'])!.value,
       departmentName: this.editForm.get(['departmentName'])!.value,
       delFlag: 'N',
+      headDepartment: this.editForm.get(['headDepartment'])!.value,
     };
   }
 }

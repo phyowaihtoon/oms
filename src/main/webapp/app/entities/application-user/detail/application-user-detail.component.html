@@ -14,10 +14,6 @@
         <dd>
           <span>{{ applicationUser.id }}</span>
         </dd>
-        <dt><span jhiTranslate="dmsApp.applicationUser.workflowAuthority">Workflow Authority</span></dt>
-        <dd>
-          <span> {{ getWorkFlowDescription(applicationUser.workflowAuthority) }}</span>
-        </dd>
         <dt><span jhiTranslate="dmsApp.applicationUser.user">User</span></dt>
         <dd>
           <span>{{ applicationUser.user?.login }}</span>
@@ -31,7 +27,7 @@
         <dt><span jhiTranslate="dmsApp.applicationUser.department">Department</span></dt>
         <dd>
           <div *ngIf="applicationUser.department">
-            <a>{{ applicationUser.department?.docTitle }}</a>
+            <a>{{ applicationUser.department?.departmentName }}</a>
           </div>
         </dd>
       </dl>

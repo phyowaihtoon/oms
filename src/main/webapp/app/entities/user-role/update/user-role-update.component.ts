@@ -4,21 +4,11 @@ import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import {
-  IRoleDashboardAccess,
-  IRoleMenuAccess,
-  IRoleTemplateAccess,
-  IUserRole,
-  RoleDashboardAccess,
-  RoleMenuAccess,
-  RoleTemplateAccess,
-  UserRole,
-} from '../user-role.model';
+import { IRoleDashboardAccess, IRoleMenuAccess, RoleDashboardAccess, RoleMenuAccess, UserRole } from '../user-role.model';
 import { UserRoleService } from '../service/user-role.service';
 import { IHeaderDetailsMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
-import { IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DashboardTemplate, IDashboardTemplate } from 'app/services/dashboard-template.model';
 
@@ -30,9 +20,7 @@ import { DashboardTemplate, IDashboardTemplate } from 'app/services/dashboard-te
 export class UserRoleUpdateComponent implements OnInit {
   isSaving = false;
   _isMenuAccess = true;
-  _isTemplateAccess = false;
   _isDashboardAccess = false;
-  _metaDataHdrList?: IMetaDataHeader[];
   _dashboardTemplateList?: IDashboardTemplate[];
   _roleTypes = [
     { value: 0, description: 'NO' },
@@ -44,7 +32,6 @@ export class UserRoleUpdateComponent implements OnInit {
     roleName: [null, [Validators.required]],
     roleType: [0, [Validators.required]],
     menuAccessList: this.fb.array([]),
-    templateAccessList: this.fb.array([]),
     dashboardAccessList: this.fb.array([]),
     metaDataHeader: [],
     dashboardTemplate: [],
@@ -70,17 +57,6 @@ export class UserRoleUpdateComponent implements OnInit {
       this.updateForm(headerDetailsMessage);
     });
 
-    this.loadSetupService.loadAllMetaDataHeader().subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        if (res.body) {
-          this._metaDataHdrList = res.body;
-        }
-      },
-      error => {
-        console.log('Loading MetaData Setup Failed : ', error);
-      }
-    );
-
     this.loadSetupService.loadAllDashboardTemplate().subscribe(
       (res: HttpResponse<IDashboardTemplate[]>) => {
         if (res.body) {
@@ -91,10 +67,6 @@ export class UserRoleUpdateComponent implements OnInit {
         console.log('Loading Dashboard Template Failed : ', error);
       }
     );
-  }
-
-  get _templateAccessListFCA(): FormArray {
-    return this.editForm.get('templateAccessList') as FormArray;
   }
 
   get _menuAccessListFCA(): FormArray {
@@ -120,7 +92,6 @@ export class UserRoleUpdateComponent implements OnInit {
       rowFormControl.get('isDelete')?.setValue(false);
     });
 
-    this._templateAccessListFCA.clear();
     this._dashboardAccessListFCA.clear();
   }
 
@@ -156,24 +127,6 @@ export class UserRoleUpdateComponent implements OnInit {
     this._menuAccessListFCA.push(initialRow);
   }
 
-  initializeNewTemplateAccessRow(): void {
-    const initialRow = this.fb.group({
-      id: [],
-      template: [],
-      userRole: [],
-    });
-    this._templateAccessListFCA.push(initialRow);
-  }
-
-  addNewTemplateAccessRow(data: IRoleTemplateAccess): void {
-    const newTemplateRow = this.fb.group({
-      id: [],
-      template: [data.metaDataHeader],
-      userRole: [data.userRole],
-    });
-    this._templateAccessListFCA.push(newTemplateRow);
-  }
-
   initializeNewDashboardAccessRow(): void {
     const initialRow = this.fb.group({
       id: [],
@@ -206,34 +159,13 @@ export class UserRoleUpdateComponent implements OnInit {
     if (id === 1) {
       this._isMenuAccess = true;
       this._isDashboardAccess = false;
-      this._isTemplateAccess = false;
     } else if (id === 2) {
       this._isMenuAccess = false;
       this._isDashboardAccess = false;
-      this._isTemplateAccess = true;
     } else {
       this._isMenuAccess = false;
-      this._isTemplateAccess = false;
       this._isDashboardAccess = true;
     }
-  }
-
-  addTemplate(): void {
-    const metaDataHeaderId = +this.editForm.get('metaDataHeader')!.value;
-    const addedMetaDataList = this.createTemplateAccess();
-    const addedMetaData = addedMetaDataList.find(item => item.metaDataHeader?.id === metaDataHeaderId);
-    if (addedMetaData === undefined) {
-      const metaDataHeader = this._metaDataHdrList?.find(item => item.id === metaDataHeaderId);
-      if (metaDataHeader !== undefined) {
-        const roleTemplate = {
-          ...new RoleTemplateAccess(),
-          metaDataHeader: { ...new MetaDataHeader(), id: metaDataHeader.id, docTitle: metaDataHeader.docTitle },
-          userRole: { ...new UserRole(), id: 0, roleName: '' },
-        };
-        this.addNewTemplateAccessRow(roleTemplate);
-      }
-    }
-    this.editForm.get('metaDataHeader')?.patchValue(0);
   }
 
   addDashboardTemplate(): void {
@@ -252,10 +184,6 @@ export class UserRoleUpdateComponent implements OnInit {
       }
     }
     this.editForm.get('dashboardTemplate')?.patchValue(0);
-  }
-
-  removeTemplate(index: number): void {
-    this._templateAccessListFCA.removeAt(index);
   }
 
   removeDashboardTemplate(index: number): void {
@@ -278,8 +206,7 @@ export class UserRoleUpdateComponent implements OnInit {
       if (message.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(message.header.id);
         this.updateRoleMenuAccess(message.details1);
-        this.updateTemplateAccess(message.details2);
-        this.updateDashboardAccess(message.details3);
+        this.updateDashboardAccess(message.details2);
       }
       const replyCode = message.code;
       const replyMsg = message.message;
@@ -326,8 +253,7 @@ export class UserRoleUpdateComponent implements OnInit {
       roleName: userRole.roleName,
       roleType: userRole.roleType,
       menuAccessList: this.updateRoleMenuAccess(message.details1),
-      templateAccessList: this.updateTemplateAccess(message.details2),
-      dashboardAccessList: this.updateDashboardAccess(message.details3),
+      dashboardAccessList: this.updateDashboardAccess(message.details2),
     });
   }
 
@@ -340,8 +266,7 @@ export class UserRoleUpdateComponent implements OnInit {
         roleType: this.editForm.get(['roleType'])!.value,
       },
       details1: this.createRoleMenuAccess(),
-      details2: this.createTemplateAccess(),
-      details3: this.createDashboardAccess(),
+      details2: this.createDashboardAccess(),
     };
   }
 
@@ -366,23 +291,6 @@ export class UserRoleUpdateComponent implements OnInit {
     };
   }
 
-  protected createTemplateAccess(): IRoleTemplateAccess[] {
-    const fieldList: IRoleTemplateAccess[] = [];
-    this._templateAccessListFCA.controls.forEach(formControl => {
-      fieldList.push(this.getTemplateAccess(formControl));
-    });
-    return fieldList;
-  }
-
-  protected getTemplateAccess(formControl: any): IRoleTemplateAccess {
-    return {
-      ...new RoleTemplateAccess(),
-      id: formControl.get(['id'])!.value,
-      metaDataHeader: formControl.get(['template'])!.value,
-      userRole: formControl.get(['userRole'])!.value,
-    };
-  }
-
   protected updateRoleMenuAccess(menuAccessList: IRoleMenuAccess[] | undefined): void {
     let index = 0;
     this._menuAccessListFCA.clear();
@@ -395,18 +303,6 @@ export class UserRoleUpdateComponent implements OnInit {
       this._menuAccessListFCA.controls[index].get(['isDelete'])!.setValue(this.convertNumToBool(data.isDelete));
       this._menuAccessListFCA.controls[index].get(['menuItem'])!.setValue(data.menuItem);
       this._menuAccessListFCA.controls[index].get(['userRole'])!.setValue(data.userRole);
-      index = index + 1;
-    });
-  }
-
-  protected updateTemplateAccess(templateAccessList: IRoleTemplateAccess[] | undefined): void {
-    let index = 0;
-    this._templateAccessListFCA.clear();
-    templateAccessList?.forEach(data => {
-      this.initializeNewTemplateAccessRow();
-      this._templateAccessListFCA.controls[index].get(['id'])!.setValue(data.id);
-      this._templateAccessListFCA.controls[index].get(['template'])!.setValue(data.metaDataHeader);
-      this._templateAccessListFCA.controls[index].get(['userRole'])!.setValue(data.userRole);
       index = index + 1;
     });
   }

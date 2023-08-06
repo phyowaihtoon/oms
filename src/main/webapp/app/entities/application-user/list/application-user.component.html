@@ -36,9 +36,6 @@
           <th scope="col" jhiSortBy="user.login">
             <span jhiTranslate="dmsApp.applicationUser.user">User</span> <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="workflowAuthority">
-            <span jhiTranslate="dmsApp.applicationUser.workflowAuthority">Workflow Authority</span> <fa-icon icon="sort"></fa-icon>
-          </th>
           <th scope="col" jhiSortBy="userRole.roleName">
             <span jhiTranslate="dmsApp.applicationUser.userRole">User Role</span> <fa-icon icon="sort"></fa-icon>
           </th>
@@ -56,7 +53,6 @@
           <td>
             {{ applicationUser.user?.login }}
           </td>
-          <td>{{ getWorkFlowDescription(applicationUser.workflowAuthority) }}</td>
           <td>
             <div *ngIf="applicationUser.userRole">
               <a>{{ applicationUser.userRole?.roleName }}</a>
@@ -64,7 +60,7 @@
           </td>
           <td>
             <div *ngIf="applicationUser.department">
-              <a>{{ applicationUser.department?.docTitle }}</a>
+              <a>{{ applicationUser.department?.departmentName }}</a>
             </div>
           </td>
           <td class="text-right">

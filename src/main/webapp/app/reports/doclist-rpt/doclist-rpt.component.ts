@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { IMetaDataHeader, MetaDataHeader } from 'app/entities/metadata/metadata.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
@@ -20,7 +19,6 @@ import { HttpResponse } from '@angular/common/http';
 export class DoclistRptComponent implements OnInit {
   isGenerating = false;
   _replyMessage: IReplyMessage | null = null;
-  _metaDataHdrList: MetaDataHeader[] | null = [];
   _userAuthority?: IUserAuthority;
   _activeMenuItem?: IMenuItem;
   _messageCode?: string;
@@ -55,23 +53,7 @@ export class DoclistRptComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ userAuthority }) => {
       this._userAuthority = userAuthority;
       this._activeMenuItem = userAuthority.activeMenu.menuItem;
-      this.loadAllSetup();
     });
-  }
-
-  loadAllSetup(): void {
-    if (this._userAuthority?.roleID !== undefined) {
-      this.loadSetupService.loadAllMetaDataHeaderByUserRole(this._userAuthority.roleID).subscribe(
-        (res: HttpResponse<IMetaDataHeader[]>) => {
-          if (res.body) {
-            this._metaDataHdrList = res.body;
-          }
-        },
-        error => {
-          console.log('Loading MetaData Header Failed : ', error);
-        }
-      );
-    }
   }
 
   generate(): void {

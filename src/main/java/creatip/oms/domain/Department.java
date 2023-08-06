@@ -29,6 +29,10 @@ public class Department implements Serializable {
     @Column(name = "del_flag", length = 1, nullable = false)
     private String delFlag;
 
+    @ManyToOne
+    @NotNull
+    private HeadDepartment headDepartment;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -69,7 +73,13 @@ public class Department implements Serializable {
         this.delFlag = delFlag;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public HeadDepartment getHeadDepartment() {
+        return headDepartment;
+    }
+
+    public void setHeadDepartment(HeadDepartment headDepartment) {
+        this.headDepartment = headDepartment;
+    }
 
     @Override
     public boolean equals(Object o) {

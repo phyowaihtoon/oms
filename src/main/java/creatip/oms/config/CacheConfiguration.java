@@ -48,15 +48,9 @@ public class CacheConfiguration {
             createCache(cm, creatip.oms.domain.User.class.getName());
             createCache(cm, creatip.oms.domain.Authority.class.getName());
             createCache(cm, creatip.oms.domain.User.class.getName() + ".authorities");
-            createCache(cm, creatip.oms.domain.Category.class.getName());
-            createCache(cm, creatip.oms.domain.MetaDataHeader.class.getName());
-            createCache(cm, creatip.oms.domain.MetaData.class.getName());
-            createCache(cm, creatip.oms.domain.DocumentHeader.class.getName());
-            createCache(cm, creatip.oms.domain.Document.class.getName());
             createCache(cm, creatip.oms.domain.Department.class.getName());
             createCache(cm, creatip.oms.domain.ApplicationUser.class.getName());
             createCache(cm, creatip.oms.domain.UserRole.class.getName());
-            // jhipster-needle-ehcache-add-entry
         };
     }
 

@@ -34,10 +34,10 @@
         <tr class="bg-primary" jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
           <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="departmentName">
-            <span jhiTranslate="dmsApp.department.departmentName">Department Name</span> <fa-icon icon="sort"></fa-icon>
+            <span jhiTranslate="dmsApp.department.subdepartment">Sub Department</span> <fa-icon icon="sort"></fa-icon>
           </th>
-          <th scope="col" jhiSortBy="delFlag">
-            <span jhiTranslate="dmsApp.department.delFlag">Del Flag</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col" jhiSortBy="headDepartment">
+            <span jhiTranslate="dmsApp.department.department">Department</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col"></th>
         </tr>
@@ -48,7 +48,7 @@
             <a [routerLink]="['/department', department.id, 'view']">{{ department.id }}</a>
           </td>
           <td>{{ department.departmentName }}</td>
-          <td>{{ department.delFlag }}</td>
+          <td>{{ department.headDepartment?.description }}</td>
           <td class="text-right">
             <div class="btn-group">
               <button

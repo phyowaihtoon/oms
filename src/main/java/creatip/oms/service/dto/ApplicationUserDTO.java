@@ -20,7 +20,7 @@ public class ApplicationUserDTO implements Serializable {
 
     private UserRoleDTO userRole;
 
-    private MetaDataHeaderDTO department;
+    private DepartmentDTO department;
 
     public Long getId() {
         return id;
@@ -54,11 +54,11 @@ public class ApplicationUserDTO implements Serializable {
         this.userRole = userRole;
     }
 
-    public MetaDataHeaderDTO getDepartment() {
+    public DepartmentDTO getDepartment() {
         return department;
     }
 
-    public void setDepartment(MetaDataHeaderDTO department) {
+    public void setDepartment(DepartmentDTO department) {
         this.department = department;
     }
 
