@@ -14,9 +14,28 @@
         </div>
 
         <div class="form-group">
-          <label class="form-control-label" jhiTranslate="dmsApp.department.departmentName" for="field_departmentName"
-            >Department Name</label
+          <label class="form-control-label" jhiTranslate="dmsApp.department.department" for="field_department">Department</label>
+          <select
+            class="form-control"
+            id="field_department"
+            data-cy="headDepartment"
+            name="headDepartment"
+            formControlName="headDepartment"
           >
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="
+                departmentOption.id === editForm.get('headDepartment')!.value?.id ? editForm.get('headDepartment')!.value : departmentOption
+              "
+              *ngFor="let departmentOption of headDepartmentList; trackBy: trackDepartmentById"
+            >
+              {{ departmentOption.description }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" jhiTranslate="dmsApp.department.subdepartment" for="field_subdepartment">Sub-Department</label>
           <input
             type="text"
             class="form-control"

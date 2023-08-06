@@ -18,7 +18,8 @@
         "title": "Department"
       },
       "id": "ID",
-      "departmentName": "Department Name",
+      "department": "ဌာန",
+      "subdepartment": "ဌာနခွဲ",
       "delFlag": "Del Flag"
     }
   }

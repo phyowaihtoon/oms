@@ -1,6 +1,7 @@
 package creatip.oms.service.message;
 
 import creatip.oms.service.dto.DashboardTemplateDto;
+import creatip.oms.service.dto.DepartmentDTO;
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,12 +11,10 @@ public class UserAuthorityMessage implements Serializable {
 
     private String userID;
     private String userName;
-    private Long departmentId;
-    private String departmentName;
     private Long roleID;
     private String roleName;
     private int roleType;
-    private int workflowAuthority;
+    private DepartmentDTO department;
     private SysConfigMessage sysConfigMessage;
     private List<MenuGroupMessage> menuGroups;
     private List<DashboardTemplateDto> dashboardTemplates;
@@ -34,22 +33,6 @@ public class UserAuthorityMessage implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
     }
 
     public Long getRoleID() {
@@ -76,12 +59,12 @@ public class UserAuthorityMessage implements Serializable {
         this.roleType = roleType;
     }
 
-    public int getWorkflowAuthority() {
-        return workflowAuthority;
+    public DepartmentDTO getDepartment() {
+        return department;
     }
 
-    public void setWorkflowAuthority(int workflowAuthority) {
-        this.workflowAuthority = workflowAuthority;
+    public void setDepartment(DepartmentDTO department) {
+        this.department = department;
     }
 
     public SysConfigMessage getSysConfigMessage() {

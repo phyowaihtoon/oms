@@ -14,7 +14,7 @@ import { UserRoleService } from 'app/entities/user-role/service/user-role.servic
 import { DepartmentService } from 'app/entities/department/service/department.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { IWorkflowAuthority } from 'app/entities/util/setup.model';
-import { IMetaDataHeader } from 'app/entities/metadata/metadata.model';
+import { IDepartment } from 'app/entities/department/department.model';
 
 @Component({
   selector: 'jhi-application-user-update',
@@ -24,9 +24,8 @@ export class ApplicationUserUpdateComponent implements OnInit {
   isSaving = false;
 
   usersSharedCollection: IUser[] = [];
-  workflowAuthorityCollection: IWorkflowAuthority[] = [];
   userRolesSharedCollection: IUserRole[] = [];
-  departmentsSharedCollection: IMetaDataHeader[] = [];
+  departmentsSharedCollection: IDepartment[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -76,7 +75,7 @@ export class ApplicationUserUpdateComponent implements OnInit {
     return item.id!;
   }
 
-  trackDepartmentById(index: number, item: IMetaDataHeader): number {
+  trackDepartmentById(index: number, item: IDepartment): number {
     return item.id!;
   }
 
@@ -132,20 +131,9 @@ export class ApplicationUserUpdateComponent implements OnInit {
       )
       .subscribe((userRoles: IUserRole[]) => (this.userRolesSharedCollection = userRoles));
 
-    this.loadSetupService.loadAllMetaDataHeader().subscribe(
-      (res: HttpResponse<IMetaDataHeader[]>) => {
-        if (res.body) {
-          this.departmentsSharedCollection = res.body;
-        }
-      },
-      error => {
-        console.log('Loading MetaData Setup Failed : ', error);
-      }
-    );
-
-    this.loadSetupService.loadWorkflowAuthority().subscribe(res => {
+    this.loadSetupService.loadAllSubDepartments().subscribe(res => {
       if (res.body) {
-        this.workflowAuthorityCollection = res.body;
+        this.departmentsSharedCollection = res.body;
       }
     });
   }

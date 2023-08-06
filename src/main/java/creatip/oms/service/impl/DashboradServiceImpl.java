@@ -4,25 +4,20 @@ import creatip.oms.domain.PieData;
 import creatip.oms.domain.PieData2;
 import creatip.oms.repository.DashboardRepository;
 import creatip.oms.repository.DashboardTemplateRepository;
-import creatip.oms.repository.MetaDataRepository;
 import creatip.oms.service.DashboardService;
-import creatip.oms.service.dto.BarDataDto;
 import creatip.oms.service.dto.BasicLineDto;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.InputParamDto;
 import creatip.oms.service.dto.LineDataDto;
-import creatip.oms.service.dto.MetaDataDTO;
 import creatip.oms.service.dto.PieDataDto;
 import creatip.oms.service.dto.PieHeaderDataDto;
 import creatip.oms.service.mapper.DashboardTemplateMapper;
-import creatip.oms.service.mapper.MetaDataMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DashboradServiceImpl implements DashboardService {
 
-    private final Logger log = LoggerFactory.getLogger(MetaDataServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(DashboradServiceImpl.class);
 
     private final DashboardTemplateRepository dashboardTemplateRepository;
 
@@ -41,22 +36,14 @@ public class DashboradServiceImpl implements DashboardService {
 
     private final DashboardTemplateMapper dashboardTemplateMapper;
 
-    private final MetaDataRepository metaDataRepository;
-
-    private final MetaDataMapper metaDataMapper;
-
     public DashboradServiceImpl(
         DashboardTemplateRepository dashboardTemplateRepository,
         DashboardRepository dashboardRepository,
-        DashboardTemplateMapper dashboardTemplateMapper,
-        MetaDataRepository metaDataRepository,
-        MetaDataMapper metaDataMapper
+        DashboardTemplateMapper dashboardTemplateMapper
     ) {
         this.dashboardTemplateRepository = dashboardTemplateRepository;
         this.dashboardRepository = dashboardRepository;
         this.dashboardTemplateMapper = dashboardTemplateMapper;
-        this.metaDataRepository = metaDataRepository;
-        this.metaDataMapper = metaDataMapper;
     }
 
     @Override
@@ -392,40 +379,6 @@ public class DashboradServiceImpl implements DashboardService {
         pieHeaderDataDto.get().setTotalCount(totalCount);
 
         return pieHeaderDataDto;
-    }
-
-    @Override
-    public List<HashMap<String, Object>> getDataByTemplateType(@Valid InputParamDto param) {
-        List<HashMap<String, Object>> list = new ArrayList<>();
-
-        Optional<MetaDataDTO> metaDataDto = metaDataRepository
-            .findByHeaderIdAndFieldTypeAndShowDashboard(param.getTemplateId(), "LOV", "Y")
-            .map(metaDataMapper::toDto);
-
-        if (metaDataDto.isPresent()) {
-            String fieldValues[] = metaDataDto.get().getFieldValue().split("\\|");
-            List<BarDataDto> dataList = dashboardRepository.getOverAllDataByTemplateAndType(
-                param.getTemplateId(),
-                metaDataDto.get().getFieldOrder()
-            );
-            HashMap<String, Object> data = new HashMap<String, Object>();
-            for (String value : fieldValues) {
-                data = new HashMap<String, Object>();
-                BasicLineDto obj = new BasicLineDto();
-                obj.setName(value);
-                obj.setCount(0L);
-                for (BarDataDto barData : dataList) {
-                    if (barData.getName().equals(value)) {
-                        obj.setCount(barData.getCount());
-                        break;
-                    }
-                }
-                data.put("type", value);
-                data.put("detail", obj);
-                list.add(data);
-            }
-        }
-        return list;
     }
 
     @Override

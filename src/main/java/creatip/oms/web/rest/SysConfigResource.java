@@ -2,7 +2,6 @@ package creatip.oms.web.rest;
 
 import creatip.oms.domain.SysConfig;
 import creatip.oms.service.SysConfigService;
-import creatip.oms.service.dto.CategoryDTO;
 import creatip.oms.service.message.ReplyMessage;
 import java.util.List;
 import javax.validation.Valid;
@@ -30,10 +29,5 @@ public class SysConfigResource {
     @PostMapping("/sysconfig")
     public ReplyMessage<List<SysConfig>> saveAllSysConfig(@Valid @RequestBody List<SysConfig> data) {
         return this.sysConfigService.saveAllSysConfig(data);
-    }
-
-    @GetMapping("/updateFileVersion")
-    public List<String> updateFileVersion() throws Exception {
-        return this.sysConfigService.updateFileVersion();
     }
 }

@@ -1,5 +1,4 @@
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
-import { IMetaDataHeader } from '../metadata/metadata.model';
 import { IMenuItem } from '../util/setup.model';
 
 export interface IUserRole {
@@ -40,12 +39,11 @@ export class RoleMenuAccess implements IRoleMenuAccess {
 
 export interface IRoleTemplateAccess {
   id?: number;
-  metaDataHeader?: IMetaDataHeader;
   userRole?: IUserRole;
 }
 
 export class RoleTemplateAccess implements IRoleTemplateAccess {
-  constructor(public id?: number, public metaDataHeader?: IMetaDataHeader, public userRole?: IUserRole) {}
+  constructor(public id?: number, public userRole?: IUserRole) {}
 }
 
 export interface IRoleDashboardAccess {

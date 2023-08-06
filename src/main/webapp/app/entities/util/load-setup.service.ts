@@ -2,23 +2,18 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { Observable } from 'rxjs';
-import { IMetaData, IMetaDataHeader } from '../metadata/metadata.model';
-import { IRepositoryInquiry, IRepositoryHeader } from '../repository/repository.model';
-import { createRequestOption } from 'app/core/request/request-util';
 
-export type MeataDataHeaderSetupArray = HttpResponse<IMetaDataHeader[]>;
-export type MetaDataSetupArray = HttpResponse<IMetaData[]>;
-export type RepositoryHeaderArrayType = HttpResponse<IRepositoryHeader[]>;
 export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
 export type DocumentStatusArrayType = HttpResponse<IDocumentStatus[]>;
 export type PriorityArrayType = HttpResponse<IPriority[]>;
 export type DashboardArrayType = HttpResponse<IDashboardTemplate[]>;
 export type CodeTypeArrayType = HttpResponse<ICodeType[]>;
+export type HeadDepartmentType = HttpResponse<IHeadDepartment[]>;
+export type SubDepartmentType = HttpResponse<IDepartment[]>;
 
-import { map } from 'rxjs/operators';
-import * as dayjs from 'dayjs';
 import { ICodeType, IDocumentStatus, IPriority, IWorkflowAuthority } from './setup.model';
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
+import { IDepartment, IHeadDepartment } from '../department/department.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,52 +21,6 @@ import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 export class LoadSetupService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/setup');
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
-
-  loadAllMetaDataHeader(): Observable<MeataDataHeaderSetupArray> {
-    const childURL = '/metadataheader';
-    return this.http.get<IMetaDataHeader[]>(this.resourceUrl + childURL, { observe: 'response' });
-  }
-
-  loadAllMetaDataHeaderByUserRole(roleId: number): Observable<MeataDataHeaderSetupArray> {
-    const childURL = 'metadataheader';
-    return this.http.get<IMetaDataHeader[]>(`${this.resourceUrl}/${childURL}/${roleId}`, { observe: 'response' });
-  }
-
-  loadAllMetaDatabyMetadatHeaderId(id: number): Observable<MetaDataSetupArray> {
-    const childURL = this.resourceUrl + '/metadata/' + id.toString();
-    return this.http.get<IMetaData[]>(childURL, { observe: 'response' });
-  }
-
-  loadRepository(criteriaData: IRepositoryInquiry, req?: any): Observable<RepositoryHeaderArrayType> {
-    const options = createRequestOption(req);
-    return this.http
-      .post<IRepositoryHeader[]>(this.resourceUrl + '/repository', criteriaData, { params: options, observe: 'response' })
-      .pipe(map((res: RepositoryHeaderArrayType) => this.convertDateArrayFromServer(res)));
-  }
-
-  convertDateArrayFromServer(res: RepositoryHeaderArrayType): RepositoryHeaderArrayType {
-    if (res.body) {
-      res.body.forEach((documentHeader: IRepositoryHeader) => {
-        documentHeader.createdDate = documentHeader.createdDate ? dayjs(documentHeader.createdDate) : undefined;
-      });
-    }
-    return res;
-  }
-
-  loadWorkflowAuthority(): Observable<WorkflowAuthorityArrayType> {
-    const childURL = '/workflow';
-    return this.http.get<IWorkflowAuthority[]>(this.resourceUrl + childURL, { observe: 'response' });
-  }
-
-  loadDocumentStatus(): Observable<DocumentStatusArrayType> {
-    const childURL = '/docstatus';
-    return this.http.get<IDocumentStatus[]>(this.resourceUrl + childURL, { observe: 'response' });
-  }
-
-  loadCodeType(): Observable<CodeTypeArrayType> {
-    const childURL = '/codetype';
-    return this.http.get<ICodeType[]>(this.resourceUrl + childURL, { observe: 'response' });
-  }
 
   loadPriority(): Observable<PriorityArrayType> {
     const childURL = '/priority';
@@ -81,5 +30,15 @@ export class LoadSetupService {
   loadAllDashboardTemplate(): Observable<DashboardArrayType> {
     const childURL = '/dashboard';
     return this.http.get<IDashboardTemplate[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadAllHeadDepartments(): Observable<HeadDepartmentType> {
+    const childURL = '/headdept';
+    return this.http.get<IHeadDepartment[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadAllSubDepartments(): Observable<SubDepartmentType> {
+    const childURL = '/subdept';
+    return this.http.get<IDepartment[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }

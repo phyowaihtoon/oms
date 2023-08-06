@@ -1,13 +1,13 @@
 import { IUser } from 'app/entities/user/user.model';
 import { IUserRole } from 'app/entities/user-role/user-role.model';
-import { MetaDataHeader } from '../metadata/metadata.model';
+import { Department } from '../department/department.model';
 
 export interface IApplicationUser {
   id?: number;
   workflowAuthority?: number;
   user?: IUser;
   userRole?: IUserRole;
-  department?: MetaDataHeader | null;
+  department?: Department | null;
 }
 
 export class ApplicationUser implements IApplicationUser {
@@ -16,7 +16,7 @@ export class ApplicationUser implements IApplicationUser {
     public workflowAuthority?: number,
     public user?: IUser,
     public userRole?: IUserRole,
-    public department?: MetaDataHeader | null
+    public department?: Department | null
   ) {}
 }
 

@@ -5,7 +5,6 @@ import creatip.oms.service.dto.RoleMenuAccessDTO;
 import creatip.oms.service.dto.UserRoleDTO;
 import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.HeaderDetailsMessage;
-import creatip.oms.service.message.RoleTemplateAccessDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +19,8 @@ public interface UserRoleService {
      * @param userRoleDTO the entity to save.
      * @return the persisted entity.
      */
-    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> save(
-        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleTemplateAccessDTO, RoleDashboardAccessDTO> message
+    HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> save(
+        HeaderDetailsMessage<UserRoleDTO, RoleMenuAccessDTO, RoleDashboardAccessDTO> message
     );
 
     /**

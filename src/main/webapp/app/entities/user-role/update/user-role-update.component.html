@@ -68,18 +68,6 @@
       </div>
 
       <div class="col-4">
-        <div class="div-tab" *ngIf="_isTemplateAccess" class="tab-header-select" (click)="switchAccess(2)">
-          <fa-icon icon="angle-down" (click)="switchAccess(2)"></fa-icon>&nbsp;
-          <span jhiTranslate="dmsApp.userRole.templateAccess">Template Access</span>
-        </div>
-
-        <div *ngIf="!_isTemplateAccess" class="tab-header" (click)="switchAccess(2)">
-          <fa-icon icon="angle-right" (click)="switchAccess(2)"></fa-icon>&nbsp;
-          <span jhiTranslate="dmsApp.userRole.templateAccess">Template Access</span>
-        </div>
-      </div>
-
-      <div class="col-4">
         <div class="div-tab" *ngIf="_isDashboardAccess" class="tab-header-select" (click)="switchAccess(3)">
           <fa-icon icon="angle-down" (click)="switchAccess(3)"></fa-icon>&nbsp;
           <span jhiTranslate="dmsApp.userRole.dashboardAccess">Dashboard Access</span>
@@ -168,63 +156,6 @@
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <div class="form-group" id="template-access" *ngIf="_isTemplateAccess">
-      <div class="row">
-        <div class="col-2 dms-label">
-          <span jhiTranslate="dmsApp.document.docTitle">Document Template</span>
-        </div>
-        <div class="input-group col-4">
-          <select
-            class="form-control"
-            id="field_metaDataHeader"
-            data-cy="metaDataHeader"
-            name="metaDataHeader"
-            formControlName="metaDataHeader"
-          >
-            <option [value]="0"></option>
-            <option [value]="metaDataHeader.id" *ngFor="let metaDataHeader of _metaDataHdrList">
-              {{ metaDataHeader.docTitle }}
-            </option>
-          </select>
-          <span class="input-group-append" style="width: 10px"></span>
-          <div class="input-group-append dms-plus">
-            <span class="input-sm input-btn-primary" (click)="addTemplate()">
-              <fa-icon icon="plus" class="fa-icon-theme"></fa-icon>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div class="row" id="role-template-table">
-        <div class="tbl-container">
-          <table class="table" formArrayName="templateAccessList">
-            <thead>
-              <tr class="bg-primary">
-                <th style="width: 20%">
-                  {{ 'dmsApp.userRole.templateId' | translate }}
-                </th>
-                <th style="width: 70%">
-                  {{ 'dmsApp.userRole.template' | translate }}
-                </th>
-                <th style="width: 10%; text-align: center">#</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of _templateAccessListFCA.controls; last as isLast; let i = index" [formGroupName]="i">
-                <td>{{ item.get('template')!.value.id }}</td>
-                <td>{{ item.get('template')!.value.docTitle }}</td>
-                <td style="text-align: center">
-                  <span title="Remove" (click)="removeTemplate(i)">
-                    <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
 

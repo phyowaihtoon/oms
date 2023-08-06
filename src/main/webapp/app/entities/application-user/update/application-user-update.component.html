@@ -36,46 +36,6 @@
         </div>
 
         <div class="form-group">
-          <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.workflowAuthority" for="field_workflowAuthority"
-            >Workflow Authority</label
-          >
-          <select
-            type="number"
-            class="form-control"
-            name="workflowAuthority"
-            id="field_workflowAuthority"
-            data-cy="workflowAuthority"
-            formControlName="workflowAuthority"
-          >
-            <option [ngValue]="workflow.value" *ngFor="let workflow of workflowAuthorityCollection">
-              {{ workflow.description }}
-            </option>
-          </select>
-
-          <div
-            *ngIf="
-              editForm.get('workflowAuthority')!.invalid &&
-              (editForm.get('workflowAuthority')!.dirty || editForm.get('workflowAuthority')!.touched)
-            "
-          >
-            <small
-              class="form-text text-danger"
-              *ngIf="editForm.get('workflowAuthority')?.errors?.required"
-              jhiTranslate="entity.validation.required"
-            >
-              This field is required.
-            </small>
-            <small
-              class="form-text text-danger"
-              [hidden]="!editForm.get('workflowAuthority')?.errors?.number"
-              jhiTranslate="entity.validation.number"
-            >
-              This field should be a number.
-            </small>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label class="form-control-label" jhiTranslate="dmsApp.applicationUser.userRole" for="field_userRole">User Role</label>
           <select class="form-control" id="field_userRole" data-cy="userRole" name="userRole" formControlName="userRole">
             <option *ngIf="!editForm.get('userRole')!.value" [ngValue]="null" selected></option>
@@ -107,7 +67,7 @@
               "
               *ngFor="let departmentOption of departmentsSharedCollection; trackBy: trackDepartmentById"
             >
-              {{ departmentOption.docTitle }}
+              {{ departmentOption.departmentName }}
             </option>
           </select>
         </div>

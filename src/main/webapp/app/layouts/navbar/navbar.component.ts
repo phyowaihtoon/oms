@@ -10,7 +10,6 @@ import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { IMenuGroupMessage } from 'app/entities/user-role/user-role.model';
-import { CodeDefinitionPopupComponent } from 'app/entities/code-definition/popup/code-definition-popup.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -53,8 +52,6 @@ export class NavbarComponent implements OnInit {
 
   showCodeInfo(): void {
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
-    const modelRef = this.modalService.open(CodeDefinitionPopupComponent, { size: 'xl', backdrop: 'static' });
-    modelRef.componentInstance.roleID = userAuthority?.roleID;
   }
 
   changeLanguage(languageKey: string): void {

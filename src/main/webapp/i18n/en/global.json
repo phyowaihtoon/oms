@@ -42,10 +42,6 @@
       "definition": {
         "popupTitle": "Information"
       },
-      "queue": {
-        "title": "Service Queue",
-        "docmentQueue": "Document Queue"
-      },
       "account": {
         "main": "Account",
         "settings": "Settings",

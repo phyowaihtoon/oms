@@ -76,14 +76,6 @@ public class DashboardResource {
         return ResponseUtil.wrapOrNotFound(pieHeaderDataDto);
     }
 
-    @PostMapping("/getDataByTemplateType")
-    public ResponseEntity<List<HashMap<String, Object>>> getDataByTemplateType(@Valid @RequestBody InputParamDto param)
-        throws URISyntaxException {
-        log.debug("REST request to get getDataByTemplateType ");
-        List<HashMap<String, Object>> data = dashboardService.getDataByTemplateType(param);
-        return ResponseEntity.ok().body(data);
-    }
-
     @GetMapping("/getOverallSummaryByTemplate")
     public ResponseEntity<PieHeaderDataDto> getOverallSummaryByTemplate() {
         log.debug("REST request to get getOverallSummaryByTemplate Data");

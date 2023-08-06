@@ -10,6 +10,8 @@ import javax.validation.constraints.*;
  */
 public class DepartmentDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     @NotNull
@@ -17,6 +19,8 @@ public class DepartmentDTO implements Serializable {
 
     @NotNull
     private String delFlag;
+
+    private HeadDepartmentDTO headDepartment;
 
     public Long getId() {
         return id;
@@ -40,6 +44,14 @@ public class DepartmentDTO implements Serializable {
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public HeadDepartmentDTO getHeadDepartment() {
+        return headDepartment;
+    }
+
+    public void setHeadDepartment(HeadDepartmentDTO headDepartment) {
+        this.headDepartment = headDepartment;
     }
 
     @Override
