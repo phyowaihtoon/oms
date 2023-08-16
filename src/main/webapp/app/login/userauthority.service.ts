@@ -4,19 +4,25 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { SessionStorageService } from 'ngx-webstorage';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IUserAuthority } from './userauthority.model';
+import { IUserAuthority, IUserNotification } from './userauthority.model';
 
 export type EntityResponseType = HttpResponse<IUserAuthority>;
+export type NotificationResponseType = HttpResponse<IUserNotification[]>;
 
 @Injectable({ providedIn: 'root' })
 export class UserAuthorityService {
   private userAuthorityAPI = this.applicationConfigService.getEndpointFor('api/userauthority');
+  private userNotiCountAPI = this.applicationConfigService.getEndpointFor('api/noticount');
 
   constructor(
     protected http: HttpClient,
     private applicationConfigService: ApplicationConfigService,
     private $sessionStorage: SessionStorageService
   ) {}
+
+  getUserNotiCount(): Observable<NotificationResponseType> {
+    return this.http.get<IUserNotification[]>(this.userNotiCountAPI, { observe: 'response' });
+  }
 
   getUserAuthority(): Observable<void> {
     return this.http

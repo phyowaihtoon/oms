@@ -105,6 +105,7 @@ public class Department implements Serializable {
             "id=" + getId() +
             ", departmentName='" + getDepartmentName() + "'" +
             ", delFlag='" + getDelFlag() + "'" +
+            ", HeadDepartment='" + getHeadDepartment().toString() + "'" +
             "}";
     }
 }

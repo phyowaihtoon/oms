@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Delivery, IDelivery } from '../delivery.model';
+import { DocumentDelivery, IDocumentDelivery } from '../delivery.model';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -9,14 +9,17 @@ import { DeliveryService } from '../service/delivery.service';
 @Injectable({
   providedIn: 'root',
 })
-export class DeliveryRoutingResolveService implements Resolve<IDelivery> {
+export class DeliveryRoutingResolveService implements Resolve<IDocumentDelivery> {
   constructor(protected service: DeliveryService, protected router: Router) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): IDelivery | Observable<IDelivery> | Promise<IDelivery> {
+  resolve(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): IDocumentDelivery | Observable<IDocumentDelivery> | Promise<IDocumentDelivery> {
     const id = route.params['id'];
     if (id) {
       return this.service.find(id).pipe(
-        mergeMap((delivery: HttpResponse<Delivery>) => {
+        mergeMap((delivery: HttpResponse<DocumentDelivery>) => {
           if (delivery.body) {
             return of(delivery.body);
           } else {
@@ -26,6 +29,6 @@ export class DeliveryRoutingResolveService implements Resolve<IDelivery> {
         })
       );
     }
-    return of(new Delivery());
+    return of(new DocumentDelivery());
   }
 }

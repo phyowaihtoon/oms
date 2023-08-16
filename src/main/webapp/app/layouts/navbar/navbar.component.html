@@ -32,13 +32,27 @@
   </a>
   <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed">
     <ul class="navbar-nav ml-auto">
-      <li *ngSwitchCase="true" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
+      <li
+        *ngSwitchCase="true"
+        ngbDropdown
+        class="nav-item dropdown pointer"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="dropdown-toggle nav-link noti-dropdown" ngbDropdownToggle (click)="collapseNavbar()">
           <span class="icon-container">
             <fa-icon icon="bell"></fa-icon>
-            <span class="notification-count">3</span>
+            <span class="notification-count">{{ _notiCount }}</span>
           </span>
         </a>
+        <ul *ngIf="_notiCount > 0" class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
+          <li *ngFor="let notiItem of _notificationList">
+            <a class="dropdown-item" (click)="collapseNavbar()">
+              <span>{{ notiItem.referenceNo }}</span>
+              <span>{{ notiItem.subject }}</span>
+            </a>
+          </li>
+        </ul>
       </li>
 
       <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->

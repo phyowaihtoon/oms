@@ -49,4 +49,13 @@ public class HeadDepartment implements Serializable {
         }
         return id != null && id.equals(((HeadDepartment) o).id);
     }
+
+    // prettier-ignore
+    @Override
+    public String toString() {
+        return "HeadDepartment{" +
+            "id=" + getId() +
+            ", description='" + getDescription() + "'" +
+            "}";
+    }
 }
