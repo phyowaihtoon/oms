@@ -2,6 +2,7 @@ package creatip.oms.web.rest;
 
 import creatip.oms.domain.User;
 import creatip.oms.service.ApplicationUserService;
+import creatip.oms.service.DocumentDeliveryService;
 import creatip.oms.service.RoleDashboardAccessService;
 import creatip.oms.service.RoleMenuAccessService;
 import creatip.oms.service.SysConfigService;
@@ -9,6 +10,7 @@ import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.message.MenuGroupMessage;
+import creatip.oms.service.message.NotificationMessage;
 import creatip.oms.service.message.SysConfigMessage;
 import creatip.oms.service.message.UserAuthorityMessage;
 import java.util.List;
@@ -25,19 +27,22 @@ public class UserAuthorityResource {
     private final RoleMenuAccessService roleMenuAccessService;
     private final SysConfigService sysConfigService;
     private final RoleDashboardAccessService roleDashboardAccessService;
+    private final DocumentDeliveryService documentDeliveryService;
 
     public UserAuthorityResource(
         ApplicationUserService applicationUserService,
         UserService userService,
         RoleMenuAccessService roleMenuAccessService,
         SysConfigService sysConfigService,
-        RoleDashboardAccessService roleDashboardAccessService
+        RoleDashboardAccessService roleDashboardAccessService,
+        DocumentDeliveryService documentDeliveryService
     ) {
         this.applicationUserService = applicationUserService;
         this.userService = userService;
         this.roleMenuAccessService = roleMenuAccessService;
         this.sysConfigService = sysConfigService;
         this.roleDashboardAccessService = roleDashboardAccessService;
+        this.documentDeliveryService = documentDeliveryService;
     }
 
     @GetMapping("/userauthority")
@@ -67,5 +72,12 @@ public class UserAuthorityResource {
         userAuthorityMessage.setDashboardTemplates(dashboardTemplateList);
 
         return userAuthorityMessage;
+    }
+
+    @GetMapping("/noticount")
+    public List<NotificationMessage> getUserNotiCount() {
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        return this.documentDeliveryService.getNotification(appUserDTO.getDepartment().getId());
     }
 }

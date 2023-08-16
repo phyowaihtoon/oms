@@ -33,3 +33,8 @@ export class UserAuthority implements IUserAuthority {
 export interface ISysConfigMessage {
   workflowEnabled: string;
 }
+
+export interface IUserNotification {
+  referenceNo?: string;
+  subject?: string;
+}
