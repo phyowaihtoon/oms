@@ -1,0 +1,150 @@
+body{
+    font-size:1em;
+     height: 100%;
+  }
+  
+  h3 {
+    font-family: Lato;
+    text-align: center;
+    color:	#0080ff;
+  }
+  
+  .circles{
+    height: 0.938em;
+    width: 0.938em;
+    border: 0.188em solid #000;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .active{
+      background-color:#ffa500;
+  }
+  
+  .circle-desc-active{
+  font-weight: bold;
+  }
+  
+  .bar{
+    width: 16%;
+    height: 0.063em;
+    margin-bottom:0.469em;
+    border: 0.031em solid #000;
+    color:#000;
+    background-color:#000;
+    display: inline-block;
+    text-align:center;
+    margin:"0 auto";
+  }
+  
+  .container{
+    min-width:320px;
+    margin: "0px auto";
+    text-align: center;
+  }
+  
+  .circle-desc{
+   position: absolute;
+   top:1.000em;
+   font-size: 1.125em;
+   width: auto;
+   max-width:9.375em;
+   margin-left:-0.750em;
+  }
+  
+  @media only screen and (max-width: 320px){
+     body {
+       font-size:20%
+    }
+  } 
+  
+  /*extra small devices*/
+  @media only screen and (max-width: 600px){
+     body {
+       font-size:40%
+    }
+  } 
+  
+  /* Small devices (portrait tablets and large phones, 600px and up) */
+  @media only screen and (min-width: 600px) {
+     body {
+       font-size:60%
+    }
+  } 
+  
+  /* Medium devices (landscape tablets, 768px and up) */
+  @media only screen and (min-width: 768px) {
+    body {
+       font-size:80%
+    }
+  } 
+  
+  /* Large devices (laptops/desktops, 992px and up) */
+  @media only screen and (min-width: 992px) {
+    body {
+       font-size:100%
+    }
+  } 
+  
+  /* Extra large devices (large laptops and desktops, 1200px and up) */
+  @media only screen and (min-width: 1200px) {
+     body {
+       font-size:120%
+    }
+  }
+  
+  #info{
+    padding-top: 3%;
+    padding-left: 3%;
+  }
+  #receiver{
+    padding-top: 3%;
+    padding-left: 3%;
+  }
+  #attachment{
+    padding-top: 3%;
+    padding-left: 3%;
+  }
+  #success{
+    padding-top: 3%;
+    padding-left: 3%;
+  }
+
+  .div-padding{
+    margin-bottom: 10px;
+  }
+
+  .btn-text-padding-right{
+    padding-right: 2em;
+  }
+
+  .btn-text-padding-left{
+    padding-left: 2em;
+  }
+
+  .textbox-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .textbox {
+
+    color: black;
+
+   /*  padding-right: 50px; Adjust this value based on your button width */
+  }
+  
+  .textbox-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16em;
+    float: right;
+    background-color: rgb(221, 235, 141);
+    color: white;
+  }
+
+  .text-height{
+    height: 3em;
+  }
