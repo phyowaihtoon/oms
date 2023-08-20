@@ -90,3 +90,7 @@ Logo styles
   padding: 1px 4px;
   font-size: 12px;
 }
+
+.noti-dropdown::after {
+  content: none;
+}
