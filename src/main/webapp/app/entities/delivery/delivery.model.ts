@@ -56,6 +56,7 @@ export interface IDocumentAttachment {
   delFlag?: string;
 }
 
+
 export class DocumentAttachment implements IDocumentAttachment {
   constructor(public id?: number, public filePath?: string, public fileName?: string, public delFlag?: string) {}
 }

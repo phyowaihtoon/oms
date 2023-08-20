@@ -21,6 +21,7 @@ export class UserAuthorityService {
   ) {}
 
   getUserNotiCount(): Observable<NotificationResponseType> {
+    console.log(this.userNotiCountAPI," User Noticount URL");
     return this.http.get<IUserNotification[]>(this.userNotiCountAPI, { observe: 'response' });
   }
 

@@ -120,7 +120,6 @@ export const fontAwesomeIcons = [
   faKey,
   faForward,
   faBackward,
-  faPaperPlane,
-  
+  faPaperPlane
   // jhipster-needle-add-icon-import
 ];

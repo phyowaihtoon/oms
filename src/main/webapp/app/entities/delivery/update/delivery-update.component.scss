@@ -45,7 +45,7 @@ body{
   
   .circle-desc{
    position: absolute;
-   top:3.000em;
+   top:1.000em;
    font-size: 1.125em;
    width: auto;
    max-width:9.375em;
@@ -129,8 +129,7 @@ body{
   }
   
   .textbox {
-
-    color: white;
+    color: black;
 
    /*  padding-right: 50px; Adjust this value based on your button width */
   }
@@ -143,4 +142,8 @@ body{
     float: right;
     background-color: rgb(221, 235, 141);
     color: white;
+  }
+
+  .text-height{
+    height: 3em;
   }

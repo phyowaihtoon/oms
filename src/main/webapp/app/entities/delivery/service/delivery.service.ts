@@ -12,10 +12,13 @@ export type EntityArrayResponseType = HttpResponse<IDocumentDelivery[]>;
   providedIn: 'root',
 })
 export class DeliveryService {
+
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/delivery');
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
+    
+    console.log(formData, "Step2");
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
