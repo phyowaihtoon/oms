@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.service.DocumentDeliveryService;
 import creatip.oms.service.message.DeliveryMessage;
-import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
@@ -14,10 +13,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -62,7 +64,7 @@ public class DocumentDeliveryResource {
         try {
             this.objectMapper = new ObjectMapper();
             deliveryMessage = this.objectMapper.readValue(message, DeliveryMessage.class);
-            log.debug("REST request to save Document Delivery Mapping: {}", deliveryMessage);
+            log.debug("REST request to save Document Delivery: {}", deliveryMessage);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
             result = new ReplyMessage<DeliveryMessage>();
@@ -110,7 +112,7 @@ public class DocumentDeliveryResource {
     }
 
     @PutMapping("/delivery/{id}")
-    public ResponseEntity<ReplyMessage<DeliveryMessage>> updateMeetingDelivery(
+    public ResponseEntity<ReplyMessage<DeliveryMessage>> updateDocumentDelivery(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles,
         @RequestParam("delivery") String message
@@ -121,9 +123,11 @@ public class DocumentDeliveryResource {
         try {
             this.objectMapper = new ObjectMapper();
             deliveryMessage = this.objectMapper.readValue(message, DeliveryMessage.class);
-            log.debug("REST request to update Repository : {}, {}", id, deliveryMessage);
+            log.debug("REST request to update DocumentDelivery : {}, {}", id, deliveryMessage);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            log.debug("Unrecognized Field while parsing string to object named DeliveryMessage");
+            log.debug("JsonProcessingException :{}", ex.getMessage());
+
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.ERROR_E01);
             result.setMessage("Unrecognized Field while parsing string to object");
@@ -173,5 +177,12 @@ public class DocumentDeliveryResource {
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
+    }
+
+    @GetMapping("/delivery/{id}")
+    public ResponseEntity<DeliveryMessage> getDocumentDelivery(@PathVariable Long id) {
+        log.debug("REST request to get DocumentDelivery : {}", id);
+        Optional<DeliveryMessage> departmentDTO = documentDeliveryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(departmentDTO);
     }
 }

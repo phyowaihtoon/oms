@@ -35,6 +35,8 @@ export interface ISysConfigMessage {
 }
 
 export interface IUserNotification {
+  id?: number;
   referenceNo?: string;
   subject?: string;
+  senderName?: string;
 }

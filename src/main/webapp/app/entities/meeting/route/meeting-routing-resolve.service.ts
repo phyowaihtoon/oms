@@ -3,25 +3,25 @@ import { HttpResponse } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { IMeetingDelivery, MeetingDelivery } from '../meeting.model';
+import { MeetingMessage, IMeetingMessage } from '../meeting.model';
 import { MeetingService } from '../service/meeting.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MeetingRoutingResolveService implements Resolve<IMeetingDelivery> {
+export class MeetingRoutingResolveService implements Resolve<IMeetingMessage> {
   constructor(protected service: MeetingService, protected router: Router) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): IMeetingDelivery | Observable<IMeetingDelivery> | Promise<IMeetingDelivery> {
+  ): IMeetingMessage | Observable<IMeetingMessage> | Promise<IMeetingMessage> {
     const id = route.params['id'];
     if (id) {
       return this.service.find(id).pipe(
-        mergeMap((delivery: HttpResponse<MeetingDelivery>) => {
-          if (delivery.body) {
-            return of(delivery.body);
+        mergeMap((meeting: HttpResponse<IMeetingMessage>) => {
+          if (meeting.body) {
+            return of(meeting.body);
           } else {
             this.router.navigate(['404']);
             return EMPTY;
@@ -29,6 +29,6 @@ export class MeetingRoutingResolveService implements Resolve<IMeetingDelivery> {
         })
       );
     }
-    return of(new MeetingDelivery());
+    return of(new MeetingMessage());
   }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.service.MeetingDeliveryService;
+import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.UploadFailedException;
@@ -13,10 +14,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -58,7 +62,7 @@ public class MeetingDeliveryResource {
         try {
             this.objectMapper = new ObjectMapper();
             deliveryMessage = this.objectMapper.readValue(message, MeetingMessage.class);
-            log.debug("REST request to save Meeting Delivery Mapping: {}", deliveryMessage);
+            log.debug("REST request to save MeetingDelivery: {}", deliveryMessage);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
@@ -117,7 +121,7 @@ public class MeetingDeliveryResource {
         try {
             this.objectMapper = new ObjectMapper();
             meetingMessage = this.objectMapper.readValue(message, MeetingMessage.class);
-            log.debug("REST request to update Repository : {}, {}", id, meetingMessage);
+            log.debug("REST request to update MeetingDelivery : {}, {}", id, meetingMessage);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
@@ -169,5 +173,12 @@ public class MeetingDeliveryResource {
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
+    }
+
+    @GetMapping("/meeting/{id}")
+    public ResponseEntity<MeetingMessage> getMeetingDelivery(@PathVariable Long id) {
+        log.debug("REST request to get MeetingDelivery : {}", id);
+        Optional<MeetingMessage> departmentDTO = meetingDeliveryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(departmentDTO);
     }
 }

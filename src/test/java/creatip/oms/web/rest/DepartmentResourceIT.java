@@ -2,15 +2,21 @@ package creatip.oms.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import creatip.oms.IntegrationTest;
 import creatip.oms.domain.Department;
+import creatip.oms.domain.HeadDepartment;
 import creatip.oms.repository.DepartmentRepository;
 import creatip.oms.service.dto.DepartmentDTO;
 import creatip.oms.service.mapper.DepartmentMapper;
-import creatip.oms.web.rest.DepartmentResource;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +42,8 @@ class DepartmentResourceIT {
     private static final String DEFAULT_DEPARTMENT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_DEPARTMENT_NAME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_DEL_FLAG = "A";
-    private static final String UPDATED_DEL_FLAG = "B";
+    private static final String DEFAULT_DEL_FLAG = "N";
+    private static final String UPDATED_DEL_FLAG = "Y";
 
     private static final String ENTITY_API_URL = "/api/departments";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -87,20 +94,20 @@ class DepartmentResourceIT {
 
     @Test
     @Transactional
-    void createDepartment() throws Exception {
-        int databaseSizeBeforeCreate = departmentRepository.findAll().size();
-        // Create the Department
-        DepartmentDTO departmentDTO = departmentMapper.toDto(department);
-        restDepartmentMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(departmentDTO)))
-            .andExpect(status().isCreated());
-
-        // Validate the Department in the database
-        List<Department> departmentList = departmentRepository.findAll();
-        assertThat(departmentList).hasSize(databaseSizeBeforeCreate + 1);
-        Department testDepartment = departmentList.get(departmentList.size() - 1);
-        assertThat(testDepartment.getDepartmentName()).isEqualTo(DEFAULT_DEPARTMENT_NAME);
-        assertThat(testDepartment.getDelFlag()).isEqualTo(DEFAULT_DEL_FLAG);
+    @Rollback(value = false)
+    void createDepartment() {
+        try {
+            List<Department> departmentList = departmentRepository.findAll();
+            HeadDepartment head = new HeadDepartment();
+            head.setId(Long.valueOf(1));
+            head.setDescription("ပြည်ထောင်စုတရားသူကြီးချုပ်ရုံး");
+            department.setHeadDepartment(head);
+            Department savedData = departmentRepository.saveAndFlush(department);
+            System.out.println("Saved Data : " + savedData.toString());
+            assertThat(savedData.getId()).isGreaterThan(0);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Test

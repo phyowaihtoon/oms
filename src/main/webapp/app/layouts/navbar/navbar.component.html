@@ -47,7 +47,7 @@
         </a>
         <ul *ngIf="_notiCount > 0" class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
           <li *ngFor="let notiItem of _notificationList">
-            <a class="dropdown-item" (click)="collapseNavbar()">
+            <a class="dropdown-item" (click)="collapseNavbar()" [routerLink]="['/delivery', notiItem.id, 'view']">
               <span>{{ notiItem.referenceNo }}</span>
               <span>{{ notiItem.subject }}</span>
             </a>

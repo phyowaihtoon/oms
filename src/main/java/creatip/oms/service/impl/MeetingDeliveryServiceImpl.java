@@ -3,10 +3,14 @@ package creatip.oms.service.impl;
 import creatip.oms.domain.MeetingAttachment;
 import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.domain.MeetingReceiver;
+import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
 import creatip.oms.repository.MeetingAttachmentRepository;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.repository.MeetingReceiverRepository;
 import creatip.oms.service.MeetingDeliveryService;
+import creatip.oms.service.dto.MeetingAttachmentDTO;
+import creatip.oms.service.dto.MeetingDeliveryDTO;
+import creatip.oms.service.dto.MeetingReceiverDTO;
 import creatip.oms.service.mapper.MeetingAttachmentMapper;
 import creatip.oms.service.mapper.MeetingDeliveryMapper;
 import creatip.oms.service.mapper.MeetingReceiverMapper;
@@ -14,8 +18,10 @@ import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +76,9 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             log.debug("Saving Meeting Delivery: {}", message);
 
             MeetingDelivery delivery = meetingDeliveryMapper.toEntity(message.getMeetingDelivery());
+            if (delivery.getDeliveryStatus() == DeliveryStatus.SENT.value && delivery.getSentDate() == null) delivery.setSentDate(
+                Instant.now()
+            );
             delivery = meetingDeliveryRepository.save(delivery);
             message.setMeetingDelivery(meetingDeliveryMapper.toDto(delivery));
 
@@ -119,16 +128,39 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
              */
 
             replyMessage.setCode(ResponseCode.SUCCESS);
-            replyMessage.setMessage("Meeting Mapping is successfully saved");
+            replyMessage.setMessage(
+                delivery.getDeliveryStatus() == DeliveryStatus.SENT.value
+                    ? "Meeting Invitation has been sent successfully!"
+                    : "Meeting Invitation has been saved as draft!"
+            );
             replyMessage.setData(message);
-        }/*
+        } /*
          * catch (UploadFailedException ex) { throw ex; }
-         */ catch (Exception ex) {
+         */catch (Exception ex) {
             ex.printStackTrace();
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
         }
 
         return replyMessage;
+    }
+
+    @Override
+    public Optional<MeetingMessage> findOne(Long id) {
+        MeetingMessage meetingMessage = null;
+        Optional<MeetingDelivery> headerOptional = meetingDeliveryRepository.findById(id);
+        if (headerOptional.isPresent()) {
+            meetingMessage = new MeetingMessage();
+            MeetingDeliveryDTO deliveryDTO = meetingDeliveryMapper.toDto(headerOptional.get());
+            List<MeetingReceiver> recList = meetingReceiverRepository.findByHeaderId(id);
+            List<MeetingReceiverDTO> recListDTO = meetingReceiverMapper.toDto(recList);
+            List<MeetingAttachment> attList = meetingAttachmentRepository.findByHeaderId(id);
+            List<MeetingAttachmentDTO> attListDTO = meetingAttachmentMapper.toDto(attList);
+            meetingMessage.setMeetingDelivery(deliveryDTO);
+            meetingMessage.setAttachmentList(attListDTO);
+            meetingMessage.setReceiverList(recListDTO);
+            return Optional.of(meetingMessage);
+        }
+        return Optional.empty();
     }
 }
