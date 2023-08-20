@@ -37,7 +37,7 @@ const deliveryRoute: Routes = [
     path: ':id/view',
     component: DeliveryDetailComponent,
     resolve: {
-      department: DeliveryRoutingResolveService,
+      delivery: DeliveryRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -45,7 +45,7 @@ const deliveryRoute: Routes = [
     path: 'new',
     component: DeliveryUpdateComponent,
     resolve: {
-      department: DeliveryRoutingResolveService,
+      delivery: DeliveryRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -53,7 +53,7 @@ const deliveryRoute: Routes = [
     path: ':id/edit',
     component: DeliveryUpdateComponent,
     resolve: {
-      department: DeliveryRoutingResolveService,
+      delivery: DeliveryRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

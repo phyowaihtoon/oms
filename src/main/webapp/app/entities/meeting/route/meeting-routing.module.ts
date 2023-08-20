@@ -37,7 +37,7 @@ const meetingRoute: Routes = [
     path: ':id/view',
     component: MeetingDetailComponent,
     resolve: {
-      department: MeetingRoutingResolveService,
+      meeting: MeetingRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

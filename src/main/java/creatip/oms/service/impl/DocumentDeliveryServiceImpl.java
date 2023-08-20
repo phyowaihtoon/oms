@@ -8,7 +8,9 @@ import creatip.oms.repository.DocumentAttachmentRepository;
 import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.repository.DocumentReceiverRepository;
 import creatip.oms.service.DocumentDeliveryService;
+import creatip.oms.service.dto.DocumentAttachmentDTO;
 import creatip.oms.service.dto.DocumentDeliveryDTO;
+import creatip.oms.service.dto.DocumentReceiverDTO;
 import creatip.oms.service.mapper.DocumentAttachmentMapper;
 import creatip.oms.service.mapper.DocumentDeliveryMapper;
 import creatip.oms.service.mapper.DocumentReceiverMapper;
@@ -130,11 +132,15 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
              */
 
             replyMessage.setCode(ResponseCode.SUCCESS);
-            replyMessage.setMessage("Document Mapping is successfully saved");
+            replyMessage.setMessage(
+                delivery.getDeliveryStatus() == DeliveryStatus.SENT.value
+                    ? "Document has been delivered successfully!"
+                    : "Document has been saved as draft!"
+            );
             replyMessage.setData(message);
-        }/*
+        } /*
          * catch (UploadFailedException ex) { throw ex; }
-         */ catch (Exception ex) {
+         */catch (Exception ex) {
             ex.printStackTrace();
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
@@ -150,8 +156,21 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     }
 
     @Override
-    public Optional<DocumentDeliveryDTO> findOne(Long id) {
-        // TODO Auto-generated method stub
+    public Optional<DeliveryMessage> findOne(Long id) {
+        DeliveryMessage deliveryMessage = null;
+        Optional<DocumentDelivery> headerOptional = documentDeliveryRepository.findById(id);
+        if (headerOptional.isPresent()) {
+            deliveryMessage = new DeliveryMessage();
+            DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(headerOptional.get());
+            List<DocumentReceiver> recList = documentReceiverRepository.findByHeaderId(id);
+            List<DocumentReceiverDTO> recListDTO = documentReceiverMapper.toDto(recList);
+            List<DocumentAttachment> attList = documentAttachmentRepository.findByHeaderId(id);
+            List<DocumentAttachmentDTO> attListDTO = documentAttachmentMapper.toDto(attList);
+            deliveryMessage.setDocumentDelivery(deliveryDTO);
+            deliveryMessage.setAttachmentList(attListDTO);
+            deliveryMessage.setReceiverList(recListDTO);
+            return Optional.of(deliveryMessage);
+        }
         return Optional.empty();
     }
 
@@ -161,8 +180,11 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         List<DocumentReceiver> list = documentReceiverRepository.findUnReadMailByRecieverId(departmentId);
         for (DocumentReceiver receiver : list) {
             NotificationMessage notiMessage = new NotificationMessage();
-            notiMessage.setReferenceNo(receiver.getHeader().getReferenceNo());
-            notiMessage.setSubject(receiver.getHeader().getSubject());
+            DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(receiver.getHeader());
+            notiMessage.setId(deliveryDTO.getId());
+            notiMessage.setReferenceNo(deliveryDTO.getReferenceNo());
+            notiMessage.setSubject(deliveryDTO.getSubject());
+            notiMessage.setSenderName(deliveryDTO.getSender().getDepartmentName());
             notiList.add(notiMessage);
         }
         return notiList;

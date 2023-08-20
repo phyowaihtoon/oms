@@ -18,4 +18,6 @@ public interface DocumentReceiverRepository extends JpaRepository<DocumentReceiv
 
     @Query(value = "select dc from DocumentReceiver dc where dc.receiver.id=?1 and dc.status=0 and dc.delFlag='N'")
     List<DocumentReceiver> findUnReadMailByRecieverId(Long receiverId);
+
+    List<DocumentReceiver> findByHeaderId(Long headerId);
 }

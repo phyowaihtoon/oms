@@ -6,8 +6,14 @@ public class NotificationMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    String referenceNo;
-    String subject;
+    private Long id;
+    private String referenceNo;
+    private String subject;
+    private String senderName;
+
+    public Long getId() {
+        return id;
+    }
 
     public String getReferenceNo() {
         return referenceNo;
@@ -17,11 +23,23 @@ public class NotificationMessage implements Serializable {
         return subject;
     }
 
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
     }
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 }

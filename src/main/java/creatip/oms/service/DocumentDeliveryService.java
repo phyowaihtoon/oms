@@ -16,7 +16,7 @@ public interface DocumentDeliveryService {
 
     Page<DocumentDeliveryDTO> findAll(Pageable pageable);
 
-    Optional<DocumentDeliveryDTO> findOne(Long id);
+    Optional<DeliveryMessage> findOne(Long id);
 
     List<NotificationMessage> getNotification(Long departmentId);
 }
