@@ -54,11 +54,18 @@ export interface IDocumentAttachment {
   filePath?: string;
   fileName?: string;
   delFlag?: string;
+  fileData?: File; // This filed data is not needed to pass to server side, only used in client side
 }
 
 
 export class DocumentAttachment implements IDocumentAttachment {
-  constructor(public id?: number, public filePath?: string, public fileName?: string, public delFlag?: string) {}
+  constructor(
+    public id?: number, 
+    public filePath?: string, 
+    public fileName?: string, 
+    public delFlag?: string,    
+    public fileData?: File
+    ) {}
 }
 
 export interface IDeliveryMessage {

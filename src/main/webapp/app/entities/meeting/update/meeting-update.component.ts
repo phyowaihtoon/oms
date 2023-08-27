@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup} from '@angular/forms';
-import { IData } from 'app/entities/delivery/update/data.model';
 
 
 @Component({
@@ -11,8 +10,6 @@ import { IData } from 'app/entities/delivery/update/data.model';
 export class MeetingUpdateComponent {  
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
-  __data?: IData; 
-
     
   editForm = this.fb.group({
     id: [],

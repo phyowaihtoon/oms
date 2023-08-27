@@ -22,6 +22,8 @@ export class DeliveryDetailComponent implements OnInit {
     });
   }
 
+  
+
   previousState(): void {
     window.history.back();
   }

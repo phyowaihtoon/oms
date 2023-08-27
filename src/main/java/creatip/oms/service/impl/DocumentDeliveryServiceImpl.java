@@ -138,7 +138,8 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     : "Document has been saved as draft!"
             );
             replyMessage.setData(message);
-        } /*
+        } 
+        /*
          * catch (UploadFailedException ex) { throw ex; }
          */catch (Exception ex) {
             ex.printStackTrace();
