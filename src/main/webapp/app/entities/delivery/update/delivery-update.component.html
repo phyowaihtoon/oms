@@ -18,19 +18,41 @@
 
         <div id="info" *ngIf="isInfo" class="row col-8 form-group">
 
-            <div class="col-11">
+            <div class="col-11">    
 
+                <div *ngIf="editForm.get('docNo')!.invalid && (editForm.get('docNo')?.dirty || editForm.get('docNo')?.touched)">
+                    <div *ngIf="editForm.get('docNo')?.errors?.required" style="text-align: right; color: red">
+                      This field is required.
+                    </div>
+                </div>
                 <input type="text" formControlName="docNo" placeholder="Document No."
-                    class="form-control div-padding text-height" name="docNo" id="docNo"
-                    />
-
+                    class="form-control div-padding text-height" name="docNo" id="docNo" required
+                />
+                
+                <div *ngIf="editForm.get('subject')!.invalid && (editForm.get('subject')?.dirty || editForm.get('subject')?.touched)">
+                    <div *ngIf="editForm.get('subject')?.errors?.required" style="text-align: right; color: red">
+                      This field is required.
+                    </div>
+                </div>
                 <input type="text" formControlName="subject" placeholder="Subject"
                     class="form-control div-padding text-height" name="subject" id="subject" />
 
+
+                <div *ngIf="editForm.get('body')!.invalid && (editForm.get('body')?.dirty || editForm.get('body')?.touched)">
+                    <div *ngIf="editForm.get('body')?.errors?.required" style="text-align: right; color: red">
+                        This field is required.
+                    </div>
+                </div>    
                 <textarea class="form-control div-padding" name="body" placeholder="Body" style="height: 300px"
                     id="body" formControlName="body"></textarea>
 
-                <button class="btn btn-primary" type="submit" style="float: right;" (click)="goToStep4()">
+                <button class="btn btn-primary" 
+                        type="submit" 
+                        style="float: right;" 
+                        [disabled] ="editForm.get('docNo')?.errors?.required
+                                    || editForm.get('subject')?.errors?.required
+                                    || editForm.get('body')?.errors?.required"
+                        (click)="goToStep2()">
                     <span class="btn-text-padding-right">Next</span>
                     <fa-icon icon="forward"></fa-icon>
                 </button>
@@ -39,11 +61,8 @@
         </div>
 
         <div id="receiver" *ngIf="isReceiver" class="row col-8 form-group">
-
             <div class="col-12">
-
                 <div class="row div-padding">
-
                     <div class="col-11">
                         <input type="text" placeholder="Main: Department" class="form-control text-height" name="mDept"
                             id="mDept" />
@@ -87,43 +106,42 @@
             </div>
         </div>
 
-        <div id="attachment" class="row col-8 form-group">
-
-            <div class="col-12 " *ngIf="isAttachment">
-                <label class="form-control-label" for="text">&nbsp;</label>
-                <form enctype="multipart/form-data">
-                    <fieldset>
-                        <div class="form-group div-padding">
-                            <input #inputFileElement type="file" (change)="onUploadFiles($event)" name="files"
-                                class="form-control" multiple />
+        <div id="attachment" *ngIf="isAttachment" class="row col-8 form-group">
+            <div class="col-12 " >
+                <div class="form-group col-6">
+                    <label class="form-control-label" for="text">&nbsp;</label>
+                    <form enctype="multipart/form-data">
+                      <fieldset>
+                        <div class="form-group">
+                          <input #inputFileElement type="file" (change)="onUploadFiles($event)" name="files" multiple />
                         </div>
-                    </fieldset>
-                </form>
+                      </fieldset>
+                    </form>
+                  </div>
 
                 <div class="form-group" style="padding: 8px !important; overflow-x: auto">
-                    <table class="table" formArrayName="fileList">
+                    <table class="table" formArrayName="docList">
                         <thead>
                             <tr class="bg-primary">
                                 <th class="text-center" style="width: 25%">File Name</th>
-                                <th class="text-center" style="width: 10%">File Size (KB)</th>
                                 <th class="text-center" style="width: 5%">#</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let item of fileList().controls; last as isLast; let i = index"
+                            <tr *ngFor="let item of docList().controls; last as isLast; let i = index"
                                 [formGroupName]="i">
                                 <td>
-                                    <input [title]="item.get(['fileName'])!.value" type="text"
-                                        class="col-12 form-control" placeholder="fileName" formControlName="fileName"
-                                        [readonly]="item.get(['id'])!.value != null" />
-                                </td>
-                                <td>
-                                    <input type="number" class="col-12 form-control" placeholder="filesize"
-                                        formControlName="fileSize" readonly />
+                                    <input 
+                                        [title]="item.get(['fileName'])!.value" 
+                                        type="text"
+                                        class="col-12 form-control" 
+                                        placeholder="fileName" 
+                                        formControlName="fileName"
+                                        readonly/>
                                 </td>
                                 <td style="padding-left: 10px">
                                     <span title="Remove" (click)="removeField(i)">
-                                        <i class="fas fa-danger"></i>
+                                        <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
                                     </span>
                                 </td>
                             </tr>
@@ -140,7 +158,6 @@
                     <button class="btn btn-primary" type="submit" style="float: right;" (click)="goToStep4()">
                         <span class="btn-text-padding-right">Next</span>
                         <fa-icon icon="forward"></fa-icon>
-
                     </button>
                 </div>
             </div>
@@ -148,7 +165,6 @@
 
         <div id="success" *ngIf="isSuccess" class="row col-8 form-group">
             <div class="col-12">
-
                 <input type="text" readonly
                     class="textbox text-height form-control div-padding" 
                     formControlName="cc_docNo"/>
@@ -169,17 +185,23 @@
 
                 <div class="row">
                     <div class="col-12 " style="text-align: center;">
-                        <button class="btn btn-primary" type="submit" style="float: left;" (click)="goToStep1()">
+                        <button class="btn btn-primary" type="submit" style="float: left;" (click)="goToStep3()">
                             <fa-icon icon="backward"></fa-icon>
                             <span class="btn-text-padding-left">Back</span>
                         </button>
     
-                        <button class="btn btn-primary" type="submit" (click)="submit()">
+                        <button class="btn btn-primary" 
+                        type="submit" 
+                        (click)="submit()"                        
+                        [disabled]="isSaving">
                             <span class="btn-text-padding-right">Send</span>
                             <fa-icon icon="paper-plane"></fa-icon>
                         </button>
     
-                        <button class="btn btn-primary" type="button" style="float: right;" (click)="saveDraft()">
+                        <button class="btn btn-primary" 
+                        type="button" style="float: right;" 
+                        [disabled]="isSaving"
+                        (click)="saveDraft()">
                             <span class="btn-text-padding-right">Draft</span>
                             <fa-icon icon="save"></fa-icon>    
                         </button>

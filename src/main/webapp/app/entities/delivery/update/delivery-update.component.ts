@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup} from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
-import { DocumentDelivery, IDocumentDelivery } from '../delivery.model';
-import { Department, IDepartment } from './data.model';
+import { DeliveryMessage, DocumentAttachment, DocumentDelivery, DocumentReceiver, IDeliveryMessage, IDocumentAttachment, IDocumentDelivery, IDocumentReceiver } from '../delivery.model';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -11,6 +10,7 @@ import { finalize } from 'rxjs/operators';
 import { DeliveryService } from '../service/delivery.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
 
 @Component({
   selector: 'jhi-delivery-update',
@@ -28,7 +28,7 @@ export class DeliveryUpdateComponent {
     body:['', [Validators.required]],
     mDeptList: [],
     cDeptList: [],
-    fileList: this.fb.array([]),
+    docList: this.fb.array([]),
     cc_docNo: ['', [Validators.required]],
     cc_body: ['', [Validators.required]],
     cc_subject: ['', [Validators.required]],
@@ -36,6 +36,7 @@ export class DeliveryUpdateComponent {
   });
 
   _modalRef?: NgbModalRef;
+  _tempdocList: File[] = [];
   name = 'Progress Bar';
   isSaving = false;
   isInfo = true;
@@ -43,7 +44,6 @@ export class DeliveryUpdateComponent {
   isAttachment = false;
   isSuccess = false;
   public counts = ["Info","Receiver","Attachment","Success"];
-  senderDept!: IDepartment;
 
   public status = "Info"
 
@@ -103,49 +103,46 @@ export class DeliveryUpdateComponent {
     this.isSuccess = true;
   }
 
+  docList(): FormArray {
+    return this.editForm.get('docList') as FormArray;
+  }
+
   submit():void{
     console.log("##### Save #####")
   }
 
-  fileList(): FormArray {
-    return this.editForm.get('fileList') as FormArray;
-  }
 
    // create new field dynamically
-   newField(filePath: string, fileName: string, fileSize: number, fileData?: File): FormGroup {
+   newField(filePath: string, fileName: string, fileData?: File): FormGroup {
     return this.fb.group({
       id: [],
       filePath: [filePath, [Validators.required]],
       fileName: [fileName, [Validators.required]],
-      fileNameVersion: [],
-      fileSize: [fileSize, [Validators.required]],
-      version: [''],
-      remark: [''],
       fileData: [fileData],
     });
   }
 
    // add new field dynamically
-   addField(filePath: string, fileName: string, fileSize: number, fileData?: File): void {
-    this.fileList().push(this.newField(filePath, fileName, fileSize, fileData));
+   addField(filePath: string, fileName: string,  fileData?: File): void {
+    this.docList().push(this.newField(filePath, fileName, fileData));
   }
 
   
   removeFieldConfirm(i: number): void {
-    this.fileList().removeAt(i);
+    this.docList().removeAt(i);
     this.myInputVariable!.nativeElement.value = '';
   }
 
   // remove all Field of document table
   removeAllField(): void {
-    this.fileList().clear();
+    this.docList().clear();
   }
   
   removeField(i: number): void {
-      const docId = this.fileList().controls[i].get(['id'])!.value;
-      const dmsFileName = this.fileList().controls[i].get(['fileName'])!.value;
+      const docId = this.docList().controls[i].get(['id'])!.value;
+      const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
 
-      if (this.fileList().controls[i].get(['id'])!.value === null || this.fileList().controls[i].get(['id'])!.value === undefined) {
+      if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
         this.removeFieldConfirm(i);
       } else {
         console.log("xxx");
@@ -158,25 +155,59 @@ export class DeliveryUpdateComponent {
 
    // define a function to upload files
    onUploadFiles(event: Event): void {
+
     const target = event.target as HTMLInputElement;
 
     for (let i = 0; i <= target.files!.length - 1; i++) {
       const selectedFile = target.files![i];
+      this._tempdocList.push(selectedFile);
     }
 
+    
+    for (let i = 0; i < this._tempdocList.length; i++) {
+      const tempFile = this._tempdocList[i];
+      this.addField("c://", tempFile.name, tempFile);
+    }
+
+    this._tempdocList = [];
+    this.myInputVariable!.nativeElement.value = '';
+
   }
-  saveDraft(): void {    
-    console.log("Step1");
+
+  saveDraft(): void {   
     this.showLoading('Saving Documents in Draft');
     this.isSaving = true;
     this.showLoading('Saving and Uploading Documents');
     
     const formData = new FormData();
-    const attachedFileList = [];
+    const attacheddocList = [];
     const documentDelivery = this.createFrom();
+    const docList = documentDelivery.attachmentList ?? [];
+
+    if (docList.length > 0) {
+      for (const dmsDoc of docList) {
+        const docDetailID = dmsDoc.id ?? undefined;
+        if (docDetailID === undefined && dmsDoc.fileData !== undefined) {
+          const orgFileName = dmsDoc.fileData.name;
+          const orgFileExtension = orgFileName.split('.').pop();
+          let editedFileName = dmsDoc.fileName;
+          if (editedFileName?.lastIndexOf('.') === -1) {
+            // If file extension is missing, original file extension is added
+            editedFileName = editedFileName.concat('.').concat(orgFileExtension!);
+            dmsDoc.fileName = editedFileName;
+          }
+          const docDetailInfo = editedFileName
+            ?.concat('@')
+            .concat(dmsDoc.filePath ?? '')
+            .concat('@');
+          formData.append('files', dmsDoc.fileData, docDetailInfo);
+        }
+        delete dmsDoc['fileData'];
+        attacheddocList.push(dmsDoc);
+      }
+    }
     formData.append('delivery', JSON.stringify(documentDelivery));
     this.subscribeToSaveResponse(this.deliveryService.save(formData));
-
   }
 
   showLoading(loadingMessage?: string): void {
@@ -196,23 +227,20 @@ export class DeliveryUpdateComponent {
     this._modalRef?.close();
   }
 
-  protected createFrom(): IDocumentDelivery {
+  protected createFrom(): IDeliveryMessage {
     return {
-      ...new DocumentDelivery(),
-      id: this.editForm.get(['id'])!.value,
-      referenceNo: this.editForm.get(['docNo'])!.value,
-      subject: this.editForm.get(['subject'])!.value,
-      description: this.editForm.get(['body'])!.value,
-      deliveryStatus: 1,
-      status: 1,
-      delFlag: 'N',
-      sender:   undefined,
+      ...new DeliveryMessage(),
+
+      documentDelivery: this.createFormDocDeli(),
+      receiverList: this.createFormReceiverList(),
+      attachmentList: this.createFormdocList(),
     };
   }
 
+
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
     
-    console.log("Step3");
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
       () => this.onSaveError()
@@ -226,15 +254,17 @@ export class DeliveryUpdateComponent {
       if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
 
-        console.log("Success Save");
+        console.log(replyMessage.data, "xxx Reply Message xxx");
 
-        this.removeAllField();
-
+        this.removeAllField();        
+        this.updateForm(replyMessage.data);
         const replyCode = replyMessage.code;
-        const replyMsg = replyMessage.message;
+        const replyMsg = replyMessage.message;        
+        this.showAlertMessage(replyCode, replyMsg);
       } else {
         const replyCode = replyMessage.code;
-        const replyMsg = replyMessage.message;
+        const replyMsg = replyMessage.message;        
+        this.showAlertMessage(replyCode, replyMsg);
       }
     } else {
       this.onSaveError();
@@ -251,4 +281,101 @@ export class DeliveryUpdateComponent {
       this.isSaving = false;
       this.hideLoading();
     }
+
+    protected createFormDocDeli(): IDocumentDelivery {
+      return {
+        ...new DocumentDelivery(),
+  
+        id: this.editForm.get(['id'])!.value,
+        referenceNo: this.editForm.get(['docNo'])!.value,
+        subject: this.editForm.get(['subject'])!.value,
+        description: this.editForm.get(['body'])!.value,
+        deliveryStatus: 1,
+        status: 1,
+        delFlag: 'N',
+        sender:  this.getDepartment(),
+      };
+    }
+  
+    protected createFormReceiverList(): IDocumentReceiver[] {
+      const receiverList: IDocumentReceiver[] = [];
+      receiverList.push(this.createReceiverListDetail());
+      return receiverList;
+    }
+    
+    protected createReceiverListDetail(): IDocumentReceiver {
+      return {
+        ...new DocumentReceiver(),
+        id: undefined,
+        receiverType: 1,
+        status: 1,
+        delFlag: 'N',
+        receiver: this.getDepartment(),
+      };
+    }
+   
+    protected getDepartment(): IDepartment {
+      return {
+        ...new Department(),
+        id: 1,
+        departmentName: 'အမြဲတမ်းအတွင်းဝန်ရုံးခန်း',
+        delFlag: 'N',
+        headDepartment: this.getHeadDepartment(),
+      };
+    }
+
+    protected getHeadDepartment(): IHeadDepartment {
+      return {
+        ...new HeadDepartment(),
+        id: 1,
+        description: 'ပြည်ထောင်စုတရားသူကြီးချုပ်ရုံး',
+      };
+    }
+
+    protected createFormdocList(): IDocumentAttachment[] {
+      const fieldList: IDocumentAttachment[] = [];
+      this.docList().controls.forEach(data => {
+        fieldList.push(this.createdocListDetail(data));
+      });
+      return fieldList;
+    }
+  
+    protected createdocListDetail(data: any): IDocumentAttachment {
+      return {
+        ...new DocumentAttachment(),
+        id: data.get(['id'])!.value,
+        filePath: data.get(['filePath'])!.value,
+        fileName: data.get(['fileName'])!.value,
+        delFlag: 'N'
+      };
+    }
+
+    
+  protected updateForm(deliveryMessage: IDeliveryMessage): void {
+    this.updateDocDelivery(deliveryMessage.documentDelivery!);
+    this.updateDocDetails(deliveryMessage.attachmentList);
+    this.editForm.patchValue({      
+      docList: this.updateDocDetails(deliveryMessage.attachmentList),
+    });
+  }
+
+
+  protected updateDocDelivery(docDelivery: IDocumentDelivery):void{
+    this.editForm.patchValue({
+      id: docDelivery.id,
+      docNo: docDelivery.referenceNo,
+      subject: docDelivery.subject,
+      body: docDelivery.description,
+    });
+  }
+
+  protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
+    let index = 0;
+    docList?.forEach(data => {
+      console.log(data, "xxx index xxx");     
+      this.addField('', '');
+      this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
+      index = index + 1;
+    });
+  }
 }

@@ -1,1 +1,80 @@
-<p>delivery-draft works!</p>
+<div class="table-responsive" id="entities" >
+    <table class="table table-bordered table-hover" aria-describedby="page-heading">
+      <thead>
+        <tr class="bg-primary" >
+          <th scope="col" >
+            <span>No</span>
+          </th>
+          <th scope="col" >
+            <span>Date</span>
+          </th>
+          <th scope="col" >
+            <span>Doc No</span>
+          </th>
+
+          <th scope="col" >
+            <span>Subject</span>
+          </th>
+
+          <th scope="col">
+            <span>Department</span>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr *ngFor="let documentHeader of _documentHeaders; trackBy: trackDocumentHeaderById" data-cy="entityTable">
+         
+            <td [hidden]="true">{{ bindMetaDataValues(documentHeader.fieldValues) }}</td>
+
+          <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[0].isDisplayed">
+            <a>{{ documentHeader.id }}</a>
+          </td>
+
+          <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[1].isDisplayed">
+           
+          </td>
+
+          <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[2].isDisplayed">
+        
+          </td>
+
+          <td *ngFor="let mdValue of _displayedMetaDataValues"></td>
+
+          <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[3].isDisplayed">
+           
+          </td>
+
+          <td *ngIf="_staticMetaDataColumns && _staticMetaDataColumns[4].isDisplayed">
+           
+          </td>
+
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                *ngIf="_userAuthority && _userAuthority.activeMenu?.isRead === 1"
+                type="submit"
+                (click)="goToView(documentHeader.id)"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+              </button>
+
+              <button
+                *ngIf="_userAuthority && _userAuthority.activeMenu?.isWrite === 1"
+                type="submit"
+                [routerLink]="['/document', documentHeader.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+              </button>
+            </div>
+          </td>
+        </tr> -->
+      </tbody>
+    </table>
+  </div>
