@@ -12,6 +12,8 @@ import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import { DepartmentPopupComponent } from 'app/entities/util/departementpopup/department-popup.component';
+import { DepartmentCustomComponent } from 'app/entities/util/departement-custom-component/department-custom.component';
 
 @NgModule({
   imports: [SharedLibsModule],
@@ -28,6 +30,8 @@ import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.compo
     SortDirective,
     ItemCountComponent,
     InfoPopupComponent,
+    DepartmentPopupComponent,
+    DepartmentCustomComponent,
   ],
   exports: [
     SharedLibsModule,
@@ -43,6 +47,8 @@ import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.compo
     SortDirective,
     ItemCountComponent,
     InfoPopupComponent,
+    DepartmentPopupComponent,
+    DepartmentCustomComponent,
   ],
 })
 export class SharedModule {}
