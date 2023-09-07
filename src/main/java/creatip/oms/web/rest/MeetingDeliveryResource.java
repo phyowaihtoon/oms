@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.service.MeetingDeliveryService;
-import creatip.oms.service.message.DeliveryMessage;
+import creatip.oms.service.dto.MeetingDeliveryDTO;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
+import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
@@ -18,6 +19,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +31,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 @RestController
@@ -180,5 +186,61 @@ public class MeetingDeliveryResource {
         log.debug("REST request to get MeetingDelivery : {}", id);
         Optional<MeetingMessage> departmentDTO = meetingDeliveryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(departmentDTO);
+    }
+
+    @GetMapping("/meeting/received")
+    public ResponseEntity<List<MeetingDeliveryDTO>> getReceivedMeetingList(@RequestParam("criteria") String criteria, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get MeetingDelivery Received List");
+        log.debug("SearchCriteriaMessage :{} ", criteria);
+        SearchCriteriaMessage criteriaMessage = null;
+        try {
+            this.objectMapper = new ObjectMapper();
+            criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+            return ResponseEntity
+                .created(new URI("/api/meeting/received/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity
+                .created(new URI("/api/meeting/received/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(null);
+        }
+
+        Page<MeetingDeliveryDTO> page = meetingDeliveryService.getReceivedMeetingList(criteriaMessage, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/meeting/sent")
+    public ResponseEntity<List<MeetingDeliveryDTO>> getInvitedMeetingList(@RequestParam("criteria") String criteria, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get MeetingDelivery Invited List");
+        log.debug("SearchCriteriaMessage :{} ", criteria);
+        SearchCriteriaMessage criteriaMessage = null;
+        try {
+            this.objectMapper = new ObjectMapper();
+            criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+            return ResponseEntity
+                .created(new URI("/api/meeting/sent/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity
+                .created(new URI("/api/meeting/sent/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(null);
+        }
+
+        Page<MeetingDeliveryDTO> page = meetingDeliveryService.getInvitedMeetingList(criteriaMessage, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }
