@@ -1,87 +1,87 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, Validators, FormArray, FormGroup} from '@angular/forms';
-
+import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { IDepartment2 } from 'app/entities/department/department.model';
+import { DepartmentPopupComponent } from 'app/entities/util/departementpopup/department-popup.component';
 
 @Component({
   selector: 'jhi-meeting-update',
   templateUrl: './meeting-update.component.html',
   styleUrls: ['./meeting-update.component.scss'],
 })
-export class MeetingUpdateComponent {  
-
+export class MeetingUpdateComponent {
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
-    
+
   editForm = this.fb.group({
     id: [],
-    subject:['', [Validators.required]],
-    body:['', [Validators.required]],
+    subject: ['', [Validators.required]],
+    body: ['', [Validators.required]],
     mDeptList: [],
     cDeptList: [],
     fileList: this.fb.array([]),
-
   });
 
   name = 'Progress Bar';
+
   isInfo = true;
   isReceiver = false;
   isAttachment = false;
   isSuccess = false;
-  public counts = ["Info","Receiver","Attachment","Success"];
+  public counts = ['Info', 'Receiver', 'Attachment', 'Success'];
 
-  public status = "Info"
+  public status = 'Info';
 
-  constructor(
-    protected fb: FormBuilder
-  ) {}
-  
+  toLabel = 'To:';
+  ccLabel = 'Cc:';
+  toDepartments?: IDepartment2[] = [];
+  ccDepartments?: IDepartment2[] = [];
+
+  constructor(protected fb: FormBuilder) {}
 
   // Demo purpose only, Data might come from Api calls/service
 
-
- 
-
-  goToStep1(): void{
-    this.status = "Info"
+  goToStep1(): void {
+    this.status = 'Info';
     this.isInfo = true;
     this.isReceiver = false;
     this.isAttachment = false;
     this.isSuccess = false;
   }
 
-  goToStep2(): void{
-    this.status = "Receiver"
+  goToStep2(): void {
+    this.status = 'Receiver';
     this.isInfo = false;
     this.isReceiver = true;
     this.isAttachment = false;
     this.isSuccess = false;
   }
 
-  goToStep3(): void{
-    this.status = "Attachment"
+  goToStep3(): void {
+    this.status = 'Attachment';
     this.isInfo = false;
     this.isReceiver = false;
     this.isAttachment = true;
     this.isSuccess = false;
   }
 
-  goToStep4(): void{
-    this.status = "Success"
+  goToStep4(): void {
+    this.status = 'Success';
     this.isInfo = false;
     this.isReceiver = false;
     this.isAttachment = false;
     this.isSuccess = true;
   }
 
-  submit():void{
-    console.log("##### Save #####")
+  submit(): void {
+    console.log('##### Save #####');
   }
 
   fileList(): FormArray {
     return this.editForm.get('fileList') as FormArray;
   }
 
-   // create new field dynamically
-   newField(filePath: string, fileName: string, fileSize: number, fileData?: File): FormGroup {
+  // create new field dynamically
+  newField(filePath: string, fileName: string, fileSize: number, fileData?: File): FormGroup {
     return this.fb.group({
       id: [],
       filePath: [filePath, [Validators.required]],
@@ -94,12 +94,11 @@ export class MeetingUpdateComponent {
     });
   }
 
-   // add new field dynamically
-   addField(filePath: string, fileName: string, fileSize: number, fileData?: File): void {
+  // add new field dynamically
+  addField(filePath: string, fileName: string, fileSize: number, fileData?: File): void {
     this.fileList().push(this.newField(filePath, fileName, fileSize, fileData));
   }
 
-  
   removeFieldConfirm(i: number): void {
     this.fileList().removeAt(i);
     this.myInputVariable!.nativeElement.value = '';
@@ -110,25 +109,36 @@ export class MeetingUpdateComponent {
     this.fileList().clear();
   }
   removeField(i: number): void {
-      const docId = this.fileList().controls[i].get(['id'])!.value;
-      const dmsFileName = this.fileList().controls[i].get(['fileName'])!.value;
+    const docId = this.fileList().controls[i].get(['id'])!.value;
+    const dmsFileName = this.fileList().controls[i].get(['fileName'])!.value;
 
-      if (this.fileList().controls[i].get(['id'])!.value === null || this.fileList().controls[i].get(['id'])!.value === undefined) {
-        this.removeFieldConfirm(i);
-      } else {
-        console.log("xxx");
-      }
+    if (this.fileList().controls[i].get(['id'])!.value === null || this.fileList().controls[i].get(['id'])!.value === undefined) {
+      this.removeFieldConfirm(i);
+    } else {
+      console.log('xxx');
     }
-    
-  checkRepositoryURL(inputFileElement: HTMLInputElement): void {   
-      inputFileElement.click();
   }
 
-   // define a function to upload files
-   onUploadFiles(event: Event): void {
+  checkRepositoryURL(inputFileElement: HTMLInputElement): void {
+    inputFileElement.click();
+  }
+
+  // define a function to upload files
+  onUploadFiles(event: Event): void {
     const target = event.target as HTMLInputElement;
 
     for (let i = 0; i <= target.files!.length - 1; i++) {
       const selectedFile = target.files![i];
     }
-  }}
+  }
+
+  onToDepartmentChange(event: any): void {
+    this.toDepartments = event;
+    console.log(this.toDepartments);
+  }
+
+  onCcDepartmentChange(event: any): void {
+    this.ccDepartments = event;
+    console.log(this.ccDepartments);
+  }
+}

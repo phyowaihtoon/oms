@@ -1,0 +1,11 @@
+<div tabindex="0" class="main-component">
+  <span tabindex="-1" class="dropdown-btn" (click)="selectDepartment()" (focusout)="emitData()">
+    <span *ngIf="departments?.length == 0" class="placeholder">{{ placeholder }}</span>
+    <span *ngFor="let item of departments" class="selected-item-container">
+      <span class="selected-item">
+        <span>{{ item.departmentName }}</span>
+        <a style="padding-left: 2px; color: white" (click)="onRemoveItem($event, item)">X</a>
+      </span>
+    </span>
+  </span>
+</div>
