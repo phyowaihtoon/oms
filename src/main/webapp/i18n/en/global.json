@@ -26,13 +26,21 @@
       "delivery": {
         "title": "Delivery",
         "DocumentDelivery": "Document Delivery",
-        "Sent": "Sent"
+        "Sent": "Sent",
+        "Step1": "Info",
+        "Step2": "Receiver",
+        "Step3": "Attachment",
+        "Step4": "Delivery"
       },
       "meeting": {
         "title": "Meeting",
         "MeetingInvitation": "Meeting Invitation",
         "Sent": "Sent",
-        "MeetingReceived": "Meeting Received"
+        "MeetingReceived": "Meeting Received",
+        "Step1": "Info",
+        "Step2": "Receiver",
+        "Step3": "Attachment",
+        "Step4": "Delivery"
       },
       "draft": {
         "title": "Drafts",

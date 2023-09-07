@@ -17,9 +17,14 @@ import creatip.oms.service.mapper.DocumentReceiverMapper;
 import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.NotificationMessage;
 import creatip.oms.service.message.ReplyMessage;
+import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
+import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.integration.ftp.session.FtpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -48,13 +55,16 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
     private ReplyMessage<DeliveryMessage> replyMessage;
 
+    private final FTPSessionFactory ftpSessionFactory;
+
     public DocumentDeliveryServiceImpl(
         DocumentDeliveryRepository documentDeliveryRepository,
         DocumentAttachmentRepository documentAttachmentRepository,
         DocumentReceiverRepository documentReceiverRepository,
         DocumentDeliveryMapper documentDeliveryMapper,
         DocumentAttachmentMapper documentAttachmentMapper,
-        DocumentReceiverMapper documentReceiverMapper
+        DocumentReceiverMapper documentReceiverMapper,
+        FTPSessionFactory ftpSessionFactory
     ) {
         this.documentDeliveryRepository = documentDeliveryRepository;
         this.documentAttachmentRepository = documentAttachmentRepository;
@@ -63,6 +73,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         this.documentAttachmentMapper = documentAttachmentMapper;
         this.documentReceiverMapper = documentReceiverMapper;
         this.replyMessage = new ReplyMessage<DeliveryMessage>();
+        this.ftpSessionFactory = ftpSessionFactory;
     }
 
     @Override
@@ -110,26 +121,25 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 .map(documentAttachmentMapper::toEntity)
                 .collect(Collectors.toList());
 
-            List<DocumentAttachment> savedAttachmentList = new ArrayList<DocumentAttachment>();
-
+            List<DocumentAttachmentDTO> savedAttachmentList = new ArrayList<DocumentAttachmentDTO>();
             for (DocumentAttachment document : attachmentList) {
-                document.setHeader(delivery);
-                document = documentAttachmentRepository.save(document);
-                savedAttachmentList.add(document);
+                if (document.getId() != null && document.getId() > 0) {
+                    document.setHeader(delivery);
+                    document = documentAttachmentRepository.save(document);
+                    savedAttachmentList.add(documentAttachmentMapper.toDto(document));
+                }
             }
 
-            message.setAttachmentList(documentAttachmentMapper.toDto(savedAttachmentList));
+            // Uploading attachment files
+            if (attachedFiles != null && attachedFiles.size() > 0) {
+                List<DocumentAttachment> uploadedAttachmentList = saveAndUploadFiles(attachedFiles, delivery);
+                if (attachedFiles.size() != uploadedAttachmentList.size()) {
+                    throw new UploadFailedException("Upload failed", replyMessage.getCode(), replyMessage.getMessage());
+                }
+                savedAttachmentList.addAll(documentAttachmentMapper.toDto(uploadedAttachmentList));
+            }
 
-            /*
-             * New uploaded document information will be saved and uploaded separately in
-             * this method
-             */
-            /*
-             * if (attachedFiles != null && attachedFiles.size() > 0) { if
-             * (!saveAndUploadFiles(multipartFiles, documentHeader.getId(),
-             * documentDTOList)) { throw new UploadFailedException("Upload failed",
-             * replyMessage.getCode(), replyMessage.getMessage()); } }
-             */
+            message.setAttachmentList(savedAttachmentList);
 
             replyMessage.setCode(ResponseCode.SUCCESS);
             replyMessage.setMessage(
@@ -138,22 +148,15 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     : "Document has been saved as draft!"
             );
             replyMessage.setData(message);
-        } 
-        /*
-         * catch (UploadFailedException ex) { throw ex; }
-         */catch (Exception ex) {
+        } catch (UploadFailedException ex) {
+            throw ex;
+        } catch (Exception ex) {
             ex.printStackTrace();
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
         }
 
         return replyMessage;
-    }
-
-    @Override
-    public Page<DocumentDeliveryDTO> findAll(Pageable pageable) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
@@ -189,5 +192,117 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             notiList.add(notiMessage);
         }
         return notiList;
+    }
+
+    private List<DocumentAttachment> saveAndUploadFiles(List<MultipartFile> multipartFiles, DocumentDelivery header) {
+        List<String> uploadedFileList = new ArrayList<>();
+        List<DocumentAttachment> uploadedList = new ArrayList<DocumentAttachment>();
+        try {
+            FtpSession ftpSession = this.ftpSessionFactory.getSession();
+            System.out.println("Connected successfully to FTP Server");
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String dateInString = formatter.format(Instant.now());
+            String deliveryID = "ID" + header.getId();
+            String[] fullDirectory = new String[] { "delivery", dateInString, deliveryID };
+
+            for (MultipartFile file : multipartFiles) {
+                String[] docDetailInfo = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
+                System.out.println("Document Information :" + file.getOriginalFilename() + ", Length :" + docDetailInfo.length);
+                String orgFileName = docDetailInfo[0];
+                String orgFilePath = docDetailInfo[1];
+
+                String directory = "";
+
+                for (int i = 0; i < fullDirectory.length; i++) {
+                    directory += "/" + fullDirectory[i];
+
+                    boolean isPathExists = ftpSession.exists(directory);
+
+                    if (!isPathExists) {
+                        boolean isCreated = ftpSession.mkdir(directory);
+                        if (!isCreated) {
+                            String forbiddenCharacters = "\\/:*?\"<>|";
+                            replyMessage.setCode(ResponseCode.ERROR_E00);
+                            replyMessage.setMessage(
+                                "Failed to create directory in FTP Server. Repository URL cannot include these characters : " +
+                                forbiddenCharacters
+                            );
+                            return uploadedList;
+                        }
+                    }
+                }
+
+                String fullRemoteFilePath = directory + "/" + orgFileName + "";
+                InputStream inputStream = file.getInputStream();
+                System.out.println("Start uploading file: [" + fullRemoteFilePath + "]");
+
+                try {
+                    ftpSession.write(inputStream, fullRemoteFilePath);
+                    inputStream.close();
+                    System.out.println("Uploaded successfully: [" + fullRemoteFilePath + "]");
+                    uploadedFileList.add(fullRemoteFilePath);
+
+                    DocumentAttachment documentAttachment = new DocumentAttachment();
+                    documentAttachment.setHeader(header);
+                    documentAttachment.setFilePath(orgFilePath);
+                    documentAttachment.setFileName(orgFileName);
+                    documentAttachment.setDelFlag("N");
+                    documentAttachment = documentAttachmentRepository.save(documentAttachment);
+                    uploadedList.add(documentAttachment);
+                } catch (IOException ex) {
+                    System.out.println("Failed to upload file : [" + fullRemoteFilePath + "]");
+                    ex.printStackTrace();
+                    replyMessage.setCode(ResponseCode.ERROR_E01);
+                    replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
+                    // Removing previous uploaded files from FTP Server if failed to upload one file
+                    if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
+                    return null;
+                }
+            }
+        } catch (IllegalStateException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
+            return uploadedList;
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage(ex.getMessage());
+            return uploadedList;
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage(ex.getMessage());
+            return uploadedList;
+        }
+
+        return uploadedList;
+    }
+
+    private void removePreviousFiles(List<String> uploadedFileList, FtpSession ftpSession) {
+        System.out.println("Removing previous uploaded files if failed to upload one file");
+        for (String filePath : uploadedFileList) {
+            try {
+                ftpSession.remove(filePath);
+                System.out.println("Removed successfully : " + filePath);
+            } catch (Exception ex) {
+                System.out.println("Failed to remove : " + filePath);
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public Page<DocumentDeliveryDTO> getReceivedDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
+        return documentDeliveryRepository.findAll(pageable).map(documentDeliveryMapper::toDto);
+    }
+
+    @Override
+    public Page<DocumentDeliveryDTO> getSentDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
+        return documentDeliveryRepository.findAll(pageable).map(documentDeliveryMapper::toDto);
     }
 }

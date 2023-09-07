@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Event, Router } from '@angular/router';
-import { IDepartment2 } from 'app/entities/department/department.model';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { IDepartment } from 'app/entities/department/department.model';
 import { DepartmentPopupComponent } from '../departementpopup/department-popup.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -12,7 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class DepartmentCustomComponent {
   @Input() placeholder: any;
   @Output() dbChanged = new EventEmitter<any>();
-  @Input() departments?: IDepartment2[] = [];
+  @Input() departments?: IDepartment[] = [];
   constructor(protected modalService: NgbModal) {}
 
   /* ngAfterViewInit(): void {
@@ -39,8 +38,8 @@ export class DepartmentCustomComponent {
 
   selectDepartment(): void {
     const modalRef = this.modalService.open(DepartmentPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
-    modalRef.componentInstance.passEntry.subscribe((data: IDepartment2[]) => {
-      data.forEach((d: IDepartment2) => {
+    modalRef.componentInstance.passEntry.subscribe((data: IDepartment[]) => {
+      data.forEach((d: IDepartment) => {
         if (!this.departments?.find(o => o.id === d.id)) {
           this.departments?.push(d);
         }

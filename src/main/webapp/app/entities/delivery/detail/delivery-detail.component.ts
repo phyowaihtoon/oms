@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IDeliveryMessage, IDocumentAttachment, IDocumentDelivery, IDocumentReceiver } from '../delivery.model';
+import { IDocumentAttachment, IDocumentDelivery, IDocumentReceiver } from '../delivery.model';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -21,8 +21,6 @@ export class DeliveryDetailComponent implements OnInit {
       this.attachmentList = delivery?.attachmentList;
     });
   }
-
-  
 
   previousState(): void {
     window.history.back();
