@@ -210,12 +210,13 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 String[] docDetailInfo = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
                 System.out.println("Document Information :" + file.getOriginalFilename() + ", Length :" + docDetailInfo.length);
                 String orgFileName = docDetailInfo[0];
-                String orgFilePath = docDetailInfo[1];
 
                 String directory = "";
+                String filePath = "";
 
                 for (int i = 0; i < fullDirectory.length; i++) {
                     directory += "/" + fullDirectory[i];
+                    filePath += "//" + fullDirectory[i];
 
                     boolean isPathExists = ftpSession.exists(directory);
 
@@ -245,7 +246,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
                     DocumentAttachment documentAttachment = new DocumentAttachment();
                     documentAttachment.setHeader(header);
-                    documentAttachment.setFilePath(orgFilePath);
+                    documentAttachment.setFilePath(filePath);
                     documentAttachment.setFileName(orgFileName);
                     documentAttachment.setDelFlag("N");
                     documentAttachment = documentAttachmentRepository.save(documentAttachment);

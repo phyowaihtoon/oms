@@ -16,17 +16,26 @@ import creatip.oms.service.mapper.MeetingDeliveryMapper;
 import creatip.oms.service.mapper.MeetingReceiverMapper;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
+import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
+import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.integration.ftp.session.FtpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -45,13 +54,16 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
     private ReplyMessage<MeetingMessage> replyMessage;
 
+    private final FTPSessionFactory ftpSessionFactory;
+
     public MeetingDeliveryServiceImpl(
         MeetingDeliveryRepository meetingDeliveryRepository,
         MeetingAttachmentRepository meetingAttachmentRepository,
         MeetingReceiverRepository meetingReceiverRepository,
         MeetingDeliveryMapper meetingDeliveryMapper,
         MeetingAttachmentMapper meetingAttachmentMapper,
-        MeetingReceiverMapper meetingReceiverMapper
+        MeetingReceiverMapper meetingReceiverMapper,
+        FTPSessionFactory ftpSessionFactory
     ) {
         this.meetingDeliveryRepository = meetingDeliveryRepository;
         this.meetingAttachmentRepository = meetingAttachmentRepository;
@@ -60,6 +72,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         this.meetingAttachmentMapper = meetingAttachmentMapper;
         this.meetingReceiverMapper = meetingReceiverMapper;
         this.replyMessage = new ReplyMessage<MeetingMessage>();
+        this.ftpSessionFactory = ftpSessionFactory;
     }
 
     @Override
@@ -79,6 +92,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             if (delivery.getDeliveryStatus() == DeliveryStatus.SENT.value && delivery.getSentDate() == null) delivery.setSentDate(
                 Instant.now()
             );
+
             delivery = meetingDeliveryRepository.save(delivery);
             message.setMeetingDelivery(meetingDeliveryMapper.toDto(delivery));
 
@@ -106,26 +120,26 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                 .map(meetingAttachmentMapper::toEntity)
                 .collect(Collectors.toList());
 
-            List<MeetingAttachment> savedAttachmentList = new ArrayList<MeetingAttachment>();
+            List<MeetingAttachmentDTO> savedAttachmentList = new ArrayList<MeetingAttachmentDTO>();
 
             for (MeetingAttachment attachment : attachmentList) {
-                attachment.setHeader(delivery);
-                attachment = meetingAttachmentRepository.save(attachment);
-                savedAttachmentList.add(attachment);
+                if (attachment.getId() != null && attachment.getId() > 0) {
+                    attachment.setHeader(delivery);
+                    attachment = meetingAttachmentRepository.save(attachment);
+                    savedAttachmentList.add(meetingAttachmentMapper.toDto(attachment));
+                }
             }
 
-            message.setAttachmentList(meetingAttachmentMapper.toDto(savedAttachmentList));
+            // Uploading attachment files
+            if (attachedFiles != null && attachedFiles.size() > 0) {
+                List<MeetingAttachment> uploadedAttachmentList = saveAndUploadFiles(attachedFiles, delivery);
+                if (attachedFiles.size() != uploadedAttachmentList.size()) {
+                    throw new UploadFailedException("Upload failed", replyMessage.getCode(), replyMessage.getMessage());
+                }
+                savedAttachmentList.addAll(meetingAttachmentMapper.toDto(uploadedAttachmentList));
+            }
 
-            /*
-             * New uploaded document information will be saved and uploaded separately in
-             * this method
-             */
-            /*
-             * if (attachedFiles != null && attachedFiles.size() > 0) { if
-             * (!saveAndUploadFiles(multipartFiles, documentHeader.getId(),
-             * documentDTOList)) { throw new UploadFailedException("Upload failed",
-             * replyMessage.getCode(), replyMessage.getMessage()); } }
-             */
+            message.setAttachmentList(savedAttachmentList);
 
             replyMessage.setCode(ResponseCode.SUCCESS);
             replyMessage.setMessage(
@@ -134,9 +148,9 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                     : "Meeting Invitation has been saved as draft!"
             );
             replyMessage.setData(message);
-        } /*
-         * catch (UploadFailedException ex) { throw ex; }
-         */catch (Exception ex) {
+        } catch (UploadFailedException ex) {
+            throw ex;
+        } catch (Exception ex) {
             ex.printStackTrace();
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
@@ -162,5 +176,118 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             return Optional.of(meetingMessage);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Page<MeetingDeliveryDTO> getReceivedMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
+        return meetingDeliveryRepository.findAll(pageable).map(meetingDeliveryMapper::toDto);
+    }
+
+    @Override
+    public Page<MeetingDeliveryDTO> getInvitedMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
+        return meetingDeliveryRepository.findAll(pageable).map(meetingDeliveryMapper::toDto);
+    }
+
+    private List<MeetingAttachment> saveAndUploadFiles(List<MultipartFile> multipartFiles, MeetingDelivery header) {
+        List<String> uploadedFileList = new ArrayList<>();
+        List<MeetingAttachment> uploadedList = new ArrayList<MeetingAttachment>();
+        try {
+            FtpSession ftpSession = this.ftpSessionFactory.getSession();
+            System.out.println("Connected successfully to FTP Server");
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String dateInString = formatter.format(Instant.now());
+            String deliveryID = "ID" + header.getId();
+            String[] fullDirectory = new String[] { "meeting", dateInString, deliveryID };
+
+            for (MultipartFile file : multipartFiles) {
+                String[] docDetailInfo = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
+                System.out.println("Document Information :" + file.getOriginalFilename() + ", Length :" + docDetailInfo.length);
+                String orgFileName = docDetailInfo[0];
+
+                String directory = "";
+                String filePath = "";
+
+                for (int i = 0; i < fullDirectory.length; i++) {
+                    directory += "/" + fullDirectory[i];
+                    filePath += "//" + fullDirectory[i];
+
+                    boolean isPathExists = ftpSession.exists(directory);
+
+                    if (!isPathExists) {
+                        boolean isCreated = ftpSession.mkdir(directory);
+                        if (!isCreated) {
+                            String forbiddenCharacters = "\\/:*?\"<>|";
+                            replyMessage.setCode(ResponseCode.ERROR_E00);
+                            replyMessage.setMessage(
+                                "Failed to create directory in FTP Server. Repository URL cannot include these characters : " +
+                                forbiddenCharacters
+                            );
+                            return uploadedList;
+                        }
+                    }
+                }
+
+                String fullRemoteFilePath = directory + "/" + orgFileName + "";
+                InputStream inputStream = file.getInputStream();
+                System.out.println("Start uploading file: [" + fullRemoteFilePath + "]");
+
+                try {
+                    ftpSession.write(inputStream, fullRemoteFilePath);
+                    inputStream.close();
+                    System.out.println("Uploaded successfully: [" + fullRemoteFilePath + "]");
+                    uploadedFileList.add(fullRemoteFilePath);
+
+                    MeetingAttachment meetingAttachment = new MeetingAttachment();
+                    meetingAttachment.setHeader(header);
+                    meetingAttachment.setFilePath(filePath);
+                    meetingAttachment.setFileName(orgFileName);
+                    meetingAttachment.setDelFlag("N");
+                    meetingAttachment = meetingAttachmentRepository.save(meetingAttachment);
+                    uploadedList.add(meetingAttachment);
+                } catch (IOException ex) {
+                    System.out.println("Failed to upload file : [" + fullRemoteFilePath + "]");
+                    ex.printStackTrace();
+                    replyMessage.setCode(ResponseCode.ERROR_E01);
+                    replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
+                    // Removing previous uploaded files from FTP Server if failed to upload one file
+                    if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
+                    return null;
+                }
+            }
+        } catch (IllegalStateException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
+            return uploadedList;
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage(ex.getMessage());
+            return uploadedList;
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setMessage(ex.getMessage());
+            return uploadedList;
+        }
+
+        return uploadedList;
+    }
+
+    private void removePreviousFiles(List<String> uploadedFileList, FtpSession ftpSession) {
+        System.out.println("Removing previous uploaded files if failed to upload one file");
+        for (String filePath : uploadedFileList) {
+            try {
+                ftpSession.remove(filePath);
+                System.out.println("Removed successfully : " + filePath);
+            } catch (Exception ex) {
+                System.out.println("Failed to remove : " + filePath);
+                ex.printStackTrace();
+            }
+        }
     }
 }

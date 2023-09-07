@@ -4,6 +4,7 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { Observable } from 'rxjs';
 import { IMeetingDelivery, IMeetingMessage } from '../meeting.model';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
+import { createRequestOption } from 'app/core/request/request-util';
 
 export type EntityResponseType = HttpResponse<IMeetingMessage>;
 export type EntityArrayResponseType = HttpResponse<IMeetingDelivery[]>;
@@ -27,5 +28,15 @@ export class MeetingService {
 
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<IMeetingMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  findAllReceived(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/received`, { params: options, observe: 'response' });
+  }
+
+  findAllSent(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
   }
 }
