@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { IDepartment, IDepartment2, getDepartmentIdentifier } from '../department.model';
+import { IDepartment, getDepartmentIdentifier } from '../department.model';
 
 export type EntityResponseType = HttpResponse<IDepartment>;
 export type EntityArrayResponseType = HttpResponse<IDepartment[]>;
@@ -39,11 +39,6 @@ export class DepartmentService {
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IDepartment[]>(this.resourceUrl, { params: options, observe: 'response' });
-  }
-
-  query2(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http.get<IDepartment2[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

@@ -3,21 +3,10 @@ export interface IDepartment {
   departmentName?: string;
   delFlag?: string;
   headDepartment?: IHeadDepartment;
-}
-
-export class Department implements IDepartment {
-  constructor(public id?: number, public departmentName?: string, public delFlag?: string, public headDepartment?: IHeadDepartment) {}
-}
-
-export interface IDepartment2 {
-  id?: number;
-  departmentName?: string;
-  delFlag?: string;
-  headDepartment?: IHeadDepartment;
   isChecked?: boolean;
 }
 
-export class Department2 implements IDepartment2 {
+export class Department implements IDepartment {
   constructor(
     public id?: number,
     public departmentName?: string,

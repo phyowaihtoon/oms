@@ -1,15 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { IDepartment2 } from 'app/entities/department/department.model';
-import { DepartmentPopupComponent } from 'app/entities/util/departementpopup/department-popup.component';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { IDepartment } from 'app/entities/department/department.model';
 
 @Component({
   selector: 'jhi-meeting-update',
   templateUrl: './meeting-update.component.html',
   styleUrls: ['./meeting-update.component.scss'],
 })
-export class MeetingUpdateComponent {
+export class MeetingUpdateComponent implements OnInit {
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
 
   editForm = this.fb.group({
@@ -21,55 +20,70 @@ export class MeetingUpdateComponent {
     fileList: this.fb.array([]),
   });
 
-  name = 'Progress Bar';
-
   isInfo = true;
   isReceiver = false;
   isAttachment = false;
-  isSuccess = false;
-  public counts = ['Info', 'Receiver', 'Attachment', 'Success'];
+  isDelivery = false;
+  public progressItems = [
+    { step: 1, title: 'Info' },
+    { step: 2, title: 'Receiver' },
+    { step: 3, title: 'Attachment' },
+    { step: 4, title: 'Delivery' },
+  ];
 
-  public status = 'Info';
+  public progressStep = 1;
 
   toLabel = 'To:';
   ccLabel = 'Cc:';
-  toDepartments?: IDepartment2[] = [];
-  ccDepartments?: IDepartment2[] = [];
+  toDepartments?: IDepartment[] = [];
+  ccDepartments?: IDepartment[] = [];
 
-  constructor(protected fb: FormBuilder) {}
+  constructor(protected fb: FormBuilder, protected translateService: TranslateService) {}
 
-  // Demo purpose only, Data might come from Api calls/service
+  ngOnInit(): void {
+    this.progressItems[0].title = this.translateService.instant('global.menu.meeting.Step1');
+    this.progressItems[1].title = this.translateService.instant('global.menu.meeting.Step2');
+    this.progressItems[2].title = this.translateService.instant('global.menu.meeting.Step3');
+    this.progressItems[3].title = this.translateService.instant('global.menu.meeting.Step4');
+
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.progressItems[0].title = this.translateService.instant('global.menu.meeting.Step1');
+      this.progressItems[1].title = this.translateService.instant('global.menu.meeting.Step2');
+      this.progressItems[2].title = this.translateService.instant('global.menu.meeting.Step3');
+      this.progressItems[3].title = this.translateService.instant('global.menu.meeting.Step4');
+    });
+  }
 
   goToStep1(): void {
-    this.status = 'Info';
+    this.progressStep = 1;
     this.isInfo = true;
     this.isReceiver = false;
     this.isAttachment = false;
-    this.isSuccess = false;
+    this.isDelivery = false;
   }
 
   goToStep2(): void {
-    this.status = 'Receiver';
+    this.progressStep = 2;
     this.isInfo = false;
     this.isReceiver = true;
     this.isAttachment = false;
-    this.isSuccess = false;
+    this.isDelivery = false;
   }
 
   goToStep3(): void {
-    this.status = 'Attachment';
+    this.progressStep = 3;
     this.isInfo = false;
     this.isReceiver = false;
     this.isAttachment = true;
-    this.isSuccess = false;
+    this.isDelivery = false;
   }
 
   goToStep4(): void {
-    this.status = 'Success';
+    this.progressStep = 4;
     this.isInfo = false;
     this.isReceiver = false;
     this.isAttachment = false;
-    this.isSuccess = true;
+    this.isDelivery = true;
   }
 
   submit(): void {

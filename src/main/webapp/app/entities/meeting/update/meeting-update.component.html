@@ -8,8 +8,8 @@
           <div class="card-header main-container">
             <div class="progressbar">
               <div class="progress" id="progress"></div>
-              <span *ngFor="let item of counts; let i = index" style="position: relative">
-                <div class="progress-step" [class.progress-step-active]="status == item" [attr.data-title]="item"></div>
+              <span *ngFor="let item of progressItems; let i = index" style="position: relative">
+                <div class="progress-step" [class.progress-step-active]="progressStep == item.step" [attr.data-title]="item.title"></div>
               </span>
             </div>
           </div>
@@ -113,7 +113,7 @@
               </div>
             </div>
 
-            <div *ngIf="isSuccess" class="form-group">
+            <div *ngIf="isDelivery" class="form-group">
               <input type="text" placeholder="" class="textbox form-control div-padding" />
               <input type="text" placeholder="" class="textbox form-control div-padding" />
               <input type="text" placeholder="" class="textbox form-control div-padding" />
@@ -147,21 +147,26 @@
                 <span class="btn-text-padding-left">Back</span>
               </button>
 
-              <button class="btn btn-primary" type="submit" (click)="submit()">
-                <span class="btn-text-padding-right">Send</span>
-                <fa-icon icon="paper-plane"></fa-icon>
-              </button>
-
               <button class="btn btn-primary" type="submit" (click)="goToStep4()">
                 <span class="btn-text-padding-right">Next</span>
                 <fa-icon icon="forward"></fa-icon>
               </button>
             </div>
 
-            <div *ngIf="isSuccess" class="d-flex justify-content-start">
+            <div *ngIf="isDelivery" class="d-flex justify-content-between">
               <button class="btn btn-primary" type="submit" (click)="goToStep3()">
                 <fa-icon icon="backward"></fa-icon>
                 <span class="btn-text-padding-left">Back</span>
+              </button>
+
+              <button class="btn btn-primary" type="submit" (click)="submit()">
+                <span class="btn-text-padding-right">Send</span>
+                <fa-icon icon="paper-plane"></fa-icon>
+              </button>
+
+              <button class="btn btn-primary" type="submit" (click)="submit()">
+                <span class="btn-text-padding-right">Save As Draft</span>
+                <fa-icon icon="paper-plane"></fa-icon>
               </button>
             </div>
           </div>

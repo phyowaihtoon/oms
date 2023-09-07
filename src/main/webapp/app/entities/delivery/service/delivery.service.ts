@@ -4,9 +4,12 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { Observable } from 'rxjs';
 import { IDeliveryMessage, IDocumentDelivery } from '../delivery.model';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
+import { createRequestOption } from 'app/core/request/request-util';
+import { ISearchCriteria } from 'app/entities/util/criteria.model';
 
 export type EntityResponseType = HttpResponse<IDeliveryMessage>;
 export type EntityArrayResponseType = HttpResponse<IDocumentDelivery[]>;
+export type DeliveryListResponseType = HttpResponse<IDocumentDelivery[]>;
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +19,7 @@ export class DeliveryService {
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
-    console.log(formData, "xxxxxxxxxForm Dataxxxxxx")
+    console.log(formData, 'xxxxxxxxxForm Dataxxxxxx');
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
@@ -28,5 +31,15 @@ export class DeliveryService {
 
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<IDeliveryMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  findAllReceived(req?: any): Observable<DeliveryListResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/received`, { params: options, observe: 'response' });
+  }
+
+  findAllSent(req?: any): Observable<DeliveryListResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
   }
 }

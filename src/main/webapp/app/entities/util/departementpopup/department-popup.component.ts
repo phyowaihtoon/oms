@@ -4,8 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from 'app/login/login.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ResponseCode } from '../reply-message.model';
-import { FormBuilder, Validators } from '@angular/forms';
-import { IDepartment, IDepartment2, IHeadDepartment } from 'app/entities/department/department.model';
+import { FormBuilder } from '@angular/forms';
+import { IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
 import { HttpResponse } from '@angular/common/http';
 import { LoadSetupService } from '../load-setup.service';
 import { DepartmentService } from 'app/entities/department/service/department.service';
@@ -28,8 +28,8 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
   modalButtonClass: string[] = [];
 
   headDepartmentList: IHeadDepartment[] = [];
-  departmentsList?: IDepartment2[];
-  departments?: IDepartment2[] = [];
+  departmentsList?: IDepartment[];
+  departments?: IDepartment[] = [];
 
   @Output() passEntry: EventEmitter<any> = new EventEmitter();
 
@@ -60,13 +60,13 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.departmentService.query2().subscribe(
-      (res: HttpResponse<IDepartment2[]>) => {
+    this.loadSetupService.loadAllSubDepartments().subscribe(
+      (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
       },
       () => {
-        //this.isLoading = false;
-        //this.onError();
+        // this.isLoading = false;
+        // this.onError();
       }
     );
   }
@@ -76,7 +76,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
   }
 
   onChangeSelectedAll(e: any): void {
-    //debugger;
+    // debugger;
     if (this.departments) {
       if (e.target.checked) {
         for (let i = 0; i < this.departments.length; i++) {
@@ -104,7 +104,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
         }
         this.isCheckedAll = chkAll;
       } else {
-        //this.selectedCount = this.selectedCount - 1;
+        // this.selectedCount = this.selectedCount - 1;
         this.departments[i].isChecked = false;
         this.isCheckedAll = false;
       }
@@ -128,7 +128,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
   }
 
   add(): void {
-    const output: IDepartment2[] = [];
+    const output: IDepartment[] = [];
     if (this.departments) {
       this.departments.forEach(data => {
         if (data.isChecked === true) {
