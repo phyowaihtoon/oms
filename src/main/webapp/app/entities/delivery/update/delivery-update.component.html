@@ -6,11 +6,20 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="editForm" autocomplete="off">
   <div class="col-12">
     <div class="container" class="col-8">
-      <span *ngFor="let item of counts; let i = index">
+      <!-- <span *ngFor="let item of counts; let i = index">
         <span class="circle-desc" [class.circle-desc-active]="status == item">{{ item }}</span>
         <span class="circles" [class.active]="status == item"></span>
         <span class="bar" *ngIf="i != counts.length - 1"></span>
-      </span>
+      </span> -->
+      <div class="card-header main-container">
+        <div class="progressbar">
+          <div class="progress" id="progress"></div>
+          <span *ngFor="let item of progressItems; let i = index" style="position: relative">
+            <div class="progress-step" [class.progress-step-active]="progressStep == item.step" [attr.data-title]="item.title"></div>
+          </span>
+        </div>
+      </div>
+
     </div>
 
     <div id="info" *ngIf="isInfo" class="row col-8 form-group">
@@ -56,6 +65,7 @@
           class="btn btn-primary"
           type="submit"
           style="float: right"
+          (click)="goToStep2()"
           [disabled]="
             editForm.get('docNo')?.errors?.required || editForm.get('subject')?.errors?.required || editForm.get('body')?.errors?.required
           "
@@ -68,28 +78,21 @@
 
     <div id="receiver" *ngIf="isReceiver" class="row col-8 form-group">
       <div class="col-12">
-        <div class="row div-padding">
-          <div class="col-11">
-            <input type="text" placeholder="Main: Department" class="form-control text-height" name="mDept" id="mDept" />
-          </div>
-
-          <div>
-            <button class="btn btn-primary" type="submit" style="float: right">
-              <fa-icon icon="search"></fa-icon>
-            </button>
-          </div>
+       
+        <div class="textbox-wrapper div-padding">
+          <jhi-department-component
+            [placeholder]="toLabel"
+            [departments]="toDepartments"
+            (dbChanged)="onToDepartmentChange($event)"
+          ></jhi-department-component>
         </div>
 
-        <div class="row div-padding">
-          <div class="col-11">
-            <textarea class="form-control" name="cDept" placeholder="CC: Department" style="height: 300px" id="cDept"></textarea>
-          </div>
-
-          <div>
-            <button class="btn btn-primary" type="submit" style="float: right">
-              <fa-icon icon="search"></fa-icon>
-            </button>
-          </div>
+        <div class="textbox-wrapper div-padding">
+          <jhi-department-component
+            [placeholder]="ccLabel"
+            [departments]="ccDepartments"
+            (dbChanged)="onCcDepartmentChange($event)"
+          ></jhi-department-component>
         </div>
 
         <div class="row">
