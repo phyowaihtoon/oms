@@ -2,7 +2,6 @@ package creatip.oms.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.validation.constraints.*;
 
 /**
@@ -21,6 +20,8 @@ public class DepartmentDTO implements Serializable {
     private String delFlag;
 
     private HeadDepartmentDTO headDepartment;
+
+    private boolean isChecked;
 
     public Long getId() {
         return id;
@@ -52,6 +53,14 @@ public class DepartmentDTO implements Serializable {
 
     public void setHeadDepartment(HeadDepartmentDTO headDepartment) {
         this.headDepartment = headDepartment;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean isChecked) {
+        this.isChecked = isChecked;
     }
 
     @Override
