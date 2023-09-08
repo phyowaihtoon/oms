@@ -1,12 +1,14 @@
 package creatip.oms.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the {@link creatip.oms.domain.Department} entity.
  */
+@JsonIgnoreProperties(value = { "isChecked" })
 public class DepartmentDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
