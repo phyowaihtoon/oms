@@ -11,13 +11,14 @@ import { DeliveryService } from '../service/delivery.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-delivery-update',
   templateUrl: './delivery-update.component.html',
   styleUrls: ['./delivery-update.component.scss'],
 })
-export class DeliveryUpdateComponent {
+export class DeliveryUpdateComponent implements OnInit{
 
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
        
@@ -34,6 +35,22 @@ export class DeliveryUpdateComponent {
     cc_subject: ['', [Validators.required]],
 
   });
+
+  
+  public progressStep = 1;
+  toLabel = 'To:';
+  ccLabel = 'Cc:';
+  toDepartments?: IDepartment[] = [];
+  ccDepartments?: IDepartment[] = []; 
+  
+  public progressItems = [
+    { step: 1, title: 'Info' },
+    { step: 2, title: 'Receiver' },
+    { step: 3, title: 'Attachment' },
+    { step: 4, title: 'Delivery' },
+  ];
+
+  
 
   _modalRef?: NgbModalRef;
   _tempdocList: File[] = [];
@@ -52,6 +69,7 @@ export class DeliveryUpdateComponent {
     protected modalService: NgbModal,
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
+    protected translateService: TranslateService
   ) {
 
     this.editForm.controls.docNo.valueChanges.subscribe((value) => {
@@ -68,11 +86,23 @@ export class DeliveryUpdateComponent {
     });
   }
   
+  ngOnInit(): void {
+    this.progressItems[0].title = this.translateService.instant('global.menu.delivery.Step1');
+    this.progressItems[1].title = this.translateService.instant('global.menu.delivery.Step2');
+    this.progressItems[2].title = this.translateService.instant('global.menu.delivery.Step3');
+    this.progressItems[3].title = this.translateService.instant('global.menu.delivery.Step4');
 
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.progressItems[0].title = this.translateService.instant('global.menu.delivery.Step1');
+      this.progressItems[1].title = this.translateService.instant('global.menu.delivery.Step2');
+      this.progressItems[2].title = this.translateService.instant('global.menu.delivery.Step3');
+      this.progressItems[3].title = this.translateService.instant('global.menu.delivery.Step4');
+    });
+  }
   // Demo purpose only, Data might come from Api calls/service 
 
-  goToStep1(): void{
-    this.status = "Info"
+  goToStep1(): void{    
+    this.progressStep = 1;
     this.isInfo = true;
     this.isReceiver = false;
     this.isAttachment = false;
@@ -80,23 +110,23 @@ export class DeliveryUpdateComponent {
   }
 
   goToStep2(): void{
-    this.status = "Receiver"
+        this.progressStep = 12;
     this.isInfo = false;
     this.isReceiver = true;
     this.isAttachment = false;
     this.isSuccess = false;
   }
 
-  goToStep3(): void{
-    this.status = "Attachment"
+  goToStep3(): void{    
+    this.progressStep = 3;
     this.isInfo = false;
     this.isReceiver = false;
     this.isAttachment = true;
     this.isSuccess = false;
   }
 
-  goToStep4(): void{
-    this.status = "Success"
+  goToStep4(): void{    
+    this.progressStep = 4;
     this.isInfo = false;
     this.isReceiver = false;
     this.isAttachment = false;
@@ -107,10 +137,19 @@ export class DeliveryUpdateComponent {
     return this.editForm.get('docList') as FormArray;
   }
 
+  onToDepartmentChange(event: any): void {
+    this.toDepartments = event;
+    console.log(this.toDepartments, "to Dept");
+  }
+
+  onCcDepartmentChange(event: any): void {
+    this.ccDepartments = event;
+    console.log(this.ccDepartments, "cc Dept");
+  }
+
   submit():void{
     console.log("##### Save #####")
   }
-
 
    // create new field dynamically
    newField(filePath: string, fileName: string, fileData?: File): FormGroup {
@@ -126,7 +165,6 @@ export class DeliveryUpdateComponent {
    addField(filePath: string, fileName: string,  fileData?: File): void {
     this.docList().push(this.newField(filePath, fileName, fileData));
   }
-
   
   removeFieldConfirm(i: number): void {
     this.docList().removeAt(i);
@@ -162,7 +200,6 @@ export class DeliveryUpdateComponent {
       const selectedFile = target.files![i];
       this._tempdocList.push(selectedFile);
     }
-
     
     for (let i = 0; i < this._tempdocList.length; i++) {
       const tempFile = this._tempdocList[i];
@@ -171,7 +208,6 @@ export class DeliveryUpdateComponent {
 
     this._tempdocList = [];
     this.myInputVariable!.nativeElement.value = '';
-
   }
 
   saveDraft(): void {   
@@ -182,6 +218,9 @@ export class DeliveryUpdateComponent {
     const formData = new FormData();
     const attacheddocList = [];
     const documentDelivery = this.createFrom();
+
+    console.log(documentDelivery, "xxxDocumentDeliveryxxx")
+
     const docList = documentDelivery.attachmentList ?? [];
 
     if (docList.length > 0) {
@@ -299,18 +338,26 @@ export class DeliveryUpdateComponent {
   
     protected createFormReceiverList(): IDocumentReceiver[] {
       const receiverList: IDocumentReceiver[] = [];
-      receiverList.push(this.createReceiverListDetail());
+
+      this.toDepartments?.forEach((value, index) => {
+        receiverList.push(this.createReceiverListDetail(1, value)); 
+      });
+
+      this.ccDepartments?.forEach((value, index) => {
+        receiverList.push(this.createReceiverListDetail(2, value)); 
+      });
+
       return receiverList;
     }
     
-    protected createReceiverListDetail(): IDocumentReceiver {
+    protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IDocumentReceiver {
       return {
         ...new DocumentReceiver(),
         id: undefined,
-        receiverType: 1,
-        status: 1,
+        receiverType: receiver_Type,
+        status: 0,
         delFlag: 'N',
-        receiver: this.getDepartment(),
+        receiver: iDepartment,
       };
     }
    
@@ -371,11 +418,12 @@ export class DeliveryUpdateComponent {
 
   protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
     let index = 0;
-    docList?.forEach(data => {
-      console.log(data, "xxx index xxx");     
+    docList?.forEach(data => { 
       this.addField('', '');
       this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
       index = index + 1;
     });
   }
+
+
 }
