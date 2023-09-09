@@ -9,9 +9,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./department-custom.component.scss'],
 })
 export class DepartmentCustomComponent {
+  @Input() isReadonly: boolean = false;
   @Input() placeholder: any;
   @Output() dbChanged = new EventEmitter<any>();
   @Input() departments?: IDepartment[] = [];
+
   constructor(protected modalService: NgbModal) {}
 
   /* ngAfterViewInit(): void {
@@ -49,5 +51,12 @@ export class DepartmentCustomComponent {
 
   emitData(): void {
     this.dbChanged.emit(this.departments);
+  }
+
+  onClick(event: Event): void {
+    if (this.isReadonly) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
 }

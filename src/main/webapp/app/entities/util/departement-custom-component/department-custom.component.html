@@ -1,4 +1,5 @@
-<div tabindex="0" class="main-component">
+<div tabindex="0" class="main-component" [ngClass]="{ 'readonly': isReadonly }" 
+  [style.pointer-events]="isReadonly ? 'none' : 'auto'" (click)="onClick($event)">
   <span tabindex="-1" class="dropdown-btn" (click)="selectDepartment()" (focusout)="emitData()">
     <span *ngIf="departments?.length == 0" class="placeholder">{{ placeholder }}</span>
     <span *ngFor="let item of departments" class="selected-item-container">

@@ -26,7 +26,7 @@ export class DeliveryUpdateComponent implements OnInit{
     id: [],
     docNo:['', [Validators.required]],
     subject:['', [Validators.required]],
-    body:['', [Validators.required]],
+    msg_body:['', [Validators.required]],
     mDeptList: [],
     cDeptList: [],
     docList: this.fb.array([]),
@@ -42,6 +42,7 @@ export class DeliveryUpdateComponent implements OnInit{
   ccLabel = 'Cc:';
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = []; 
+  modules = {};
   
   public progressItems = [
     { step: 1, title: 'Info' },
@@ -51,7 +52,6 @@ export class DeliveryUpdateComponent implements OnInit{
   ];
 
   
-
   _modalRef?: NgbModalRef;
   _tempdocList: File[] = [];
   name = 'Progress Bar';
@@ -69,7 +69,7 @@ export class DeliveryUpdateComponent implements OnInit{
     protected modalService: NgbModal,
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
-    protected translateService: TranslateService
+    protected translateService: TranslateService,
   ) {
 
     this.editForm.controls.docNo.valueChanges.subscribe((value) => {
@@ -80,10 +80,43 @@ export class DeliveryUpdateComponent implements OnInit{
       // Update the targetText control's value
       this.editForm.controls.cc_subject.setValue(value);
     });
-    this.editForm.controls.body.valueChanges.subscribe((value) => {
+    this.editForm.controls.msg_body.valueChanges.subscribe((value) => {
       // Update the targetText control's value
-      this.editForm.controls.cc_body.setValue(value);
+      this.editForm.controls.cc_body.setValue(value);      
     });
+
+    this.modules = {
+
+      // 'emoji-shortname': true,
+      // 'emoji-textarea': true,
+      // 'emoji-toolbar': true,
+
+      'toolbar': [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        // [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        // [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+        // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+        // [{ 'direction': 'rtl' }],                         // text direction
+
+        // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+         [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+         [{ 'font': [] }],
+         [{ 'align': [] }],
+
+        // ['clean'],                                         // remove formatting button
+
+        // ['link', 'image', 'video'],                         // link and image, video
+        // ['emoji']
+
+      ]
+    }
+
+  
   }
   
   ngOnInit(): void {
@@ -110,7 +143,7 @@ export class DeliveryUpdateComponent implements OnInit{
   }
 
   goToStep2(): void{
-        this.progressStep = 12;
+    this.progressStep = 2;
     this.isInfo = false;
     this.isReceiver = true;
     this.isAttachment = false;
@@ -210,14 +243,14 @@ export class DeliveryUpdateComponent implements OnInit{
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  saveDraft(): void {   
+  save(deliveryStatus: number): void {   
     this.showLoading('Saving Documents in Draft');
     this.isSaving = true;
     this.showLoading('Saving and Uploading Documents');
     
     const formData = new FormData();
     const attacheddocList = [];
-    const documentDelivery = this.createFrom();
+    const documentDelivery = this.createFrom(deliveryStatus);
 
     console.log(documentDelivery, "xxxDocumentDeliveryxxx")
 
@@ -266,11 +299,11 @@ export class DeliveryUpdateComponent implements OnInit{
     this._modalRef?.close();
   }
 
-  protected createFrom(): IDeliveryMessage {
+  protected createFrom(deliveryStatus: number): IDeliveryMessage {
     return {
       ...new DeliveryMessage(),
 
-      documentDelivery: this.createFormDocDeli(),
+      documentDelivery: this.createFormDocDeli(deliveryStatus),
       receiverList: this.createFormReceiverList(),
       attachmentList: this.createFormdocList(),
     };
@@ -321,15 +354,15 @@ export class DeliveryUpdateComponent implements OnInit{
       this.hideLoading();
     }
 
-    protected createFormDocDeli(): IDocumentDelivery {
+    protected createFormDocDeli(deliveryStatusPara: number): IDocumentDelivery {
       return {
         ...new DocumentDelivery(),
   
         id: this.editForm.get(['id'])!.value,
         referenceNo: this.editForm.get(['docNo'])!.value,
         subject: this.editForm.get(['subject'])!.value,
-        description: this.editForm.get(['body'])!.value,
-        deliveryStatus: 1,
+        description: this.editForm.get(['msg_body'])!.value,
+        deliveryStatus: deliveryStatusPara,
         status: 1,
         delFlag: 'N',
         sender:  this.getDepartment(),

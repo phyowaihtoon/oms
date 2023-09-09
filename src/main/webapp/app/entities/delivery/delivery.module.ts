@@ -6,9 +6,13 @@ import { DeliverySentComponent } from './sent/delivery-sent.component';
 import { DeliveryReceivedComponent } from './received/delivery-received.component';
 import { DeliveryRoutingModule } from './route/delivery-routing.module';
 import { DeliveryDraftComponent } from './draft/delivery-draft.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-  imports: [SharedModule, DeliveryRoutingModule],
+  imports: [SharedModule, 
+    DeliveryRoutingModule,    
+    QuillModule.forRoot(),],
+    
   declarations: [
     DeliveryUpdateComponent,
     DeliveryDetailComponent,
