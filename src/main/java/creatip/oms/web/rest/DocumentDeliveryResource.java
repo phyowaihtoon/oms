@@ -2,8 +2,12 @@ package creatip.oms.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import creatip.oms.domain.User;
 import creatip.oms.repository.DocumentDeliveryRepository;
+import creatip.oms.service.ApplicationUserService;
 import creatip.oms.service.DocumentDeliveryService;
+import creatip.oms.service.UserService;
+import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.DocumentDeliveryDTO;
 import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.ReplyMessage;
@@ -51,13 +55,19 @@ public class DocumentDeliveryResource {
 
     private final DocumentDeliveryService documentDeliveryService;
     private final DocumentDeliveryRepository documentDeliveryRepository;
+    private final ApplicationUserService applicationUserService;
+    private final UserService userService;
 
     public DocumentDeliveryResource(
         DocumentDeliveryService documentDeliveryService,
-        DocumentDeliveryRepository documentDeliveryRepository
+        DocumentDeliveryRepository documentDeliveryRepository,
+        UserService userService,
+        ApplicationUserService applicationUserService
     ) {
         this.documentDeliveryService = documentDeliveryService;
         this.documentDeliveryRepository = documentDeliveryRepository;
+        this.userService = userService;
+        this.applicationUserService = applicationUserService;
     }
 
     @PostMapping("/delivery")
@@ -67,6 +77,17 @@ public class DocumentDeliveryResource {
     ) throws URISyntaxException {
         DeliveryMessage deliveryMessage = null;
         ReplyMessage<DeliveryMessage> result = null;
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E01);
+            result.setMessage(loginUser.getLogin() + " is not linked with any department.");
+            return ResponseEntity
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        }
 
         try {
             this.objectMapper = new ObjectMapper();
@@ -76,7 +97,7 @@ public class DocumentDeliveryResource {
             ex.printStackTrace();
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.ERROR_E01);
-            result.setMessage("Unrecognized Field while parsing string to object");
+            result.setMessage("Unrecognized field included in the request message");
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
@@ -95,19 +116,21 @@ public class DocumentDeliveryResource {
         if (deliveryMessage != null && deliveryMessage.getDocumentDelivery().getId() != null) {
             throw new BadRequestAlertException("A new document cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        String docHeaderId = "";
 
         try {
+            deliveryMessage.getDocumentDelivery().setSender(appUserDTO.getDepartment());
             result = documentDeliveryService.save(deliveryMessage, multipartFiles);
         } catch (UploadFailedException e) {
             ReplyMessage<DeliveryMessage> uploadFailedMessage = new ReplyMessage<DeliveryMessage>();
             uploadFailedMessage.setCode(e.getCode());
             uploadFailedMessage.setMessage(e.getMessage());
             return ResponseEntity
-                .created(new URI("/api/delivery/" + docHeaderId))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
                 .body(uploadFailedMessage);
         }
+
+        String docHeaderId = "";
         if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
             docHeaderId = result.getData().getDocumentDelivery().getId().toString();
         }
