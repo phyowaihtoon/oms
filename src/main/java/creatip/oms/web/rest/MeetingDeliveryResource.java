@@ -2,8 +2,12 @@ package creatip.oms.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import creatip.oms.domain.User;
 import creatip.oms.repository.MeetingDeliveryRepository;
+import creatip.oms.service.ApplicationUserService;
 import creatip.oms.service.MeetingDeliveryService;
+import creatip.oms.service.UserService;
+import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
@@ -51,10 +55,19 @@ public class MeetingDeliveryResource {
 
     private final MeetingDeliveryService meetingDeliveryService;
     private final MeetingDeliveryRepository meetingDeliveryRepository;
+    private final ApplicationUserService applicationUserService;
+    private final UserService userService;
 
-    public MeetingDeliveryResource(MeetingDeliveryService meetingDeliveryService, MeetingDeliveryRepository meetingDeliveryRepository) {
+    public MeetingDeliveryResource(
+        MeetingDeliveryService meetingDeliveryService,
+        MeetingDeliveryRepository meetingDeliveryRepository,
+        UserService userService,
+        ApplicationUserService applicationUserService
+    ) {
         this.meetingDeliveryService = meetingDeliveryService;
         this.meetingDeliveryRepository = meetingDeliveryRepository;
+        this.userService = userService;
+        this.applicationUserService = applicationUserService;
     }
 
     @PostMapping("/meeting")
@@ -64,6 +77,17 @@ public class MeetingDeliveryResource {
     ) throws URISyntaxException {
         MeetingMessage deliveryMessage = null;
         ReplyMessage<MeetingMessage> result = null;
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E01);
+            result.setMessage(loginUser.getLogin() + " is not linked with any department.");
+            return ResponseEntity
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        }
 
         try {
             this.objectMapper = new ObjectMapper();
@@ -73,7 +97,7 @@ public class MeetingDeliveryResource {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E01);
-            result.setMessage("Unrecognized Field while parsing string to object");
+            result.setMessage("Unrecognized field included in the request message");
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
@@ -92,19 +116,21 @@ public class MeetingDeliveryResource {
         if (deliveryMessage != null && deliveryMessage.getMeetingDelivery().getId() != null) {
             throw new BadRequestAlertException("A new document cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        String docHeaderId = "";
 
         try {
+            deliveryMessage.getMeetingDelivery().setSender(appUserDTO.getDepartment());
             result = meetingDeliveryService.save(deliveryMessage, multipartFiles);
         } catch (UploadFailedException e) {
             ReplyMessage<MeetingMessage> uploadFailedMessage = new ReplyMessage<MeetingMessage>();
             uploadFailedMessage.setCode(e.getCode());
             uploadFailedMessage.setMessage(e.getMessage());
             return ResponseEntity
-                .created(new URI("/api/meeting/" + docHeaderId))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
+                .created(new URI("/api/meeting/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
                 .body(uploadFailedMessage);
         }
+
+        String docHeaderId = "";
         if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
             docHeaderId = result.getData().getMeetingDelivery().getId().toString();
         }
