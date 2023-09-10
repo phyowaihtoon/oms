@@ -1,0 +1,29 @@
+{
+  "omsApp": {
+    "meeting": {
+      "button": {        
+        "Send": "ပေးပို့ပါ",
+        "Back": "ရှေ့တဆင့်",
+        "Next": "နောက်တဆင့်",
+        "Draft": "မူကြမ်း"
+      },
+      "label":{
+        "Date": "ရက်စွဲ",
+        "Time": "အချိန်"
+      },
+      "created": "{{ param }} အိုင်ဒီဖြင့် Department အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
+      "updated": "{{ param }} အိုင်ဒီဖြင့် Department တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
+      "deleted": "{{ param }} အိုင်ဒီဖြင့် Department တစ်ခုအား ဖျက်ပြီးပါပြီ။",
+      "delete": {
+        "question": "Department {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+      },
+      "detail": {
+        "title": "Department"
+      },
+      "id": "ID",
+      "department": "ဌာန",
+      "subdepartment": "ဌာနခွဲ",
+      "delFlag": "Del Flag"
+    }
+  }
+}

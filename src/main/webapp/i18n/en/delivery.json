@@ -1,0 +1,25 @@
+{
+  "omsApp": {
+    "delivery": {
+      "button": {
+        "Send": "Send",
+        "Back": "Back",
+        "Next": "Next",
+        "Draft": "Draft"
+      },
+      "created": "A new Department is created with identifier {{ param }}",
+      "updated": "A Department is updated with identifier {{ param }}",
+      "deleted": "A Department is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Department {{ id }}?"
+      },
+      "detail": {
+        "title": "Department"
+      },
+      "id": "ID",
+      "department": "Department",
+      "subdepartment": "Sub-Department",
+      "delFlag": "Del Flag"
+    }
+  }
+}

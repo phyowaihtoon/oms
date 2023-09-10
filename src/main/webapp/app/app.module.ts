@@ -31,6 +31,7 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { NgbDateCustomParserFormatter } from './config/NgbDateCustomParserFormatter';
 import { PdfViewerComponent } from './entities/util/pdfviewer/pdf-viewer.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { PdfViewerComponent } from './entities/util/pdfviewer/pdf-viewer.compone
     // jhipster-needle-angular-add-module JHipster will add new module here
     EntityRoutingModule,
     ReporRoutingtModule,
-    AppRoutingModule,
+    AppRoutingModule,    
+    QuillModule.forRoot(),
     // Set this to true to enable service worker (PWA)
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: false }),
     HttpClientModule,

@@ -6,9 +6,11 @@ import { MeetingDetailComponent } from './detail/meeting-detail.component';
 import { MeetingReceivedComponent } from './received/meeting-received.component';
 import { MeetingSentComponent } from './sent/meeting-sent.component';
 import { MeetingDraftComponent } from './draft/meeting-draft.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [MeetingUpdateComponent, MeetingDetailComponent, MeetingReceivedComponent, MeetingSentComponent, MeetingDraftComponent],
-  imports: [SharedModule, MeetingRoutingModule],
+  imports: [SharedModule, MeetingRoutingModule,
+    QuillModule.forRoot()],
 })
 export class MeetingModule {}

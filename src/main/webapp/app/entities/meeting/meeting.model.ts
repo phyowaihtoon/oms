@@ -62,6 +62,8 @@ export interface IMeetingAttachment {
   filePath?: string;
   fileName?: string;
   delFlag?: string;
+  fileData?: File; // This filed data is not needed to pass to server side, only used in client side
+
 }
 
 export class MeetingAttachment implements IMeetingAttachment {
