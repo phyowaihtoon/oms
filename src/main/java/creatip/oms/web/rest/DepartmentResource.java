@@ -64,10 +64,14 @@ public class DepartmentResource {
      */
     @PostMapping("/departments")
     public ResponseEntity<DepartmentDTO> createDepartment(@Valid @RequestBody DepartmentDTO departmentDTO) throws URISyntaxException {
-        log.debug("REST request to save Department : {}", departmentDTO);
+        log.debug("REST request to create Department");
+        log.debug("Request Data : {}", departmentDTO);
+
         if (departmentDTO.getId() != null) {
+            log.debug("Response Message : A new department cannot already have an ID = {}", departmentDTO.getId());
             throw new BadRequestAlertException("A new department cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         DepartmentDTO result = departmentService.save(departmentDTO);
         return ResponseEntity
             .created(new URI("/api/departments/" + result.getId()))
@@ -90,15 +94,20 @@ public class DepartmentResource {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody DepartmentDTO departmentDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Department : {}, {}", id, departmentDTO);
+        log.debug("Request to update Department");
+        log.debug("Request Data : ID = {}, {}", id, departmentDTO);
+
         if (departmentDTO.getId() == null) {
+            log.debug("Response Message : Invalid ID = {}", id);
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, departmentDTO.getId())) {
+            log.debug("Response Message : Invalid ID = {}", id);
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         if (!departmentRepository.existsById(id)) {
+            log.debug("Response Message : Invalid ID = {}", id);
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
@@ -153,7 +162,7 @@ public class DepartmentResource {
      */
     @GetMapping("/departments")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartments(Pageable pageable) {
-        log.debug("REST request to get a page of Departments");
+        log.debug("Request to get a page of Departments");
         Page<DepartmentDTO> page = departmentService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -167,7 +176,7 @@ public class DepartmentResource {
      */
     @GetMapping("/departments/{id}")
     public ResponseEntity<DepartmentDTO> getDepartment(@PathVariable Long id) {
-        log.debug("REST request to get Department : {}", id);
+        log.debug("Request to get Department : {}", id);
         Optional<DepartmentDTO> departmentDTO = departmentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(departmentDTO);
     }
@@ -180,7 +189,7 @@ public class DepartmentResource {
      */
     @DeleteMapping("/departments/{id}")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
-        log.debug("REST request to delete Department : {}", id);
+        log.debug("Request to delete Department : {}", id);
         departmentService.delete(id);
         return ResponseEntity
             .noContent()

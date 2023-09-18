@@ -1,12 +1,54 @@
 package creatip.oms.repository;
 
 import creatip.oms.domain.DocumentDelivery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data SQL repository for the Department entity.
+ * Spring Data SQL repository fr the Department entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelivery, Long> {}
+public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelivery, Long> {
+    @Query(
+        value = "select DISTINCT dd from DocumentDelivery dd, DocumentReceiver dc " +
+        "where dd.id=dc.header.id and dd.delFlag='N' and dd.deliveryStatus=1 " +
+        "and dc.receiver.id=?1 and dc.status=?2 and date(dd.sentDate) = str_to_date(?3,'%d-%m-%Y') " +
+        "and dc.delFlag='N' "
+    )
+    Page<DocumentDelivery> findDocumentsReceived(Long receiverId, short status, String sentDate, Pageable pageable);
+
+    @Query(
+        value = "select DISTINCT dd from DocumentDelivery dd, DocumentReceiver dc " +
+        "where dd.id=dc.header.id and dd.delFlag='N' and dd.deliveryStatus=1 and dc.delFlag='N' " +
+        "and dc.receiver.id=?1 and dc.status=?2 " +
+        "and date(dd.sentDate) >= str_to_date(?3,'%d-%m-%Y') and date(dd.sentDate) <= str_to_date(?4,'%d-%m-%Y') " +
+        "and (dd.sender.id=?5 or dd.subject like %?6%) "
+    )
+    Page<DocumentDelivery> findDocumentsReceived(
+        Long receiverId,
+        short status,
+        String dateFrom,
+        String dateTo,
+        Long senderId,
+        String subject,
+        Pageable pageable
+    );
+
+    @Query(
+        value = "select dd from DocumentDelivery dd " +
+        "where dd.delFlag='N' and dd.deliveryStatus=1 " +
+        "and dd.sender.id=?1 and date(dd.sentDate) = str_to_date(?2,'%d-%m-%Y') "
+    )
+    Page<DocumentDelivery> findDocumentsSent(Long senderId, String sentDate, Pageable pageable);
+
+    @Query(
+        value = "select dd from DocumentDelivery dd " +
+        "where dd.delFlag='N' and dd.deliveryStatus=1 and dd.sender.id=?1 " +
+        "and date(dd.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(dd.sentDate) <= str_to_date(?3,'%d-%m-%Y')"
+    )
+    Page<DocumentDelivery> findDocumentsSent(Long senderId, String dateFrom, String dateTo, Pageable pageable);
+}
