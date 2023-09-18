@@ -86,13 +86,21 @@ public class DepartmentDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "DepartmentDTO{" +
-            "id=" + getId() +
-            ", departmentName='" + getDepartmentName() + "'" +
-            ", delFlag='" + getDelFlag() + "'" +
-            "}";
+        return (
+            "DepartmentDTO{" +
+            "id=" +
+            getId() +
+            ", departmentName='" +
+            getDepartmentName() +
+            "'" +
+            ", delFlag='" +
+            getDelFlag() +
+            "'" +
+            ", headDepartment=" +
+            getHeadDepartment() +
+            "}"
+        );
     }
 }

@@ -2,6 +2,7 @@ package creatip.oms.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.springframework.util.ResourceUtils;
@@ -36,5 +37,20 @@ public class SharedUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
         String fileName = prefix + "_" + sdf.format(new Date());
         return fileName;
+    }
+
+    public static boolean isDateStringValid(String dateStr) {
+        String format = "dd-MM-yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        sdf.setLenient(false); // Disable lenient parsing to enforce strict date validation
+
+        try {
+            Date date = sdf.parse(dateStr);
+            // If parsing succeeds without exceptions, the date is valid
+            return true;
+        } catch (ParseException e) {
+            // Parsing failed; the date is not valid
+            return false;
+        }
     }
 }

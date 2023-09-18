@@ -71,29 +71,23 @@ public class CommonEnum {
         }
     }
 
-    public enum CodeTypeEnum {
-        CIVIL("CT001", "တရားမ Civil"),
-        CRIMINAL("CT002", "ပြစ်မှု Criminal"),
-        WRIT("CT003", "စာချွန်တော်"),
-        LAWYER("CT004", "ရှေ့နေရှေ့ရပ်");
+    public enum RequestFrom {
+        DASHBOARD((byte) 1),
+        INQUIRY((byte) 2);
 
-        public String value;
-        public String description;
+        public byte value;
 
-        CodeTypeEnum(String value, String description) {
+        RequestFrom(byte value) {
             this.value = value;
-            this.description = description;
         }
 
-        public static CodeTypeEnum findByName(String value) {
-            CodeTypeEnum result = null;
-            for (CodeTypeEnum codeType : values()) {
-                if (codeType.value.equalsIgnoreCase(value)) {
-                    result = codeType;
-                    break;
+        public static boolean isValid(byte inputValue) {
+            for (RequestFrom requestFrom : RequestFrom.values()) {
+                if (requestFrom.value == inputValue) {
+                    return true;
                 }
             }
-            return result;
+            return false;
         }
     }
 }

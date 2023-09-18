@@ -4,6 +4,7 @@ import creatip.oms.domain.DocumentAttachment;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.domain.DocumentReceiver;
 import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
+import creatip.oms.enumeration.CommonEnum.RequestFrom;
 import creatip.oms.repository.DocumentAttachmentRepository;
 import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.repository.DocumentReceiverRepository;
@@ -299,11 +300,44 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
     @Override
     public Page<DocumentDeliveryDTO> getReceivedDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
-        return documentDeliveryRepository.findAll(pageable).map(documentDeliveryMapper::toDto);
+        Page<DocumentDelivery> page = null;
+        if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
+            page =
+                documentDeliveryRepository.findDocumentsReceived(
+                    criteria.getReceiverId(),
+                    criteria.getStatus(),
+                    criteria.getDateOn(),
+                    pageable
+                );
+        } else {
+            page =
+                documentDeliveryRepository.findDocumentsReceived(
+                    criteria.getReceiverId(),
+                    criteria.getStatus(),
+                    criteria.getDateFrom(),
+                    criteria.getDateTo(),
+                    criteria.getSenderId(),
+                    criteria.getSubject(),
+                    pageable
+                );
+        }
+        return page.map(documentDeliveryMapper::toDto);
     }
 
     @Override
     public Page<DocumentDeliveryDTO> getSentDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
-        return documentDeliveryRepository.findAll(pageable).map(documentDeliveryMapper::toDto);
+        Page<DocumentDelivery> page = null;
+        if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
+            page = documentDeliveryRepository.findDocumentsSent(criteria.getSenderId(), criteria.getDateOn(), pageable);
+        } else {
+            page =
+                documentDeliveryRepository.findDocumentsSent(
+                    criteria.getSenderId(),
+                    criteria.getDateFrom(),
+                    criteria.getDateTo(),
+                    pageable
+                );
+        }
+        return page.map(documentDeliveryMapper::toDto);
     }
 }

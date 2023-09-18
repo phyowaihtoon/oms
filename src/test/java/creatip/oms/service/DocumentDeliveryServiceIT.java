@@ -9,6 +9,7 @@ import creatip.oms.service.dto.DocumentDeliveryDTO;
 import creatip.oms.service.dto.DocumentReceiverDTO;
 import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.ReplyMessage;
+import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 
 @IntegrationTest
@@ -84,6 +88,24 @@ public class DocumentDeliveryServiceIT {
             )
                 .isGreaterThan(0);
         } catch (UploadFailedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void getDocmentReceived() {
+        try {
+            Pageable pageable = PageRequest.of(0, 10); // Page 0, Page size 10
+            SearchCriteriaMessage message = new SearchCriteriaMessage();
+            message.setReceiverId(1L);
+            message.setStatus((short) 0);
+            Page<DocumentDeliveryDTO> page = documentDeliveryService.getReceivedDeliveryList(message, pageable);
+            List<DocumentDeliveryDTO> list = page.getContent();
+            for (DocumentDeliveryDTO data : list) {
+                System.out.println("Document ID " + data.getId() + " Document No. " + data.getReferenceNo());
+            }
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

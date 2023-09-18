@@ -2,7 +2,9 @@ package creatip.oms.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import creatip.oms.domain.User;
+import creatip.oms.enumeration.CommonEnum.RequestFrom;
 import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.service.ApplicationUserService;
 import creatip.oms.service.DocumentDeliveryService;
@@ -14,6 +16,7 @@ import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
+import creatip.oms.util.SharedUtils;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -221,23 +224,67 @@ public class DocumentDeliveryResource {
         throws URISyntaxException {
         log.debug("REST request to get DocumentDelivery Received List");
         log.debug("SearchCriteriaMessage :{} ", criteria);
+
         SearchCriteriaMessage criteriaMessage = null;
         try {
             this.objectMapper = new ObjectMapper();
             criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
+        } catch (MismatchedInputException ex) {
+            ex.printStackTrace();
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/delivery/received/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/delivery/received/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         }
+
+        if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.DASHBOARD.value && !SharedUtils.isDateStringValid(criteriaMessage.getDateOn())
+        ) {
+            String message = "Invalid Date";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
+            (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
+        ) {
+            String message = "Invalid Date";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        criteriaMessage.setReceiverId(appUserDTO.getDepartment().getId());
 
         Page<DocumentDeliveryDTO> page = documentDeliveryService.getReceivedDeliveryList(criteriaMessage, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -249,23 +296,61 @@ public class DocumentDeliveryResource {
         throws URISyntaxException {
         log.debug("REST request to get DocumentDelivery Sent List");
         log.debug("SearchCriteriaMessage :{} ", criteria);
+
         SearchCriteriaMessage criteriaMessage = null;
         try {
             this.objectMapper = new ObjectMapper();
             criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/delivery/sent/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/delivery/sent/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         }
+
+        if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
+            String message = "Invalid request parameter";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.DASHBOARD.value && !SharedUtils.isDateStringValid(criteriaMessage.getDateOn())
+        ) {
+            String message = "Invalid Date";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
+            (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
+        ) {
+            String message = "Invalid Date";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        criteriaMessage.setSenderId(appUserDTO.getDepartment().getId());
 
         Page<DocumentDeliveryDTO> page = documentDeliveryService.getSentDeliveryList(criteriaMessage, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
