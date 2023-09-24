@@ -4,6 +4,7 @@ import creatip.oms.domain.MeetingAttachment;
 import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.domain.MeetingReceiver;
 import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
+import creatip.oms.enumeration.CommonEnum.MeetingStatus;
 import creatip.oms.repository.MeetingAttachmentRepository;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.repository.MeetingReceiverRepository;
@@ -23,6 +24,7 @@ import creatip.oms.util.ResponseCode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.integration.ftp.session.FtpSession;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -73,6 +76,25 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         this.meetingReceiverMapper = meetingReceiverMapper;
         this.replyMessage = new ReplyMessage<MeetingMessage>();
         this.ftpSessionFactory = ftpSessionFactory;
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void updateMeetingSchedule() {
+        List<MeetingDelivery> list = meetingDeliveryRepository.findScheduledMeetingList();
+        if (list != null && list.size() > 0) {
+            for (MeetingDelivery data : list) {
+                Instant meetingEndTime = data.getEndDate();
+                if (meetingEndTime != null) {
+                    Instant currentDateTime = Instant.now();
+                    int result = currentDateTime.compareTo(meetingEndTime);
+                    if (result >= 0) {
+                        log.debug("Meeting Schedule for {} is finished", data.getDescription());
+                        data.setMeetingStatus(MeetingStatus.FINISH.value);
+                        meetingDeliveryRepository.save(data);
+                    }
+                }
+            }
+        }
     }
 
     @Override

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import org.springframework.util.ResourceUtils;
 
@@ -53,4 +55,19 @@ public class SharedUtils {
             return false;
         }
     }
+    //For reference
+    /*
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(ZoneId.systemDefault());
+	log.debug("Zone ID {}",ZoneId.systemDefault());
+	log.debug("Current Time: toString {} , with formatter{} ",currentDateTime.toString(),formatter.format(currentDateTime));
+	log.debug("End Time:toString {}, with formatter {} ",meetingEndTime.toString(),formatter.format(meetingEndTime));
+	
+	ZoneId myanmarTimeZone = ZoneId.of("Asia/Yangon");
+	DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(myanmarTimeZone);
+	log.debug("Myanmar Zone ID {}",myanmarTimeZone);
+	log.debug("Current Time: toString {} , with formatter{} ",currentDateTime.toString(),formatter2.format(currentDateTime));
+	log.debug("End Time:toString {}, with formatter {} ",meetingEndTime.toString(),formatter2.format(meetingEndTime));
+	*/
 }
