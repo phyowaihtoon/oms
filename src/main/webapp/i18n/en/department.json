@@ -20,7 +20,8 @@
       "id": "ID",
       "department": "Department",
       "subdepartment": "Sub-Department",
-      "delFlag": "Del Flag"
+      "delFlag": "Del Flag",
+      "checkAll": "All Department"
     }
   }
 }

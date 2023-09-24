@@ -20,7 +20,8 @@
       "id": "ID",
       "department": "ဌာန",
       "subdepartment": "ဌာနခွဲ",
-      "delFlag": "Del Flag"
+      "delFlag": "Del Flag",
+      "checkAll": "ဌာနအားလုံး"
     }
   }
 }

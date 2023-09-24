@@ -1,8 +1,8 @@
-<div [ngClass]="modalHeaderClass">
+<div class="bg-primary">
   <div class="row col-12 dms-modal-row">
-    <h4 class="modal-title col-10">Choose Department</h4>
-    <div class="col-2 d-flex justify-content-end dms-modal-col">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="dismiss()">&times;</button>
+    <h4 class="modal-title col-10 text-white">Choose Department</h4>
+    <div class="col-2 d-flex justify-content-end dms-modal-col" style="padding-right: 8px">
+      <button style="color: white" type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="dismiss()">&times;</button>
     </div>
   </div>
 </div>
@@ -11,18 +11,31 @@
   <form>
     <div class="form-group">
       <label class="form-control-label" jhiTranslate="dmsApp.department.department" for="field_department">Department</label>
-      <select
-        class="form-control"
-        id="field_department"
-        data-cy="headDepartment"
-        name="headDepartment"
-        (change)="onDepartmentChange($event)"
-      >
-        <option value="null"></option>
-        <option value="{{ departmentOption.id }}" *ngFor="let departmentOption of headDepartmentList; trackBy: trackDepartmentById">
-          {{ departmentOption.description }}
-        </option>
-      </select>
+
+      <div class="row col-12">
+        <select
+          class="form-control col-8"
+          id="field_department"
+          data-cy="headDepartment"
+          name="headDepartment"
+          (change)="onDepartmentChange($event)"
+        >
+          <option value="null"></option>
+          <option value="{{ departmentOption.id }}" *ngFor="let departmentOption of headDepartmentList; trackBy: trackDepartmentById">
+            {{ departmentOption.description }}
+          </option>
+        </select>
+        <div class="col-4" style="padding-left: 32px">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="isCheckedAllDepartment"
+            (change)="onChangeCheckAllDepartment($event)"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <span jhiTranslate="dmsApp.department.checkAll">All Department</span>
+        </div>
+      </div>
     </div>
 
     <div class="table-responsive">

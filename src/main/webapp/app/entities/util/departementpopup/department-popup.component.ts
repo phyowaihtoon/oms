@@ -34,6 +34,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
   @Output() passEntry: EventEmitter<any> = new EventEmitter();
 
   isCheckedAll = false;
+  isCheckedAllDepartment = false;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -42,12 +43,14 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
     private router: Router,
     protected fb: FormBuilder,
     protected loadSetupService: LoadSetupService,
-    protected departmentService: DepartmentService
+    protected departmentService: DepartmentService,
+    private userAuthority: UserAuthorityService
   ) {}
 
   ngOnInit(): void {
     this.setHeaderClass();
-    this.setButtonClass();
+    // this.setButtonClass();
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
 
     this.loadSetupService.loadAllHeadDepartments().subscribe(
       (res: HttpResponse<IHeadDepartment[]>) => {
@@ -63,6 +66,11 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
+        this.departmentsList.forEach((data, index) => {
+          if (data.id === userAuthority?.department?.id) {
+            this.departmentsList?.splice(index, 1);
+          }
+        });
       },
       () => {
         // this.isLoading = false;
@@ -90,6 +98,13 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
     }
   }
 
+  onChangeCheckAllDepartment(e: any): void {
+    if (e.target.checked) {
+      this.isCheckedAllDepartment = true;
+    } else {
+      this.isCheckedAllDepartment = false;
+    }
+  }
   onChangeSelected(e: any, i: number): void {
     if (this.departments) {
       if (e.target.checked) {
@@ -129,12 +144,20 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
 
   add(): void {
     const output: IDepartment[] = [];
-    if (this.departments) {
-      this.departments.forEach(data => {
-        if (data.isChecked === true) {
+    if (this.isCheckedAllDepartment) {
+      if (this.departmentsList) {
+        this.departmentsList.forEach(data => {
           output.push(data);
-        }
-      });
+        });
+      }
+    } else {
+      if (this.departments) {
+        this.departments.forEach(data => {
+          if (data.isChecked === true) {
+            output.push(data);
+          }
+        });
+      }
     }
 
     this.passEntry.emit(output);
@@ -148,12 +171,12 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
   }
 
   setHeaderClass(): void {
-    const successHeader = ['modal-header', 'dms-modal-header', 'bg-success', 'text-white'];
-    const errorHeader = ['modal-header', 'dms-modal-header', 'bg-danger', 'text-white'];
-    const warningHeader = ['modal-header', 'dms-modal-header', 'bg-warning', 'text-white'];
-    const infoHeader = ['modal-header', 'dms-modal-header', ' bg-dark', 'text-white'];
-
-    if (this.code === ResponseCode.SUCCESS) {
+    const headerClass = ['modal-header', 'dms-modal-header', 'bg-primary', 'text-white'];
+    // const errorHeader = ['modal-header', 'dms-modal-header', 'bg-danger', 'text-white'];
+    // const warningHeader = ['modal-header', 'dms-modal-header', 'bg-warning', 'text-white'];
+    // const infoHeader = ['modal-header', 'dms-modal-header', 'bg-info', 'text-white'];
+    this.modalHeaderClass = headerClass;
+    /* if (this.code === ResponseCode.SUCCESS) {
       this.modalHeaderClass = successHeader;
       this.infoTitle = ResponseCode.SUCCESS_MSG;
       this.displayCode = 'Code : '.concat(this.code);
@@ -178,7 +201,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
       this.infoTitle = 'Information';
       this.displayCode = this.code;
       this.displayMessage = this.message;
-    }
+    } */
   }
 
   setButtonClass(): void {
