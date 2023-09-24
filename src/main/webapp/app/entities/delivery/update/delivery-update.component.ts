@@ -226,7 +226,7 @@ export class DeliveryUpdateComponent implements OnInit{
     
     for (let i = 0; i < this._tempdocList.length; i++) {
       const tempFile = this._tempdocList[i];
-      this.addField("c://", tempFile.name, tempFile);
+      this.addField("", tempFile.name, tempFile);
     }
 
     this._tempdocList = [];
@@ -258,10 +258,10 @@ export class DeliveryUpdateComponent implements OnInit{
             editedFileName = editedFileName.concat('.').concat(orgFileExtension!);
             dmsDoc.fileName = editedFileName;
           }
-          const docDetailInfo = editedFileName
-            ?.concat('@')
-            .concat(dmsDoc.filePath ?? '')
-            .concat('@');
+          const docDetailInfo = editedFileName;
+            // ?.concat('@')
+           // .concat(dmsDoc.filePath ?? '')
+           // .concat('@');
           formData.append('files', dmsDoc.fileData, docDetailInfo);
         }
         delete dmsDoc['fileData'];
@@ -269,6 +269,9 @@ export class DeliveryUpdateComponent implements OnInit{
       }
     }
     formData.append('delivery', JSON.stringify(documentDelivery));
+    console.log(formData.get("files"), "formData");
+    console.log(formData.get("delivery"), "formData");
+    console.log("Document Delivery :",JSON.stringify(documentDelivery));
     this.subscribeToSaveResponse(this.deliveryService.save(formData));
   }
 
