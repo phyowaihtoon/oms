@@ -27,8 +27,6 @@ export class DeliveryUpdateComponent implements OnInit{
     docNo:['', [Validators.required]],
     subject:['', [Validators.required]],
     msg_body:['', [Validators.required]],
-    mDeptList: [],
-    cDeptList: [],
     docList: this.fb.array([]),
     cc_docNo: ['', [Validators.required]],
     cc_body: ['', [Validators.required]],
@@ -86,37 +84,15 @@ export class DeliveryUpdateComponent implements OnInit{
     });
 
     this.modules = {
-
-      // 'emoji-shortname': true,
-      // 'emoji-textarea': true,
-      // 'emoji-toolbar': true,
-
       'toolbar': [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
         ['blockquote', 'code-block'],
 
-        // [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        // [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-        // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-        // [{ 'direction': 'rtl' }],                         // text direction
-
-        // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-        // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
          [{ 'font': [] }],
          [{ 'align': [] }],
-
-        // ['clean'],                                         // remove formatting button
-
-        // ['link', 'image', 'video'],                         // link and image, video
-        // ['emoji']
-
       ]
-    }
-
-  
+    }  
   }
   
   ngOnInit(): void {
@@ -168,6 +144,20 @@ export class DeliveryUpdateComponent implements OnInit{
 
   docList(): FormArray {
     return this.editForm.get('docList') as FormArray;
+  }
+
+  checkFormArrayEmpty(): boolean { 
+
+   const formArray = this.editForm.get('docList') as FormArray;
+   console.log(formArray.length , "DocList")
+
+   if(formArray.length === 0) {
+    return true;
+   }
+   else{
+    return false;
+   }
+
   }
 
   onToDepartmentChange(event: any): void {
@@ -365,7 +355,7 @@ export class DeliveryUpdateComponent implements OnInit{
         deliveryStatus: deliveryStatusPara,
         status: 1,
         delFlag: 'N',
-        sender:  this.getDepartment(),
+        sender:  undefined,
       };
     }
   

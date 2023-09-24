@@ -12,11 +12,13 @@ export type EntityArrayResponseType = HttpResponse<IMeetingDelivery[]>;
 @Injectable({
   providedIn: 'root',
 })
+
 export class MeetingService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/meeting');
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
+    console.log("Meeting URL", this.resourceUrl)
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
