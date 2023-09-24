@@ -12,13 +12,16 @@ export type EntityArrayResponseType = HttpResponse<IMeetingDelivery[]>;
 @Injectable({
   providedIn: 'root',
 })
-
 export class MeetingService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/meeting');
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
-    console.log("Meeting URL", this.resourceUrl)
+  save(formData: FormData, message: IMeetingMessage): Observable<HttpResponse<IReplyMessage>> {
+    if (message.meetingDelivery) {
+      const meetingDelivery = this.convertDateFromClient(message.meetingDelivery);
+      message.meetingDelivery = meetingDelivery;
+      formData.append('meeting', JSON.stringify(message));
+    }
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
@@ -40,5 +43,12 @@ export class MeetingService {
   findAllSent(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
+  }
+
+  protected convertDateFromClient(meetingDelivery: IMeetingDelivery): IMeetingDelivery {
+    return Object.assign({}, meetingDelivery, {
+      startDate: meetingDelivery.startDate?.isValid() ? meetingDelivery.startDate.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
+      endDate: meetingDelivery.endDate?.isValid() ? meetingDelivery.endDate.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,
+    });
   }
 }

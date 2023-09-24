@@ -2,7 +2,16 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { DeliveryMessage, DocumentAttachment, DocumentDelivery, DocumentReceiver, IDeliveryMessage, IDocumentAttachment, IDocumentDelivery, IDocumentReceiver } from 'app/entities/delivery/delivery.model';
+import {
+  DeliveryMessage,
+  DocumentAttachment,
+  DocumentDelivery,
+  DocumentReceiver,
+  IDeliveryMessage,
+  IDocumentAttachment,
+  IDocumentDelivery,
+  IDocumentReceiver,
+} from 'app/entities/delivery/delivery.model';
 import { DeliveryService } from 'app/entities/delivery/service/delivery.service';
 import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
@@ -22,17 +31,16 @@ import * as dayjs from 'dayjs';
   styleUrls: ['./meeting-update.component.scss'],
 })
 export class MeetingUpdateComponent implements OnInit {
-
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
-       
+
   editForm = this.fb.group({
     id: [],
-    location:['', [Validators.required]],    
+    location: ['', [Validators.required]],
     fromtime: [null, [Validators.required]],
     totime: [null, [Validators.required]],
-    meetingDate:[null, [Validators.required]],
-    subject:['', [Validators.required]],
-    body:['', [Validators.required]],
+    meetingDate: [null, [Validators.required]],
+    subject: ['', [Validators.required]],
+    body: ['', [Validators.required]],
     mDeptList: [],
     cDeptList: [],
     docList: this.fb.array([]),
@@ -41,16 +49,14 @@ export class MeetingUpdateComponent implements OnInit {
     cc_subject: ['', [Validators.required]],
     ccfromtime: [null, [Validators.required]],
     cctotime: [null, [Validators.required]],
-    ccmeetingDate:[null, [Validators.required]],
-
+    ccmeetingDate: [null, [Validators.required]],
   });
 
-  
   public progressStep = 1;
   toLabel = 'To:';
   ccLabel = 'Cc:';
   toDepartments?: IDepartment[] = [];
-  ccDepartments?: IDepartment[] = [];   
+  ccDepartments?: IDepartment[] = [];
   modules = {};
 
   public progressItems = [
@@ -59,7 +65,7 @@ export class MeetingUpdateComponent implements OnInit {
     { step: 3, title: 'Attachment' },
     { step: 4, title: 'Delivery' },
   ];
-  
+
   _modalRef?: NgbModalRef;
   _tempdocList: File[] = [];
   name = 'Progress Bar';
@@ -68,58 +74,55 @@ export class MeetingUpdateComponent implements OnInit {
   isReceiver = false;
   isAttachment = false;
   isSuccess = false;
-  public counts = ["Info","Receiver","Attachment","Success"];
+  public counts = ['Info', 'Receiver', 'Attachment', 'Success'];
 
-  public status = "Info"
+  public status = 'Info';
 
   constructor(
     protected fb: FormBuilder,
     protected modalService: NgbModal,
     protected loadSetupService: LoadSetupService,
     protected meetingService: MeetingService,
-    protected translateService: TranslateService,
+    protected translateService: TranslateService
   ) {
-
-     this.editForm.controls.location.valueChanges.subscribe((value) => {
-    //   // Update the targetText control's value
+    this.editForm.controls.location.valueChanges.subscribe(value => {
+      //   // Update the targetText control's value
       this.editForm.controls.cc_location.setValue(value);
-     });
-    this.editForm.controls.subject.valueChanges.subscribe((value) => {
+    });
+    this.editForm.controls.subject.valueChanges.subscribe(value => {
       // Update the targetText control's value
       this.editForm.controls.cc_subject.setValue(value);
     });
-    this.editForm.controls.body.valueChanges.subscribe((value) => {
+    this.editForm.controls.body.valueChanges.subscribe(value => {
       // Update the targetText control's value
-      this.editForm.controls.cc_body.setValue(value);      
+      this.editForm.controls.cc_body.setValue(value);
     });
-    this.editForm.controls.meetingDate.valueChanges.subscribe((value) => {
+    this.editForm.controls.meetingDate.valueChanges.subscribe(value => {
       // Update the targetText control's value
-      this.editForm.controls.ccmeetingDate.setValue(value);      
+      this.editForm.controls.ccmeetingDate.setValue(value);
     });
-    
-    this.editForm.controls.fromtime.valueChanges.subscribe((value) => {
+
+    this.editForm.controls.fromtime.valueChanges.subscribe(value => {
       // Update the targetText control's value
-      this.editForm.controls.ccfromtime.setValue(value);      
+      this.editForm.controls.ccfromtime.setValue(value);
     });
-    this.editForm.controls.totime.valueChanges.subscribe((value) => {
+    this.editForm.controls.totime.valueChanges.subscribe(value => {
       // Update the targetText control's value
-      this.editForm.controls.cctotime.setValue(value);      
+      this.editForm.controls.cctotime.setValue(value);
     });
 
     this.modules = {
-
-      'toolbar': [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
         ['blockquote', 'code-block'],
 
-         [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-         [{ 'font': [] }],
-         [{ 'align': [] }],
-
-      ]
-    }
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ font: [] }],
+        [{ align: [] }],
+      ],
+    };
   }
-  
+
   ngOnInit(): void {
     this.progressItems[0].title = this.translateService.instant('global.menu.meeting.Step1');
     this.progressItems[1].title = this.translateService.instant('global.menu.meeting.Step2');
@@ -133,9 +136,9 @@ export class MeetingUpdateComponent implements OnInit {
       this.progressItems[3].title = this.translateService.instant('global.menu.meeting.Step4');
     });
   }
-  // Demo purpose only, Data might come from Api calls/service 
+  // Demo purpose only, Data might come from Api calls/service
 
-  goToStep1(): void{    
+  goToStep1(): void {
     this.progressStep = 1;
     this.isInfo = true;
     this.isReceiver = false;
@@ -143,7 +146,7 @@ export class MeetingUpdateComponent implements OnInit {
     this.isSuccess = false;
   }
 
-  goToStep2(): void{
+  goToStep2(): void {
     this.progressStep = 2;
     this.isInfo = false;
     this.isReceiver = true;
@@ -151,7 +154,7 @@ export class MeetingUpdateComponent implements OnInit {
     this.isSuccess = false;
   }
 
-  goToStep3(): void{    
+  goToStep3(): void {
     this.progressStep = 3;
     this.isInfo = false;
     this.isReceiver = false;
@@ -159,7 +162,7 @@ export class MeetingUpdateComponent implements OnInit {
     this.isSuccess = false;
   }
 
-  goToStep4(): void{    
+  goToStep4(): void {
     this.progressStep = 4;
     this.isInfo = false;
     this.isReceiver = false;
@@ -170,35 +173,32 @@ export class MeetingUpdateComponent implements OnInit {
   docList(): FormArray {
     return this.editForm.get('docList') as FormArray;
   }
-  checkFormArrayEmpty(): boolean { 
-
+  checkFormArrayEmpty(): boolean {
     const formArray = this.editForm.get('docList') as FormArray;
-    console.log(formArray.length , "DocList")
- 
-    if(formArray.length === 0) {
-     return true;
+    console.log(formArray.length, 'DocList');
+
+    if (formArray.length === 0) {
+      return true;
+    } else {
+      return false;
     }
-    else{
-     return false;
-    }
- 
-   }
+  }
   onToDepartmentChange(event: any): void {
     this.toDepartments = event;
-    console.log(this.toDepartments, "to Dept");
+    console.log(this.toDepartments, 'to Dept');
   }
 
   onCcDepartmentChange(event: any): void {
     this.ccDepartments = event;
-    console.log(this.ccDepartments, "cc Dept");
+    console.log(this.ccDepartments, 'cc Dept');
   }
 
-  submit():void{
-    console.log("##### Save #####")
+  submit(): void {
+    console.log('##### Save #####');
   }
 
-   // create new field dynamically
-   newField(filePath: string, fileName: string, fileData?: File): FormGroup {
+  // create new field dynamically
+  newField(filePath: string, fileName: string, fileData?: File): FormGroup {
     return this.fb.group({
       id: [],
       filePath: [filePath, [Validators.required]],
@@ -207,11 +207,11 @@ export class MeetingUpdateComponent implements OnInit {
     });
   }
 
-   // add new field dynamically
-   addField(filePath: string, fileName: string,  fileData?: File): void {
+  // add new field dynamically
+  addField(filePath: string, fileName: string, fileData?: File): void {
     this.docList().push(this.newField(filePath, fileName, fileData));
   }
-  
+
   removeFieldConfirm(i: number): void {
     this.docList().removeAt(i);
     this.myInputVariable!.nativeElement.value = '';
@@ -221,51 +221,50 @@ export class MeetingUpdateComponent implements OnInit {
   removeAllField(): void {
     this.docList().clear();
   }
-  
-  removeField(i: number): void {
-      const docId = this.docList().controls[i].get(['id'])!.value;
-      const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
 
-      if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
-        this.removeFieldConfirm(i);
-      } else {
-        console.log("xxx");
-      }
+  removeField(i: number): void {
+    const docId = this.docList().controls[i].get(['id'])!.value;
+    const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
+
+    if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
+      this.removeFieldConfirm(i);
+    } else {
+      console.log('xxx');
     }
-    
-  checkRepositoryURL(inputFileElement: HTMLInputElement): void {   
-      inputFileElement.click();
   }
 
-   // define a function to upload files
-   onUploadFiles(event: Event): void {
+  checkRepositoryURL(inputFileElement: HTMLInputElement): void {
+    inputFileElement.click();
+  }
 
+  // define a function to upload files
+  onUploadFiles(event: Event): void {
     const target = event.target as HTMLInputElement;
 
     for (let i = 0; i <= target.files!.length - 1; i++) {
       const selectedFile = target.files![i];
       this._tempdocList.push(selectedFile);
     }
-    
+
     for (let i = 0; i < this._tempdocList.length; i++) {
       const tempFile = this._tempdocList[i];
-      this.addField("c://", tempFile.name, tempFile);
+      this.addField('c://', tempFile.name, tempFile);
     }
 
     this._tempdocList = [];
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  saveDraft(): void {   
+  saveDraft(): void {
     this.showLoading('Saving Documents in Draft');
     this.isSaving = true;
     this.showLoading('Saving and Uploading Documents');
-    
+
     const formData = new FormData();
     const attacheddocList = [];
     const meetingDelivery = this.createFrom();
 
-    console.log(meetingDelivery, "xxxDocumentDeliveryxxx")
+    console.log(meetingDelivery, 'xxxDocumentDeliveryxxx');
 
     const docList = meetingDelivery.attachmentList ?? [];
 
@@ -291,11 +290,8 @@ export class MeetingUpdateComponent implements OnInit {
         attacheddocList.push(dmsDoc);
       }
     }
-    formData.append('meeting', JSON.stringify(meetingDelivery));
 
-    console.log(formData, "meeting formdata")
-
-    this.subscribeToSaveResponse(this.meetingService.save(formData));
+    this.subscribeToSaveResponse(this.meetingService.save(formData, meetingDelivery));
   }
 
   showLoading(loadingMessage?: string): void {
@@ -304,7 +300,6 @@ export class MeetingUpdateComponent implements OnInit {
     this.hideLoading();
   }
 
-  
   showAlertMessage(msg1: string, msg2?: string): void {
     const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
     modalRef.componentInstance.code = msg1;
@@ -325,10 +320,7 @@ export class MeetingUpdateComponent implements OnInit {
     };
   }
 
-
-
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
-    
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
       () => this.onSaveError()
@@ -342,16 +334,16 @@ export class MeetingUpdateComponent implements OnInit {
       if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
 
-        console.log(replyMessage.data, "xxx Reply Message xxx");
+        console.log(replyMessage.data, 'xxx Reply Message xxx');
 
-        this.removeAllField();        
+        this.removeAllField();
         this.updateForm(replyMessage.data);
         const replyCode = replyMessage.code;
-        const replyMsg = replyMessage.message;        
+        const replyMsg = replyMessage.message;
         this.showAlertMessage(replyCode, replyMsg);
       } else {
         const replyCode = replyMessage.code;
-        const replyMsg = replyMessage.message;        
+        const replyMsg = replyMessage.message;
         this.showAlertMessage(replyCode, replyMsg);
       }
     } else {
@@ -365,108 +357,105 @@ export class MeetingUpdateComponent implements OnInit {
     this.showAlertMessage(replyCode, replyMsg);
   }
 
-    protected onSaveFinalize(): void {
-      this.isSaving = false;
-      this.hideLoading();
-    }
+  protected onSaveFinalize(): void {
+    this.isSaving = false;
+    this.hideLoading();
+  }
 
-    protected createFormMetingDelivery(): IMeetingDelivery {
+  protected createFormMetingDelivery(): IMeetingDelivery {
+    const format = 'YYYY-MM-DD';
+    const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, { format });
+    const s_date = dayjs(String(this.editForm.get(['meetingDate'])!.value) + String(this.editForm.get(['fromtime'])!.value), { format });
+    const e_date = dayjs(String(this.editForm.get(['meetingDate'])!.value) + String(this.editForm.get(['totime'])!.value), { format });
 
-      const format = 'YYYY-MM-DD';
-      const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, {format});
-      const s_date = dayjs(String(this.editForm.get(['meetingDate'])!.value)  + String(this.editForm.get(['fromtime'])!.value), {format});   
-      const e_date = dayjs(String(this.editForm.get(['meetingDate'])!.value) + String(this.editForm.get(['totime'])!.value), {format}); 
+    return {
+      ...new MeetingDelivery(),
 
-     return {
-        ...new MeetingDelivery(),
-  
-        id: this.editForm.get(['id'])!.value,
-        referenceNo: this.editForm.get(['id'])!.value,
-        sentDate:  undefined,
-        startDate: s_date,
-        endDate: e_date,
-        place: this.editForm.get(['location'])!.value,
-        subject: this.editForm.get(['subject'])!.value,
-        description: this.editForm.get(['body'])!.value,
-        deliveryStatus: 1,
-        status: 1,
-        delFlag: 'N',
-        sender:  this.getDepartment(),
-      };
-    }
-  
-    protected createFormReceiverList(): IDocumentReceiver[] {
-      const receiverList: IDocumentReceiver[] = [];
+      id: this.editForm.get(['id'])!.value,
+      referenceNo: this.editForm.get(['id'])!.value,
+      sentDate: undefined,
+      startDate: s_date,
+      endDate: e_date,
+      place: this.editForm.get(['location'])!.value,
+      subject: this.editForm.get(['subject'])!.value,
+      description: this.editForm.get(['body'])!.value,
+      deliveryStatus: 1,
+      status: 1,
+      delFlag: 'N',
+      sender: this.getDepartment(),
+    };
+  }
 
-      this.toDepartments?.forEach((value, index) => {
-        receiverList.push(this.createReceiverListDetail(1, value)); 
-      });
+  protected createFormReceiverList(): IDocumentReceiver[] {
+    const receiverList: IDocumentReceiver[] = [];
 
-      this.ccDepartments?.forEach((value, index) => {
-        receiverList.push(this.createReceiverListDetail(2, value)); 
-      });
+    this.toDepartments?.forEach((value, index) => {
+      receiverList.push(this.createReceiverListDetail(1, value));
+    });
 
-      return receiverList;
-    }
-    
-    protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IDocumentReceiver {
-      return {
-        ...new DocumentReceiver(),
-        id: undefined,
-        receiverType: receiver_Type,
-        status: 0,
-        delFlag: 'N',
-        receiver: iDepartment,
-      };
-    }
-   
-    protected getDepartment(): IDepartment {
-      return {
-        ...new Department(),
-        id: 1,
-        departmentName: 'အမြဲတမ်းအတွင်းဝန်ရုံးခန်း',
-        delFlag: 'N',
-        headDepartment: this.getHeadDepartment(),
-      };
-    }
+    this.ccDepartments?.forEach((value, index) => {
+      receiverList.push(this.createReceiverListDetail(2, value));
+    });
 
-    protected getHeadDepartment(): IHeadDepartment {
-      return {
-        ...new HeadDepartment(),
-        id: 1,
-        description: 'ပြည်ထောင်စုတရားသူကြီးချုပ်ရုံး',
-      };
-    }
+    return receiverList;
+  }
 
-    protected createFormdocList(): IDocumentAttachment[] {
-      const fieldList: IDocumentAttachment[] = [];
-      this.docList().controls.forEach(data => {
-        fieldList.push(this.createdocListDetail(data));
-      });
-      return fieldList;
-    }
-  
-    protected createdocListDetail(data: any): IDocumentAttachment {
-      return {
-        ...new DocumentAttachment(),
-        id: data.get(['id'])!.value,
-        filePath: data.get(['filePath'])!.value,
-        fileName: data.get(['fileName'])!.value,
-        delFlag: 'N'
-      };
-    }
+  protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IDocumentReceiver {
+    return {
+      ...new DocumentReceiver(),
+      id: undefined,
+      receiverType: receiver_Type,
+      status: 0,
+      delFlag: 'N',
+      receiver: iDepartment,
+    };
+  }
 
-    
+  protected getDepartment(): IDepartment {
+    return {
+      ...new Department(),
+      id: 1,
+      departmentName: 'အမြဲတမ်းအတွင်းဝန်ရုံးခန်း',
+      delFlag: 'N',
+      headDepartment: this.getHeadDepartment(),
+    };
+  }
+
+  protected getHeadDepartment(): IHeadDepartment {
+    return {
+      ...new HeadDepartment(),
+      id: 1,
+      description: 'ပြည်ထောင်စုတရားသူကြီးချုပ်ရုံး',
+    };
+  }
+
+  protected createFormdocList(): IDocumentAttachment[] {
+    const fieldList: IDocumentAttachment[] = [];
+    this.docList().controls.forEach(data => {
+      fieldList.push(this.createdocListDetail(data));
+    });
+    return fieldList;
+  }
+
+  protected createdocListDetail(data: any): IDocumentAttachment {
+    return {
+      ...new DocumentAttachment(),
+      id: data.get(['id'])!.value,
+      filePath: data.get(['filePath'])!.value,
+      fileName: data.get(['fileName'])!.value,
+      delFlag: 'N',
+    };
+  }
+
   protected updateForm(deliveryMessage: IDeliveryMessage): void {
     this.updateDocDelivery(deliveryMessage.documentDelivery!);
     this.updateDocDetails(deliveryMessage.attachmentList);
-    this.editForm.patchValue({      
+    this.editForm.patchValue({
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
     });
   }
 
-
-  protected updateDocDelivery(docDelivery: IDocumentDelivery):void{
+  protected updateDocDelivery(docDelivery: IDocumentDelivery): void {
     this.editForm.patchValue({
       id: docDelivery.id,
       docNo: docDelivery.referenceNo,
@@ -477,12 +466,10 @@ export class MeetingUpdateComponent implements OnInit {
 
   protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
     let index = 0;
-    docList?.forEach(data => { 
+    docList?.forEach(data => {
       this.addField('', '');
       this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
       index = index + 1;
     });
   }
-
-
 }
