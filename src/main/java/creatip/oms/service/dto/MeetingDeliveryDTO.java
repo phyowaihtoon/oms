@@ -12,11 +12,11 @@ public class MeetingDeliveryDTO implements Serializable {
 
     private String referenceNo;
 
-    private Instant sentDate;
+    private String sentDate;
 
-    private Instant startDate;
+    private String startDate;
 
-    private Instant endDate;
+    private String endDate;
 
     private String place;
 
@@ -65,27 +65,27 @@ public class MeetingDeliveryDTO implements Serializable {
         this.referenceNo = referenceNo;
     }
 
-    public Instant getSentDate() {
+    public String getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(Instant sentDate) {
+    public void setSentDate(String sentDate) {
         this.sentDate = sentDate;
     }
 
-    public Instant getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Instant startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Instant getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Instant endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

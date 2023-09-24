@@ -12,7 +12,7 @@ public class DocumentDeliveryDTO implements Serializable {
 
     private String referenceNo;
 
-    private Instant sentDate;
+    private String sentDate;
 
     @NotNull
     private String subject;
@@ -56,11 +56,11 @@ public class DocumentDeliveryDTO implements Serializable {
         this.referenceNo = referenceNo;
     }
 
-    public Instant getSentDate() {
+    public String getSentDate() {
         return sentDate;
     }
 
-    public void setSentDate(Instant sentDate) {
+    public void setSentDate(String sentDate) {
         this.sentDate = sentDate;
     }
 
