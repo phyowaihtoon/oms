@@ -42,15 +42,15 @@ public class CommonEnum {
     }
 
     public enum MeetingStatus {
-        CREATED(1, "Created"),
-        CANCEL(2, "Cancelled"),
-        START(3, "Started"),
-        FINISH(4, "Finished");
+        CREATED((short) 1, "Created"),
+        CANCEL((short) 2, "Cancelled"),
+        START((short) 3, "Started"),
+        FINISH((short) 4, "Finished");
 
-        public int value;
+        public short value;
         public String description;
 
-        MeetingStatus(int value, String description) {
+        MeetingStatus(short value, String description) {
             this.value = value;
             this.description = description;
         }
