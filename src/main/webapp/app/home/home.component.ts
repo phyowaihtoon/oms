@@ -6,6 +6,8 @@ import { Account } from 'app/core/auth/account.model';
 import { DashboardTemplate, IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { IUserAuthority } from 'app/login/userauthority.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
+import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-home',
@@ -18,6 +20,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   _userAuthority?: IUserAuthority | null;
 
   templates?: IDashboardTemplate[];
+
+  totalItems = 10;
+  itemsPerPage = ITEMS_PER_PAGE;
+  //page?: number;
+  page = 1;
+  predicate!: string;
+  ascending!: boolean;
+  ngbPaginationPage = 1;
+
+  model: NgbDateStruct | undefined;
+
   constructor(
     private accountService: AccountService,
     protected activatedRoute: ActivatedRoute,
@@ -49,5 +62,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
+  }
+
+  loadPage(page?: number, dontNavigate?: boolean): void {
+    //this.isLoading = true;
+    //const pageToLoad: number = page ?? this.page ?? 1;
+    console.log('Load');
   }
 }
