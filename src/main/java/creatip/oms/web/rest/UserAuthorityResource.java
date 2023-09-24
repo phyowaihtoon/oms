@@ -71,6 +71,8 @@ public class UserAuthorityResource {
             this.roleDashboardAccessService.getAllDashboardTemplateByRole(appUserDTO.getUserRole().getId());
         userAuthorityMessage.setDashboardTemplates(dashboardTemplateList);
 
+        userAuthorityMessage.setDepartment(appUserDTO.getDepartment());
+
         return userAuthorityMessage;
     }
 
