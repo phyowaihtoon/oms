@@ -14,6 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { IMeetingDelivery, IMeetingMessage, MeetingDelivery, MeetingMessage } from '../meeting.model';
 import { MeetingService } from '../service/meeting.service';
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'jhi-meeting-update',
@@ -106,32 +107,14 @@ export class MeetingUpdateComponent implements OnInit {
     });
 
     this.modules = {
-      
-      // 'emoji-shortname': true,
-      // 'emoji-textarea': true,
-      // 'emoji-toolbar': true,
 
       'toolbar': [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
         ['blockquote', 'code-block'],
 
-        // [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-        // [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        // [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
-        // [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
-        // [{ 'direction': 'rtl' }],                         // text direction
-
-        // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-        // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
          [{ 'font': [] }],
          [{ 'align': [] }],
-
-        // ['clean'],                                         // remove formatting button
-
-        // ['link', 'image', 'video'],                         // link and image, video
-        // ['emoji']
 
       ]
     }
@@ -187,7 +170,19 @@ export class MeetingUpdateComponent implements OnInit {
   docList(): FormArray {
     return this.editForm.get('docList') as FormArray;
   }
+  checkFormArrayEmpty(): boolean { 
 
+    const formArray = this.editForm.get('docList') as FormArray;
+    console.log(formArray.length , "DocList")
+ 
+    if(formArray.length === 0) {
+     return true;
+    }
+    else{
+     return false;
+    }
+ 
+   }
   onToDepartmentChange(event: any): void {
     this.toDepartments = event;
     console.log(this.toDepartments, "to Dept");
@@ -296,7 +291,7 @@ export class MeetingUpdateComponent implements OnInit {
         attacheddocList.push(dmsDoc);
       }
     }
-    formData.append('delivery', JSON.stringify(meetingDelivery));
+    formData.append('meeting', JSON.stringify(meetingDelivery));
 
     console.log(formData, "meeting formdata")
 
@@ -324,7 +319,7 @@ export class MeetingUpdateComponent implements OnInit {
     return {
       ...new MeetingMessage(),
 
-      meetingDelivery: this.createFormDocDeli(),
+      meetingDelivery: this.createFormMetingDelivery(),
       receiverList: this.createFormReceiverList(),
       attachmentList: this.createFormdocList(),
     };
@@ -375,22 +370,19 @@ export class MeetingUpdateComponent implements OnInit {
       this.hideLoading();
     }
 
-    protected createFormDocDeli(): IMeetingDelivery {
+    protected createFormMetingDelivery(): IMeetingDelivery {
 
-      const m_date = this.editForm.get(['meetingDate'])!.value;
-      const s_date = this.editForm.get(['fromtime'])!.value;   
-      const e_date = this.editForm.get(['totime'])!.value;
+      const format = 'YYYY-MM-DD';
+      const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, {format});
+      const s_date = dayjs(String(this.editForm.get(['meetingDate'])!.value)  + String(this.editForm.get(['fromtime'])!.value), {format});   
+      const e_date = dayjs(String(this.editForm.get(['meetingDate'])!.value) + String(this.editForm.get(['totime'])!.value), {format}); 
 
-      console.log(m_date , "m_date")
-      console.log(s_date , "s_date")
-      console.log(e_date , "e_date")
-
-      return {
+     return {
         ...new MeetingDelivery(),
   
         id: this.editForm.get(['id'])!.value,
         referenceNo: this.editForm.get(['id'])!.value,
-        sentDate:  m_date,
+        sentDate:  undefined,
         startDate: s_date,
         endDate: e_date,
         place: this.editForm.get(['location'])!.value,

@@ -21,7 +21,11 @@
     <div class="card-body">
       <div *ngIf="isInfo" class="form-group">
         
-
+        <div *ngIf="editForm.get('meetingDate')!.invalid && (editForm.get('meetingDate')?.dirty || editForm.get('meetingDate')?.touched)">
+          <div *ngIf="editForm.get('meetingDate')?.errors?.required" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredDate"> This Field is required. </span>
+          </div>
+        </div>
         <div>
           <label for="dateInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Date">Date:</label>
           <input type="date" 
@@ -30,6 +34,12 @@
              name="dateInput">
         </div>
         
+        <div *ngIf="(editForm.get('fromtime')!.invalid || editForm.get('totime')!.invalid) && (editForm.get('fromtime')?.dirty || editForm.get('fromtime')?.touched ||editForm.get('totime')?.dirty || editForm.get('totime')?.touched)">
+          <div *ngIf="(editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required )" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
+          </div>
+        </div>
+
         <div>
           <label for="timeInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Time">Time:</label>
           
@@ -47,7 +57,9 @@
           </div>
 
         <div *ngIf="editForm.get('location')!.invalid && (editForm.get('location')?.dirty || editForm.get('location')?.touched)">
-          <div *ngIf="editForm.get('location')?.errors?.required" style="text-align: right; color: red">This field is required.</div>
+          <div *ngIf="editForm.get('location')?.errors?.required" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          </div>
         </div>
         <input
           type="text"
@@ -60,7 +72,9 @@
         />
 
         <div *ngIf="editForm.get('subject')!.invalid && (editForm.get('subject')?.dirty || editForm.get('subject')?.touched)">
-          <div *ngIf="editForm.get('subject')?.errors?.required" style="text-align: right; color: red">This field is required.</div>
+          <div *ngIf="editForm.get('subject')?.errors?.required" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          </div>
         </div>
 
         <input
@@ -73,15 +87,19 @@
         />
 
         <div *ngIf="editForm.get('body')!.invalid && (editForm.get('body')?.dirty || editForm.get('body')?.touched)">
-          <div *ngIf="editForm.get('body')?.errors?.required" style="text-align: right; color: red">This field is required.</div>
-        </div>
-        
+          <div *ngIf="editForm.get('body')?.errors?.required" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          </div>
+        </div>        
         <quill-editor [styles]="{height: '150px'}" [modules]="modules"
         formControlName = "body" ></quill-editor> 
 
       </div>
 
       <div *ngIf="isReceiver" class="form-group">
+        <div *ngIf="toDepartments!.length === 0 " style="text-align: right; color: red">
+          <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredMainDept"> This Field is required. </span>
+        </div>  
         <div class="textbox-wrapper div-padding">
           <jhi-department-component
             [placeholder]="toLabel"
@@ -99,7 +117,10 @@
         </div>
       </div>
       <div *ngIf="isAttachment" class="form-group">
-        <label class="form-control-label" for="text">&nbsp;</label>
+        <label class="form-control-label" for="text">&nbsp;</label>        
+        <div *ngIf="checkFormArrayEmpty()" style="text-align: right; color: red">
+          <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredFile"> This Field is required. </span>
+        </div>  
         <form enctype="multipart/form-data">
           <fieldset>
             <div class="form-group">
@@ -203,7 +224,7 @@
           style="float: right"
           (click)="goToStep2()"
           [disabled]="
-            editForm.get('location')?.errors?.required || editForm.get('subject')?.errors?.required || editForm.get('body')?.errors?.required
+          editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required || editForm.get('location')?.errors?.required || editForm.get('subject')?.errors?.required || editForm.get('body')?.errors?.required
           "
         >
           <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
@@ -217,7 +238,7 @@
           <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back"> Back</span>
         </button>
 
-        <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep3()">
+        <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep3()" [disabled]="toDepartments!.length === 0">
           <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
           <fa-icon icon="forward"></fa-icon>
         </button>
@@ -229,7 +250,7 @@
           <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
         </button>
 
-        <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep4()">
+        <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep4()" [disabled]="checkFormArrayEmpty()">
           <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
           <fa-icon icon="forward"></fa-icon>
         </button>

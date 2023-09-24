@@ -151,7 +151,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
     const successHeader = ['modal-header', 'dms-modal-header', 'bg-success', 'text-white'];
     const errorHeader = ['modal-header', 'dms-modal-header', 'bg-danger', 'text-white'];
     const warningHeader = ['modal-header', 'dms-modal-header', 'bg-warning', 'text-white'];
-    const infoHeader = ['modal-header', 'dms-modal-header', 'bg-info', 'text-white'];
+    const infoHeader = ['modal-header', 'dms-modal-header', ' bg-dark', 'text-white'];
 
     if (this.code === ResponseCode.SUCCESS) {
       this.modalHeaderClass = successHeader;
