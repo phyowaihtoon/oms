@@ -1,5 +1,6 @@
 package creatip.oms.repository;
 
+import creatip.oms.domain.Department;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.repository.custom.CustomMeetingDeliveryRepository;
@@ -43,4 +44,6 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
 
     @Query(value = "select md from MeetingDelivery md " + "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 ")
     Page<MeetingDelivery> findMeetingDraftList(Long senderId, Pageable pageable);
+
+    Long countBySenderAndDeliveryStatusAndDelFlag(Department sender, short deliveryStatus, String delFlag);
 }
