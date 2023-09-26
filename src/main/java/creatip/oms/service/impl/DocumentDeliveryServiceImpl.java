@@ -331,4 +331,10 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         }
         return page.map(documentDeliveryMapper::toDto);
     }
+
+    @Override
+    public Page<DocumentDeliveryDTO> getDeliveryDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
+        Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(criteria.getSenderId(), pageable);
+        return page.map(documentDeliveryMapper::toDto);
+    }
 }

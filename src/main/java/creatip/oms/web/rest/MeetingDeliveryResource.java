@@ -375,12 +375,69 @@ public class MeetingDeliveryResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/meeting/draft")
+    public ResponseEntity<List<MeetingDeliveryDTO>> getMeetingDraftList(@RequestParam("criteria") String criteria, Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get MeetingDelivery Draft List");
+        log.debug("SearchCriteriaMessage :{} ", criteria);
+
+        SearchCriteriaMessage criteriaMessage = null;
+        try {
+            this.objectMapper = new ObjectMapper();
+            criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
+        } catch (MismatchedInputException ex) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        } catch (JsonProcessingException ex) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        } catch (Exception ex) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        criteriaMessage.setSenderId(appUserDTO.getDepartment().getId());
+
+        Page<MeetingDeliveryDTO> page = meetingDeliveryService.getMeetingDraftList(criteriaMessage, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
     @GetMapping("/meeting/scheduled")
-    public ResponseEntity<List<MeetingDeliveryDTO>> getScheduledMeetingList() throws URISyntaxException {
+    public List<MeetingDeliveryDTO> getScheduledMeetingList() throws URISyntaxException {
         log.debug("REST request to get MeetingDelivery Scheduled List");
 
         List<MeetingDeliveryDTO> list = meetingDeliveryService.getScheduledMeetingList();
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(list);
+        return list;
     }
 }

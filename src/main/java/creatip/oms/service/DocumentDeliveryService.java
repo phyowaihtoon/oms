@@ -19,6 +19,8 @@ public interface DocumentDeliveryService {
 
     Page<DocumentDeliveryDTO> getSentDeliveryList(SearchCriteriaMessage criteria, Pageable pageable);
 
+    Page<DocumentDeliveryDTO> getDeliveryDraftList(SearchCriteriaMessage criteria, Pageable pageable);
+
     Optional<DeliveryMessage> findOne(Long id);
 
     List<NotificationMessage> getNotification(Long departmentId);
