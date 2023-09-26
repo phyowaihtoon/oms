@@ -34,3 +34,8 @@ export interface IMenuItem {
   orderNo: number;
   menuGroup: IMenuGroup;
 }
+
+export interface IDraftSummary {
+  deliveryCount: number;
+  meetingCount: number;
+}
