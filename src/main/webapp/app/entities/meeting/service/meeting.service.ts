@@ -45,6 +45,10 @@ export class MeetingService {
     return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
   }
 
+  getScheduledMeetingList(): Observable<EntityArrayResponseType> {
+    return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/scheduled`, { observe: 'response' });
+  }
+
   protected convertDateFromClient(meetingDelivery: IMeetingDelivery): IMeetingDelivery {
     return Object.assign({}, meetingDelivery, {
       startDate: meetingDelivery.startDate?.isValid() ? meetingDelivery.startDate.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,

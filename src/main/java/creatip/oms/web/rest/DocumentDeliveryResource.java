@@ -230,20 +230,23 @@ public class DocumentDeliveryResource {
             this.objectMapper = new ObjectMapper();
             criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
         } catch (MismatchedInputException ex) {
-            ex.printStackTrace();
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
-            ex.printStackTrace();
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -251,6 +254,7 @@ public class DocumentDeliveryResource {
 
         if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -260,6 +264,7 @@ public class DocumentDeliveryResource {
             criteriaMessage.getRequestFrom() == RequestFrom.DASHBOARD.value && !SharedUtils.isDateStringValid(criteriaMessage.getDateOn())
         ) {
             String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -270,6 +275,7 @@ public class DocumentDeliveryResource {
             (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
         ) {
             String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -279,6 +285,7 @@ public class DocumentDeliveryResource {
         ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
         if (appUserDTO == null || appUserDTO.getDepartment() == null) {
             String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -302,14 +309,16 @@ public class DocumentDeliveryResource {
             this.objectMapper = new ObjectMapper();
             criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
-            ex.printStackTrace();
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -317,6 +326,7 @@ public class DocumentDeliveryResource {
 
         if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
             String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -326,6 +336,7 @@ public class DocumentDeliveryResource {
             criteriaMessage.getRequestFrom() == RequestFrom.DASHBOARD.value && !SharedUtils.isDateStringValid(criteriaMessage.getDateOn())
         ) {
             String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -336,6 +347,7 @@ public class DocumentDeliveryResource {
             (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
         ) {
             String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
@@ -345,6 +357,7 @@ public class DocumentDeliveryResource {
         ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
         if (appUserDTO == null || appUserDTO.getDepartment() == null) {
             String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
