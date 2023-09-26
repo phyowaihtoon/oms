@@ -4,14 +4,13 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { Observable } from 'rxjs';
 
 export type WorkflowAuthorityArrayType = HttpResponse<IWorkflowAuthority[]>;
-export type DocumentStatusArrayType = HttpResponse<IDocumentStatus[]>;
 export type PriorityArrayType = HttpResponse<IPriority[]>;
 export type DashboardArrayType = HttpResponse<IDashboardTemplate[]>;
-export type CodeTypeArrayType = HttpResponse<ICodeType[]>;
 export type HeadDepartmentType = HttpResponse<IHeadDepartment[]>;
 export type SubDepartmentType = HttpResponse<IDepartment[]>;
+export type DraftSummaryType = HttpResponse<IDraftSummary>;
 
-import { ICodeType, IDocumentStatus, IPriority, IWorkflowAuthority } from './setup.model';
+import { IDraftSummary, IPriority, IWorkflowAuthority } from './setup.model';
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { IDepartment, IHeadDepartment } from '../department/department.model';
 
@@ -40,5 +39,10 @@ export class LoadSetupService {
   loadAllSubDepartments(): Observable<SubDepartmentType> {
     const childURL = '/subdept';
     return this.http.get<IDepartment[]>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadDraftSummary(): Observable<DraftSummaryType> {
+    const childURL = '/draftsummary';
+    return this.http.get<IDraftSummary>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }
