@@ -5,10 +5,13 @@ import creatip.oms.domain.Department;
 import creatip.oms.domain.HeadDepartment;
 import creatip.oms.repository.DashboardTemplateRepository;
 import creatip.oms.repository.DepartmentRepository;
+import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.repository.HeadDepartmentRepository;
+import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.service.LoadSetupService;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.DepartmentDTO;
+import creatip.oms.service.dto.DraftSummaryDTO;
 import creatip.oms.service.dto.HeadDepartmentDTO;
 import creatip.oms.service.mapper.DashboardTemplateMapper;
 import creatip.oms.service.mapper.DepartmentMapper;
@@ -30,13 +33,18 @@ public class LoadSetupServiceImpl implements LoadSetupService {
     private final DepartmentRepository departmentRepository;
     private final DepartmentMapper departmentMapper;
 
+    private final DocumentDeliveryRepository documentDeliveryRepository;
+    private final MeetingDeliveryRepository meetingDeliveryRepository;
+
     public LoadSetupServiceImpl(
         DashboardTemplateRepository dashboardTemplateRepository,
         DashboardTemplateMapper dashboardTemplateMapper,
         HeadDepartmentRepository headDepartmentRepository,
         HeadDepartmentMapper headDepartmentMapper,
         DepartmentRepository departmentRepository,
-        DepartmentMapper departmentMapper
+        DepartmentMapper departmentMapper,
+        DocumentDeliveryRepository documentDeliveryRepository,
+        MeetingDeliveryRepository meetingDeliveryRepository
     ) {
         this.dashboardTemplateRepository = dashboardTemplateRepository;
         this.dashboardTemplateMapper = dashboardTemplateMapper;
@@ -44,6 +52,8 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         this.headDepartmentMapper = headDepartmentMapper;
         this.departmentRepository = departmentRepository;
         this.departmentMapper = departmentMapper;
+        this.documentDeliveryRepository = documentDeliveryRepository;
+        this.meetingDeliveryRepository = meetingDeliveryRepository;
     }
 
     @Override
@@ -62,5 +72,16 @@ public class LoadSetupServiceImpl implements LoadSetupService {
     public List<DepartmentDTO> getAllSubDepartments() {
         List<Department> entityList = this.departmentRepository.findAll();
         return this.departmentMapper.toDto(entityList);
+    }
+
+    @Override
+    public DraftSummaryDTO getDraftSummary(DepartmentDTO departmentDTO) {
+        DraftSummaryDTO draftSummaryDTO = new DraftSummaryDTO();
+        Department sender = this.departmentMapper.toEntity(departmentDTO);
+        Long deliveryCount = documentDeliveryRepository.countBySenderAndDeliveryStatusAndDelFlag(sender, (short) 0, "N");
+        Long meetingCount = meetingDeliveryRepository.countBySenderAndDeliveryStatusAndDelFlag(sender, (short) 0, "N");
+        draftSummaryDTO.setDeliveryCount(deliveryCount);
+        draftSummaryDTO.setMeetingCount(meetingCount);
+        return draftSummaryDTO;
     }
 }

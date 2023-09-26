@@ -1,7 +1,9 @@
 package creatip.oms.service;
 
+import creatip.oms.domain.Department;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.DepartmentDTO;
+import creatip.oms.service.dto.DraftSummaryDTO;
 import creatip.oms.service.dto.HeadDepartmentDTO;
 import java.util.List;
 
@@ -11,4 +13,6 @@ public interface LoadSetupService {
     public List<HeadDepartmentDTO> getAllHeadDepartments();
 
     public List<DepartmentDTO> getAllSubDepartments();
+
+    public DraftSummaryDTO getDraftSummary(DepartmentDTO sender);
 }

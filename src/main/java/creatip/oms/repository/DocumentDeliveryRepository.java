@@ -1,5 +1,6 @@
 package creatip.oms.repository;
 
+import creatip.oms.domain.Department;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.repository.custom.CustomDocumentDeliveryRepository;
 import org.springframework.data.domain.Page;
@@ -35,4 +36,6 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
 
     @Query(value = "select dd from DocumentDelivery dd " + "where dd.delFlag='N' and dd.deliveryStatus=0 " + "and dd.sender.id=?1")
     Page<DocumentDelivery> findDeliveryDraftList(Long senderId, Pageable pageable);
+
+    Long countBySenderAndDeliveryStatusAndDelFlag(Department sender, short deliveryStatus, String delFlag);
 }
