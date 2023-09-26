@@ -5,6 +5,7 @@ import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.domain.MeetingReceiver;
 import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
 import creatip.oms.enumeration.CommonEnum.MeetingStatus;
+import creatip.oms.enumeration.CommonEnum.RequestFrom;
 import creatip.oms.repository.MeetingAttachmentRepository;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.repository.MeetingReceiverRepository;
@@ -24,7 +25,6 @@ import creatip.oms.util.ResponseCode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,12 +202,32 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
     @Override
     public Page<MeetingDeliveryDTO> getReceivedMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
-        return meetingDeliveryRepository.findAll(pageable).map(meetingDeliveryMapper::toDto);
+        Page<MeetingDelivery> page = null;
+        if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
+            page = meetingDeliveryRepository.findReceivedMeetingList(criteria.getReceiverId(), criteria.getDateOn(), pageable);
+        } else {
+            page = meetingDeliveryRepository.findReceivedMeetingList(criteria, pageable);
+        }
+
+        return page.map(meetingDeliveryMapper::toDto);
     }
 
     @Override
-    public Page<MeetingDeliveryDTO> getInvitedMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
-        return meetingDeliveryRepository.findAll(pageable).map(meetingDeliveryMapper::toDto);
+    public Page<MeetingDeliveryDTO> getSentMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
+        Page<MeetingDelivery> page = null;
+        if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
+            page = meetingDeliveryRepository.findSentMeetingList(criteria.getReceiverId(), criteria.getDateOn(), pageable);
+        } else {
+            page =
+                meetingDeliveryRepository.findSentMeetingList(
+                    criteria.getSenderId(),
+                    criteria.getDateFrom(),
+                    criteria.getDateTo(),
+                    pageable
+                );
+        }
+
+        return page.map(meetingDeliveryMapper::toDto);
     }
 
     private List<MeetingAttachment> saveAndUploadFiles(List<MultipartFile> multipartFiles, MeetingDelivery header) {
@@ -311,5 +331,11 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public List<MeetingDeliveryDTO> getScheduledMeetingList() {
+        List<MeetingDelivery> list = meetingDeliveryRepository.findScheduledMeetingList();
+        return meetingDeliveryMapper.toDto(list);
     }
 }

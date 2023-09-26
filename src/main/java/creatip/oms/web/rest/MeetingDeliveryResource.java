@@ -2,7 +2,9 @@ package creatip.oms.web.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import creatip.oms.domain.User;
+import creatip.oms.enumeration.CommonEnum.RequestFrom;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.service.ApplicationUserService;
 import creatip.oms.service.MeetingDeliveryService;
@@ -14,6 +16,7 @@ import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
+import creatip.oms.util.SharedUtils;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -219,23 +222,74 @@ public class MeetingDeliveryResource {
         throws URISyntaxException {
         log.debug("REST request to get MeetingDelivery Received List");
         log.debug("SearchCriteriaMessage :{} ", criteria);
+
         SearchCriteriaMessage criteriaMessage = null;
         try {
             this.objectMapper = new ObjectMapper();
             criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
+        } catch (MismatchedInputException ex) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/meeting/received/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/meeting/received/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         }
+
+        if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.DASHBOARD.value && !SharedUtils.isDateStringValid(criteriaMessage.getDateOn())
+        ) {
+            String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
+            (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
+        ) {
+            String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        criteriaMessage.setReceiverId(appUserDTO.getDepartment().getId());
 
         Page<MeetingDeliveryDTO> page = meetingDeliveryService.getReceivedMeetingList(criteriaMessage, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -243,30 +297,90 @@ public class MeetingDeliveryResource {
     }
 
     @GetMapping("/meeting/sent")
-    public ResponseEntity<List<MeetingDeliveryDTO>> getInvitedMeetingList(@RequestParam("criteria") String criteria, Pageable pageable)
+    public ResponseEntity<List<MeetingDeliveryDTO>> getSentMeetingList(@RequestParam("criteria") String criteria, Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get MeetingDelivery Invited List");
         log.debug("SearchCriteriaMessage :{} ", criteria);
+
         SearchCriteriaMessage criteriaMessage = null;
         try {
             this.objectMapper = new ObjectMapper();
             criteriaMessage = this.objectMapper.readValue(criteria, SearchCriteriaMessage.class);
+        } catch (MismatchedInputException ex) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/meeting/sent/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            return ResponseEntity
-                .created(new URI("/api/meeting/sent/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(null);
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
         }
 
-        Page<MeetingDeliveryDTO> page = meetingDeliveryService.getInvitedMeetingList(criteriaMessage, pageable);
+        if (!RequestFrom.isValid(criteriaMessage.getRequestFrom())) {
+            String message = "Invalid request parameter";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.DASHBOARD.value && !SharedUtils.isDateStringValid(criteriaMessage.getDateOn())
+        ) {
+            String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
+            (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
+        ) {
+            String message = "Invalid Date";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        criteriaMessage.setSenderId(appUserDTO.getDepartment().getId());
+
+        Page<MeetingDeliveryDTO> page = meetingDeliveryService.getSentMeetingList(criteriaMessage, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/meeting/scheduled")
+    public ResponseEntity<List<MeetingDeliveryDTO>> getScheduledMeetingList() throws URISyntaxException {
+        log.debug("REST request to get MeetingDelivery Scheduled List");
+
+        List<MeetingDeliveryDTO> list = meetingDeliveryService.getScheduledMeetingList();
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(list);
     }
 }

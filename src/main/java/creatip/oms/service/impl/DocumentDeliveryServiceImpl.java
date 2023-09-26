@@ -310,16 +310,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     pageable
                 );
         } else {
-            page =
-                documentDeliveryRepository.findDocumentsReceived(
-                    criteria.getReceiverId(),
-                    criteria.getStatus(),
-                    criteria.getDateFrom(),
-                    criteria.getDateTo(),
-                    criteria.getSenderId(),
-                    criteria.getSubject(),
-                    pageable
-                );
+            page = documentDeliveryRepository.findDocumentsReceived(criteria, pageable);
         }
         return page.map(documentDeliveryMapper::toDto);
     }
