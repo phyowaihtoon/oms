@@ -17,7 +17,7 @@ export class DeliveryService {
   constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
-    console.log("Delivery URL", this.resourceUrl)
+    console.log('Delivery URL', this.resourceUrl);
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
@@ -39,5 +39,10 @@ export class DeliveryService {
   findAllSent(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
+  }
+
+  findAllDraft(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/draft`, { params: options, observe: 'response' });
   }
 }

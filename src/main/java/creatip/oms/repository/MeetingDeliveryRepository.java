@@ -40,4 +40,7 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         "and date(md.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(md.sentDate) <= str_to_date(?3,'%d-%m-%Y')"
     )
     Page<MeetingDelivery> findSentMeetingList(Long senderId, String dateFrom, String dateTo, Pageable pageable);
+
+    @Query(value = "select md from MeetingDelivery md " + "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 ")
+    Page<MeetingDelivery> findMeetingDraftList(Long senderId, Pageable pageable);
 }

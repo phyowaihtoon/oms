@@ -20,5 +20,7 @@ public interface MeetingDeliveryService {
 
     Page<MeetingDeliveryDTO> getSentMeetingList(SearchCriteriaMessage criteria, Pageable pageable);
 
+    Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable);
+
     List<MeetingDeliveryDTO> getScheduledMeetingList();
 }

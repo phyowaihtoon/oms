@@ -45,6 +45,11 @@ export class MeetingService {
     return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
   }
 
+  findAllDraft(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/draft`, { params: options, observe: 'response' });
+  }
+
   getScheduledMeetingList(): Observable<EntityArrayResponseType> {
     return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/scheduled`, { observe: 'response' });
   }

@@ -32,4 +32,7 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
         "and date(dd.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(dd.sentDate) <= str_to_date(?3,'%d-%m-%Y')"
     )
     Page<DocumentDelivery> findDocumentsSent(Long senderId, String dateFrom, String dateTo, Pageable pageable);
+
+    @Query(value = "select dd from DocumentDelivery dd " + "where dd.delFlag='N' and dd.deliveryStatus=0 " + "and dd.sender.id=?1")
+    Page<DocumentDelivery> findDeliveryDraftList(Long senderId, Pageable pageable);
 }
