@@ -149,8 +149,6 @@ export class DeliveryUpdateComponent implements OnInit{
   checkFormArrayEmpty(): boolean { 
 
    const formArray = this.editForm.get('docList') as FormArray;
-   console.log(formArray.length , "DocList")
-
    if(formArray.length === 0) {
     return true;
    }
@@ -186,6 +184,9 @@ export class DeliveryUpdateComponent implements OnInit{
 
    // add new field dynamically
    addField(filePath: string, fileName: string,  fileData?: File): void {
+
+    console.log(fileData, "FileDataxxxxxxxx")
+
     this.docList().push(this.newField(filePath, fileName, fileData));
   }
   
@@ -241,10 +242,8 @@ export class DeliveryUpdateComponent implements OnInit{
     const formData = new FormData();
     const attacheddocList = [];
     const documentDelivery = this.createFrom(deliveryStatus);
-
-    console.log(documentDelivery, "xxxDocumentDeliveryxxx")
-
-    const docList = documentDelivery.attachmentList ?? [];
+    const docList = documentDelivery.attachmentList ?? [];    
+    console.log(documentDelivery.attachmentList, "documentDelivery.attachmentList")
 
     if (docList.length > 0) {
       for (const dmsDoc of docList) {
@@ -269,10 +268,10 @@ export class DeliveryUpdateComponent implements OnInit{
       }
     }
     formData.append('delivery', JSON.stringify(documentDelivery));
-    console.log(formData.get("files"), "formData");
-    console.log(formData.get("delivery"), "formData");
-    console.log("Document Delivery :",JSON.stringify(documentDelivery));
-    this.subscribeToSaveResponse(this.deliveryService.save(formData));
+    console.log(formData.get("files"), "formData Files");
+    // console.log(formData.get("delivery"), "formData");
+    // console.log("Document Delivery :",JSON.stringify(documentDelivery));
+   this.subscribeToSaveResponse(this.deliveryService.save(formData));
   }
 
   showLoading(loadingMessage?: string): void {
@@ -326,10 +325,13 @@ export class DeliveryUpdateComponent implements OnInit{
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;        
         this.showAlertMessage(replyCode, replyMsg);
+
       } else {
+
         const replyCode = replyMessage.code;
         const replyMsg = replyMessage.message;        
         this.showAlertMessage(replyCode, replyMsg);
+        
       }
     } else {
       this.onSaveError();
@@ -419,7 +421,8 @@ export class DeliveryUpdateComponent implements OnInit{
         id: data.get(['id'])!.value,
         filePath: data.get(['filePath'])!.value,
         fileName: data.get(['fileName'])!.value,
-        delFlag: 'N'
+        delFlag: 'N',
+        fileData: data.get(['fileData'])!.value,
       };
     }
 
