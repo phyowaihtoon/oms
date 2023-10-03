@@ -8,6 +8,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 
 export type EntityResponseType = HttpResponse<IDeliveryMessage>;
 export type EntityArrayResponseType = HttpResponse<IDocumentDelivery[]>;
+export type BlobType = HttpResponse<Blob>;
 
 @Injectable({
   providedIn: 'root',
@@ -38,14 +39,19 @@ export class DeliveryService {
 
   findAllSent(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-
-    console.log(options, " xxxxx options findAllSent xxxxxxxx")
-
     return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
   }
 
   findAllDraft(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/draft`, { params: options, observe: 'response' });
+  }
+
+  getPreviewData(attachmentId: number): Observable<BlobType> {
+    return this.http.get(`${this.resourceUrl}/preview/${attachmentId}`, { observe: 'response', responseType: 'blob' });
+  }
+
+  downloadFile(attachmentId: number): Observable<BlobType> {
+    return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
   }
 }
