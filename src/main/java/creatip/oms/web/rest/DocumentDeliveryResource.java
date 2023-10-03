@@ -117,7 +117,7 @@ public class DocumentDeliveryResource {
             log.debug("Message Response : {}", responseMessage);
             log.error("Exception :", ex);
             result = new ReplyMessage<DeliveryMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
@@ -128,7 +128,7 @@ public class DocumentDeliveryResource {
             log.debug("Message Response : {}", responseMessage);
             log.error("Exception :", ex);
             result = new ReplyMessage<DeliveryMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
@@ -157,13 +157,24 @@ public class DocumentDeliveryResource {
         } catch (UploadFailedException ex) {
             log.debug("Message Response : {}", ex.getMessage());
             log.error("Exception :", ex);
-            ReplyMessage<DeliveryMessage> uploadFailedMessage = new ReplyMessage<DeliveryMessage>();
-            uploadFailedMessage.setCode(ex.getCode());
-            uploadFailedMessage.setMessage(ex.getMessage());
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ex.getCode());
+            result.setMessage(ex.getMessage());
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(uploadFailedMessage);
+                .body(result);
+        } catch (Exception ex) {
+            String errMessage = "Transaction could not be processed. Check details in application logs";
+            log.debug("Message Response : {}", errMessage);
+            log.error("Exception :", ex);
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.EXCEP_EX);
+            result.setMessage(errMessage);
+            return ResponseEntity
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
 
         String docHeaderId = "";
@@ -200,7 +211,7 @@ public class DocumentDeliveryResource {
             log.debug("Message Response : {}", responseMessage);
             log.error("Exception :{}", ex);
             result = new ReplyMessage<DeliveryMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
@@ -211,7 +222,7 @@ public class DocumentDeliveryResource {
             log.debug("Message Response : {}", responseMessage);
             log.error("Exception :{}", ex);
             result = new ReplyMessage<DeliveryMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
@@ -239,14 +250,25 @@ public class DocumentDeliveryResource {
             result = documentDeliveryService.save(deliveryMessage, multipartFiles);
         } catch (UploadFailedException ex) {
             log.debug("Message Response : {}", ex.getMessage());
-            log.error("Exception : {}", ex);
-            ReplyMessage<DeliveryMessage> uploadFailedMessage = new ReplyMessage<DeliveryMessage>();
-            uploadFailedMessage.setCode(ex.getCode());
-            uploadFailedMessage.setMessage(ex.getMessage());
+            log.error("Exception :", ex);
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ex.getCode());
+            result.setMessage(ex.getMessage());
             return ResponseEntity
-                .created(new URI("/api/delivery/" + docHeaderId))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
-                .body(uploadFailedMessage);
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        } catch (Exception ex) {
+            String errMessage = "Transaction could not be processed. Check details in application logs";
+            log.debug("Message Response : {}", errMessage);
+            log.error("Exception :", ex);
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.EXCEP_EX);
+            result.setMessage(errMessage);
+            return ResponseEntity
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
 
         if (result != null) {

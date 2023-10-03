@@ -68,12 +68,12 @@ public class ReportServiceImpl implements ReportService {
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage("Report columns do not match." + ex.getMessage());
             return replyMessage;
         } catch (Exception ex) {
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return replyMessage;
         }

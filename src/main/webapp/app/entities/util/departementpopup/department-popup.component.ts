@@ -212,7 +212,7 @@ export class DepartmentPopupComponent implements OnInit, OnDestroy {
 
     if (this.code === ResponseCode.SUCCESS) {
       this.modalButtonClass = btnSuccess;
-    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.ERROR_E01) {
+    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.EXCEP_EX) {
       this.modalButtonClass = btnDanger;
     } else if (this.code === ResponseCode.WARNING) {
       this.modalButtonClass = btnWarning;
