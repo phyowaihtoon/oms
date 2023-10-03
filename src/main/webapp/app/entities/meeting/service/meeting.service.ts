@@ -8,6 +8,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 
 export type EntityResponseType = HttpResponse<IMeetingMessage>;
 export type EntityArrayResponseType = HttpResponse<IMeetingDelivery[]>;
+export type BlobType = HttpResponse<Blob>;
 
 @Injectable({
   providedIn: 'root',
@@ -52,6 +53,14 @@ export class MeetingService {
 
   getScheduledMeetingList(): Observable<EntityArrayResponseType> {
     return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/scheduled`, { observe: 'response' });
+  }
+
+  getPreviewData(attachmentId: number): Observable<BlobType> {
+    return this.http.get(`${this.resourceUrl}/preview/${attachmentId}`, { observe: 'response', responseType: 'blob' });
+  }
+
+  downloadFile(attachmentId: number): Observable<BlobType> {
+    return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
   }
 
   protected convertDateFromClient(meetingDelivery: IMeetingDelivery): IMeetingDelivery {
