@@ -1,1 +1,186 @@
-<p>delivery-received works!</p>
+
+<div id="page-heading" class="row">
+    <div class="col-8">
+      <span>Document </span>
+      <span>
+        >> Receive </span
+      >
+    </div>
+</div>
+
+<div id="page-body" class="form-group">
+
+    <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
+        <div class="form-group row col-12">
+          <div class="col-2">
+            <label class="form-control-label" >From Date</label>
+          </div>
+
+          <div class="col-2">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="fromdate"
+                data-cy="fromdate"
+                placeholder="DD-MM-YYYY"
+                name="fromdate"
+                formControlName="fromdate"
+                ngbDatepicker
+                #fromdate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="fromdateButton" (click)="fromdate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+          <!-- <div class="col-2">
+            <input type="date" 
+            class="form-control"
+            placeholder="dd-mm-yyyy"
+            id="fromdate" 
+            name="fromdate"            
+            formControlName="fromdate"> 
+          </div> -->
+
+          <div class="col-2">
+            <label class="form-control-label" >Subject</label>
+          </div>
+          <div class="col-2">
+            <input type="text" 
+            class="form-control" 
+            name="subject" id="field_subject" 
+            data-cy="subject" 
+            formControlName="subject" />       
+          </div>
+        </div>
+
+        <div class="form-group row col-12">
+            <div class="col-2">
+              <label class="form-control-label" >To Date</label>
+            </div>
+            <div class="col-2">
+
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  id="todate"
+                  data-cy="todate"
+                  placeholder="DD-MM-YYYY"
+                  name="todate"
+                  formControlName="todate"
+                  ngbDatepicker
+                  #todate="ngbDatepicker"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-primary btn-sm dms-icon-btn" id="todateButton" (click)="todate.toggle()" type="button">
+                    <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <!-- <input type="date" 
+              class="form-control"
+              placeholder="dd-mm-yyyy"
+              id="todate" 
+              name="todate"            
+              formControlName="todate">  -->
+            </div>
+  
+            <div class="col-2">
+              <label class="form-control-label" >Department</label>
+            </div>
+            <div class="col-2">
+                <select
+                class="form-control"
+                id="department"
+                data-cy="department"
+                name="department"
+                formControlName="departmentID"
+              >
+                <option [value]="0"> - </option>
+                <option [value]="department.id" *ngFor="let department of departmentsList; trackBy: trackDepartmentByID">
+                  {{ department.departmentName }}
+                </option>
+              </select>     
+            </div>
+          </div>
+          
+          <div class="form-group row col-12">  
+            <div class="col-2">
+              <label class="form-control-label" >Status</label>
+            </div>
+            <div class="col-2">
+                <select
+                class="form-control"
+                id="staus"
+                data-cy="status"
+                name="status"
+                formControlName="status"
+              >
+                <option [value]="2"> - </option>                
+                <option [value]="0"> Read </option>                
+                <option [value]="1"> Unread </option>
+                
+              </select>     
+            </div>
+
+            <div class="col-2">
+                <button class="btn btn-primary btn-sm" (click)="searchDocument()">
+                <fa-icon icon="search"></fa-icon>
+                <span class="d-none d-md-inline" >Search</span>
+                </button>    
+            </div>
+          </div>
+      </form>
+    
+    
+      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="box-header">Document Received</div>
+          <div class="box-body">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="bg-primary">
+                    <th style="width: 5%"><span>No.</span></th>
+                    <th style="width: 10%"><span>Date</span></th>
+                    <th style="width: 15%"><span>Document No.</span></th>
+                    <th style="width: 20%"><span>Subject</span></th>
+                    <th style="width: 30%"><span>Department</span></th>
+                    <th style="width: 20%">#</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let doc of documentDelivery; let i = index" data-cy="entityTable">
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
+                    <td>{{ doc.referenceNo }}</td>
+                    <td>{{ doc.subject }}</td>                    
+                    <td>{{ doc.sender }}</td>
+                    <td>-</td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="box-footer">
+            <div class="row justify-content-center">
+              <ngb-pagination
+                [collectionSize]="totalItems"
+                [(page)]="ngbPaginationPage"
+                [pageSize]="itemsPerPage"
+                [maxSize]="5"
+                [rotate]="true"
+                [boundaryLinks]="true"
+                (pageChange)="loadPage($event)"
+              ></ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

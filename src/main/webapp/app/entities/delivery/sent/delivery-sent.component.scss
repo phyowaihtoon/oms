@@ -1,0 +1,13 @@
+/* Style for date input */
+input[type="date"] {
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 12px;
+    transition: border-color 0.2s;
+  }
+  
+  input[type="date"]:hover {
+    border-color: #555;
+  }

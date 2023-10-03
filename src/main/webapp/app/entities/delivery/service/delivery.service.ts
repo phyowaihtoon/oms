@@ -38,6 +38,9 @@ export class DeliveryService {
 
   findAllSent(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
+
+    console.log(options, " xxxxx options findAllSent xxxxxxxx")
+
     return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
   }
 

@@ -8,30 +8,74 @@
         <span jhiTranslate="global.menu.delivery.DocumentDelivery"> Document Delivery </span>
       </div>
 
+      <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo" >Doc No.</label>
       <div class="card-body">
         <input type="text" readonly 
         class="textbox text-height form-control div-padding" 
         value="{{docNo}}" />
-    
+      
+      <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept" >Main Dept.</label>
       <div class="textbox-wrapper div-padding">
         <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
       </div>
     
+      <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept" >CC Dept.</label>
       <div class="textbox-wrapper div-padding">
         <jhi-department-component [isReadonly]="true" [departments]="ccDepartments"></jhi-department-component>
       </div>
     
+      <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject" >Sub.</label>
       <input type="text" readonly 
         class="textbox text-height form-control div-padding" 
         value="{{subject}}" />
     
+      <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body" >Bod.</label>
       <quill-editor 
         [styles]="{height: '220px'}" 
         [modules]="{ toolbar: false }" 
         class="quill-readonly"
         [(ngModel)]="body"></quill-editor>
 
+        <div class="table-responsive" style="padding: 8px !important;">
+          <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+              <tr class="bg-primary">
+                <th scope="col">
+                  <span jhiTranslate="omsApp.delivery.table.No">No.</span>
+                </th>
+                <th scope="col">
+                  <span jhiTranslate="omsApp.delivery.table.FileName">File Name</span>
+                </th>
+                <th scope="col" style="text-align: center">
+                  <span jhiTranslate="omsApp.delivery.table.Preview">Preview</span>
+                </th>
+                <th scope="col" style="text-align: center">
+                  <span jhiTranslate="omsApp.delivery.table.Download">Download</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let docDetail of attachmentList; let i = index" data-cy="entityTable">
+                <td>{{ i + 1 }}</td>
+                <td>{{ docDetail.fileName }}</td>
+                <td style="text-align: center">
+                  <span style="cursor: pointer" (click)="previewFile(docDetail.id, docDetail.fileName)">
+                    <fa-icon icon="eye"></fa-icon>
+                  </span>
+                </td>
+                <td style="text-align: center">
+                  <span style="cursor: pointer" (click)="downloadFile(docDetail.id, docDetail.fileName)">
+                    <fa-icon icon="download"></fa-icon>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
    
+      
+
   </div>  
 </div>

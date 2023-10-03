@@ -255,14 +255,14 @@ export class MeetingUpdateComponent implements OnInit {
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  saveDraft(): void {
+  save(deliveryStatus: number): void {
     this.showLoading('Saving Documents in Draft');
     this.isSaving = true;
     this.showLoading('Saving and Uploading Documents');
 
     const formData = new FormData();
     const attacheddocList = [];
-    const meetingDelivery = this.createFrom();
+    const meetingDelivery = this.createFrom(deliveryStatus);
 
     console.log(meetingDelivery, 'xxxDocumentDeliveryxxx');
 
@@ -310,11 +310,11 @@ export class MeetingUpdateComponent implements OnInit {
     this._modalRef?.close();
   }
 
-  protected createFrom(): IMeetingMessage {
+  protected createFrom(deliveryStatus: number): IMeetingMessage {
     return {
       ...new MeetingMessage(),
 
-      meetingDelivery: this.createFormMetingDelivery(),
+      meetingDelivery: this.createFormMetingDelivery(deliveryStatus),
       receiverList: this.createFormReceiverList(),
       attachmentList: this.createFormdocList(),
     };
@@ -362,7 +362,7 @@ export class MeetingUpdateComponent implements OnInit {
     this.hideLoading();
   }
 
-  protected createFormMetingDelivery(): IMeetingDelivery {
+  protected createFormMetingDelivery(deliveryStatusPara: number): IMeetingDelivery {
     const format = 'YYYY-MM-DD';
     const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, { format });
     const s_date = dayjs(String(this.editForm.get(['meetingDate'])!.value) + String(this.editForm.get(['fromtime'])!.value), { format });
@@ -379,10 +379,11 @@ export class MeetingUpdateComponent implements OnInit {
       place: this.editForm.get(['location'])!.value,
       subject: this.editForm.get(['subject'])!.value,
       description: this.editForm.get(['body'])!.value,
-      deliveryStatus: 1,
+      deliveryStatus: deliveryStatusPara,
+      meetingStatus: 1,
       status: 1,
       delFlag: 'N',
-      sender: this.getDepartment(),
+      sender: undefined,
     };
   }
 
@@ -443,7 +444,8 @@ export class MeetingUpdateComponent implements OnInit {
       id: data.get(['id'])!.value,
       filePath: data.get(['filePath'])!.value,
       fileName: data.get(['fileName'])!.value,
-      delFlag: 'N',
+      delFlag: 'N',      
+      fileData: data.get(['fileData'])!.value,
     };
   }
 
