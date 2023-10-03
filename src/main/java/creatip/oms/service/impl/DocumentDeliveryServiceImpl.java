@@ -80,15 +80,15 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     @Override
     @Transactional(rollbackFor = UploadFailedException.class)
     public ReplyMessage<DeliveryMessage> save(DeliveryMessage message, List<MultipartFile> attachedFiles) throws UploadFailedException {
-        log.debug("Request to save Document Delivery : {}", message);
         if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
+            log.debug("Please, attach document");
             replyMessage.setCode(ResponseCode.ERROR_E00);
-            replyMessage.setMessage("There is no attached document.");
+            replyMessage.setMessage("Please, attach document");
             return replyMessage;
         }
 
         try {
-            log.debug("Saving Document Delivery: {}", message);
+            log.debug("Saving Document Delivery");
 
             DocumentDelivery delivery = documentDeliveryMapper.toEntity(message.getDocumentDelivery());
             if (delivery.getDeliveryStatus() == DeliveryStatus.SENT.value && delivery.getSentDate() == null) delivery.setSentDate(
@@ -133,10 +133,12 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
             // Uploading attachment files
             if (attachedFiles != null && attachedFiles.size() > 0) {
+                log.debug("Trying to upload {}", attachedFiles.size() + " files");
                 List<DocumentAttachment> uploadedAttachmentList = saveAndUploadFiles(attachedFiles, delivery);
                 if (attachedFiles.size() != uploadedAttachmentList.size()) {
                     throw new UploadFailedException("Upload failed", replyMessage.getCode(), replyMessage.getMessage());
                 }
+                log.debug("Uploaded {}", attachedFiles.size() + " files successfully");
                 savedAttachmentList.addAll(documentAttachmentMapper.toDto(uploadedAttachmentList));
             }
 
@@ -152,9 +154,11 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         } catch (UploadFailedException ex) {
             throw ex;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.debug("Exception :{}", ex.getMessage());
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
+            log.debug("Exception Code :{}", ResponseCode.ERROR_E01);
+            return replyMessage;
         }
 
         return replyMessage;
@@ -200,7 +204,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         List<DocumentAttachment> uploadedList = new ArrayList<DocumentAttachment>();
         try {
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
-            System.out.println("Connected successfully to FTP Server");
+            log.debug("Connected successfully to FTP Server : {}", ftpSession.getHostPort());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             String dateInString = formatter.format(Instant.now());
@@ -237,12 +241,12 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
                 String fullRemoteFilePath = directory + "/" + orgFileName + "";
                 InputStream inputStream = file.getInputStream();
-                System.out.println("Start uploading file: [" + fullRemoteFilePath + "]");
+                log.debug("Start uploading file: {}", fullRemoteFilePath);
 
                 try {
                     ftpSession.write(inputStream, fullRemoteFilePath);
                     inputStream.close();
-                    System.out.println("Uploaded successfully: [" + fullRemoteFilePath + "]");
+                    log.debug("Uploaded successfully: {}", fullRemoteFilePath);
                     uploadedFileList.add(fullRemoteFilePath);
 
                     DocumentAttachment documentAttachment = new DocumentAttachment();
@@ -253,8 +257,8 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     documentAttachment = documentAttachmentRepository.save(documentAttachment);
                     uploadedList.add(documentAttachment);
                 } catch (IOException ex) {
-                    System.out.println("Failed to upload file : [" + fullRemoteFilePath + "]");
-                    ex.printStackTrace();
+                    log.debug("Failed to upload file : [" + fullRemoteFilePath + "]");
+                    log.error("Exception :{}", ex);
                     replyMessage.setCode(ResponseCode.ERROR_E01);
                     replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
                     // Removing previous uploaded files from FTP Server if failed to upload one file
@@ -263,20 +267,17 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 }
             }
         } catch (IllegalStateException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+            log.error("Exception: {}", ex);
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
             return uploadedList;
         } catch (IOException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+            log.error("Exception: {}", ex);
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+            log.error("Exception: {}", ex);
             replyMessage.setCode(ResponseCode.ERROR_E01);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
@@ -286,14 +287,14 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     }
 
     private void removePreviousFiles(List<String> uploadedFileList, FtpSession ftpSession) {
-        System.out.println("Removing previous uploaded files if failed to upload one file");
+        log.debug("Removing previous uploaded files because of failure of uploading one file");
         for (String filePath : uploadedFileList) {
             try {
                 ftpSession.remove(filePath);
-                System.out.println("Removed successfully : " + filePath);
+                log.debug("Removed successfully : {}", filePath);
             } catch (Exception ex) {
-                System.out.println("Failed to remove : " + filePath);
-                ex.printStackTrace();
+                log.debug("Failed to remove : {}", filePath);
+                log.error("Exception :{}", ex);
             }
         }
     }
