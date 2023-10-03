@@ -1,6 +1,5 @@
 package creatip.oms.service;
 
-import creatip.oms.domain.Department;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.DepartmentDTO;
 import creatip.oms.service.dto.DraftSummaryDTO;

@@ -17,5 +17,5 @@ public class SysConfigVariables {
     public static final String PDF_PREVIEW_LIMIT = "PDF_PREVIEW_LIMIT";
     public static String PDF_PREVIEW_DEFINITION = "If enabled,Number of Page Count defined in value field will be applied in PDF preview";
     public static String PDF_PREVIEW_VALUE = "";
-    public static String PDF_PREVIEW_ENABLED = "N";
+    public static String PDF_PREVIEW_LIMIT_ENABLED = "N";
 }

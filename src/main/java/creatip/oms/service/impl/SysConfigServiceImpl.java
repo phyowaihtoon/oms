@@ -5,7 +5,6 @@ import creatip.oms.repository.SysConfigRepository;
 import creatip.oms.service.SysConfigService;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SysConfigMessage;
-import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SysConfigVariables;
 import java.util.List;
@@ -17,11 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class SysConfigServiceImpl implements SysConfigService {
 
     private final SysConfigRepository sysConfigRepository;
-    private final FTPSessionFactory ftpSessionFactory;
 
-    public SysConfigServiceImpl(SysConfigRepository sysConfigRepository, FTPSessionFactory ftpSessionFactory) {
+    public SysConfigServiceImpl(SysConfigRepository sysConfigRepository) {
         this.sysConfigRepository = sysConfigRepository;
-        this.ftpSessionFactory = ftpSessionFactory;
     }
 
     @Override
@@ -34,7 +31,7 @@ public class SysConfigServiceImpl implements SysConfigService {
                 message.setWorkflowEnabled(data.getEnabled());
             }
             if (data.getCode().equals(SysConfigVariables.PDF_PREVIEW_LIMIT)) {
-                SysConfigVariables.PDF_PREVIEW_ENABLED = data.getEnabled();
+                SysConfigVariables.PDF_PREVIEW_LIMIT_ENABLED = data.getEnabled();
                 SysConfigVariables.PDF_PREVIEW_VALUE = data.getValue();
             }
         }

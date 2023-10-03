@@ -3,10 +3,13 @@ package creatip.oms.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import creatip.oms.domain.MeetingAttachment;
 import creatip.oms.domain.User;
 import creatip.oms.enumeration.CommonEnum.RequestFrom;
+import creatip.oms.repository.MeetingAttachmentRepository;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.service.ApplicationUserService;
+import creatip.oms.service.FTPRepositoryService;
 import creatip.oms.service.MeetingDeliveryService;
 import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
@@ -18,17 +21,21 @@ import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SharedUtils;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,17 +67,23 @@ public class MeetingDeliveryResource {
     private final MeetingDeliveryRepository meetingDeliveryRepository;
     private final ApplicationUserService applicationUserService;
     private final UserService userService;
+    private final MeetingAttachmentRepository meetingAttachmentRepository;
+    private final FTPRepositoryService ftpRepositoryService;
 
     public MeetingDeliveryResource(
         MeetingDeliveryService meetingDeliveryService,
         MeetingDeliveryRepository meetingDeliveryRepository,
         UserService userService,
-        ApplicationUserService applicationUserService
+        ApplicationUserService applicationUserService,
+        MeetingAttachmentRepository meetingAttachmentRepository,
+        FTPRepositoryService ftpRepositoryService
     ) {
         this.meetingDeliveryService = meetingDeliveryService;
         this.meetingDeliveryRepository = meetingDeliveryRepository;
         this.userService = userService;
         this.applicationUserService = applicationUserService;
+        this.meetingAttachmentRepository = meetingAttachmentRepository;
+        this.ftpRepositoryService = ftpRepositoryService;
     }
 
     @PostMapping("/meeting")
@@ -439,5 +452,121 @@ public class MeetingDeliveryResource {
 
         List<MeetingDeliveryDTO> list = meetingDeliveryService.getScheduledMeetingList();
         return list;
+    }
+
+    @GetMapping("/meeting/download/{attchmentId}")
+    public ResponseEntity<?> downloadFile(@PathVariable Long attchmentId) {
+        log.debug("REST request to download Meeting Attachment file");
+
+        Optional<MeetingAttachment> attachment = meetingAttachmentRepository.findById(attchmentId);
+        if (!attachment.isPresent()) {
+            String message = String.format("Invalid Attachment ID :%s", attchmentId);
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        String filePath = attachment.get().getFilePath();
+        String fileName = attachment.get().getFileName();
+        int dot = fileName.lastIndexOf('.');
+        String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
+        if (extension == null || extension.isEmpty()) {
+            String message = String.format("Invalid file extension :%s", fileName);
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        String absoluteFilePath = filePath + "//" + fileName;
+        ReplyMessage<ByteArrayResource> replyMessage = null;
+        try {
+            log.debug("Start Downloading.....{}", absoluteFilePath);
+            replyMessage = ftpRepositoryService.downloadFile(absoluteFilePath);
+            log.debug("End Downloading.....{}", absoluteFilePath);
+        } catch (IOException ex) {
+            String message = "Failed to download: [" + absoluteFilePath + "]";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        } catch (Exception ex) {
+            String message = "Failed to download: [" + absoluteFilePath + "]";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
+        header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
+        return ResponseEntity
+            .ok()
+            .headers(header)
+            //.contentLength(file.length())
+            .body(replyMessage.getData());
+    }
+
+    @GetMapping("/meeting/preview/{attchmentId}")
+    public ResponseEntity<?> previewFile(@PathVariable Long attchmentId) {
+        log.debug("REST request to get preview file data of Meeting Attachment");
+
+        Optional<MeetingAttachment> attachment = meetingAttachmentRepository.findById(attchmentId);
+        if (!attachment.isPresent()) {
+            String message = String.format("Invalid Attachment ID :%s", attchmentId);
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        String filePath = attachment.get().getFilePath();
+        String fileName = attachment.get().getFileName();
+        int dot = fileName.lastIndexOf('.');
+        String extension = (dot == -1) ? "" : fileName.substring(dot + 1);
+        if (extension == null || extension.isEmpty()) {
+            String message = String.format("Invalid file extension :%s", fileName);
+            log.debug("Response Message : {}", message);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        String absoluteFilePath = filePath + "//" + fileName;
+        ReplyMessage<ByteArrayResource> replyMessage = null;
+        try {
+            log.debug("Start Downloading.....{}", absoluteFilePath);
+            replyMessage = ftpRepositoryService.getPreviewFileData(absoluteFilePath);
+            log.debug("End Downloading.....{}", absoluteFilePath);
+        } catch (IOException ex) {
+            String message = "Failed to download: [" + absoluteFilePath + "]";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        } catch (Exception ex) {
+            String message = "Failed to download: [" + absoluteFilePath + "]";
+            log.debug("Response Message : {}", message);
+            log.error(ex.getMessage());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("message", message);
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
+        header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
+        return ResponseEntity
+            .ok()
+            .headers(header)
+            //.contentLength(file.length())
+            .body(replyMessage.getData());
     }
 }
