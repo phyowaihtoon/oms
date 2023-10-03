@@ -263,12 +263,12 @@
           <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
         </button>
 
-        <button class="btn btn-primary" type="submit" (click)="submit()" [disabled]="isSaving">
+        <button class="btn btn-primary" type="submit" (click)="save(1)" [disabled]="isSaving">
           <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Send">Send</span>
           <fa-icon icon="paper-plane"></fa-icon>
         </button>
 
-        <button class="btn btn-primary" type="button" style="float: right" [disabled]="isSaving" (click)="saveDraft()">
+        <button class="btn btn-primary" type="button" style="float: right" [disabled]="isSaving" (click)="save(0)">
           <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Draft">Draft</span>
           <fa-icon icon="save"></fa-icon>
         </button>

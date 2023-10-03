@@ -134,23 +134,25 @@
 
       <div *ngIf="isSuccess" class="form-group">
         
+        <label name="cc_docNo" for="cc_docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo" >Doc No.</label>
         <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_docNo" />       
+        <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept" >Main Dept.</label>
         <div class="textbox-wrapper div-padding">
           <jhi-department-component
             [isReadonly]="true"
             [departments]="toDepartments"
           ></jhi-department-component>
         </div>
-
+        <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept" >CC Dept.</label>
         <div class="textbox-wrapper div-padding">
           <jhi-department-component
             [isReadonly]="true"
             [departments]="ccDepartments"
           ></jhi-department-component>
         </div>
-        
+        <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject" >Sub.</label>
         <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
-
+        <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body" >Bod.</label>
         <quill-editor 
           [styles]="{height: '220px'}" 
           [modules]   = "{ toolbar: false }"

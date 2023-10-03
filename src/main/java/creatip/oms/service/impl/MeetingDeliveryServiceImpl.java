@@ -25,6 +25,7 @@ import creatip.oms.util.ResponseCode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -237,8 +238,11 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
             System.out.println("Connected successfully to FTP Server");
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            String dateInString = formatter.format(Instant.now());
+            Instant currentInstant = Instant.now();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+	                .withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
+	        String dateInString = formatter.format(currentInstant);
+	        
             String deliveryID = "ID" + header.getId();
             String[] fullDirectory = new String[] { "meeting", dateInString, deliveryID };
 
