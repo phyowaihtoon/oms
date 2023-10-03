@@ -175,7 +175,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             throw ex;
         } catch (Exception ex) {
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
         }
 
@@ -239,10 +239,9 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             System.out.println("Connected successfully to FTP Server");
 
             Instant currentInstant = Instant.now();
-	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-	                .withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
-	        String dateInString = formatter.format(currentInstant);
-	        
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
+            String dateInString = formatter.format(currentInstant);
+
             String deliveryID = "ID" + header.getId();
             String[] fullDirectory = new String[] { "meeting", dateInString, deliveryID };
 
@@ -294,7 +293,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                 } catch (IOException ex) {
                     System.out.println("Failed to upload file : [" + fullRemoteFilePath + "]");
                     ex.printStackTrace();
-                    replyMessage.setCode(ResponseCode.ERROR_E01);
+                    replyMessage.setCode(ResponseCode.EXCEP_EX);
                     replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
                     // Removing previous uploaded files from FTP Server if failed to upload one file
                     if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
@@ -304,19 +303,19 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         } catch (IllegalStateException ex) {
             System.out.println("Error: " + ex.getMessage());
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
             return uploadedList;
         } catch (IOException ex) {
             System.out.println("Error: " + ex.getMessage());
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
         } catch (Exception ex) {
             System.out.println("Error: " + ex.getMessage());
             ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
         }

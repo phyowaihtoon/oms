@@ -9,7 +9,7 @@ export class ResponseCode {
   static readonly SUCCESS_MSG: string = 'SUCCESS';
 
   static readonly ERROR_E00: string = 'E00';
-  static readonly ERROR_E01: string = 'E01';
+  static readonly EXCEP_EX: string = 'EX';
   static readonly ERROR_MSG: string = 'ERROR';
 
   static readonly WARNING: string = 'W00';

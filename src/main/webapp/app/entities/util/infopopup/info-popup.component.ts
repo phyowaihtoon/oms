@@ -58,7 +58,7 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
       this.infoTitle = ResponseCode.SUCCESS_MSG;
       this.displayCode = 'Code : '.concat(this.code);
       this.displayMessage = 'Message : '.concat(this.message ? this.message : '');
-    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.ERROR_E01) {
+    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.EXCEP_EX) {
       this.modalHeaderClass = errorHeader;
       this.infoTitle = ResponseCode.ERROR_MSG;
       this.displayCode = 'Code : '.concat(this.code);
@@ -89,7 +89,7 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
 
     if (this.code === ResponseCode.SUCCESS) {
       this.modalButtonClass = btnSuccess;
-    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.ERROR_E01) {
+    } else if (this.code === ResponseCode.ERROR_E00 || this.code === ResponseCode.EXCEP_EX) {
       this.modalButtonClass = btnDanger;
     } else if (this.code === ResponseCode.WARNING) {
       this.modalButtonClass = btnWarning;

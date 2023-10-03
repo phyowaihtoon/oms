@@ -155,11 +155,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         } catch (UploadFailedException ex) {
             throw ex;
         } catch (Exception ex) {
-            log.debug("Exception :{}", ex.getMessage());
-            replyMessage.setCode(ResponseCode.ERROR_E01);
-            replyMessage.setMessage(ex.getMessage());
-            log.debug("Exception Code :{}", ResponseCode.ERROR_E01);
-            return replyMessage;
+            throw ex;
         }
 
         return replyMessage;
@@ -207,14 +203,10 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
             log.debug("Connected successfully to FTP Server : {}", ftpSession.getHostPort());
 
-           // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-           // String dateInString = formatter.format(Instant.now());
-            
             Instant currentInstant = Instant.now();
-	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-	                .withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
-	        String dateInString = formatter.format(currentInstant);
-            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
+            String dateInString = formatter.format(currentInstant);
+
             String deliveryID = "ID" + header.getId();
             String[] fullDirectory = new String[] { "delivery", dateInString, deliveryID };
 
@@ -266,7 +258,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 } catch (IOException ex) {
                     log.debug("Failed to upload file : [" + fullRemoteFilePath + "]");
                     log.error("Exception :{}", ex);
-                    replyMessage.setCode(ResponseCode.ERROR_E01);
+                    replyMessage.setCode(ResponseCode.EXCEP_EX);
                     replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
                     // Removing previous uploaded files from FTP Server if failed to upload one file
                     if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
@@ -275,17 +267,17 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             }
         } catch (IllegalStateException ex) {
             log.error("Exception: {}", ex);
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
             return uploadedList;
         } catch (IOException ex) {
             log.error("Exception: {}", ex);
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
         } catch (Exception ex) {
             log.error("Exception: {}", ex);
-            replyMessage.setCode(ResponseCode.ERROR_E01);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
         }

@@ -97,7 +97,7 @@ public class MeetingDeliveryResource {
         ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
         if (appUserDTO == null || appUserDTO.getDepartment() == null) {
             result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(loginUser.getLogin() + " is not linked with any department.");
             return ResponseEntity
                 .created(new URI("/api/delivery/"))
@@ -112,7 +112,7 @@ public class MeetingDeliveryResource {
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage("Unrecognized field included in the request message");
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
@@ -121,7 +121,7 @@ public class MeetingDeliveryResource {
         } catch (Exception ex) {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage("Unrecognized Field while parsing string to object");
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
@@ -173,7 +173,7 @@ public class MeetingDeliveryResource {
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage("Unrecognized Field while parsing string to object");
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
@@ -182,7 +182,7 @@ public class MeetingDeliveryResource {
         } catch (Exception ex) {
             ex.printStackTrace();
             result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.ERROR_E01);
+            result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage("Unrecognized Field while parsing string to object");
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
