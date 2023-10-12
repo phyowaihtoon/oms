@@ -1,32 +1,36 @@
 <div class="d-flex justify-content-between margin-top-10">
-  <h4>Dashboard</h4>
-  <h5>ပြည်ထောင်စုလွှတ်တော် တရားရေးရုံးချုပ်</h5>
+  <div class="row">
+    <h5 jhiTranslate="home.dashboard" style="margin-left: 16px">Dashboard</h5>
+    <fa-icon class="btn btn-primary btn-refresh" icon="sync" (click)="onRefresh()"></fa-icon>
+  </div>
+  <h5>{{ _departmentName }}</h5>
 </div>
-<div class="row form-group margin-top-30">
+
+<div class="row form-group margin-top-10">
   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 dashboard-box border-right">
-      <h6>Calendar</h6>
-      <ngb-datepicker class="date-picker-style" [(ngModel)]="model" navigation="none" outsideDays="hidden"></ngb-datepicker>
+      <h6 jhiTranslate="home.calendar">Calendar</h6>
+      <ngb-datepicker class="date-picker-style" (dateSelect)="onDateSelected($event)" outsideDays="hidden"> </ngb-datepicker>
 
       <div class="count-summary">
-        <h6>ဖိတ်ကြားစာ မူကြမ်း - 2</h6>
-        <h6>ထွက်စာ မူကြမ်း - 500</h6>
+        <h6><span jhiTranslate="home.meeting_draft">Meeting Draft</span> - {{ _draftSummary?.meetingCount }}</h6>
+        <h6><span jhiTranslate="home.document_draft">Document Draft</span> - {{ _draftSummary?.deliveryCount }}</h6>
       </div>
 
       <div class="meeting-card margin-top-30">
-        <h4 class="meeting-header">အစည်းအဝေးဖိတ်စာများ</h4>
-        <div class="meeting-body">
-          <span><h6>လုပ်ငန်းဆိုင်ရာ အစည်းအဝေး</h6></span>
-          <span>ရက်စွဲ: 16-September-2023</span>
-          <span>အချိန်: 10:00 AM - 11:30 AM</span>
-          <span>နေရာ: အစည်းအဝေးခန်းမ</span>
-        </div>
-
-        <div class="meeting-body">
-          <span><h6>အထွေထွေလုပ်ထုံးများဆိုင်ရာ အစည်းအဝေး</h6></span>
-          <span>ရက်စွဲ: 16-September-2023</span>
-          <span>အချိန်: 02:00 PM - 04:30 PM</span>
-          <span>နေရာ: အစည်းအဝေးခန်းမ</span>
+        <h4 class="meeting-header" jhiTranslate="home.meeting_title">Metting Invitation</h4>
+        <div *ngFor="let data of _meetingList">
+          <div class="meeting-body">
+            <span
+              ><h6>{{ data.subject }}</h6></span
+            >
+            <span><span jhiTranslate="home.meeting_date"></span>: {{ data.startDate ? data.startDate.format('DD-MMM-YYYY') : '-' }}</span>
+            <span
+              ><span jhiTranslate="home.meeting_time"></span>: {{ data.startDate ? data.startDate.format('hh:mm A') : '-' }} -
+              {{ data.endDate ? data.endDate.format('hh:mm A') : '-' }}</span
+            >
+            <span><span jhiTranslate="home.meeting_location"></span>: {{ data.place }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -34,88 +38,39 @@
 
   <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 dashboard-box">
-      <div class="box-header">Document Received</div>
+      <div class="box-header d-flex justify-content-between">
+        <span jhiTranslate="home.dashboard_title1">Document Received</span>
+
+        <select
+          class="form-control col-lg-2 col-md-2 col-sm-6 col-xs-12"
+          style="margin-top: 16px"
+          id="field_status"
+          name="status"
+          [(ngModel)]="_lStatus"
+          (change)="onStatusChange($event)"
+        >
+          <option value="0" jhiTranslate="home.status_unread">Unread</option>
+          <option value="1" jhiTranslate="home.status_read">Read</option>
+        </select>
+      </div>
       <div class="box-body">
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
               <tr class="bg-primary">
                 <!-- jhiTranslate="dmsApp.department.subdepartment" -->
-                <th style="width: 20%"><span>Document No.</span></th>
-                <th style="width: 30%"><span>Subject</span></th>
-                <th style="width: 30%"><span>Department</span></th>
+                <th style="width: 20%" jhiTranslate="home.document_no"><span>Document No.</span></th>
+                <th style="width: 30%" jhiTranslate="home.subject"><span>Subject</span></th>
+                <th style="width: 30%" jhiTranslate="home.department"><span>Department</span></th>
                 <th style="width: 20%">#</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>DC001</td>
-                <td>အထွေထွေ လျှောက်လွှာတင်သွင်းခြင်း</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC002</td>
-                <td>စာချွန်တော်များ</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC003</td>
-                <td>ရာဇဝတ်မှုများ</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC004</td>
-                <td>ရုံးတွင်းကြေညာချက်</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC001</td>
-                <td>အထွေထွေ လျှောက်လွှာတင်သွင်းခြင်း</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC002</td>
-                <td>စာချွန်တော်များ</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC003</td>
-                <td>ရာဇဝတ်မှုများ</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC004</td>
-                <td>ရုံးတွင်းကြေညာချက်</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC003</td>
-                <td>ရာဇဝတ်မှုများ</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC004</td>
-                <td>ရုံးတွင်းကြေညာချက်</td>
-                <td>ပြည်ထောင်စုတရားလွှတ်တော်ရုံးချုပ်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
+              <tr *ngFor="let data of _dashboardData1">
+                <td>{{ data.referenceNo }}</td>
+                <td>{{ data.subject }}</td>
+                <td>{{ data.sender?.departmentName }}</td>
+                <td><a href="#" jhiTranslate="home.view_details">View Details</a></td>
               </tr>
             </tbody>
           </table>
@@ -124,90 +79,38 @@
       <div class="box-footer">
         <div class="row justify-content-center">
           <ngb-pagination
-            [collectionSize]="totalItems"
-            [(page)]="ngbPaginationPage"
+            [collectionSize]="totalItems_1"
+            [(page)]="ngbPaginationPage_1"
             [pageSize]="itemsPerPage"
             [maxSize]="5"
             [rotate]="true"
             [boundaryLinks]="true"
-            (pageChange)="loadPage($event)"
+            (pageChange)="loadDashboard1($event)"
           ></ngb-pagination>
         </div>
       </div>
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 dashboard-box">
-      <div class="box-header">Document Received</div>
+      <div class="box-header">
+        <span jhiTranslate="home.dashboard_title2">Document Sent</span>
+      </div>
       <div class="box-body">
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
               <tr class="bg-primary">
                 <!-- jhiTranslate="dmsApp.department.subdepartment" -->
-                <th style="width: 20%"><span>Document No.</span></th>
-                <th style="width: 30%"><span>Subject</span></th>
+                <th style="width: 20%" jhiTranslate="home.document_no"><span>Document No.</span></th>
+                <th style="width: 30%" jhiTranslate="home.subject"><span>Subject</span></th>
                 <th style="width: 20%">#</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>DC001</td>
-                <td>အထွေထွေ လျှောက်လွှာတင်သွင်းခြင်း</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC002</td>
-                <td>စာချွန်တော်များ</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC003</td>
-                <td>ရာဇဝတ်မှုများ</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC004</td>
-                <td>ရုံးတွင်းကြေညာချက်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC001</td>
-                <td>အထွေထွေ လျှောက်လွှာတင်သွင်းခြင်း</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC002</td>
-                <td>စာချွန်တော်များ</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC003</td>
-                <td>ရာဇဝတ်မှုများ</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC004</td>
-                <td>ရုံးတွင်းကြေညာချက်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC003</td>
-                <td>ရာဇဝတ်မှုများ</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
-              </tr>
-
-              <tr>
-                <td>DC004</td>
-                <td>ရုံးတွင်းကြေညာချက်</td>
-                <td><a href="#">အသေးစိတ်ကြည့်ရှုရန်</a></td>
+              <tr *ngFor="let data of _dashboardData2">
+                <td>{{ data.referenceNo }}</td>
+                <td>{{ data.subject }}</td>
+                <td><a href="#" jhiTranslate="home.view_details">View Details</a></td>
               </tr>
             </tbody>
           </table>
@@ -216,13 +119,13 @@
       <div class="box-footer">
         <div class="row justify-content-center">
           <ngb-pagination
-            [collectionSize]="totalItems"
-            [(page)]="ngbPaginationPage"
+            [collectionSize]="totalItems_2"
+            [(page)]="ngbPaginationPage_2"
             [pageSize]="itemsPerPage"
             [maxSize]="5"
             [rotate]="true"
             [boundaryLinks]="true"
-            (pageChange)="loadPage($event)"
+            (pageChange)="loadDashboard2($event)"
           ></ngb-pagination>
         </div>
       </div>

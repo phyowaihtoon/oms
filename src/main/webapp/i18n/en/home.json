@@ -1,19 +1,21 @@
 {
   "home": {
-    "title": "The Supreme Court of the Union",
-    "subtitle": "The Supreme Court of the Union",
-    "logged": {
-      "message": "You are logged in as user \"{{username}}\"."
-    },
-    "question": "If you have any question on JHipster:",
-    "link": {
-      "homepage": "JHipster homepage",
-      "stackoverflow": "JHipster on Stack Overflow",
-      "bugtracker": "JHipster bug tracker",
-      "chat": "JHipster public chat room",
-      "follow": "follow @jhipster on Twitter"
-    },
-    "like": "If you like JHipster, don't forget to give us a star on",
-    "github": "GitHub"
+    "title": "Office Management System",
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "meeting_draft": "Meeting Draft",
+    "document_draft": "Document Draft",
+    "dashboard_title1": "Document Received",
+    "dashboard_title2": "Document Sent",
+    "document_no": "Document No.",
+    "subject": "Subject",
+    "department": "Department",
+    "meeting_title": "Meeting Invitation",
+    "meeting_date": "Date",
+    "meeting_time": "Time",
+    "meeting_location": "Location",
+    "status_unread": "Unread",
+    "status_read": "Read",
+    "view_details": "View Details"
   }
 }

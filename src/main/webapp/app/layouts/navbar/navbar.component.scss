@@ -94,9 +94,8 @@ Logo styles
 .noti-dropdown::after {
   content: none;
 }
-
+/* 
 ///// Test ////////////////
-
 li {
   list-style-type: none;
   box-shadow: inset -12px -13px 16px -5px rgba(0, 0, 0, 0.5);
@@ -133,14 +132,14 @@ a {
   transition: all 0.4s;
 }
 
-/* li:hover a {
+ li:hover a {
   top   : -20px;
   color : #4eacff;
   background-color: #fff;
   box-shadow : 0 0 5px 0 rgba(255, 255, 255, 0.7);
   transition : all .4s;
-} */
-/* 
+} 
+ 
 li a:after {
   display  : block;
   content  : '';
@@ -156,4 +155,6 @@ li a:after {
 li:hover a:after {
   border-color : white transparent transparent transparent;
   transition   : all .4s;
-} */
+}
+
+ */
