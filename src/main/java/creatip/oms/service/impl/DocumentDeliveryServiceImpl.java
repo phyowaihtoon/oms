@@ -22,7 +22,6 @@ import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -82,7 +81,6 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     @Transactional(rollbackFor = UploadFailedException.class)
     public ReplyMessage<DeliveryMessage> save(DeliveryMessage message, List<MultipartFile> attachedFiles) throws UploadFailedException {
         if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
-            log.debug("Please, attach document");
             replyMessage.setCode(ResponseCode.ERROR_E00);
             replyMessage.setMessage("Please, attach document");
             return replyMessage;
@@ -134,12 +132,12 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
             // Uploading attachment files
             if (attachedFiles != null && attachedFiles.size() > 0) {
-                log.debug("Trying to upload {}", attachedFiles.size() + " files");
+                log.debug("Trying to upload {} files", attachedFiles.size());
                 List<DocumentAttachment> uploadedAttachmentList = saveAndUploadFiles(attachedFiles, delivery);
                 if (attachedFiles.size() != uploadedAttachmentList.size()) {
                     throw new UploadFailedException("Upload failed", replyMessage.getCode(), replyMessage.getMessage());
                 }
-                log.debug("Uploaded {}", attachedFiles.size() + " files successfully");
+                log.debug("{} out of {} files were uploaded successfully", uploadedAttachmentList.size(), attachedFiles.size());
                 savedAttachmentList.addAll(documentAttachmentMapper.toDto(uploadedAttachmentList));
             }
 
@@ -212,7 +210,6 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
             for (MultipartFile file : multipartFiles) {
                 String[] docDetailInfo = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
-                System.out.println("Document Information :" + file.getOriginalFilename() + ", Length :" + docDetailInfo.length);
                 String orgFileName = docDetailInfo[0];
 
                 String directory = "";
@@ -245,7 +242,6 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 try {
                     ftpSession.write(inputStream, fullRemoteFilePath);
                     inputStream.close();
-                    log.debug("Uploaded successfully: {}", fullRemoteFilePath);
                     uploadedFileList.add(fullRemoteFilePath);
 
                     DocumentAttachment documentAttachment = new DocumentAttachment();
@@ -255,28 +251,19 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     documentAttachment.setDelFlag("N");
                     documentAttachment = documentAttachmentRepository.save(documentAttachment);
                     uploadedList.add(documentAttachment);
-                } catch (IOException ex) {
+                    log.debug("Uploaded successfully: {}", fullRemoteFilePath);
+                } catch (Exception ex) {
                     log.debug("Failed to upload file : [" + fullRemoteFilePath + "]");
-                    log.error("Exception :{}", ex);
+                    log.error("Upload Failed :", ex);
                     replyMessage.setCode(ResponseCode.EXCEP_EX);
-                    replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
+                    replyMessage.setMessage(String.format("Failed to upload file :%s [%s]", orgFileName, ex.getMessage()));
                     // Removing previous uploaded files from FTP Server if failed to upload one file
                     if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
-                    return null;
+                    return uploadedList;
                 }
             }
-        } catch (IllegalStateException ex) {
-            log.error("Exception: {}", ex);
-            replyMessage.setCode(ResponseCode.EXCEP_EX);
-            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
-            return uploadedList;
-        } catch (IOException ex) {
-            log.error("Exception: {}", ex);
-            replyMessage.setCode(ResponseCode.EXCEP_EX);
-            replyMessage.setMessage(ex.getMessage());
-            return uploadedList;
         } catch (Exception ex) {
-            log.error("Exception: {}", ex);
+            log.error("Exception: ", ex);
             replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
@@ -293,7 +280,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 log.debug("Removed successfully : {}", filePath);
             } catch (Exception ex) {
                 log.debug("Failed to remove : {}", filePath);
-                log.error("Exception :{}", ex);
+                log.error("Exception :", ex);
             }
         }
     }
@@ -326,6 +313,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     criteria.getSenderId(),
                     criteria.getDateFrom(),
                     criteria.getDateTo(),
+                    criteria.getSubject(),
                     pageable
                 );
         }
@@ -334,7 +322,13 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
     @Override
     public Page<DocumentDeliveryDTO> getDeliveryDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
-        Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(criteria.getSenderId(), pageable);
+        Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(
+            criteria.getSenderId(),
+            criteria.getDateFrom(),
+            criteria.getDateTo(),
+            criteria.getSubject(),
+            pageable
+        );
         return page.map(documentDeliveryMapper::toDto);
     }
 }
