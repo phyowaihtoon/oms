@@ -30,12 +30,18 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
     @Query(
         value = "select dd from DocumentDelivery dd " +
         "where dd.delFlag='N' and dd.deliveryStatus=1 and dd.sender.id=?1 " +
-        "and date(dd.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(dd.sentDate) <= str_to_date(?3,'%d-%m-%Y')"
+        "and date(dd.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(dd.sentDate) <= str_to_date(?3,'%d-%m-%Y') " +
+        "and dd.subject LIKE %?4%"
     )
-    Page<DocumentDelivery> findDocumentsSent(Long senderId, String dateFrom, String dateTo, Pageable pageable);
+    Page<DocumentDelivery> findDocumentsSent(Long senderId, String dateFrom, String dateTo, String subject, Pageable pageable);
 
-    @Query(value = "select dd from DocumentDelivery dd " + "where dd.delFlag='N' and dd.deliveryStatus=0 " + "and dd.sender.id=?1")
-    Page<DocumentDelivery> findDeliveryDraftList(Long senderId, Pageable pageable);
+    @Query(
+        value = "select dd from DocumentDelivery dd " +
+        "where dd.delFlag='N' and dd.deliveryStatus=0 and dd.sender.id=?1 " +
+        "and date(dd.createdDate) >= str_to_date(?2,'%d-%m-%Y')	and date(dd.createdDate) <= str_to_date(?3,'%d-%m-%Y')" +
+        "and dd.subject LIKE %?4%"
+    )
+    Page<DocumentDelivery> findDeliveryDraftList(Long senderId, String dateFrom, String dateTo, String subject, Pageable pageable);
 
     Long countBySenderAndDeliveryStatusAndDelFlag(Department sender, short deliveryStatus, String delFlag);
 }

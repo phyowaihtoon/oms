@@ -115,7 +115,7 @@ public class DocumentDeliveryResource {
         } catch (JsonProcessingException ex) {
             String responseMessage = "Invalid request ," + ex.getMessage();
             log.debug("Message Response : {}", responseMessage);
-            log.error("Exception :", ex);
+            log.error("JsonProcessingException :", ex);
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
@@ -156,7 +156,7 @@ public class DocumentDeliveryResource {
             result = documentDeliveryService.save(deliveryMessage, multipartFiles);
         } catch (UploadFailedException ex) {
             log.debug("Message Response : {}", ex.getMessage());
-            log.error("Exception :", ex);
+            log.error("UploadFailedException :", ex);
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ex.getCode());
             result.setMessage(ex.getMessage());
@@ -452,14 +452,14 @@ public class DocumentDeliveryResource {
         } catch (JsonProcessingException ex) {
             String message = "Invalid request parameter";
             log.debug("Response Message : {}", message);
-            log.error("Exception :{}", ex);
+            log.error("Exception :", ex);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception ex) {
             String message = "Invalid request parameter";
             log.debug("Response Message : {}", message);
-            log.error("Exception :{}", ex);
+            log.error("Exception :", ex);
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);

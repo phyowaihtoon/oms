@@ -14,6 +14,7 @@ import creatip.oms.service.MeetingDeliveryService;
 import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
+import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -91,16 +92,20 @@ public class MeetingDeliveryResource {
         @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles,
         @RequestParam("meeting") String message
     ) throws URISyntaxException {
+        log.debug("Message request to save Meeting Delivery: {}", message);
+
         MeetingMessage deliveryMessage = null;
         ReplyMessage<MeetingMessage> result = null;
         User loginUser = userService.getUserWithAuthorities().get();
         ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
         if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String responseMessage = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Message Response : {}", responseMessage);
             result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.EXCEP_EX);
-            result.setMessage(loginUser.getLogin() + " is not linked with any department.");
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
             return ResponseEntity
-                .created(new URI("/api/delivery/"))
+                .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
                 .body(result);
         }
@@ -108,21 +113,24 @@ public class MeetingDeliveryResource {
         try {
             this.objectMapper = new ObjectMapper();
             deliveryMessage = this.objectMapper.readValue(message, MeetingMessage.class);
-            log.debug("REST request to save MeetingDelivery: {}", deliveryMessage);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            String responseMessage = "Invalid request ," + ex.getMessage();
+            log.debug("Message Response : {}", responseMessage);
+            log.error("JsonProcessingException :", ex);
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
-            result.setMessage("Unrecognized field included in the request message");
+            result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
                 .body(result);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            String responseMessage = "Invalid request ," + ex.getMessage();
+            log.debug("Message Response : {}", responseMessage);
+            log.error("Exception :", ex);
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
-            result.setMessage("Unrecognized Field while parsing string to object");
+            result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
@@ -130,25 +138,53 @@ public class MeetingDeliveryResource {
         }
 
         if (deliveryMessage != null && deliveryMessage.getMeetingDelivery().getId() != null) {
-            throw new BadRequestAlertException("A new document cannot already have an ID", ENTITY_NAME, "idexists");
+            String responseMessage = String.format(
+                "Bad Request ,a new record cannot have an ID %s",
+                "[" + deliveryMessage.getMeetingDelivery().getId() + "]"
+            );
+            log.debug("Message Response : {}", responseMessage);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity
+                .created(new URI("/api/meeting/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
 
         try {
             deliveryMessage.getMeetingDelivery().setSender(appUserDTO.getDepartment());
             result = meetingDeliveryService.save(deliveryMessage, multipartFiles);
-        } catch (UploadFailedException e) {
-            ReplyMessage<MeetingMessage> uploadFailedMessage = new ReplyMessage<MeetingMessage>();
-            uploadFailedMessage.setCode(e.getCode());
-            uploadFailedMessage.setMessage(e.getMessage());
+        } catch (UploadFailedException ex) {
+            log.debug("Message Response : {}", ex.getMessage());
+            log.error("UploadFailedException :", ex);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ex.getCode());
+            result.setMessage(ex.getMessage());
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(uploadFailedMessage);
+                .body(result);
+        } catch (Exception ex) {
+            String errMessage = "Transaction could not be processed. Check details in application logs";
+            log.debug("Message Response : {}", errMessage);
+            log.error("Exception :", ex);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.EXCEP_EX);
+            result.setMessage(errMessage);
+            return ResponseEntity
+                .created(new URI("/api/meeting/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
 
         String docHeaderId = "";
         if (result != null && result.getCode().equals(ResponseCode.SUCCESS)) {
             docHeaderId = result.getData().getMeetingDelivery().getId().toString();
+        }
+
+        if (result != null) {
+            log.debug("Message Response : {}", result.getMessage());
         }
 
         return ResponseEntity
@@ -163,27 +199,31 @@ public class MeetingDeliveryResource {
         @RequestParam(value = "files", required = false) List<MultipartFile> multipartFiles,
         @RequestParam("meeting") String message
     ) throws URISyntaxException {
+        log.debug("Message request to update Meeting Delivery : {}, {}", id, message);
+
         MeetingMessage meetingMessage = null;
         ReplyMessage<MeetingMessage> result = null;
-
         try {
             this.objectMapper = new ObjectMapper();
             meetingMessage = this.objectMapper.readValue(message, MeetingMessage.class);
-            log.debug("REST request to update MeetingDelivery : {}, {}", id, meetingMessage);
         } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
+            String responseMessage = "Invalid request ," + ex.getMessage();
+            log.debug("Message Response : {}", responseMessage);
+            log.error("JsonProcessingException :", ex);
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
-            result.setMessage("Unrecognized Field while parsing string to object");
+            result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
                 .body(result);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            String responseMessage = "Invalid request ," + ex.getMessage();
+            log.debug("Message Response : {}", responseMessage);
+            log.error("Exception :", ex);
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
-            result.setMessage("Unrecognized Field while parsing string to object");
+            result.setMessage(responseMessage);
             return ResponseEntity
                 .created(new URI("/api/meeting/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
@@ -208,15 +248,33 @@ public class MeetingDeliveryResource {
 
         try {
             result = meetingDeliveryService.save(meetingMessage, multipartFiles);
-        } catch (UploadFailedException e) {
-            ReplyMessage<MeetingMessage> uploadFailedMessage = new ReplyMessage<MeetingMessage>();
-            uploadFailedMessage.setCode(e.getCode());
-            uploadFailedMessage.setMessage(e.getMessage());
+        } catch (UploadFailedException ex) {
+            log.debug("Message Response : {}", ex.getMessage());
+            log.error("UploadFailedException :", ex);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ex.getCode());
+            result.setMessage(ex.getMessage());
             return ResponseEntity
-                .created(new URI("/api/meeting/" + docHeaderId))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
-                .body(uploadFailedMessage);
+                .created(new URI("/api/meeting/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        } catch (Exception ex) {
+            String errMessage = "Transaction could not be processed. Check details in application logs";
+            log.debug("Message Response : {}", errMessage);
+            log.error("Exception :", ex);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.EXCEP_EX);
+            result.setMessage(errMessage);
+            return ResponseEntity
+                .created(new URI("/api/meeting/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
         }
+
+        if (result != null) {
+            log.debug("Message Response : {}", result.getMessage());
+        }
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))

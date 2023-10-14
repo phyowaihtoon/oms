@@ -22,7 +22,6 @@ import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -101,15 +100,14 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     @Override
     @Transactional(rollbackFor = UploadFailedException.class)
     public ReplyMessage<MeetingMessage> save(MeetingMessage message, List<MultipartFile> attachedFiles) throws UploadFailedException {
-        log.debug("Request to save Meeting Delivery : {}", message);
         if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
             replyMessage.setCode(ResponseCode.ERROR_E00);
-            replyMessage.setMessage("There is no attached document.");
+            replyMessage.setMessage("Please, attach document");
             return replyMessage;
         }
 
         try {
-            log.debug("Saving Meeting Delivery: {}", message);
+            log.debug("Saving Meeting Delivery");
 
             MeetingDelivery delivery = meetingDeliveryMapper.toEntity(message.getMeetingDelivery());
             if (delivery.getDeliveryStatus() == DeliveryStatus.SENT.value && delivery.getSentDate() == null) delivery.setSentDate(
@@ -155,10 +153,12 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
             // Uploading attachment files
             if (attachedFiles != null && attachedFiles.size() > 0) {
+                log.debug("Trying to upload {} files", attachedFiles.size());
                 List<MeetingAttachment> uploadedAttachmentList = saveAndUploadFiles(attachedFiles, delivery);
                 if (attachedFiles.size() != uploadedAttachmentList.size()) {
                     throw new UploadFailedException("Upload failed", replyMessage.getCode(), replyMessage.getMessage());
                 }
+                log.debug("{} out of {} files were uploaded successfully", uploadedAttachmentList.size(), attachedFiles.size());
                 savedAttachmentList.addAll(meetingAttachmentMapper.toDto(uploadedAttachmentList));
             }
 
@@ -174,9 +174,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         } catch (UploadFailedException ex) {
             throw ex;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.EXCEP_EX);
-            replyMessage.setMessage(ex.getMessage());
+            throw ex;
         }
 
         return replyMessage;
@@ -224,6 +222,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                     criteria.getSenderId(),
                     criteria.getDateFrom(),
                     criteria.getDateTo(),
+                    criteria.getSubject(),
                     pageable
                 );
         }
@@ -236,7 +235,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         List<MeetingAttachment> uploadedList = new ArrayList<MeetingAttachment>();
         try {
             FtpSession ftpSession = this.ftpSessionFactory.getSession();
-            System.out.println("Connected successfully to FTP Server");
+            log.debug("Connected successfully to FTP Server : {}", ftpSession.getHostPort());
 
             Instant currentInstant = Instant.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
@@ -247,7 +246,6 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
             for (MultipartFile file : multipartFiles) {
                 String[] docDetailInfo = StringUtils.cleanPath(file.getOriginalFilename()).split("@");
-                System.out.println("Document Information :" + file.getOriginalFilename() + ", Length :" + docDetailInfo.length);
                 String orgFileName = docDetailInfo[0];
 
                 String directory = "";
@@ -275,12 +273,11 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
                 String fullRemoteFilePath = directory + "/" + orgFileName + "";
                 InputStream inputStream = file.getInputStream();
-                System.out.println("Start uploading file: [" + fullRemoteFilePath + "]");
+                log.debug("Start uploading file: {}", fullRemoteFilePath);
 
                 try {
                     ftpSession.write(inputStream, fullRemoteFilePath);
                     inputStream.close();
-                    System.out.println("Uploaded successfully: [" + fullRemoteFilePath + "]");
                     uploadedFileList.add(fullRemoteFilePath);
 
                     MeetingAttachment meetingAttachment = new MeetingAttachment();
@@ -290,31 +287,19 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                     meetingAttachment.setDelFlag("N");
                     meetingAttachment = meetingAttachmentRepository.save(meetingAttachment);
                     uploadedList.add(meetingAttachment);
-                } catch (IOException ex) {
-                    System.out.println("Failed to upload file : [" + fullRemoteFilePath + "]");
-                    ex.printStackTrace();
+                    log.debug("Uploaded successfully: {}", fullRemoteFilePath);
+                } catch (Exception ex) {
+                    log.debug("Failed to upload file : [" + fullRemoteFilePath + "]");
+                    log.error("Upload Failed :", ex);
                     replyMessage.setCode(ResponseCode.EXCEP_EX);
-                    replyMessage.setMessage("Failed to upload file :" + orgFileName + " " + ex.getMessage());
+                    replyMessage.setMessage(String.format("Failed to upload file :%s [%s]", orgFileName, ex.getMessage()));
                     // Removing previous uploaded files from FTP Server if failed to upload one file
                     if (uploadedFileList != null && uploadedFileList.size() > 0) removePreviousFiles(uploadedFileList, ftpSession);
-                    return null;
+                    return uploadedList;
                 }
             }
-        } catch (IllegalStateException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.EXCEP_EX);
-            replyMessage.setMessage("Cannot connect to FTP Server. [" + ex.getMessage() + "]");
-            return uploadedList;
-        } catch (IOException ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
-            replyMessage.setCode(ResponseCode.EXCEP_EX);
-            replyMessage.setMessage(ex.getMessage());
-            return uploadedList;
         } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace();
+            log.error("Exception: ", ex);
             replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             return uploadedList;
@@ -324,14 +309,14 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     }
 
     private void removePreviousFiles(List<String> uploadedFileList, FtpSession ftpSession) {
-        System.out.println("Removing previous uploaded files if failed to upload one file");
+        log.debug("Removing previous uploaded files because of failure of uploading one file");
         for (String filePath : uploadedFileList) {
             try {
                 ftpSession.remove(filePath);
-                System.out.println("Removed successfully : " + filePath);
+                log.debug("Removed successfully : {}", filePath);
             } catch (Exception ex) {
-                System.out.println("Failed to remove : " + filePath);
-                ex.printStackTrace();
+                log.debug("Failed to remove : {}", filePath);
+                log.error("Exception :", ex);
             }
         }
     }
@@ -344,7 +329,13 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
     @Override
     public Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
-        Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(criteria.getSenderId(), pageable);
+        Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(
+            criteria.getSenderId(),
+            criteria.getDateFrom(),
+            criteria.getDateTo(),
+            criteria.getSubject(),
+            pageable
+        );
         return page.map(meetingDeliveryMapper::toDto);
     }
 }

@@ -38,12 +38,18 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
     @Query(
         value = "select md from MeetingDelivery md " +
         "where md.delFlag='N' and md.deliveryStatus=1 and md.sender.id=?1 " +
-        "and date(md.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(md.sentDate) <= str_to_date(?3,'%d-%m-%Y')"
+        "and date(md.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(md.sentDate) <= str_to_date(?3,'%d-%m-%Y') " +
+        "and md.subject LIKE %?4%"
     )
-    Page<MeetingDelivery> findSentMeetingList(Long senderId, String dateFrom, String dateTo, Pageable pageable);
+    Page<MeetingDelivery> findSentMeetingList(Long senderId, String dateFrom, String dateTo, String subject, Pageable pageable);
 
-    @Query(value = "select md from MeetingDelivery md " + "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 ")
-    Page<MeetingDelivery> findMeetingDraftList(Long senderId, Pageable pageable);
+    @Query(
+        value = "select md from MeetingDelivery md " +
+        "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 " +
+        "and date(md.createdDate) >= str_to_date(?2,'%d-%m-%Y')	and date(md.createdDate) <= str_to_date(?3,'%d-%m-%Y') " +
+        "and md.subject LIKE %?4%"
+    )
+    Page<MeetingDelivery> findMeetingDraftList(Long senderId, String dateFrom, String dateTo, String subject, Pageable pageable);
 
     Long countBySenderAndDeliveryStatusAndDelFlag(Department sender, short deliveryStatus, String delFlag);
 }
