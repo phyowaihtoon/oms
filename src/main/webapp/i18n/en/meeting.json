@@ -17,6 +17,14 @@
         "RequiredTime" : "Please choose Time.",
         "RequiredMainDept" : "Please choose at least one department.",
         "RequiredFile" : "Please choose at least one attachment"
+      },
+      "placeholder":{
+        "DocNo" : "Letter No.",
+        "Location": "Location",
+        "Subject" : "Subject",
+        "Body" : "Body",
+        "MDept" : "Main Department",
+        "CDept" : "CC Department" 
       }
     }
   }

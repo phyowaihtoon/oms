@@ -10,6 +10,8 @@ import { SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DeliveryService } from '../service/delivery.service';
 import { IDocumentDelivery } from '../delivery.model';
+import * as dayjs from 'dayjs';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-delivery-sent',
@@ -29,13 +31,14 @@ export class DeliverySentComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
   departmentsList?: IDepartment[];
-  documentDelivery?: IDocumentDelivery[];
+  documentDelivery?: IDocumentDelivery[];  
+  _departmentName: string | undefined = '';
 
   searchForm = this.fb.group({
     fromdate: [],
     todate: [],
     subject: [],
-    departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
+    /// departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     status: [],
   });
 
@@ -46,10 +49,14 @@ export class DeliverySentComponent implements OnInit {
     protected modalService: NgbModal,
     protected translateService: TranslateService,
     protected loadSetupService: LoadSetupService,
-    protected deliveryService: DeliveryService
+    protected deliveryService: DeliveryService,
+    protected userAuthorityService: UserAuthorityService,
   ) {}
 
   ngOnInit(): void {
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._departmentName = userAuthority?.department?.departmentName;
+
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
@@ -100,8 +107,8 @@ export class DeliverySentComponent implements OnInit {
       console.log(Criteria, 'xxx Criteria xxxx');
 
       const requestParams = {
-        page: 1,
-        size: 1,
+        page: 0,
+        size: 10,
         criteria: JSON.stringify(Criteria),
       };
 
@@ -123,6 +130,16 @@ export class DeliverySentComponent implements OnInit {
       );
     }
   }
+
+  formatDate(date: dayjs.Dayjs): string {
+    const format = 'YYYY-MM-DD';
+    return date.format(format);
+
+    // const format = 'YYYY-MM-DD';
+    // const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, { format });
+    
+  }
+  
 
   protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));

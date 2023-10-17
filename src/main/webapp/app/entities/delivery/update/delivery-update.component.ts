@@ -14,7 +14,7 @@ import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/en
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'jhi-delivery-update',
+  selector: 'jhi-delivery-up  ',
   templateUrl: './delivery-update.component.html',
   styleUrls: ['./delivery-update.component.scss'],
 })
@@ -290,6 +290,8 @@ export class DeliveryUpdateComponent implements OnInit{
   hideLoading(): void {
     this._modalRef?.close();
   }
+
+ 
 
   protected createFrom(deliveryStatus: number): IDeliveryMessage {
     return {

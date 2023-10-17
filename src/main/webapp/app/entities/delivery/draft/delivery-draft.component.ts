@@ -35,7 +35,7 @@ export class DeliveryDraftComponent implements OnInit {
     fromdate: [],
     todate: [],
     subject: [],
-    departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
+    // departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     status: [],
   });
 
@@ -50,6 +50,7 @@ export class DeliveryDraftComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
@@ -58,6 +59,7 @@ export class DeliveryDraftComponent implements OnInit {
         console.log(error);
       }
     );
+
   }
 
   trackDepartmentByID(index: number, item: IDepartment): number {
@@ -100,8 +102,8 @@ export class DeliveryDraftComponent implements OnInit {
       console.log(Criteria, 'xxx Criteria xxxx');
 
       const requestParams = {
-        page: 1,
-        size: 1,
+        page: 0,
+        size: 10,
         criteria: JSON.stringify(Criteria),
       };
 

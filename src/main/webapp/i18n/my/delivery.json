@@ -3,7 +3,7 @@
     "delivery": {
       "button": {
         "Send": "ပေးပို့ပါ",
-        "Back": "ရှေ့တဆင့်",
+        "Back": "ရှေ့သို့",
         "Next": "နောက်တဆင့်",
         "Draft": "မူကြမ်း"
       },
@@ -14,10 +14,36 @@
       },
       "label":{
         "DocNo" : "စာအမှတ်",
-        "Subject" : "ခေါင်းစဉ်",
+        "Subject" : "အကြောင်းအရာ",
         "Body" : "စာကိုယ်",
         "MDept" : "လိပ်မူ",
         "CDept" : "မိတ္တူ" 
+      },
+      "table": {        
+        "tableheader": "ဝင်စာစာရင်း",
+        "No" : "စဉ်",
+        "FileName" : "ဖိုင်အမည်",
+        "Preview" : "အစမ်းကြည့်",
+        "Download" : "ဒေါင်းလုပ်",
+        "Date": "ရက်စွဲ",
+        "DocumentNo":"စာအမှတ်",
+        "Subject": "အကြောင်းအရာ",
+        "Department": "ဌာန"
+      },
+      "placeholder":{
+        "DocNo" : "စာအမှတ်",
+        "Subject" : "အကြောင်းအရာ",
+        "Body" : "စာကိုယ်",
+        "MDept" : "လိပ်မူ",
+        "CDept" : "မိတ္တူ" 
+      },
+      "inbox":{
+        "fromdate": "ရက်မှ",
+        "todate": "ရက်ထိ",
+        "subject": "အကြောင်းအရာ",
+        "department": "ဌာန",
+        "status": "အခြေအနေ",
+        "search": "ရှာဖွေပါ"
       }
     }
   }
