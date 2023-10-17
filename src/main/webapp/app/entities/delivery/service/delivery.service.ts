@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { IDeliveryMessage, IDocumentDelivery } from '../delivery.model';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { createRequestOption } from 'app/core/request/request-util';
+import { map } from 'rxjs/operators';
+import * as dayjs from 'dayjs';
 
 export type EntityResponseType = HttpResponse<IDeliveryMessage>;
 export type EntityArrayResponseType = HttpResponse<IDocumentDelivery[]>;
@@ -34,17 +36,23 @@ export class DeliveryService {
 
   findAllReceived(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/received`, { params: options, observe: 'response' });
+    return this.http
+      .get<IDocumentDelivery[]>(`${this.resourceUrl}/received`, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   findAllSent(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' });
+    return this.http
+      .get<IDocumentDelivery[]>(`${this.resourceUrl}/sent`, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   findAllDraft(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
-    return this.http.get<IDocumentDelivery[]>(`${this.resourceUrl}/draft`, { params: options, observe: 'response' });
+    return this.http
+      .get<IDocumentDelivery[]>(`${this.resourceUrl}/draft`, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   getPreviewData(attachmentId: number): Observable<BlobType> {
@@ -53,5 +61,15 @@ export class DeliveryService {
 
   downloadFile(attachmentId: number): Observable<BlobType> {
     return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
+  }
+
+  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((documentDelivery: IDocumentDelivery) => {
+        (documentDelivery.sentDate = documentDelivery.sentDate ? dayjs(documentDelivery.sentDate) : undefined),
+          (documentDelivery.createdDate = documentDelivery.createdDate ? dayjs(documentDelivery.createdDate) : undefined);
+      });
+    }
+    return res;
   }
 }

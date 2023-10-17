@@ -11,6 +11,7 @@ export interface IDocumentDelivery {
   status?: number;
   delFlag?: string;
   sender?: IDepartment;
+  createdDate?: dayjs.Dayjs;
 }
 
 export class DocumentDelivery implements IDocumentDelivery {
@@ -23,7 +24,8 @@ export class DocumentDelivery implements IDocumentDelivery {
     public deliveryStatus?: number,
     public status?: number,
     public delFlag?: string,
-    public sender?: IDepartment
+    public sender?: IDepartment,
+    public createdDate?: dayjs.Dayjs
   ) {}
 }
 
@@ -57,15 +59,8 @@ export interface IDocumentAttachment {
   fileData?: File; // This filed data is not needed to pass to server side, only used in client side
 }
 
-
 export class DocumentAttachment implements IDocumentAttachment {
-  constructor(
-    public id?: number, 
-    public filePath?: string, 
-    public fileName?: string, 
-    public delFlag?: string,    
-    public fileData?: File
-    ) {}
+  constructor(public id?: number, public filePath?: string, public fileName?: string, public delFlag?: string, public fileData?: File) {}
 }
 
 export interface IDeliveryMessage {
