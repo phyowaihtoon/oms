@@ -217,12 +217,13 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
             page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), criteria.getDateOn(), pageable);
         } else {
+            String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
             page =
                 meetingDeliveryRepository.findSentMeetingList(
                     criteria.getSenderId(),
                     criteria.getDateFrom(),
                     criteria.getDateTo(),
-                    criteria.getSubject(),
+                    subject,
                     pageable
                 );
         }
@@ -329,11 +330,12 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
     @Override
     public Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
+        String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
         Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(
             criteria.getSenderId(),
             criteria.getDateFrom(),
             criteria.getDateTo(),
-            criteria.getSubject(),
+            subject,
             pageable
         );
         return page.map(meetingDeliveryMapper::toDto);

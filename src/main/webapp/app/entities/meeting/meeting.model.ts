@@ -15,6 +15,7 @@ export interface IMeetingDelivery {
   status?: number;
   delFlag?: string;
   sender?: IDepartment;
+  createdDate?: dayjs.Dayjs;
 }
 
 export class MeetingDelivery implements IMeetingDelivery {
@@ -31,7 +32,8 @@ export class MeetingDelivery implements IMeetingDelivery {
     public meetingStatus?: number,
     public status?: number,
     public delFlag?: string,
-    public sender?: IDepartment
+    public sender?: IDepartment,
+    public createdDate?: dayjs.Dayjs
   ) {}
 }
 
@@ -63,7 +65,6 @@ export interface IMeetingAttachment {
   fileName?: string;
   delFlag?: string;
   fileData?: File; // This filed data is not needed to pass to server side, only used in client side
-
 }
 
 export class MeetingAttachment implements IMeetingAttachment {
