@@ -1,6 +1,6 @@
 .card {
   width: 80%;
-  height: 85vh; //auto; //
+  height: 80vh; //auto; //
   margin-top: 10px;
   margin-bottom: 10px;
   min-height: 450px;
@@ -16,4 +16,20 @@
   background-color: #ffffff;
   padding: 10px 10px 10px 10px !important;
   overflow-y: auto;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.tbl-header-padding{
+  padding-bottom: 3px;
 }
