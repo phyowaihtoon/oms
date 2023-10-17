@@ -28,7 +28,7 @@
         <input
           type="text"
           formControlName="docNo"
-          placeholder="Document No."
+          placeholder="{{ 'omsApp.delivery.placeholder.DocNo' | translate }}"
           class="form-control div-padding text-height"
           name="docNo"
           id="docNo"
@@ -43,17 +43,17 @@
         <input
           type="text"
           formControlName="subject"
-          placeholder="Subject"
+          placeholder="{{ 'omsApp.delivery.placeholder.Subject' | translate }}"
           class="form-control div-padding text-height"
           name="subject"
           id="subject"
         />
 
-        <div *ngIf="editForm.get('msg_body')!.invalid && (editForm.get('msg_body')?.dirty || editForm.get('msg_body')?.touched)">
+        <!-- <div *ngIf="editForm.get('msg_body')!.invalid && (editForm.get('msg_body')?.dirty || editForm.get('msg_body')?.touched)">
           <div *ngIf="editForm.get('msg_body')?.errors?.required" style="text-align: right; color: red">
             <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredField"> This Field is required. </span>
           </div>
-        </div>
+        </div> -->
 
         <quill-editor [styles]="{height: '220px'}" [modules]="modules"
                formControlName = "msg_body" ></quill-editor> 
@@ -170,7 +170,7 @@
           style="float: right"
           (click)="goToStep2()"
           [disabled]="
-            editForm.get('docNo')?.errors?.required || editForm.get('subject')?.errors?.required || editForm.get('msg_body')?.errors?.required
+            editForm.get('docNo')?.errors?.required || editForm.get('subject')?.errors?.required 
           "
         >
           <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Next">Next</span>

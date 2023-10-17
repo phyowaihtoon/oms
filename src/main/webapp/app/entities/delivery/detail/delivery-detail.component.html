@@ -2,14 +2,14 @@
   
  <div class="card">
     
+  <div class="card-header-title">
+    <span jhiTranslate="global.menu.delivery.title"> Delivery </span> >>
+    <span jhiTranslate="global.menu.delivery.DocumentDelivery"> Document Delivery </span>
+  </div>
 
-      <div class="card-header-title">
-        <span jhiTranslate="global.menu.delivery.title"> Delivery </span> >>
-        <span jhiTranslate="global.menu.delivery.DocumentDelivery"> Document Delivery </span>
-      </div>
-
-      <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo" >Doc No.</label>
       <div class="card-body">
+        <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo" >Doc No.</label>
+      
         <input type="text" readonly 
         class="textbox text-height form-control div-padding" 
         value="{{docNo}}" />

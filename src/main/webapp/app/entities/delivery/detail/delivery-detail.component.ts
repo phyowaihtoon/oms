@@ -10,6 +10,7 @@ import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.compo
 import { ResponseCode } from 'app/entities/util/reply-message.model';
 import { error } from 'console';
 import * as FileSaver from 'file-saver';
+import { DeliveryService } from '../service/delivery.service';
 
 @Component({
   selector: 'jhi-delivery-detail',
@@ -32,7 +33,8 @@ export class DeliveryDetailComponent implements OnInit {
 
   constructor(
     protected activatedRoute: ActivatedRoute,   
-    protected modalService: NgbModal,)
+    protected modalService: NgbModal,
+    protected deliveryService: DeliveryService)
      {
     this.modules = {
       'toolbar': [
@@ -119,66 +121,66 @@ export class DeliveryDetailComponent implements OnInit {
 
   previewFile(docId?: number, fileName?: string): void {
     if (docId !== undefined && fileName !== undefined && this.validate(true, fileName)) {
-     // this.showLoading('Loading File');
-      // this.documentInquiryService.previewFile(docId).subscribe(
-      //   (res: HttpResponse<Blob>) => {
-      //     if (res.status === 200 && res.body) {
-      //       const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
-      //       modalRef.componentInstance.pdfBlobURL = res.body;
-      //     } else if (res.status === 204) {
-      //       const code = ResponseCode.WARNING;
-      //       const message = 'This file does not exist.';
-      //       this.showAlertMessage(code, message);
-      //     } else if (res.status === 205) {
-      //       const code = ResponseCode.ERROR_E00;
-      //       const message = 'Invalid file type.';
-      //       this.showAlertMessage(code, message);
-      //     } else {
-      //       const code = ResponseCode.ERROR_E00;
-      //       const message = 'Cannot download file';
-      //       this.showAlertMessage(code, message);
-      //     }
-      //     this.hideLoading();
-      //   },
-      //   error => {
-      //     this.hideLoading();
-      //     const code = ResponseCode.RESPONSE_FAILED_CODE;
-      //     const message = 'Error occured while connecting to server. Please, check network connection with your server.';
-      //     this.showAlertMessage(code, message);
-      //   }
-      // );
+     this.showLoading('Loading File');
+      this.deliveryService.getPreviewData(docId).subscribe(
+        (res: HttpResponse<Blob>) => {
+          if (res.status === 200 && res.body) {
+            const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
+            modalRef.componentInstance.pdfBlobURL = res.body;
+          } else if (res.status === 204) {
+            const code = ResponseCode.WARNING;
+            const message = 'This file does not exist.';
+            this.showAlertMessage(code, message);
+          } else if (res.status === 205) {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Invalid file type.';
+            this.showAlertMessage(code, message);
+          } else {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Cannot download file';
+            this.showAlertMessage(code, message);
+          }
+          this.hideLoading();
+        },
+        () => {
+          this.hideLoading();
+          const code = ResponseCode.RESPONSE_FAILED_CODE;
+          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          this.showAlertMessage(code, message);
+        }
+      );
     }
   }
 
   downloadFile(docId?: number, fileName?: string): void {
     if (docId !== undefined && fileName !== undefined && this.validate(false, fileName)) {
-     // this.showLoading('Downloading File');
-      // this.documentInquiryService.downloadFile(docId).subscribe(
-      //   (res: HttpResponse<Blob>) => {
-      //     if (res.status === 200 && res.body) {
-      //       FileSaver.saveAs(res.body, fileName);
-      //     } else if (res.status === 204) {
-      //       const code = ResponseCode.WARNING;
-      //       const message = 'This file does not exist.';
-      //       this.showAlertMessage(code, message);
-      //     } else if (res.status === 205) {
-      //       const code = ResponseCode.ERROR_E00;
-      //       const message = 'Invalid file type.';
-      //       this.showAlertMessage(code, message);
-      //     } else {
-      //       const code = ResponseCode.ERROR_E00;
-      //       const message = 'Cannot download file';
-      //       this.showAlertMessage(code, message);
-      //     }
-      //     this.hideLoading();
-      //   },
-      //   error => {
-      //     this.hideLoading();
-      //     const code = ResponseCode.RESPONSE_FAILED_CODE;
-      //     const message = 'Error occured while connecting to server. Please, check network connection with your server.';
-      //     this.showAlertMessage(code, message);
-      //   }
-      // );
+     this.showLoading('Downloading File');
+      this.deliveryService.downloadFile(docId).subscribe(
+        (res: HttpResponse<Blob>) => {
+          if (res.status === 200 && res.body) {
+            FileSaver.saveAs(res.body, fileName);
+          } else if (res.status === 204) {
+            const code = ResponseCode.WARNING;
+            const message = 'This file does not exist.';
+            this.showAlertMessage(code, message);
+          } else if (res.status === 205) {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Invalid file type.';
+            this.showAlertMessage(code, message);
+          } else {
+            const code = ResponseCode.ERROR_E00;
+            const message = 'Cannot download file';
+            this.showAlertMessage(code, message);
+          }
+          this.hideLoading();
+        },
+        () => {
+          this.hideLoading();
+          const code = ResponseCode.RESPONSE_FAILED_CODE;
+          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          this.showAlertMessage(code, message);
+        }
+      );
     }
   }
 }

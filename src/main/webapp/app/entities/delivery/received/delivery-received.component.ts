@@ -10,6 +10,7 @@ import { SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DeliveryService } from '../service/delivery.service';
 import { IDocumentDelivery } from '../delivery.model';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-delivery-received',
@@ -29,13 +30,14 @@ export class DeliveryReceivedComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
   departmentsList?: IDepartment[];
-  documentDelivery?: IDocumentDelivery[];
+  documentDelivery?: IDocumentDelivery[];  
+  _departmentName: string | undefined = '';
 
   searchForm = this.fb.group({
     fromdate: [],
     todate: [],
     subject: [],
-    departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
+    departmentID: [0],
     status: [],
   });
 
@@ -46,10 +48,16 @@ export class DeliveryReceivedComponent implements OnInit {
     protected modalService: NgbModal,
     protected translateService: TranslateService,
     protected loadSetupService: LoadSetupService,
-    protected deliveryService: DeliveryService
-  ) {}
+    protected deliveryService: DeliveryService,
+    protected userAuthorityService: UserAuthorityService,
+  ) {  }
 
   ngOnInit(): void {
+    
+    
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._departmentName = userAuthority?.department?.departmentName;
+
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
@@ -74,9 +82,10 @@ export class DeliveryReceivedComponent implements OnInit {
       this.loadPage(1);
     }
   }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-      this.searchForm.get('departmentID')!.markAsTouched();
+     // this.searchForm.get('departmentID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
       // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
@@ -84,7 +93,7 @@ export class DeliveryReceivedComponent implements OnInit {
       const startDate = this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY');
       const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
       const _status = this.searchForm.get(['status'])!.value;
-      // const _receiverId = this.searchForm.get(['departmentID'])!.value;
+      const _senderId = this.searchForm.get(['departmentID'])!.value;
       const _subject = this.searchForm.get(['subject'])!.value;
 
       const Criteria = {
@@ -93,15 +102,15 @@ export class DeliveryReceivedComponent implements OnInit {
         dateFrom: startDate,
         dateTo: endDate,
         status: _status,
-        // receiverId: _receiverId,
+        senderId: _senderId,
         subject: _subject,
       };
 
       console.log(Criteria, 'xxx Criteria xxxx');
 
       const requestParams = {
-        page: 1,
-        size: 1,
+        page: 0,
+        size: 10,
         criteria: JSON.stringify(Criteria),
       };
 

@@ -36,6 +36,7 @@ export class MeetingUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     location: ['', [Validators.required]],
+    referenceno:[''],
     fromtime: [null, [Validators.required]],
     totime: [null, [Validators.required]],
     meetingDate: [null, [Validators.required]],
@@ -372,7 +373,7 @@ export class MeetingUpdateComponent implements OnInit {
       ...new MeetingDelivery(),
 
       id: this.editForm.get(['id'])!.value,
-      referenceNo: this.editForm.get(['id'])!.value,
+      referenceNo: this.editForm.get(['referenceno'])!.value,
       sentDate: undefined,
       startDate: s_date,
       endDate: e_date,

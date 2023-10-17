@@ -64,10 +64,25 @@
         <input
           type="text"
           formControlName="location"
-          placeholder="Location."
+          placeholder="{{ 'omsApp.meeting.placeholder.Location' | translate }}"
           class="form-control div-padding text-height"
           name="Location"
           id="Location"
+          required
+        />
+
+        <div *ngIf="editForm.get('referenceno')!.invalid && (editForm.get('referenceno')?.dirty || editForm.get('referenceno')?.touched)">
+          <div *ngIf="editForm.get('referenceno')?.errors?.required" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          </div>
+        </div>
+        <input
+          type="text"
+          formControlName="referenceno"
+          placeholder="{{ 'omsApp.meeting.placeholder.DocNo' | translate }}"
+          class="form-control div-padding text-height"
+          name="referenceno"
+          id="referenceno"
           required
         />
 
@@ -80,17 +95,17 @@
         <input
           type="text"
           formControlName="subject"
-          placeholder="Subject"
+          placeholder="{{ 'omsApp.meeting.placeholder.Subject' | translate }}"
           class="form-control div-padding text-height"
           name="subject"
           id="subject"
         />
 
-        <div *ngIf="editForm.get('body')!.invalid && (editForm.get('body')?.dirty || editForm.get('body')?.touched)">
+        <!-- <div *ngIf="editForm.get('body')!.invalid && (editForm.get('body')?.dirty || editForm.get('body')?.touched)">
           <div *ngIf="editForm.get('body')?.errors?.required" style="text-align: right; color: red">
             <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
           </div>
-        </div>        
+        </div>         -->
         <quill-editor [styles]="{height: '150px'}" [modules]="modules"
         formControlName = "body" ></quill-editor> 
 
@@ -224,7 +239,7 @@
           style="float: right"
           (click)="goToStep2()"
           [disabled]="
-          editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required || editForm.get('location')?.errors?.required || editForm.get('subject')?.errors?.required || editForm.get('body')?.errors?.required
+          editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required || editForm.get('location')?.errors?.required || editForm.get('subject')?.errors?.required 
           "
         >
           <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>

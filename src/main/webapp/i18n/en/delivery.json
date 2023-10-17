@@ -20,10 +20,30 @@
         "CDept" : "CC Department"
       },
       "table": {
+        "tableheader": "Document Received",
         "No" : "No.",
         "FileName" : "File Name",
         "Preview" : "Preview",
-        "Download" : "Download"
+        "Download" : "Download",
+        "Date": "Date",
+        "DocumentNo":"Document No.",
+        "Subject": "Subject",
+        "Department": "Department"
+      },
+      "placeholder":{
+        "DocNo" : "Document No.",
+        "Subject" : "Subject",
+        "Body" : "Description",
+        "MDept" : "Main Department",
+        "CDept" : "CC Department"
+      },
+      "inbox":{
+        "fromdate": "From Date",
+        "todate": "To Date",
+        "subject": "Subject",
+        "department": "Department",
+        "status": "Status",
+        "search": "Search"
       }
     }
   }
