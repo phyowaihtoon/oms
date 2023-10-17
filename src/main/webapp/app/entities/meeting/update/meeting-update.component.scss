@@ -151,7 +151,7 @@ font-weight: bold;
 
 .card {
 width: 70%;
-height: 85vh;
+height: 80vh;
 margin-top: 10px;
 margin-bottom: 10px;
 min-height: 450px;
@@ -314,4 +314,16 @@ input[type="time"]:hover {
 .validate-span{
   height: 1.8em;
   display: block;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
 }

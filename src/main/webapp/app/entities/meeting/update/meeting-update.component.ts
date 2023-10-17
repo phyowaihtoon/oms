@@ -21,9 +21,10 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-import { IMeetingDelivery, IMeetingMessage, MeetingDelivery, MeetingMessage } from '../meeting.model';
+import { IMeetingAttachment, IMeetingDelivery, IMeetingMessage, MeetingAttachment, MeetingDelivery, MeetingMessage } from '../meeting.model';
 import { MeetingService } from '../service/meeting.service';
 import * as dayjs from 'dayjs';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-meeting-update',
@@ -59,6 +60,7 @@ export class MeetingUpdateComponent implements OnInit {
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = [];
   modules = {};
+  _departmentName: string | undefined = '';
 
   public progressItems = [
     { step: 1, title: 'Info' },
@@ -84,7 +86,8 @@ export class MeetingUpdateComponent implements OnInit {
     protected modalService: NgbModal,
     protected loadSetupService: LoadSetupService,
     protected meetingService: MeetingService,
-    protected translateService: TranslateService
+    protected translateService: TranslateService,
+    protected userAuthorityService: UserAuthorityService,
   ) {
     this.editForm.controls.location.valueChanges.subscribe(value => {
       //   // Update the targetText control's value
@@ -125,6 +128,10 @@ export class MeetingUpdateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._departmentName = userAuthority?.department?.departmentName;
+
     this.progressItems[0].title = this.translateService.instant('global.menu.meeting.Step1');
     this.progressItems[1].title = this.translateService.instant('global.menu.meeting.Step2');
     this.progressItems[2].title = this.translateService.instant('global.menu.meeting.Step3');
@@ -431,17 +438,17 @@ export class MeetingUpdateComponent implements OnInit {
     };
   }
 
-  protected createFormdocList(): IDocumentAttachment[] {
-    const fieldList: IDocumentAttachment[] = [];
+  protected createFormdocList(): IMeetingAttachment[] {
+    const fieldList: IMeetingAttachment[] = [];
     this.docList().controls.forEach(data => {
       fieldList.push(this.createdocListDetail(data));
     });
     return fieldList;
   }
 
-  protected createdocListDetail(data: any): IDocumentAttachment {
+  protected createdocListDetail(data: any): IMeetingAttachment {
     return {
-      ...new DocumentAttachment(),
+      ...new MeetingAttachment(),
       id: data.get(['id'])!.value,
       filePath: data.get(['filePath'])!.value,
       fileName: data.get(['fileName'])!.value,
@@ -450,15 +457,15 @@ export class MeetingUpdateComponent implements OnInit {
     };
   }
 
-  protected updateForm(deliveryMessage: IDeliveryMessage): void {
-    this.updateDocDelivery(deliveryMessage.documentDelivery!);
+  protected updateForm(deliveryMessage: IMeetingMessage): void {
+    this.updateDocDelivery(deliveryMessage.meetingDelivery!);
     this.updateDocDetails(deliveryMessage.attachmentList);
     this.editForm.patchValue({
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
     });
   }
 
-  protected updateDocDelivery(docDelivery: IDocumentDelivery): void {
+  protected updateDocDelivery(docDelivery: IMeetingDelivery): void {
     this.editForm.patchValue({
       id: docDelivery.id,
       docNo: docDelivery.referenceNo,
@@ -467,7 +474,7 @@ export class MeetingUpdateComponent implements OnInit {
     });
   }
 
-  protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
+  protected updateDocDetails(docList: IMeetingAttachment[] | undefined): void {
     let index = 0;
     docList?.forEach(data => {
       this.addField('', '');

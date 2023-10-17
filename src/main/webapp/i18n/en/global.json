@@ -21,7 +21,8 @@
       },
       "inbox": {
         "title": "Inbox",
-        "DocumentReceived": "Document Received"
+        "DocumentReceived": "Document Received",
+        "DocumentDetails" : "Document Details"
         
       },
       "delivery": {

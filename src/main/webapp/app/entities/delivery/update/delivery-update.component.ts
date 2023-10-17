@@ -12,6 +12,7 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-delivery-up  ',
@@ -40,7 +41,8 @@ export class DeliveryUpdateComponent implements OnInit{
   ccLabel = 'Cc:';
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = []; 
-  modules = {};
+  modules = {};  
+  _departmentName: string | undefined = '';
   
   public progressItems = [
     { step: 1, title: 'Info' },
@@ -68,6 +70,7 @@ export class DeliveryUpdateComponent implements OnInit{
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
     protected translateService: TranslateService,
+    protected userAuthorityService: UserAuthorityService,
   ) {
 
     this.editForm.controls.docNo.valueChanges.subscribe((value) => {
@@ -96,6 +99,11 @@ export class DeliveryUpdateComponent implements OnInit{
   }
   
   ngOnInit(): void {
+
+    
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._departmentName = userAuthority?.department?.departmentName;
+
     this.progressItems[0].title = this.translateService.instant('global.menu.delivery.Step1');
     this.progressItems[1].title = this.translateService.instant('global.menu.delivery.Step2');
     this.progressItems[2].title = this.translateService.instant('global.menu.delivery.Step3');

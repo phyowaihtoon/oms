@@ -11,6 +11,7 @@ import { ResponseCode } from 'app/entities/util/reply-message.model';
 import { error } from 'console';
 import * as FileSaver from 'file-saver';
 import { DeliveryService } from '../service/delivery.service';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-delivery-detail',
@@ -26,6 +27,7 @@ export class DeliveryDetailComponent implements OnInit {
   subject: string | undefined;
   body: string | undefined;
   _modalRef?: NgbModalRef;
+  _departmentName: string | undefined = '';
 
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = [];
@@ -34,7 +36,8 @@ export class DeliveryDetailComponent implements OnInit {
   constructor(
     protected activatedRoute: ActivatedRoute,   
     protected modalService: NgbModal,
-    protected deliveryService: DeliveryService)
+    protected deliveryService: DeliveryService,
+    protected userAuthorityService: UserAuthorityService,)
      {
     this.modules = {
       'toolbar': [
@@ -49,6 +52,10 @@ export class DeliveryDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._departmentName = userAuthority?.department?.departmentName;
     
     this.activatedRoute.data.subscribe(({ delivery }) => {
       this.documentDelivery = delivery?.documentDelivery;

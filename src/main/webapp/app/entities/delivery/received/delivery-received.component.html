@@ -98,8 +98,8 @@
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="box-header">              
-            <span jhiTranslate="omsApp.delivery.table.tableheader">Document Received</span></div>
+            <div class="box-header tbl-header-padding">              
+            <span jhiTranslate="omsApp.delivery.table.tableheader_received">Document Received</span></div>
             <div class="box-body">
               <div class="table-responsive">
                 <table class="table table-striped">
@@ -130,10 +130,24 @@
               </div>
             </div>
             <div class="box-footer">
-              <div class="row justify-content-center">
-                <ngb-pagination [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="itemsPerPage"
-                  [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+
+              <div *ngIf="documentDelivery && documentDelivery.length > 0">
+                <div class="row justify-content-center">
+                  <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+                </div>
+  
+                <div class="row justify-content-center">                
+                  <ngb-pagination 
+                  [collectionSize]="totalItems" 
+                  [(page)]="ngbPaginationPage" 
+                  [pageSize]="itemsPerPage"
+                  [maxSize]="5" 
+                  [rotate]="true" 
+                  [boundaryLinks]="true" 
+                  (pageChange)="loadPage($event)"></ngb-pagination>
+                </div>
               </div>
+              
             </div>
           </div>
         </div>

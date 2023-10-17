@@ -83,7 +83,7 @@ export class DeliverySentComponent implements OnInit {
   }
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-      this.searchForm.get('departmentID')!.markAsTouched();
+      // this.searchForm.get('departmentID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
       // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
@@ -93,6 +93,9 @@ export class DeliverySentComponent implements OnInit {
       const _status = this.searchForm.get(['status'])!.value;
       // const _receiverId = this.searchForm.get(['departmentID'])!.value;
       const _subject = this.searchForm.get(['subject'])!.value;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const pageToLoad: number|undefined = page ?? this.page ?? 1;
+
 
       const Criteria = {
         ...new SearchCriteria(),
@@ -106,9 +109,9 @@ export class DeliverySentComponent implements OnInit {
 
       console.log(Criteria, 'xxx Criteria xxxx');
 
-      const requestParams = {
-        page: 0,
-        size: 10,
+      const requestParams = {   
+        page: pageToLoad - 1,
+        size: this.itemsPerPage,
         criteria: JSON.stringify(Criteria),
       };
 
@@ -118,7 +121,7 @@ export class DeliverySentComponent implements OnInit {
         (res: HttpResponse<IDocumentDelivery[]>) => {
           const result = res.body;
           console.log(result, ' xxxxx result xxxxxxxx');
-          this.onSuccess(res.body, res.headers, !dontNavigate);
+          this.onSuccess(res.body, res.headers, !dontNavigate, pageToLoad);
 
           if (!res.ok) {
             console.log('Error Message :', res.headers.get('message'));
@@ -141,9 +144,10 @@ export class DeliverySentComponent implements OnInit {
   }
   
 
-  protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean): void {
+  protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean, page: number): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.documentDelivery = data!;
+    this.page = page;
     this.isShowingAlert = this.documentDelivery.length === 0;
     // this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
     this.ngbPaginationPage = this.page;
