@@ -1,30 +1,43 @@
 {
   "omsApp": {
     "meeting": {
-      "button": {        
+      "button": {
         "Send": "Send",
         "Back": "Back",
         "Next": "Next",
         "Draft": "Draft"
       },
-      "label":{
+      "label": {
         "Date": "Date",
         "Time": "Time"
       },
       "validateMsg": {
-        "RequiredField" : "This field is required.",
-        "RequiredDate" : "Please choose Date.",
-        "RequiredTime" : "Please choose Time.",
-        "RequiredMainDept" : "Please choose at least one department.",
-        "RequiredFile" : "Please choose at least one attachment"
+        "RequiredField": "This field is required.",
+        "RequiredDate": "Please choose Date.",
+        "RequiredTime": "Please choose Time.",
+        "RequiredMainDept": "Please choose at least one department.",
+        "RequiredFile": "Please choose at least one attachment"
       },
-      "placeholder":{
-        "DocNo" : "Letter No.",
+      "placeholder": {
+        "DocNo": "Letter No.",
         "Location": "Location",
-        "Subject" : "Subject",
-        "Body" : "Body",
-        "MDept" : "Main Department",
-        "CDept" : "CC Department" 
+        "Subject": "Subject",
+        "Body": "Body",
+        "MDept": "Main Department",
+        "CDept": "CC Department"
+      },
+      "table": {
+        "tableheader_received": "Meeting List",
+        "tableheader_sent": "Meeting List",
+        "tableheader_draft": "Meeting Draft List",
+        "No": "No.",
+        "FileName": "File Name",
+        "Preview": "Preview",
+        "Download": "Download",
+        "Date": "Date",
+        "DocumentNo": "Document No.",
+        "Subject": "Subject",
+        "Department": "Department"
       }
     }
   }

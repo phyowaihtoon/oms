@@ -8,7 +8,6 @@ import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { IDepartment } from 'app/entities/department/department.model';
 import { SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { MeetingService } from '../service/meeting.service';
 import { IMeetingDelivery } from '../meeting.model';
@@ -119,11 +118,6 @@ export class MeetingSentComponent implements OnInit {
         }
       );
     }
-  }
-
-  formatDate(date: dayjs.Dayjs): string {
-    const format = 'YYYY-MM-DD';
-    return date.format(format);
   }
 
   trackMeetingDeliveryById(index: number, item: IMeetingDelivery): number {
