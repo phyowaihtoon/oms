@@ -20,7 +20,9 @@
         "CDept" : "CC Department"
       },
       "table": {
-        "tableheader": "Document Received",
+        "tableheader_received": "Document Received",
+        "tableheader_sent": "Document Sent",
+        "tableheader_draft": "Document Draft",
         "No" : "No.",
         "FileName" : "File Name",
         "Preview" : "Preview",

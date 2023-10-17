@@ -19,7 +19,8 @@
       },
       "inbox": {
         "title": "ဝင်စာ",
-        "DocumentReceived": "ဝင်စာများ"
+        "DocumentReceived": "ဝင်စာများ",
+        "DocumentDetails" : "ဝင်စာအသေးစိတ်"
       },
       "delivery": {
         "title": "ထွက်စာ",

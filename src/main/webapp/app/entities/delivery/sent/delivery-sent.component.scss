@@ -14,7 +14,7 @@ input[type="date"] {
 
   .card {
     width: 70%;
-    height: 85vh; //auto; //
+    height: 80vh; //auto; //
     margin-top: 10px;
     margin-bottom: 10px;
     min-height: 450px;
@@ -88,4 +88,8 @@ h6 {
 
 .margin-top-10 {
   margin-top: 10px;
+}
+
+.tbl-header-padding{
+  padding-bottom: 3px;
 }

@@ -10,6 +10,7 @@ import { SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DeliveryService } from '../service/delivery.service';
 import { IDocumentDelivery } from '../delivery.model';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-delivery-draft',
@@ -30,6 +31,7 @@ export class DeliveryDraftComponent implements OnInit {
   ngbPaginationPage = 1;
   departmentsList?: IDepartment[];
   documentDelivery?: IDocumentDelivery[];
+  _departmentName: string | undefined = '';
 
   searchForm = this.fb.group({
     fromdate: [],
@@ -46,11 +48,17 @@ export class DeliveryDraftComponent implements OnInit {
     protected modalService: NgbModal,
     protected translateService: TranslateService,
     protected loadSetupService: LoadSetupService,
-    protected deliveryService: DeliveryService
+    protected deliveryService: DeliveryService,
+    protected userAuthorityService: UserAuthorityService,
   ) {}
 
   ngOnInit(): void {
     
+    
+    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._departmentName = userAuthority?.department?.departmentName;
+
+
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
@@ -78,7 +86,7 @@ export class DeliveryDraftComponent implements OnInit {
   }
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-      this.searchForm.get('departmentID')!.markAsTouched();
+      // this.searchForm.get('departmentID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
       // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
@@ -87,7 +95,9 @@ export class DeliveryDraftComponent implements OnInit {
       const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
       const _status = this.searchForm.get(['status'])!.value;
       // const _receiverId = this.searchForm.get(['departmentID'])!.value;
-      const _subject = this.searchForm.get(['subject'])!.value;
+      const _subject = this.searchForm.get(['subject'])!.value;      
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const pageToLoad: number|undefined = page ?? this.page ?? 1;
 
       const Criteria = {
         ...new SearchCriteria(),
@@ -101,9 +111,9 @@ export class DeliveryDraftComponent implements OnInit {
 
       console.log(Criteria, 'xxx Criteria xxxx');
 
-      const requestParams = {
-        page: 0,
-        size: 10,
+      const requestParams = {    
+        page: pageToLoad - 1,
+        size: this.itemsPerPage,
         criteria: JSON.stringify(Criteria),
       };
 
@@ -113,7 +123,7 @@ export class DeliveryDraftComponent implements OnInit {
         (res: HttpResponse<IDocumentDelivery[]>) => {
           const result = res.body;
           console.log(result, ' xxxxx result xxxxxxxx');
-          this.onSuccess(res.body, res.headers, !dontNavigate);
+          this.onSuccess(res.body, res.headers, !dontNavigate, pageToLoad);
 
           if (!res.ok) {
             console.log('Error Message :', res.headers.get('message'));
@@ -126,9 +136,10 @@ export class DeliveryDraftComponent implements OnInit {
     }
   }
 
-  protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean): void {
+  protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean, page: number): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.documentDelivery = data!;
+    this.page = page;
     this.isShowingAlert = this.documentDelivery.length === 0;
     // this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
     this.ngbPaginationPage = this.page;

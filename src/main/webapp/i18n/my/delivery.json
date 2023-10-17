@@ -19,8 +19,10 @@
         "MDept" : "လိပ်မူ",
         "CDept" : "မိတ္တူ" 
       },
-      "table": {        
-        "tableheader": "ဝင်စာစာရင်း",
+      "table": {                
+        "tableheader_received": "ဝင်စာစာရင်း",
+        "tableheader_sent": "ထွက်စာစာရင်း",
+        "tableheader_draft": "ထွက်စာမူကြမ်း",
         "No" : "စဉ်",
         "FileName" : "ဖိုင်အမည်",
         "Preview" : "အစမ်းကြည့်",

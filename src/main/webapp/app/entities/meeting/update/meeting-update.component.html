@@ -1,14 +1,16 @@
+<div class="d-flex justify-content-between margin-top-10">
+  <div class="row">
+    <h5 jhiTranslate="global.menu.meeting.title" style="margin-left: 16px"> Meeting </h5>
+    <h5>&nbsp;>>&nbsp;</h5>    
+    <h5 jhiTranslate="global.menu.meeting.MeetingInvitation"> Meeting Invitation </h5>
+  </div>
+  <h5>{{ _departmentName }}</h5>
+</div>
 
 <form name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="editForm" autocomplete="off">
-  
  
   <div class="row justify-content-center">
-    <div class="card">
-      <div class="card-header-title">
-        <span jhiTranslate="global.menu.meeting.title"> Meeting </span>  >>
-        <span jhiTranslate="global.menu.meeting.MeetingInvitation"> Meeting Invitation </span>
-      </div>
-      
+    <div class="card">      
       <div class="card-header main-container">
         <div class="progressbar">
           <div class="progress" id="progress"></div>
