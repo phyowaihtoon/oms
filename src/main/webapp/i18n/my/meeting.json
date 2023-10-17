@@ -1,30 +1,43 @@
 {
   "omsApp": {
     "meeting": {
-      "button": {        
+      "button": {
         "Send": "ပေးပို့ပါ",
         "Back": "ရှေ့သို့",
         "Next": "နောက်တဆင့်",
         "Draft": "မူကြမ်း"
       },
-      "label":{
+      "label": {
         "Date": "ရက်စွဲ",
         "Time": "အချိန်"
       },
       "validateMsg": {
-        "RequiredField" : "ဤနေရာတွင်စာသားထည့်ရန်လိုအပ်ပါသည်။",
-        "RequiredDate" : "ရက်စွဲရွေးပါ။",
-        "RequiredTime" : "အချိန်ရွေးပါ။",
-        "RequiredMainDept" : "အနည်းဆုံးဌာနတစ်ခုရွေးပါ။",
-        "RequiredFile" : "အနည်းဆုံးဖိုင်တစ်ခုကိုရွေးပါ။"
+        "RequiredField": "ဤနေရာတွင်စာသားထည့်ရန်လိုအပ်ပါသည်။",
+        "RequiredDate": "ရက်စွဲရွေးပါ။",
+        "RequiredTime": "အချိန်ရွေးပါ။",
+        "RequiredMainDept": "အနည်းဆုံးဌာနတစ်ခုရွေးပါ။",
+        "RequiredFile": "အနည်းဆုံးဖိုင်တစ်ခုကိုရွေးပါ။"
       },
-      "placeholder":{
-        "DocNo" : "စာအမှတ်",
+      "placeholder": {
+        "DocNo": "စာအမှတ်",
         "Location": "နေရာ",
-        "Subject" : "အကြောင်းအရာ",
-        "Body" : "စာကိုယ်",
-        "MDept" : "လိပ်မူ",
-        "CDept" : "မိတ္တူ" 
+        "Subject": "အကြောင်းအရာ",
+        "Body": "စာကိုယ်",
+        "MDept": "လိပ်မူ",
+        "CDept": "မိတ္တူ"
+      },
+      "table": {
+        "tableheader_received": "ဖိတ်ကြားစာ စာရင်း",
+        "tableheader_sent": "ဖိတ်ကြားစာ စာရင်း",
+        "tableheader_draft": "ဖိတ်ကြားစာ စာရင်း",
+        "No": "စဉ်",
+        "FileName": "ဖိုင်အမည်",
+        "Preview": "အစမ်းကြည့်",
+        "Download": "ဒေါင်းလုပ်",
+        "Date": "ရက်စွဲ",
+        "DocumentNo": "စာအမှတ်",
+        "Subject": "အကြောင်းအရာ",
+        "Department": "ဌာန"
       }
     }
   }
