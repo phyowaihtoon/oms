@@ -104,55 +104,55 @@
         </form>
 
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="box-header tbl-header-padding">
-              <span jhiTranslate="omsApp.meeting.table.tableheader_received">Meeting List</span>
+          <div class="box-header tbl-header-padding">
+            <span jhiTranslate="omsApp.meeting.table.tableheader_received">Meeting List</span>
+          </div>
+          <div class="box-body">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr class="bg-primary">
+                    <th style="width: 5%; text-align: center" jhiTranslate="omsApp.meeting.table.No"><span>No.</span></th>
+                    <th style="width: 10%; text-align: center" jhiTranslate="omsApp.meeting.table.Date"><span>Date</span></th>
+                    <th style="width: 15%; text-align: center" jhiTranslate="omsApp.meeting.table.DocumentNo"><span>Document No.</span></th>
+                    <th style="width: 25%; text-align: center" jhiTranslate="omsApp.meeting.table.Subject"><span>Subject</span></th>
+                    <th style="width: 35%; text-align: center" jhiTranslate="omsApp.meeting.table.Department"><span>Department</span></th>
+                    <th style="width: 10%; text-align: center">#</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let meetingDelivery of meetingDeliveryList; let i = index" data-cy="entityTable">
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>{{ meetingDelivery.sentDate ? meetingDelivery.sentDate.format('DD-MM-YYYY') : '-' }}</td>
+                    <td>{{ meetingDelivery.referenceNo }}</td>
+                    <td>{{ meetingDelivery.subject }}</td>
+                    <td>{{ meetingDelivery.sender?.departmentName }}</td>
+                    <td style="text-align: center">
+                      <a href="#" jhiTranslate="home.view_details" [routerLink]="['/meeting', meetingDelivery.id, 'view']">View Details</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="box-body">
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr class="bg-primary">
-                      <th style="width: 5%" jhiTranslate="omsApp.meeting.table.No"><span>No.</span></th>
-                      <th style="width: 10%" jhiTranslate="omsApp.meeting.table.Date"><span>Date</span></th>
-                      <th style="width: 15%" jhiTranslate="omsApp.meeting.table.DocumentNo"><span>Document No.</span></th>
-                      <th style="width: 25%" jhiTranslate="omsApp.meeting.table.Subject"><span>Subject</span></th>
-                      <th style="width: 35%" jhiTranslate="omsApp.meeting.table.Department"><span>Department</span></th>
-                      <th style="width: 10%">#</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let meetingDelivery of meetingDeliveryList; let i = index" data-cy="entityTable">
-                      <td>
-                        {{ i + 1 }}
-                      </td>
-                      <td>{{ meetingDelivery.sentDate ? meetingDelivery.sentDate.format('DD-MM-YYYY') : '-' }}</td>
-                      <td>{{ meetingDelivery.referenceNo }}</td>
-                      <td>{{ meetingDelivery.subject }}</td>
-                      <td>{{ meetingDelivery.sender?.departmentName }}</td>
-                      <td>-</td>
-                    </tr>
-                  </tbody>
-                </table>
+          </div>
+          <div class="box-footer">
+            <div *ngIf="meetingDeliveryList && meetingDeliveryList.length > 0">
+              <div class="row justify-content-center">
+                <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
               </div>
-            </div>
-            <div class="box-footer">
-              <div *ngIf="meetingDeliveryList && meetingDeliveryList.length > 0">
-                <div class="row justify-content-center">
-                  <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-                </div>
 
-                <div class="row justify-content-center">
-                  <ngb-pagination
-                    [collectionSize]="totalItems"
-                    [(page)]="ngbPaginationPage"
-                    [pageSize]="itemsPerPage"
-                    [maxSize]="5"
-                    [rotate]="true"
-                    [boundaryLinks]="true"
-                    (pageChange)="loadPage($event)"
-                  ></ngb-pagination>
-                </div>
+              <div class="row justify-content-center">
+                <ngb-pagination
+                  [collectionSize]="totalItems"
+                  [(page)]="ngbPaginationPage"
+                  [pageSize]="itemsPerPage"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="loadPage($event)"
+                ></ngb-pagination>
               </div>
             </div>
           </div>
