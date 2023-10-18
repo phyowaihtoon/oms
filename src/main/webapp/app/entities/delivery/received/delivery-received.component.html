@@ -118,7 +118,7 @@
                       <td>
                         {{ i + 1 }}
                       </td>
-                      <td>{{ doc.sentDate }}</td>
+                      <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-'}}</td>
                       <td>{{ doc.referenceNo }}</td>
                       <td>{{ doc.subject }}</td>
                       <td>{{ doc.sender?.departmentName }}</td>

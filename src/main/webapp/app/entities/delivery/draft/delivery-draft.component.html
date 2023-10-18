@@ -1,8 +1,8 @@
 <div class="d-flex justify-content-between margin-top-10">
   <div class="row">
-    <h5 jhiTranslate="global.menu.inbox.title" style="margin-left: 16px"> Inbox </h5>
+    <h5 jhiTranslate="global.menu.delivery.title" style="margin-left: 16px"> documentDelivery </h5>
     <h5>&nbsp;>>&nbsp;</h5>
-    <h5 jhiTranslate="global.menu.inbox.DocumentReceived"> Document Received </h5>
+    <h5 jhiTranslate="global.menu.draft.DeliveryDraft"> Document Draft </h5>
   </div>
   <h5>{{ _departmentName }}</h5>
 </div>
@@ -106,7 +106,7 @@
                       <td>
                         {{ i + 1 }}
                       </td>
-                      <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
+                      <td>{{ doc.createdDate ? doc.createdDate.format('DD-MM-YYYY') : '-' }}</td>
                       <td>{{ doc.referenceNo }}</td>
                       <td>{{ doc.subject }}</td>
                       <td>{{ doc.sender?.departmentName }}</td>

@@ -14,7 +14,7 @@
         <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
           <div class="form-group row col-12">
             <div class="col-2">
-              <label class="form-control-label">From Date</label>
+              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.fromdate">From Date</label>
             </div>
 
             <div class="col-4">
@@ -38,7 +38,7 @@
             </div>
 
             <div class="col-2">
-              <label class="form-control-label">Subject</label>
+              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.subject">Subject</label>
             </div>
             <div class="col-4">
               <input type="text" class="form-control" name="subject" id="field_subject" data-cy="subject" formControlName="subject" />
@@ -47,7 +47,7 @@
 
           <div class="form-group row col-12">
             <div class="col-2">
-              <label class="form-control-label">To Date</label>
+              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.todate">To Date</label>
             </div>
             <div class="col-4">
               <div class="input-group">
@@ -70,7 +70,7 @@
             </div>
 
             <div class="col-2">
-              <label class="form-control-label">Status</label>
+              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.status">Status</label>
             </div>
             <div class="col-4">
               <select class="form-control" id="staus" data-cy="status" name="status" formControlName="status">
