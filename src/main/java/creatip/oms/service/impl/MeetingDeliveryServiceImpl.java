@@ -211,26 +211,6 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         return page.map(meetingDeliveryMapper::toDto);
     }
 
-    @Override
-    public Page<MeetingDeliveryDTO> getSentMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
-        Page<MeetingDelivery> page = null;
-        if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), criteria.getDateOn(), pageable);
-        } else {
-            String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
-            page =
-                meetingDeliveryRepository.findSentMeetingList(
-                    criteria.getSenderId(),
-                    criteria.getDateFrom(),
-                    criteria.getDateTo(),
-                    subject,
-                    pageable
-                );
-        }
-
-        return page.map(meetingDeliveryMapper::toDto);
-    }
-
     private List<MeetingAttachment> saveAndUploadFiles(List<MultipartFile> multipartFiles, MeetingDelivery header) {
         List<String> uploadedFileList = new ArrayList<>();
         List<MeetingAttachment> uploadedList = new ArrayList<MeetingAttachment>();
@@ -329,13 +309,37 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     }
 
     @Override
+    public Page<MeetingDeliveryDTO> getSentMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
+        Page<MeetingDelivery> page = null;
+        if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
+            page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), criteria.getDateOn(), pageable);
+        } else {
+            String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
+            String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
+            page =
+                meetingDeliveryRepository.findSentMeetingList(
+                    criteria.getSenderId(),
+                    criteria.getDateFrom(),
+                    criteria.getDateTo(),
+                    subject,
+                    referenceNo,
+                    pageable
+                );
+        }
+
+        return page.map(meetingDeliveryMapper::toDto);
+    }
+
+    @Override
     public Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
         String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
+        String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
         Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(
             criteria.getSenderId(),
             criteria.getDateFrom(),
             criteria.getDateTo(),
             subject,
+            referenceNo,
             pageable
         );
         return page.map(meetingDeliveryMapper::toDto);

@@ -538,24 +538,12 @@ public class MeetingDeliveryResource {
         }
 
         String absoluteFilePath = filePath + "//" + fileName;
-        ReplyMessage<ByteArrayResource> replyMessage = null;
-        try {
-            log.debug("Start Downloading.....{}", absoluteFilePath);
-            replyMessage = ftpRepositoryService.downloadFile(absoluteFilePath);
-            log.debug("End Downloading.....{}", absoluteFilePath);
-        } catch (IOException ex) {
-            String message = "Failed to download: [" + absoluteFilePath + "]";
-            log.debug("Response Message : {}", message);
-            log.error(ex.getMessage());
+        ReplyMessage<ByteArrayResource> replyMessage = ftpRepositoryService.downloadFile(absoluteFilePath);
+
+        if (!replyMessage.getCode().equals(ResponseCode.SUCCESS)) {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("message", message);
-            return ResponseEntity.badRequest().headers(headers).body(null);
-        } catch (Exception ex) {
-            String message = "Failed to download: [" + absoluteFilePath + "]";
-            log.debug("Response Message : {}", message);
-            log.error(ex.getMessage());
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("message", message);
+            headers.add("code", replyMessage.getCode());
+            headers.add("message", replyMessage.getMessage());
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
 
@@ -596,24 +584,12 @@ public class MeetingDeliveryResource {
         }
 
         String absoluteFilePath = filePath + "//" + fileName;
-        ReplyMessage<ByteArrayResource> replyMessage = null;
-        try {
-            log.debug("Start Downloading.....{}", absoluteFilePath);
-            replyMessage = ftpRepositoryService.getPreviewFileData(absoluteFilePath);
-            log.debug("End Downloading.....{}", absoluteFilePath);
-        } catch (IOException ex) {
-            String message = "Failed to download: [" + absoluteFilePath + "]";
-            log.debug("Response Message : {}", message);
-            log.error(ex.getMessage());
+        ReplyMessage<ByteArrayResource> replyMessage = ftpRepositoryService.getPreviewFileData(absoluteFilePath);
+
+        if (!replyMessage.getCode().equals(ResponseCode.SUCCESS)) {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("message", message);
-            return ResponseEntity.badRequest().headers(headers).body(null);
-        } catch (Exception ex) {
-            String message = "Failed to download: [" + absoluteFilePath + "]";
-            log.debug("Response Message : {}", message);
-            log.error(ex.getMessage());
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("message", message);
+            headers.add("code", replyMessage.getCode());
+            headers.add("message", replyMessage.getMessage());
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
 

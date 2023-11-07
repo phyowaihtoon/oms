@@ -141,6 +141,13 @@ public class CustomMeetingDeliveryRepositoryImpl implements CustomMeetingDeliver
             predicates.add(predicate);
         }
 
+        String referenceNo = criteria.getReferenceNo();
+        if (referenceNo != null && !referenceNo.equals("null") && !referenceNo.isEmpty()) {
+            referenceNo = referenceNo.trim();
+            Predicate predicate = criteriaBuilder.like(delivery.get("referenceNo"), "%" + referenceNo + "%");
+            predicates.add(predicate);
+        }
+
         return predicates;
     }
 }

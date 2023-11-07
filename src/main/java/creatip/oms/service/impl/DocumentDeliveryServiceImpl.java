@@ -309,12 +309,14 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             page = documentDeliveryRepository.findDocumentsSent(criteria.getSenderId(), criteria.getDateOn(), pageable);
         } else {
             String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
+            String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
             page =
                 documentDeliveryRepository.findDocumentsSent(
                     criteria.getSenderId(),
                     criteria.getDateFrom(),
                     criteria.getDateTo(),
                     subject,
+                    referenceNo,
                     pageable
                 );
         }
@@ -324,11 +326,13 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     @Override
     public Page<DocumentDeliveryDTO> getDeliveryDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
         String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
+        String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
         Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(
             criteria.getSenderId(),
             criteria.getDateFrom(),
             criteria.getDateTo(),
             subject,
+            referenceNo,
             pageable
         );
         return page.map(documentDeliveryMapper::toDto);

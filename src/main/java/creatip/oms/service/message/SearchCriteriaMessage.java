@@ -10,6 +10,7 @@ public class SearchCriteriaMessage implements Serializable {
     private String dateOn;
     private String dateFrom;
     private String dateTo;
+    private String referenceNo;
     private short status;
     private Long senderId;
     private Long receiverId;
@@ -29,6 +30,10 @@ public class SearchCriteriaMessage implements Serializable {
 
     public String getDateTo() {
         return dateTo;
+    }
+
+    public String getReferenceNo() {
+        return referenceNo;
     }
 
     public short getStatus() {
@@ -61,6 +66,10 @@ public class SearchCriteriaMessage implements Serializable {
 
     public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
+    }
+
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
     }
 
     public void setStatus(short status) {

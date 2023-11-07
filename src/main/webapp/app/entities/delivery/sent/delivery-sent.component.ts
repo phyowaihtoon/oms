@@ -31,14 +31,13 @@ export class DeliverySentComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
   departmentsList?: IDepartment[];
-  documentDelivery?: IDocumentDelivery[];  
+  documentDelivery?: IDocumentDelivery[];
   _departmentName: string | undefined = '';
 
   searchForm = this.fb.group({
     fromdate: [],
     todate: [],
     subject: [],
-    /// departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     status: [],
   });
 
@@ -50,7 +49,7 @@ export class DeliverySentComponent implements OnInit {
     protected translateService: TranslateService,
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
-    protected userAuthorityService: UserAuthorityService,
+    protected userAuthorityService: UserAuthorityService
   ) {}
 
   ngOnInit(): void {
@@ -94,8 +93,7 @@ export class DeliverySentComponent implements OnInit {
       // const _receiverId = this.searchForm.get(['departmentID'])!.value;
       const _subject = this.searchForm.get(['subject'])!.value;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      const pageToLoad: number|undefined = page ?? this.page ?? 1;
-
+      const pageToLoad: number | undefined = page ?? this.page ?? 1;
 
       const Criteria = {
         ...new SearchCriteria(),
@@ -109,7 +107,7 @@ export class DeliverySentComponent implements OnInit {
 
       console.log(Criteria, 'xxx Criteria xxxx');
 
-      const requestParams = {   
+      const requestParams = {
         page: pageToLoad - 1,
         size: this.itemsPerPage,
         criteria: JSON.stringify(Criteria),
@@ -140,9 +138,7 @@ export class DeliverySentComponent implements OnInit {
 
     // const format = 'YYYY-MM-DD';
     // const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, { format });
-    
   }
-  
 
   protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean, page: number): void {
     this.totalItems = Number(headers.get('X-Total-Count'));

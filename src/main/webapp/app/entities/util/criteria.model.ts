@@ -3,6 +3,7 @@ export interface ISearchCriteria {
   dateOn?: string;
   dateFrom?: string;
   dateTo?: string;
+  referenceNo?: string;
   status?: number;
   senderId?: number;
   receiverId?: number;
@@ -15,6 +16,7 @@ export class SearchCriteria implements ISearchCriteria {
     public dateOn?: string,
     public dateFrom?: string,
     public dateTo?: string,
+    public referenceNo?: string,
     public status?: number,
     public senderId?: number,
     public receiverId?: number,
