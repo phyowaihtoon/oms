@@ -344,4 +344,72 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         );
         return page.map(meetingDeliveryMapper::toDto);
     }
+
+    @Override
+    public ReplyMessage<String> markAsRead(Long deliveryId, Long loginDepId) {
+        ReplyMessage<String> replyMessage = new ReplyMessage<String>();
+
+        try {
+            Optional<MeetingDelivery> data = meetingDeliveryRepository.findById(deliveryId);
+            if (data.isPresent()) {
+                MeetingDelivery delivery = data.get();
+                if (loginDepId == delivery.getSender().getId()) {
+                    delivery.setStatus((short) 1);
+                    meetingDeliveryRepository.save(delivery);
+                } else {
+                    List<MeetingReceiver> list = meetingReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
+                    for (MeetingReceiver receiver : list) {
+                        receiver.setStatus((short) 1);
+                        meetingReceiverRepository.save(receiver);
+                    }
+                }
+
+                replyMessage.setCode(ResponseCode.SUCCESS);
+                replyMessage.setMessage("Meeting invitation has been marked as read");
+            } else {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("Invalid meeting delivery : " + deliveryId);
+            }
+        } catch (Exception ex) {
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
+            replyMessage.setMessage(ex.getMessage());
+            log.error("Error while marking meeting invitation as read :", ex);
+        }
+
+        return replyMessage;
+    }
+
+    @Override
+    public ReplyMessage<String> markAsUnRead(Long deliveryId, Long loginDepId) {
+        ReplyMessage<String> replyMessage = new ReplyMessage<String>();
+
+        try {
+            Optional<MeetingDelivery> data = meetingDeliveryRepository.findById(deliveryId);
+            if (data.isPresent()) {
+                MeetingDelivery delivery = data.get();
+                if (loginDepId == delivery.getSender().getId()) {
+                    delivery.setStatus((short) 0);
+                    meetingDeliveryRepository.save(delivery);
+                } else {
+                    List<MeetingReceiver> list = meetingReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
+                    for (MeetingReceiver receiver : list) {
+                        receiver.setStatus((short) 0);
+                        meetingReceiverRepository.save(receiver);
+                    }
+                }
+
+                replyMessage.setCode(ResponseCode.SUCCESS);
+                replyMessage.setMessage("Meeting invitation has been marked as read");
+            } else {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("Invalid meeting invitation : " + deliveryId);
+            }
+        } catch (Exception ex) {
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
+            replyMessage.setMessage(ex.getMessage());
+            log.error("Error while marking meeting invitation as unread :", ex);
+        }
+
+        return replyMessage;
+    }
 }

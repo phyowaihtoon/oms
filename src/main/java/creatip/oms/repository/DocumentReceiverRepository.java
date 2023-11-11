@@ -22,4 +22,6 @@ public interface DocumentReceiverRepository extends JpaRepository<DocumentReceiv
     List<DocumentReceiver> findUnReadMailByRecieverId(Long receiverId);
 
     List<DocumentReceiver> findByHeaderId(Long headerId);
+
+    List<DocumentReceiver> findByHeaderIdAndReceiverId(Long headerId, Long recieverId);
 }

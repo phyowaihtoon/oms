@@ -24,4 +24,8 @@ public interface DocumentDeliveryService {
     Optional<DeliveryMessage> findOne(Long id);
 
     List<NotificationMessage> getNotification(Long departmentId);
+
+    ReplyMessage<String> markAsRead(Long deliveryId, Long loginDepId);
+
+    ReplyMessage<String> markAsUnRead(Long deliveryId, Long loginDepId);
 }

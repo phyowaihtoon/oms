@@ -70,6 +70,18 @@ export class MeetingService {
     return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
   }
 
+  markAsRead(meetingId: number): Observable<IReplyMessage> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/read/${meetingId}`, {
+      observe: 'response',
+    });
+  }
+
+  markAsUnRead(meetingId: number): Observable<IReplyMessage> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/unread/${meetingId}`, {
+      observe: 'response',
+    });
+  }
+
   protected convertDateFromClient(meetingDelivery: IMeetingDelivery): IMeetingDelivery {
     return Object.assign({}, meetingDelivery, {
       startDate: meetingDelivery.startDate?.isValid() ? meetingDelivery.startDate.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,

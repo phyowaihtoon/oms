@@ -21,7 +21,6 @@ import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SharedUtils;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -582,5 +581,63 @@ public class DocumentDeliveryResource {
             .headers(header)
             //.contentLength(file.length())
             .body(replyMessage.getData());
+    }
+
+    @GetMapping("/delivery/read/{id}")
+    public ResponseEntity<ReplyMessage<String>> markAsRead(@PathVariable(value = "id", required = false) final Long id)
+        throws URISyntaxException {
+        log.debug("Request to mark Document Delivery as Read :  ID [{}]", id);
+        ReplyMessage<String> replyMessage = null;
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            replyMessage = new ReplyMessage<String>();
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage(message);
+            return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+                .body(replyMessage);
+        }
+
+        Long loginDepId = appUserDTO.getDepartment().getId();
+
+        replyMessage = documentDeliveryService.markAsRead(id, loginDepId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(replyMessage);
+    }
+
+    @GetMapping("/delivery/unread/{id}")
+    public ResponseEntity<ReplyMessage<String>> markAsUnRead(@PathVariable(value = "id", required = false) final Long id)
+        throws URISyntaxException {
+        log.debug("Request to mark Document Delivery as unread :  ID [{}]", id);
+        ReplyMessage<String> replyMessage = null;
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            replyMessage = new ReplyMessage<String>();
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage(message);
+            return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+                .body(replyMessage);
+        }
+
+        Long loginDepId = appUserDTO.getDepartment().getId();
+
+        replyMessage = documentDeliveryService.markAsUnRead(id, loginDepId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(replyMessage);
     }
 }

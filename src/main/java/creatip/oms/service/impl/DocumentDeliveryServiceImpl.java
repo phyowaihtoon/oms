@@ -337,4 +337,72 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         );
         return page.map(documentDeliveryMapper::toDto);
     }
+
+    @Override
+    public ReplyMessage<String> markAsRead(Long deliveryId, Long loginDepId) {
+        ReplyMessage<String> replyMessage = new ReplyMessage<String>();
+
+        try {
+            Optional<DocumentDelivery> data = documentDeliveryRepository.findById(deliveryId);
+            if (data.isPresent()) {
+                DocumentDelivery delivery = data.get();
+                if (loginDepId == delivery.getSender().getId()) {
+                    delivery.setStatus((short) 1);
+                    documentDeliveryRepository.save(delivery);
+                } else {
+                    List<DocumentReceiver> list = documentReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
+                    for (DocumentReceiver receiver : list) {
+                        receiver.setStatus((short) 1);
+                        documentReceiverRepository.save(receiver);
+                    }
+                }
+
+                replyMessage.setCode(ResponseCode.SUCCESS);
+                replyMessage.setMessage("Letter has been marked as read");
+            } else {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("Invalid document delivery : " + deliveryId);
+            }
+        } catch (Exception ex) {
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
+            replyMessage.setMessage(ex.getMessage());
+            log.error("Error while marking document as read :", ex);
+        }
+
+        return replyMessage;
+    }
+
+    @Override
+    public ReplyMessage<String> markAsUnRead(Long deliveryId, Long loginDepId) {
+        ReplyMessage<String> replyMessage = new ReplyMessage<String>();
+
+        try {
+            Optional<DocumentDelivery> data = documentDeliveryRepository.findById(deliveryId);
+            if (data.isPresent()) {
+                DocumentDelivery delivery = data.get();
+                if (loginDepId == delivery.getSender().getId()) {
+                    delivery.setStatus((short) 0);
+                    documentDeliveryRepository.save(delivery);
+                } else {
+                    List<DocumentReceiver> list = documentReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
+                    for (DocumentReceiver receiver : list) {
+                        receiver.setStatus((short) 0);
+                        documentReceiverRepository.save(receiver);
+                    }
+                }
+
+                replyMessage.setCode(ResponseCode.SUCCESS);
+                replyMessage.setMessage("Letter has been marked as unread");
+            } else {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("Invalid document delivery : " + deliveryId);
+            }
+        } catch (Exception ex) {
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
+            replyMessage.setMessage(ex.getMessage());
+            log.error("Error while marking document as unread :", ex);
+        }
+
+        return replyMessage;
+    }
 }

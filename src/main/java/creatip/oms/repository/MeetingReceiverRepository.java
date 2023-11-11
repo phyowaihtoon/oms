@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MeetingReceiverRepository extends JpaRepository<MeetingReceiver, Long> {
     List<MeetingReceiver> findByHeaderId(Long headerId);
+
+    List<MeetingReceiver> findByHeaderIdAndReceiverId(Long headerId, Long recieverId);
 }

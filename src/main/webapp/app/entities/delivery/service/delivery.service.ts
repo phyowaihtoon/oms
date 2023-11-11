@@ -63,6 +63,18 @@ export class DeliveryService {
     return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
   }
 
+  markAsRead(deliveryId: number): Observable<IReplyMessage> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/read/${deliveryId}`, {
+      observe: 'response',
+    });
+  }
+
+  markAsUnRead(deliveryId: number): Observable<IReplyMessage> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/unread/${deliveryId}`, {
+      observe: 'response',
+    });
+  }
+
   protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((documentDelivery: IDocumentDelivery) => {

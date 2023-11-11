@@ -23,4 +23,8 @@ public interface MeetingDeliveryService {
     Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable);
 
     List<MeetingDeliveryDTO> getScheduledMeetingList();
+
+    ReplyMessage<String> markAsRead(Long deliveryId, Long loginDepId);
+
+    ReplyMessage<String> markAsUnRead(Long deliveryId, Long loginDepId);
 }

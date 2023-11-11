@@ -14,7 +14,6 @@ import creatip.oms.service.MeetingDeliveryService;
 import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
-import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -22,7 +21,6 @@ import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SharedUtils;
 import creatip.oms.web.rest.errors.BadRequestAlertException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -602,5 +600,63 @@ public class MeetingDeliveryResource {
             .headers(header)
             //.contentLength(file.length())
             .body(replyMessage.getData());
+    }
+
+    @GetMapping("/meeting/read/{id}")
+    public ResponseEntity<ReplyMessage<String>> markAsRead(@PathVariable(value = "id", required = false) final Long id)
+        throws URISyntaxException {
+        log.debug("Request to mark Meeting Invitation as read :  ID [{}]", id);
+        ReplyMessage<String> replyMessage = null;
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            replyMessage = new ReplyMessage<String>();
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage(message);
+            return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+                .body(replyMessage);
+        }
+
+        Long loginDepId = appUserDTO.getDepartment().getId();
+
+        replyMessage = meetingDeliveryService.markAsRead(id, loginDepId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(replyMessage);
+    }
+
+    @GetMapping("/meeting/unread/{id}")
+    public ResponseEntity<ReplyMessage<String>> markAsUnRead(@PathVariable(value = "id", required = false) final Long id)
+        throws URISyntaxException {
+        log.debug("Request to mark Meeting Invitation as unread :  ID [{}]", id);
+        ReplyMessage<String> replyMessage = null;
+
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            replyMessage = new ReplyMessage<String>();
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Response Message : {}", message);
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage(message);
+            return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+                .body(replyMessage);
+        }
+
+        Long loginDepId = appUserDTO.getDepartment().getId();
+
+        replyMessage = meetingDeliveryService.markAsUnRead(id, loginDepId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(replyMessage);
     }
 }
