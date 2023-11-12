@@ -13,6 +13,7 @@ import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.compo
 import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { UserAuthorityService } from 'app/login/userauthority.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'jhi-delivery-up  ',
@@ -43,6 +44,7 @@ export class DeliveryUpdateComponent implements OnInit{
   ccDepartments?: IDepartment[] = []; 
   modules = {};  
   _departmentName: string | undefined = '';
+  _deliveryMessage: IDeliveryMessage | undefined;
   
   public progressItems = [
     { step: 1, title: 'Info' },
@@ -71,6 +73,7 @@ export class DeliveryUpdateComponent implements OnInit{
     protected deliveryService: DeliveryService,
     protected translateService: TranslateService,
     protected userAuthorityService: UserAuthorityService,
+    protected activatedRoute: ActivatedRoute,
   ) {
 
     this.editForm.controls.docNo.valueChanges.subscribe((value) => {
@@ -115,6 +118,17 @@ export class DeliveryUpdateComponent implements OnInit{
       this.progressItems[2].title = this.translateService.instant('global.menu.delivery.Step3');
       this.progressItems[3].title = this.translateService.instant('global.menu.delivery.Step4');
     });
+
+    this.activatedRoute.data.subscribe(({ delivery }) => {
+     // this.documentDelivery = delivery?.documentDelivery;
+     // this.receiverList = delivery?.receiverList;
+     // this.attachmentList = delivery?.attachmentList;
+      console.log(delivery, "DELIVERY")
+      this.updateForm(delivery);
+
+    });
+
+
   }
   // Demo purpose only, Data might come from Api calls/service 
 
@@ -254,6 +268,9 @@ export class DeliveryUpdateComponent implements OnInit{
     console.log(documentDelivery.attachmentList, "documentDelivery.attachmentList")
 
     if (docList.length > 0) {
+
+      console.log("Document List xxxx update" , docList)
+
       for (const dmsDoc of docList) {
         const docDetailID = dmsDoc.id ?? undefined;
         if (docDetailID === undefined && dmsDoc.fileData !== undefined) {
@@ -399,23 +416,6 @@ export class DeliveryUpdateComponent implements OnInit{
       };
     }
    
-    protected getDepartment(): IDepartment {
-      return {
-        ...new Department(),
-        id: 1,
-        departmentName: 'အမြဲတမ်းအတွင်းဝန်ရုံးခန်း',
-        delFlag: 'N',
-        headDepartment: this.getHeadDepartment(),
-      };
-    }
-
-    protected getHeadDepartment(): IHeadDepartment {
-      return {
-        ...new HeadDepartment(),
-        id: 1,
-        description: 'ပြည်ထောင်စုတရားသူကြီးချုပ်ရုံး',
-      };
-    }
 
     protected createFormdocList(): IDocumentAttachment[] {
       const fieldList: IDocumentAttachment[] = [];
@@ -439,6 +439,7 @@ export class DeliveryUpdateComponent implements OnInit{
     
   protected updateForm(deliveryMessage: IDeliveryMessage): void {
     this.updateDocDelivery(deliveryMessage.documentDelivery!);
+    this.updateReceiverList(deliveryMessage.receiverList!);
     this.updateDocDetails(deliveryMessage.attachmentList);
     this.editForm.patchValue({      
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
@@ -451,18 +452,32 @@ export class DeliveryUpdateComponent implements OnInit{
       id: docDelivery.id,
       docNo: docDelivery.referenceNo,
       subject: docDelivery.subject,
-      body: docDelivery.description,
+      msg_body: docDelivery.description,
     });
   }
 
+
+
   protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
+
+    console.log(docList, "DOCLIST")
+
     let index = 0;
     docList?.forEach(data => { 
       this.addField('', '');
       this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
-      index = index + 1;
+     index = index + 1;
     });
   }
 
+  protected updateReceiverList(receiverList: IDocumentReceiver[]): void{
 
+    receiverList.forEach((value, index) => {
+      if(value.receiverType === 1){
+        this.toDepartments?.push(value.receiver!) ;
+      }else{
+        this.ccDepartments?.push(value.receiver!) ;
+      }
+    });
+  }
 }

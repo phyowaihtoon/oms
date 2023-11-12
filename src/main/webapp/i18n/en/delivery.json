@@ -17,7 +17,9 @@
         "Subject" : "Subject",
         "Body" : "Description",
         "MDept" : "Main Department",
-        "CDept" : "CC Department"
+        "CDept" : "CC Department",
+        "Information": "Information",
+        "FileUpload": "FileUploadDetails"
       },
       "table": {
         "tableheader_received": "Document Received",
@@ -45,7 +47,8 @@
         "subject": "Subject",
         "department": "Department",
         "status": "Status",
-        "search": "Search"
+        "search": "Search",
+        "DocNo": "Document No."
       }
     }
   }

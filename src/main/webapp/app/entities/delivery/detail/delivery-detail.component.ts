@@ -28,6 +28,8 @@ export class DeliveryDetailComponent implements OnInit {
   body: string | undefined;
   _modalRef?: NgbModalRef;
   _departmentName: string | undefined = '';
+  isInfo = true;
+  isUploadDetail = false;
 
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = [];
@@ -189,6 +191,24 @@ export class DeliveryDetailComponent implements OnInit {
         }
       );
     }
+  }
+
+   showInfo(): void {
+
+    if(!this.isInfo ){
+      this.isInfo = !this.isInfo ;
+    }
+      this.isUploadDetail = false;
+
+    }
+
+  showUploadDetails(): void {
+
+    if(!this.isUploadDetail){
+      this.isUploadDetail = !this.isUploadDetail;
+    }
+
+    this.isInfo = false;
   }
 }
 

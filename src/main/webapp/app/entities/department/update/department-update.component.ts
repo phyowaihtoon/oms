@@ -33,6 +33,7 @@ export class DepartmentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     this.activatedRoute.data.subscribe(({ department }) => {
       this.updateForm(department);
     });
