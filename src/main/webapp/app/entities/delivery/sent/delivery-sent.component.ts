@@ -39,6 +39,7 @@ export class DeliverySentComponent implements OnInit {
     todate: [],
     subject: [],
     status: [],
+    docno: [],
   });
 
   constructor(
@@ -80,6 +81,7 @@ export class DeliverySentComponent implements OnInit {
       this.loadPage(1);
     }
   }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
       // this.searchForm.get('departmentID')!.markAsTouched();
@@ -92,6 +94,7 @@ export class DeliverySentComponent implements OnInit {
       const _status = this.searchForm.get(['status'])!.value;
       // const _receiverId = this.searchForm.get(['departmentID'])!.value;
       const _subject = this.searchForm.get(['subject'])!.value;
+      const _docno = this.searchForm.get(['docno'])!.value;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const pageToLoad: number | undefined = page ?? this.page ?? 1;
 
@@ -103,6 +106,7 @@ export class DeliverySentComponent implements OnInit {
         status: _status,
         // receiverId: _receiverId,
         subject: _subject,
+        referenceNo: _docno,
       };
 
       console.log(Criteria, 'xxx Criteria xxxx');

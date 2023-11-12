@@ -10,7 +10,37 @@
 <div class="row justify-content-center">
   
  <div class="card">
-      <div class="card-body">
+      
+  <div class="card-body">
+    <div class="row">      
+      <div class="col-3">
+        <div *ngIf="isInfo" class="tab-header-select" (click)="showInfo()">
+          <fa-icon icon="angle-down" (click)="showInfo()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.Information"> Information</span>
+        </div>
+
+        <div *ngIf="!isInfo" class="tab-header" (click)="showInfo()">
+          <fa-icon icon="angle-right" (click)="showInfo()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.Information">File Upload</span>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="div-tab" *ngIf="isUploadDetail" class="tab-header-select" (click)="showUploadDetails()">
+          <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.FileUpload">Document Upload Details</span>
+        </div>
+
+        <div *ngIf="!isUploadDetail" class="tab-header" (click)="showUploadDetails()">
+          <fa-icon icon="angle-right" (click)="showUploadDetails()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.FileUpload">Document Upload Details</span>
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+      <div *ngIf="isInfo" id="search-area" class="col-12">
         <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo" >Doc No.</label>
       
         <input type="text" readonly 
@@ -38,7 +68,11 @@
         [modules]="{ toolbar: false }" 
         class="quill-readonly"
         [(ngModel)]="body"></quill-editor>
-
+      </div>
+    </div>
+  
+    <div>
+      <div *ngIf="isUploadDetail" id="search-area" class="col-12">
         <div class="table-responsive" style="padding: 8px !important;">
           <table class="table table-striped" aria-describedby="page-heading">
             <thead>
@@ -75,10 +109,9 @@
             </tbody>
           </table>
         </div>
-
       </div>
-   
-      
-
+    </div>
+    
+      </div>
   </div>  
 </div>
