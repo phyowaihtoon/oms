@@ -40,6 +40,7 @@ export class MeetingSentComponent implements OnInit {
     todate: [],
     subject: [],
     status: [],
+    docno: [],
   });
 
   constructor(
@@ -91,6 +92,7 @@ export class MeetingSentComponent implements OnInit {
         dateTo: this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY'),
         status: this.searchForm.get(['status'])!.value,
         subject: this.searchForm.get(['subject'])!.value,
+        referenceNo: this.searchForm.get(['docno'])!.value,
       };
 
       const pageToLoad: number = page ?? this.page ?? 1;

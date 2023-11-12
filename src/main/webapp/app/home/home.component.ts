@@ -38,8 +38,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   page_2?: number;
   ngbPaginationPage_2 = 1;
 
-  //predicate!: string;
-  //ascending!: boolean;
+  // predicate!: string;
+  // ascending!: boolean;
 
   _departmentName: string | undefined = '';
   _lDate: NgbDate = this.calendar.getToday();
