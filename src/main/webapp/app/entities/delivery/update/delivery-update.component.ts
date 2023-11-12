@@ -265,7 +265,8 @@ export class DeliveryUpdateComponent implements OnInit{
     const attacheddocList = [];
     const documentDelivery = this.createFrom(deliveryStatus);
     const docList = documentDelivery.attachmentList ?? [];    
-    console.log(documentDelivery.attachmentList, "documentDelivery.attachmentList")
+    
+    console.log(documentDelivery, "documentDelivery")
 
     if (docList.length > 0) {
 
@@ -296,7 +297,15 @@ export class DeliveryUpdateComponent implements OnInit{
     console.log(formData.get("files"), "formData Files");
     // console.log(formData.get("delivery"), "formData");
     // console.log("Document Delivery :",JSON.stringify(documentDelivery));
-   this.subscribeToSaveResponse(this.deliveryService.save(formData));
+
+    const deliveryID = documentDelivery.documentDelivery!.id ?? undefined;
+    if (deliveryID !== undefined) {
+      this.subscribeToSaveResponse(this.deliveryService.update(formData, deliveryID));
+    } else {
+      this.subscribeToSaveResponse(this.deliveryService.save(formData));
+    }
+
+  // this.subscribeToSaveResponse(this.deliveryService.save(formData));
   }
 
   showLoading(loadingMessage?: string): void {
@@ -438,9 +447,11 @@ export class DeliveryUpdateComponent implements OnInit{
 
     
   protected updateForm(deliveryMessage: IDeliveryMessage): void {
+
+    console.log("deliveryMessage.attachmentList", )
     this.updateDocDelivery(deliveryMessage.documentDelivery!);
     this.updateReceiverList(deliveryMessage.receiverList!);
-    this.updateDocDetails(deliveryMessage.attachmentList);
+   // this.updateDocDetails(deliveryMessage.attachmentList);
     this.editForm.patchValue({      
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
     });
@@ -459,13 +470,12 @@ export class DeliveryUpdateComponent implements OnInit{
 
 
   protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
-
-    console.log(docList, "DOCLIST")
-
     let index = 0;
     docList?.forEach(data => { 
       this.addField('', '');
+      this.docList().controls[index].get(['id'])!.setValue(data.id);
       this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
+      this.docList().controls[index].get(['filePath'])!.setValue(data.filePath);
      index = index + 1;
     });
   }
