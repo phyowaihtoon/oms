@@ -52,12 +52,7 @@
           id="subject"
         />
 
-        <!-- <div *ngIf="editForm.get('msg_body')!.invalid && (editForm.get('msg_body')?.dirty || editForm.get('msg_body')?.touched)">
-          <div *ngIf="editForm.get('msg_body')?.errors?.required" style="text-align: right; color: red">
-            <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredField"> This Field is required. </span>
-          </div>
-        </div> -->
-
+      
         <quill-editor [styles]="{height: '220px'}" [modules]="modules"
                formControlName = "msg_body" ></quill-editor> 
                

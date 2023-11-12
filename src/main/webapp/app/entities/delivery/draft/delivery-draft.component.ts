@@ -39,6 +39,7 @@ export class DeliveryDraftComponent implements OnInit {
     subject: [],
     // departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     status: [],
+    docno: [],
   });
 
   constructor(
@@ -95,7 +96,8 @@ export class DeliveryDraftComponent implements OnInit {
       const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
       const _status = this.searchForm.get(['status'])!.value;
       // const _receiverId = this.searchForm.get(['departmentID'])!.value;
-      const _subject = this.searchForm.get(['subject'])!.value;      
+      const _subject = this.searchForm.get(['subject'])!.value;   
+      const _docno = this.searchForm.get(['docno'])!.value;      
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const pageToLoad: number|undefined = page ?? this.page ?? 1;
 
@@ -107,6 +109,7 @@ export class DeliveryDraftComponent implements OnInit {
         status: _status,
         // receiverId: _receiverId,
         subject: _subject,
+        referenceNo: _docno,
       };
 
       console.log(Criteria, 'xxx Criteria xxxx');
