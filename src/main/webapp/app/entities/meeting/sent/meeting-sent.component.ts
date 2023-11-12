@@ -39,7 +39,7 @@ export class MeetingSentComponent implements OnInit {
     fromdate: [],
     todate: [],
     subject: [],
-    status: [],
+    status: [2],
     docno: [],
   });
 

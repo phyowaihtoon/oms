@@ -20,7 +20,10 @@
         "MDept": "To:",
         "CDept": "Cc:",
         "Information": "Information",
-        "FileUpload": "Attached Files"
+        "FileUpload": "Attached Files",
+        "DocStatus": "Status:",
+        "MarkAsRead": "Mark As Read",
+        "MarkAsUnRead": "Mark As Unread"
       },
       "table": {
         "tableheader_received": "Document Received",

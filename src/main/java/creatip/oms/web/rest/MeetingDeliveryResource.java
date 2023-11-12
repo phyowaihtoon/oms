@@ -617,7 +617,7 @@ public class MeetingDeliveryResource {
             .body(replyMessage.getData());
     }
 
-    @GetMapping("/meeting/read/{id}")
+    @PutMapping("/meeting/read/{id}")
     public ResponseEntity<ReplyMessage<String>> markAsRead(@PathVariable(value = "id", required = false) final Long id)
         throws URISyntaxException {
         log.debug("Request to mark Meeting Invitation as read :  ID [{}]", id);
@@ -646,7 +646,7 @@ public class MeetingDeliveryResource {
             .body(replyMessage);
     }
 
-    @GetMapping("/meeting/unread/{id}")
+    @PutMapping("/meeting/unread/{id}")
     public ResponseEntity<ReplyMessage<String>> markAsUnRead(@PathVariable(value = "id", required = false) final Long id)
         throws URISyntaxException {
         log.debug("Request to mark Meeting Invitation as unread :  ID [{}]", id);

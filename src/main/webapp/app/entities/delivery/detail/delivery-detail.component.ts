@@ -7,11 +7,11 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { HttpResponse } from '@angular/common/http';
 import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
-import { ResponseCode } from 'app/entities/util/reply-message.model';
-import { error } from 'console';
+import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import * as FileSaver from 'file-saver';
 import { DeliveryService } from '../service/delivery.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-delivery-detail',
@@ -19,6 +19,7 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
   styleUrls: ['./delivery-detail.component.scss'],
 })
 export class DeliveryDetailComponent implements OnInit {
+  isLoading = false;
   documentDelivery?: IDocumentDelivery;
   receiverList?: IDocumentReceiver[] = [];
   attachmentList?: IDocumentAttachment[] = [];
@@ -34,12 +35,15 @@ export class DeliveryDetailComponent implements OnInit {
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = [];
   modules = {};
+  _loginDepartment?: IDepartment;
+  _docStatus = { status: 0, description: '', actionLabel: 'Mark As Read' };
 
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected modalService: NgbModal,
     protected deliveryService: DeliveryService,
-    protected userAuthorityService: UserAuthorityService
+    protected userAuthorityService: UserAuthorityService,
+    protected translateService: TranslateService
   ) {
     this.modules = {
       toolbar: [
@@ -56,6 +60,7 @@ export class DeliveryDetailComponent implements OnInit {
   ngOnInit(): void {
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
+    this._loginDepartment = userAuthority?.department;
 
     this.activatedRoute.data.subscribe(({ delivery }) => {
       this.documentDelivery = delivery?.documentDelivery;
@@ -71,19 +76,116 @@ export class DeliveryDetailComponent implements OnInit {
   }
 
   getData(): void {
-    const tolist = this.receiverList!.map(receiverDept => receiverDept.receiver);
     this.docNo = this.documentDelivery?.referenceNo;
     this.subject = this.documentDelivery?.subject;
     this.bodyDescription = this.documentDelivery?.description;
     this.senderDepartment = this.documentDelivery?.sender?.departmentName;
 
-    this.receiverList?.forEach((value, index) => {
+    if (this._loginDepartment?.id === this.documentDelivery?.sender?.id) {
+      if (this.documentDelivery?.status === 1) {
+        this._docStatus.status = 1;
+        this._docStatus.description = 'Read';
+        this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
+      } else {
+        this._docStatus.status = 0;
+        this._docStatus.description = 'Unread';
+        this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
+      }
+    }
+
+    this.receiverList?.forEach((value: IDocumentReceiver, index) => {
       if (value.receiverType === 1) {
         this.toDepartments?.push(value.receiver!);
       } else {
         this.ccDepartments?.push(value.receiver!);
       }
+
+      if (this._loginDepartment?.id === value.receiver?.id) {
+        if (value.status === 1) {
+          this._docStatus.status = 1;
+          this._docStatus.description = 'Read';
+          this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
+        } else {
+          this._docStatus.status = 0;
+          this._docStatus.description = 'Unread';
+          this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
+        }
+      }
     });
+  }
+
+  markAsReadUnread(): void {
+    if (this.documentDelivery?.id) {
+      // Changing Status from Unread to Read
+      if (this._docStatus.status === 0) {
+        this.isLoading = true;
+        this.showLoading('Updating Document Status');
+        this.deliveryService.markAsRead(this.documentDelivery.id).subscribe(
+          (res: HttpResponse<IReplyMessage>) => {
+            const replyMessage: IReplyMessage | null = res.body;
+            this.isLoading = false;
+            this.hideLoading();
+
+            if (replyMessage !== null) {
+              if (replyMessage.code === ResponseCode.SUCCESS) {
+                this._docStatus.status = 1;
+                this._docStatus.description = 'Read';
+                this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
+                const replyCode = replyMessage.code;
+                const replyMsg = replyMessage.message;
+                this.showAlertMessage(replyCode, replyMsg);
+              } else {
+                const replyCode = replyMessage.code;
+                const replyMsg = replyMessage.message;
+                this.showAlertMessage(replyCode, replyMsg);
+              }
+            }
+          },
+          res => {
+            this.isLoading = false;
+            this.hideLoading();
+            const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+            const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+            this.showAlertMessage(replyCode, replyMsg);
+          }
+        );
+      }
+
+      // Changing Status from Read to Unread
+      if (this._docStatus.status === 1) {
+        this.isLoading = true;
+        this.showLoading('Updating Document Status');
+        this.deliveryService.markAsUnRead(this.documentDelivery.id).subscribe(
+          (res: HttpResponse<IReplyMessage>) => {
+            const replyMessage: IReplyMessage | null = res.body;
+            this.isLoading = false;
+            this.hideLoading();
+
+            if (replyMessage !== null) {
+              if (replyMessage.code === ResponseCode.SUCCESS) {
+                this._docStatus.status = 0;
+                this._docStatus.description = 'Unread';
+                this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
+                const replyCode = replyMessage.code;
+                const replyMsg = replyMessage.message;
+                this.showAlertMessage(replyCode, replyMsg);
+              } else {
+                const replyCode = replyMessage.code;
+                const replyMsg = replyMessage.message;
+                this.showAlertMessage(replyCode, replyMsg);
+              }
+            }
+          },
+          res => {
+            this.isLoading = false;
+            this.hideLoading();
+            const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+            const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+            this.showAlertMessage(replyCode, replyMsg);
+          }
+        );
+      }
+    }
   }
 
   showLoading(loadingMessage?: string): void {

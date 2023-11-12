@@ -20,7 +20,10 @@
         "MDept": "လိပ်မူ",
         "CDept": "မိတ္တူ",
         "Information": "အချက်အလက်များ",
-        "FileUpload": "စာရွက်စာတမ်းများ"
+        "FileUpload": "စာရွက်စာတမ်းများ",
+        "DocStatus": "Status:",
+        "MarkAsRead": "Mark As Read",
+        "MarkAsUnRead": "Mark As Unread"
       },
       "table": {
         "tableheader_received": "ဝင်စာစာရင်း",

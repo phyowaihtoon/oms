@@ -70,14 +70,14 @@ export class MeetingService {
     return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
   }
 
-  markAsRead(meetingId: number): Observable<IReplyMessage> {
-    return this.http.put<IReplyMessage>(`${this.resourceUrl}/read/${meetingId}`, {
+  markAsRead(meetingId: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/read/${meetingId}`, '', {
       observe: 'response',
     });
   }
 
-  markAsUnRead(meetingId: number): Observable<IReplyMessage> {
-    return this.http.put<IReplyMessage>(`${this.resourceUrl}/unread/${meetingId}`, {
+  markAsUnRead(meetingId: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/unread/${meetingId}`, '', {
       observe: 'response',
     });
   }

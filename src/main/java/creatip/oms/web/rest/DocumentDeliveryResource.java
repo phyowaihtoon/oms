@@ -597,7 +597,7 @@ public class DocumentDeliveryResource {
             .body(replyMessage.getData());
     }
 
-    @GetMapping("/delivery/read/{id}")
+    @PutMapping("/delivery/read/{id}")
     public ResponseEntity<ReplyMessage<String>> markAsRead(@PathVariable(value = "id", required = false) final Long id)
         throws URISyntaxException {
         log.debug("Request to mark Document Delivery as Read :  ID [{}]", id);
@@ -626,7 +626,7 @@ public class DocumentDeliveryResource {
             .body(replyMessage);
     }
 
-    @GetMapping("/delivery/unread/{id}")
+    @PutMapping("/delivery/unread/{id}")
     public ResponseEntity<ReplyMessage<String>> markAsUnRead(@PathVariable(value = "id", required = false) final Long id)
         throws URISyntaxException {
         log.debug("Request to mark Document Delivery as unread :  ID [{}]", id);

@@ -63,14 +63,14 @@ export class DeliveryService {
     return this.http.get(`${this.resourceUrl}/download/${attachmentId}`, { observe: 'response', responseType: 'blob' });
   }
 
-  markAsRead(deliveryId: number): Observable<IReplyMessage> {
-    return this.http.put<IReplyMessage>(`${this.resourceUrl}/read/${deliveryId}`, {
+  markAsRead(deliveryId: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/read/${deliveryId}`, '', {
       observe: 'response',
     });
   }
 
-  markAsUnRead(deliveryId: number): Observable<IReplyMessage> {
-    return this.http.put<IReplyMessage>(`${this.resourceUrl}/unread/${deliveryId}`, {
+  markAsUnRead(deliveryId: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/unread/${deliveryId}`, '', {
       observe: 'response',
     });
   }

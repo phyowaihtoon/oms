@@ -35,17 +35,19 @@
           </div>
         </div>
 
-        <div class="col-3">
-          <button class="btn btn-primary btn-sm">
+        <div class="col-6">
+          <label jhiTranslate="omsApp.delivery.label.DocStatus" style="font-weight: bold">Status</label>
+          <span style="padding-right: 50px"> {{ _docStatus.description }}</span>
+          <button class="btn btn-primary btn-sm" (click)="markAsReadUnread()" [disabled]="isLoading">
             <fa-icon icon="envelope"></fa-icon>
-            <span class="d-none d-md-inline">Mark As Read</span>
+            <span class="d-none d-md-inline">{{ _docStatus.actionLabel }}</span>
           </button>
         </div>
       </div>
 
       <div>
         <div *ngIf="isInfo" id="search-area" class="col-12">
-          <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject">Sub.</label>
+          <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject">Subject</label>
           <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ subject }}" />
 
           <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>

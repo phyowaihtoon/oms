@@ -39,7 +39,7 @@ export class MeetingReceivedComponent implements OnInit {
     todate: [],
     subject: [],
     departmentID: [0],
-    status: [],
+    status: [2],
     docno: [],
   });
 

@@ -38,7 +38,7 @@ export class DeliverySentComponent implements OnInit {
     fromdate: [],
     todate: [],
     subject: [],
-    status: [],
+    status: [2],
     docno: [],
   });
 

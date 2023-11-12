@@ -30,7 +30,7 @@ export class DeliveryReceivedComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
   departmentsList?: IDepartment[];
-  documentDelivery?: IDocumentDelivery[];  
+  documentDelivery?: IDocumentDelivery[];
   _departmentName: string | undefined = '';
 
   searchForm = this.fb.group({
@@ -38,7 +38,7 @@ export class DeliveryReceivedComponent implements OnInit {
     todate: [],
     subject: [],
     departmentID: [0],
-    status: [],
+    status: [2],
     docno: [],
   });
 
@@ -50,12 +50,10 @@ export class DeliveryReceivedComponent implements OnInit {
     protected translateService: TranslateService,
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
-    protected userAuthorityService: UserAuthorityService,
-  ) {  }
+    protected userAuthorityService: UserAuthorityService
+  ) {}
 
   ngOnInit(): void {
-    
-    
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
 
@@ -86,7 +84,7 @@ export class DeliveryReceivedComponent implements OnInit {
 
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-     // this.searchForm.get('departmentID')!.markAsTouched();
+      // this.searchForm.get('departmentID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
       // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
@@ -95,10 +93,10 @@ export class DeliveryReceivedComponent implements OnInit {
       const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
       const _status = this.searchForm.get(['status'])!.value;
       const _senderId = this.searchForm.get(['departmentID'])!.value;
-      const _subject = this.searchForm.get(['subject'])!.value;   
-      const _docno = this.searchForm.get(['docno'])!.value;   
+      const _subject = this.searchForm.get(['subject'])!.value;
+      const _docno = this.searchForm.get(['docno'])!.value;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      const pageToLoad: number|undefined = page ?? this.page ?? 1;
+      const pageToLoad: number | undefined = page ?? this.page ?? 1;
 
       const Criteria = {
         ...new SearchCriteria(),
@@ -113,7 +111,7 @@ export class DeliveryReceivedComponent implements OnInit {
 
       console.log(Criteria, 'xxx Criteria xxxx');
 
-      const requestParams = {        
+      const requestParams = {
         page: pageToLoad - 1,
         size: this.itemsPerPage,
         criteria: JSON.stringify(Criteria),
