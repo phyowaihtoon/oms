@@ -13,162 +13,166 @@
       <span class="close" style="cursor: pointer; padding-right: 5px" routerLink="/">&times;</span>
     </div>
     <div class="card-body">
-      <div class="form-group">
-        <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
-          <div class="form-group row col-12">
-            <div class="col-2">
-              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.fromdate">From Date</label>
-            </div>
+      <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
+        <div class="row col-12">
+          <div class="col-2">
+            <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.DocNo">Document No.</label>
+          </div>
+          <div class="col-4">
+            <input type="text" class="form-control" name="docno" id="field_docno" data-cy="docno" formControlName="docno" />
+          </div>
 
-            <div class="col-4">
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  id="fromdate"
-                  data-cy="fromdate"
-                  placeholder="DD-MM-YYYY"
-                  name="fromdate"
-                  formControlName="fromdate"
-                  ngbDatepicker
-                  #fromdate="ngbDatepicker"
-                />
-                <div class="input-group-append">
-                  <button class="btn btn-primary btn-sm dms-icon-btn" id="fromdateButton" (click)="fromdate.toggle()" type="button">
-                    <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
-                  </button>
-                </div>
+          <div class="col-2">
+            <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.department">Department</label>
+          </div>
+          <div class="col-4">
+            <select class="form-control" id="department" data-cy="department" name="department" formControlName="departmentID">
+              <option [value]="0" selected>-</option>
+              <option [value]="department.id" *ngFor="let department of departmentsList; trackBy: trackDepartmentByID">
+                {{ department.departmentName }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row col-12">
+          <div class="col-2">
+            <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.fromdate">From Date</label>
+          </div>
+
+          <div class="col-4">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="fromdate"
+                data-cy="fromdate"
+                placeholder="DD-MM-YYYY"
+                name="fromdate"
+                formControlName="fromdate"
+                ngbDatepicker
+                #fromdate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="fromdateButton" (click)="fromdate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
               </div>
             </div>
-
-            <div class="col-2">
-              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.subject">Subject</label>
-            </div>
-            <div class="col-4">
-              <input type="text" class="form-control" name="subject" id="field_subject" data-cy="subject" formControlName="subject" />
-            </div>
           </div>
 
-          <div class="form-group row col-12">
-            <div class="col-2">
-              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.todate">To Date</label>
-            </div>
-            <div class="col-4">
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  id="todate"
-                  data-cy="todate"
-                  placeholder="DD-MM-YYYY"
-                  name="todate"
-                  formControlName="todate"
-                  ngbDatepicker
-                  #todate="ngbDatepicker"
-                />
-                <div class="input-group-append">
-                  <button class="btn btn-primary btn-sm dms-icon-btn" id="todateButton" (click)="todate.toggle()" type="button">
-                    <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
-                  </button>
-                </div>
+          <div class="col-2">
+            <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.status">Status</label>
+          </div>
+          <div class="col-4">
+            <select class="form-control" id="staus" data-cy="status" name="status" formControlName="status">
+              <option [value]="2">All</option>
+              <option [value]="1">Read</option>
+              <option [value]="0">Unread</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row col-12">
+          <div class="col-2">
+            <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.todate">To Date</label>
+          </div>
+          <div class="col-4">
+            <div class="input-group">
+              <input
+                class="form-control"
+                id="todate"
+                data-cy="todate"
+                placeholder="DD-MM-YYYY"
+                name="todate"
+                formControlName="todate"
+                ngbDatepicker
+                #todate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="todateButton" (click)="todate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
               </div>
             </div>
-
-            <div class="col-2">
-              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.department">Department</label>
-            </div>
-            <div class="col-4">
-              <select class="form-control" id="department" data-cy="department" name="department" formControlName="departmentID">
-                <option [value]="0" selected>-</option>
-                <option [value]="department.id" *ngFor="let department of departmentsList; trackBy: trackDepartmentByID">
-                  {{ department.departmentName }}
-                </option>
-              </select>
-            </div>
           </div>
-
-          <div class="form-group row col-12">
-            <div class="col-2">
-              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.status">Status</label>
-            </div>
-            <div class="col-4">
-              <select class="form-control" id="staus" data-cy="status" name="status" formControlName="status">
-                <option [value]="2">-</option>
-                <option [value]="1">Read</option>
-                <option [value]="0">Unread</option>
-              </select>
-            </div>
-
-            <div class="col-2">
-              <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.DocNo">Document No.</label>
-            </div>
-            <div class="col-4">
-              <input type="text" class="form-control" name="docno" id="field_docno" 
-                data-cy="docno" formControlName="docno" />
-            </div>           
+          <div class="col-2">
+            <label class="form-control-label" jhiTranslate="omsApp.delivery.inbox.subject">Subject</label>
           </div>
+          <div class="col-4">
+            <input type="text" class="form-control" name="subject" id="field_subject" data-cy="subject" formControlName="subject" />
+          </div>
+        </div>
+      </form>
 
-          <div class="form-group row col-12">
-            <div class="col-2">
-              <button class="btn btn-primary btn-sm" (click)="searchDocument()">
-                <fa-icon icon="search"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="omsApp.delivery.inbox.search">Search</span>
-              </button>
+      <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 3px; padding-bottom: 3px">
+        <div class="col-3">
+          <span jhiTranslate="omsApp.delivery.table.tableheader_received" style="font-weight: 600">Document Received</span>
+        </div>
+        <div class="col-3 d-flex justify-content-end">
+          <button class="btn btn-primary btn-sm" (click)="searchDocument()">
+            <fa-icon icon="search"></fa-icon>
+            <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
+          </button>
+          <span style="width: 5px"></span>
+          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
+            <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="box-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr class="bg-primary">
+                  <th style="width: 5%; text-align: center" jhiTranslate="omsApp.delivery.table.No"><span>No.</span></th>
+                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date"><span>Date</span></th>
+                  <th style="width: 13%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">
+                    <span>Document No.</span>
+                  </th>
+                  <th style="width: 20%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject">
+                    <span>Subject</span>
+                  </th>
+                  <th style="width: 35%; text-align: center" jhiTranslate="omsApp.delivery.table.Department">
+                    <span>Department</span>
+                  </th>
+                  <th style="width: 17%; text-align: center">#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let doc of documentDelivery; let i = index" data-cy="entityTable">
+                  <td>
+                    {{ i + 1 }}
+                  </td>
+                  <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
+                  <td>{{ doc.referenceNo }}</td>
+                  <td>{{ doc.subject }}</td>
+                  <td>{{ doc.sender?.departmentName }}</td>
+                  <td style="text-align: center">
+                    <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', doc.id, 'view']">View Details</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="box-footer">
+          <div *ngIf="documentDelivery && documentDelivery.length > 0">
+            <div class="row justify-content-center">
+              <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
             </div>
-          </div>
-        </form>
 
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-          <div class="box-header tbl-header-padding">
-            <span jhiTranslate="omsApp.delivery.table.tableheader_received">Document Received</span>
-          </div>
-          <div class="box-body">
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr class="bg-primary">
-                    <th style="width: 5%; text-align: center" jhiTranslate="omsApp.delivery.table.No"><span>No.</span></th>
-                    <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date"><span>Date</span></th>
-                    <th style="width: 13%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">
-                      <span>Document No.</span>
-                    </th>
-                    <th style="width: 20%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject"><span>Subject</span></th>
-                    <th style="width: 35%; text-align: center" jhiTranslate="omsApp.delivery.table.Department"><span>Department</span></th>
-                    <th style="width: 17%; text-align: center">#</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let doc of documentDelivery; let i = index" data-cy="entityTable">
-                    <td>
-                      {{ i + 1 }}
-                    </td>
-                    <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
-                    <td>{{ doc.referenceNo }}</td>
-                    <td>{{ doc.subject }}</td>
-                    <td>{{ doc.sender?.departmentName }}</td>
-                    <td style="text-align: center">
-                      <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', doc.id, 'view']">View Details</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="box-footer">
-            <div *ngIf="documentDelivery && documentDelivery.length > 0">
-              <div class="row justify-content-center">
-                <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-              </div>
-
-              <div class="row justify-content-center">
-                <ngb-pagination
-                  [collectionSize]="totalItems"
-                  [(page)]="ngbPaginationPage"
-                  [pageSize]="itemsPerPage"
-                  [maxSize]="5"
-                  [rotate]="true"
-                  [boundaryLinks]="true"
-                  (pageChange)="loadPage($event)"
-                ></ngb-pagination>
-              </div>
+            <div class="row justify-content-center">
+              <ngb-pagination
+                [collectionSize]="totalItems"
+                [(page)]="ngbPaginationPage"
+                [pageSize]="itemsPerPage"
+                [maxSize]="5"
+                [rotate]="true"
+                [boundaryLinks]="true"
+                (pageChange)="loadPage($event)"
+              ></ngb-pagination>
             </div>
           </div>
         </div>

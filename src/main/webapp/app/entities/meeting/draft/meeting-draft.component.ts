@@ -37,8 +37,8 @@ export class MeetingDraftComponent implements OnInit {
     fromdate: [],
     todate: [],
     subject: [],
-    // departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
     status: [],
+    docno: [],
   });
 
   constructor(
@@ -101,8 +101,8 @@ export class MeetingDraftComponent implements OnInit {
         dateFrom: startDate,
         dateTo: endDate,
         status: _status,
-        // receiverId: _receiverId,
         subject: _subject,
+        referenceNo: this.searchForm.get(['docno'])!.value,
       };
 
       console.log(Criteria, 'xxx Criteria xxxx');

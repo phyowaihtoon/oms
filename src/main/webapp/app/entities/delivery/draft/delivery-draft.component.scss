@@ -12,54 +12,10 @@
   -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
-.card-header-title {
-  background-color: #ffffff;
-  min-height: 40px;
-  padding: 8px 16px 0px 16px !important;
-  border-bottom: none;
-}
-
-.card-header {
-  background-color: #ffffff;
-  min-height: 70px;
-  padding: 8px 16px 0px 16px !important;
-  border-bottom: none;
-}
-
 .card-body {
   background-color: #ffffff;
-  padding: 10px 10px 10px 10px !important;
+  padding: 0px;
   overflow-y: auto;
-}
-
-.card-footer {
-  background-color: #ffffff;
-  min-height: 40px;
-  padding: 0px 32px 0px 32px !important;
-  border-top: none;
-}
-
-.main-container {
-  width: 100%;
-  height: auto;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-.quill-readonly {
-  // background-color: #eeeeee; /* Set a background color to indicate readonly */
-  pointer-events: none; /* Disable pointer events to prevent interaction */
-  cursor: not-allowed; /* Change the cursor to not-allowed to indicate it's not editable */
-  opacity: 0.7; /* Optionally reduce opacity to further indicate readonly */
-}
-
-.div-padding {
-  margin-bottom: 10px;
-}
-
-.text-height {
-  height: 3em;
 }
 
 h2,

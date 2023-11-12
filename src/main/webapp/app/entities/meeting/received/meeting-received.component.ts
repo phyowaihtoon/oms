@@ -40,6 +40,7 @@ export class MeetingReceivedComponent implements OnInit {
     subject: [],
     departmentID: [0],
     status: [],
+    docno: [],
   });
 
   constructor(
@@ -95,6 +96,7 @@ export class MeetingReceivedComponent implements OnInit {
         status: this.searchForm.get(['status'])!.value,
         senderId: this.searchForm.get(['departmentID'])!.value,
         subject: this.searchForm.get(['subject'])!.value,
+        referenceNo: this.searchForm.get(['docno'])!.value,
       };
 
       const pageToLoad: number = page ?? this.page ?? 1;
