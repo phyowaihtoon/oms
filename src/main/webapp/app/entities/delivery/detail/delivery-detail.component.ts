@@ -19,13 +19,13 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
   styleUrls: ['./delivery-detail.component.scss'],
 })
 export class DeliveryDetailComponent implements OnInit {
-
   documentDelivery?: IDocumentDelivery;
   receiverList?: IDocumentReceiver[] = [];
   attachmentList?: IDocumentAttachment[] = [];
   docNo: string | undefined;
   subject: string | undefined;
-  body: string | undefined;
+  bodyDescription: string | undefined;
+  senderDepartment: string | undefined;
   _modalRef?: NgbModalRef;
   _departmentName: string | undefined = '';
   isInfo = true;
@@ -36,29 +36,27 @@ export class DeliveryDetailComponent implements OnInit {
   modules = {};
 
   constructor(
-    protected activatedRoute: ActivatedRoute,   
+    protected activatedRoute: ActivatedRoute,
     protected modalService: NgbModal,
     protected deliveryService: DeliveryService,
-    protected userAuthorityService: UserAuthorityService,)
-     {
+    protected userAuthorityService: UserAuthorityService
+  ) {
     this.modules = {
-      'toolbar': [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
         ['blockquote', 'code-block'],
 
-         [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-         [{ 'font': [] }],
-         [{ 'align': [] }],
-      ]
-    }  
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ font: [] }],
+        [{ align: [] }],
+      ],
+    };
   }
 
   ngOnInit(): void {
-
-    
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
-    
+
     this.activatedRoute.data.subscribe(({ delivery }) => {
       this.documentDelivery = delivery?.documentDelivery;
       this.receiverList = delivery?.receiverList;
@@ -66,28 +64,26 @@ export class DeliveryDetailComponent implements OnInit {
     });
 
     this.getData();
-
   }
 
   previousState(): void {
     window.history.back();
   }
-    
+
   getData(): void {
     const tolist = this.receiverList!.map(receiverDept => receiverDept.receiver);
     this.docNo = this.documentDelivery?.referenceNo;
     this.subject = this.documentDelivery?.subject;
-    this.body = this.documentDelivery?.description;
+    this.bodyDescription = this.documentDelivery?.description;
+    this.senderDepartment = this.documentDelivery?.sender?.departmentName;
 
-      
     this.receiverList?.forEach((value, index) => {
-      if(value.receiverType === 1){
-        this.toDepartments?.push(value.receiver!) ;
-      }else{
-        this.ccDepartments?.push(value.receiver!) ;
+      if (value.receiverType === 1) {
+        this.toDepartments?.push(value.receiver!);
+      } else {
+        this.ccDepartments?.push(value.receiver!);
       }
     });
-
   }
 
   showLoading(loadingMessage?: string): void {
@@ -130,7 +126,7 @@ export class DeliveryDetailComponent implements OnInit {
 
   previewFile(docId?: number, fileName?: string): void {
     if (docId !== undefined && fileName !== undefined && this.validate(true, fileName)) {
-     this.showLoading('Loading File');
+      this.showLoading('Loading File');
       this.deliveryService.getPreviewData(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
@@ -163,7 +159,7 @@ export class DeliveryDetailComponent implements OnInit {
 
   downloadFile(docId?: number, fileName?: string): void {
     if (docId !== undefined && fileName !== undefined && this.validate(false, fileName)) {
-     this.showLoading('Downloading File');
+      this.showLoading('Downloading File');
       this.deliveryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
           if (res.status === 200 && res.body) {
@@ -193,22 +189,18 @@ export class DeliveryDetailComponent implements OnInit {
     }
   }
 
-   showInfo(): void {
-
-    if(!this.isInfo ){
-      this.isInfo = !this.isInfo ;
+  showInfo(): void {
+    if (!this.isInfo) {
+      this.isInfo = !this.isInfo;
     }
-      this.isUploadDetail = false;
-
-    }
+    this.isUploadDetail = false;
+  }
 
   showUploadDetails(): void {
-
-    if(!this.isUploadDetail){
+    if (!this.isUploadDetail) {
       this.isUploadDetail = !this.isUploadDetail;
     }
 
     this.isInfo = false;
   }
 }
-

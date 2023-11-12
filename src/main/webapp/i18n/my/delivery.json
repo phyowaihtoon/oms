@@ -8,47 +8,48 @@
         "Draft": "မူကြမ်း"
       },
       "validateMsg": {
-        "RequiredField" : "ဤနေရာတွင်စာသားထည့်ရန်လိုအပ်ပါသည်။",
-        "RequiredMainDept" : "အနည်းဆုံးဌာနတစ်ခုရွေးပါ။",
-        "RequiredFile" : "အနည်းဆုံးဖိုင်တစ်ခုကိုရွေးပါ။"
+        "RequiredField": "ဤနေရာတွင်စာသားထည့်ရန်လိုအပ်ပါသည်။",
+        "RequiredMainDept": "အနည်းဆုံးဌာနတစ်ခုရွေးပါ။",
+        "RequiredFile": "အနည်းဆုံးဖိုင်တစ်ခုကိုရွေးပါ။"
       },
-      "label":{
-        "DocNo" : "စာအမှတ်",
-        "Subject" : "အကြောင်းအရာ",
-        "Body" : "စာကိုယ်",
-        "MDept" : "လိပ်မူ",
-        "CDept" : "မိတ္တူ",
+      "label": {
+        "DocNo": "စာအမှတ်",
+        "Subject": "အကြောင်းအရာ",
+        "Body": "စာကိုယ်",
+        "From": "မှ",
+        "MDept": "လိပ်မူ",
+        "CDept": "မိတ္တူ",
         "Information": "အချက်အလက်များ",
-        "FileUpload": "စာရွက်စာတမ်း အသေးစိတ်အချက်အလက်များ"
+        "FileUpload": "စာရွက်စာတမ်းများ"
       },
-      "table": {                
+      "table": {
         "tableheader_received": "ဝင်စာစာရင်း",
         "tableheader_sent": "ထွက်စာစာရင်း",
         "tableheader_draft": "ထွက်စာမူကြမ်း",
-        "No" : "စဉ်",
-        "FileName" : "ဖိုင်အမည်",
-        "Preview" : "အစမ်းကြည့်",
-        "Download" : "ဒေါင်းလုပ်",
+        "No": "စဉ်",
+        "FileName": "ဖိုင်အမည်",
+        "Preview": "အစမ်းကြည့်",
+        "Download": "ဒေါင်းလုပ်",
         "Date": "ရက်စွဲ",
-        "DocumentNo":"စာအမှတ်",
+        "DocumentNo": "စာအမှတ်",
         "Subject": "အကြောင်းအရာ",
         "Department": "ဌာန"
       },
-      "placeholder":{
-        "DocNo" : "စာအမှတ်",
-        "Subject" : "အကြောင်းအရာ",
-        "Body" : "စာကိုယ်",
-        "MDept" : "လိပ်မူ",
-        "CDept" : "မိတ္တူ" 
+      "placeholder": {
+        "DocNo": "စာအမှတ်",
+        "Subject": "အကြောင်းအရာ",
+        "Body": "စာကိုယ်",
+        "MDept": "လိပ်မူ",
+        "CDept": "မိတ္တူ"
       },
-      "inbox":{
+      "inbox": {
         "fromdate": "ရက်မှ",
         "todate": "ရက်ထိ",
         "subject": "အကြောင်းအရာ",
         "department": "ဌာန",
         "status": "အခြေအနေ",
         "search": "ရှာဖွေပါ",
-        "DocNo" : "စာအမှတ်"
+        "DocNo": "စာအမှတ်"
       }
     }
   }

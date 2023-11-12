@@ -8,40 +8,41 @@
         "Draft": "Draft"
       },
       "validateMsg": {
-        "RequiredField" : "This field is required.",
-        "RequiredMainDept" : "Please choose at least one department.",
-        "RequiredFile" : "Please choose at least one attachment"
+        "RequiredField": "This field is required.",
+        "RequiredMainDept": "Please choose at least one department.",
+        "RequiredFile": "Please choose at least one attachment"
       },
-      "label":{
-        "DocNo" : "Document No.",
-        "Subject" : "Subject",
-        "Body" : "Description",
-        "MDept" : "Main Department",
-        "CDept" : "CC Department",
+      "label": {
+        "DocNo": "Document No.",
+        "Subject": "Subject:",
+        "Body": "Description:",
+        "From": "From:",
+        "MDept": "To:",
+        "CDept": "Cc:",
         "Information": "Information",
-        "FileUpload": "FileUploadDetails"
+        "FileUpload": "Attached Files"
       },
       "table": {
         "tableheader_received": "Document Received",
         "tableheader_sent": "Document Sent",
         "tableheader_draft": "Document Draft",
-        "No" : "No.",
-        "FileName" : "File Name",
-        "Preview" : "Preview",
-        "Download" : "Download",
+        "No": "No.",
+        "FileName": "File Name",
+        "Preview": "Preview",
+        "Download": "Download",
         "Date": "Date",
-        "DocumentNo":"Document No.",
+        "DocumentNo": "Document No.",
         "Subject": "Subject",
         "Department": "Department"
       },
-      "placeholder":{
-        "DocNo" : "Document No.",
-        "Subject" : "Subject",
-        "Body" : "Description",
-        "MDept" : "Main Department",
-        "CDept" : "CC Department"
+      "placeholder": {
+        "DocNo": "Document No.",
+        "Subject": "Subject",
+        "Body": "Description",
+        "MDept": "Main Department",
+        "CDept": "CC Department"
       },
-      "inbox":{
+      "inbox": {
         "fromdate": "From Date",
         "todate": "To Date",
         "subject": "Subject",

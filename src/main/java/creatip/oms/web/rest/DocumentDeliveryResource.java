@@ -201,6 +201,19 @@ public class DocumentDeliveryResource {
 
         DeliveryMessage deliveryMessage = null;
         ReplyMessage<DeliveryMessage> result = null;
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String responseMessage = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Message Response : {}", responseMessage);
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity
+                .created(new URI("/api/delivery/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        }
 
         try {
             this.objectMapper = new ObjectMapper();
@@ -246,6 +259,7 @@ public class DocumentDeliveryResource {
         String docHeaderId = id.toString();
 
         try {
+            deliveryMessage.getDocumentDelivery().setSender(appUserDTO.getDepartment());
             result = documentDeliveryService.save(deliveryMessage, multipartFiles);
         } catch (UploadFailedException ex) {
             log.debug("Message Response : {}", ex.getMessage());

@@ -23,8 +23,8 @@
         "Location": "Location",
         "Subject": "Subject",
         "Body": "Body",
-        "MDept": "Main Department",
-        "CDept": "CC Department"
+        "MDept": "To:",
+        "CDept": "Cc:"
       },
       "table": {
         "tableheader_received": "Meeting List",

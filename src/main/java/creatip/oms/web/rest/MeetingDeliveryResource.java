@@ -201,6 +201,20 @@ public class MeetingDeliveryResource {
 
         MeetingMessage meetingMessage = null;
         ReplyMessage<MeetingMessage> result = null;
+        User loginUser = userService.getUserWithAuthorities().get();
+        ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String responseMessage = loginUser.getLogin() + " is not linked with any department.";
+            log.debug("Message Response : {}", responseMessage);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity
+                .created(new URI("/api/meeting/"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
+                .body(result);
+        }
+
         try {
             this.objectMapper = new ObjectMapper();
             meetingMessage = this.objectMapper.readValue(message, MeetingMessage.class);
@@ -245,6 +259,7 @@ public class MeetingDeliveryResource {
         String docHeaderId = id.toString();
 
         try {
+            meetingMessage.getMeetingDelivery().setSender(appUserDTO.getDepartment());
             result = meetingDeliveryService.save(meetingMessage, multipartFiles);
         } catch (UploadFailedException ex) {
             log.debug("Message Response : {}", ex.getMessage());
