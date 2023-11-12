@@ -5,6 +5,7 @@ import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.domain.DocumentReceiver;
 import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
 import creatip.oms.enumeration.CommonEnum.RequestFrom;
+import creatip.oms.enumeration.CommonEnum.ViewStatus;
 import creatip.oms.repository.DocumentAttachmentRepository;
 import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.repository.DocumentReceiverRepository;
@@ -108,6 +109,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
             for (DocumentReceiver reciever : receiverList) {
                 reciever.setHeader(delivery);
+                reciever.setStatus(ViewStatus.UNREAD.value);
                 reciever = documentReceiverRepository.save(reciever);
                 savedReceiverList.add(reciever);
             }
@@ -347,12 +349,12 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             if (data.isPresent()) {
                 DocumentDelivery delivery = data.get();
                 if (loginDepId == delivery.getSender().getId()) {
-                    delivery.setStatus((short) 1);
+                    delivery.setStatus(ViewStatus.READ.value);
                     documentDeliveryRepository.save(delivery);
                 } else {
                     List<DocumentReceiver> list = documentReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
                     for (DocumentReceiver receiver : list) {
-                        receiver.setStatus((short) 1);
+                        receiver.setStatus(ViewStatus.READ.value);
                         documentReceiverRepository.save(receiver);
                     }
                 }
@@ -381,12 +383,12 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             if (data.isPresent()) {
                 DocumentDelivery delivery = data.get();
                 if (loginDepId == delivery.getSender().getId()) {
-                    delivery.setStatus((short) 0);
+                    delivery.setStatus(ViewStatus.UNREAD.value);
                     documentDeliveryRepository.save(delivery);
                 } else {
                     List<DocumentReceiver> list = documentReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
                     for (DocumentReceiver receiver : list) {
-                        receiver.setStatus((short) 0);
+                        receiver.setStatus(ViewStatus.UNREAD.value);
                         documentReceiverRepository.save(receiver);
                     }
                 }

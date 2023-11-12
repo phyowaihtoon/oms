@@ -16,13 +16,13 @@ public class CommonEnum {
     }
 
     public enum ViewStatus {
-        UNREAD(0, "UnRead"),
-        READ(1, "Read");
+        UNREAD((short) 0, "UnRead"),
+        READ((short) 1, "Read");
 
-        public int value;
+        public short value;
         public String description;
 
-        ViewStatus(int value, String description) {
+        ViewStatus(short value, String description) {
             this.value = value;
             this.description = description;
         }

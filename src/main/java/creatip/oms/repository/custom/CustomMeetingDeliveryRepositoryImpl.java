@@ -4,6 +4,7 @@ import creatip.oms.domain.Department;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.domain.MeetingReceiver;
+import creatip.oms.enumeration.CommonEnum.ViewStatus;
 import creatip.oms.service.message.SearchCriteriaMessage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -102,8 +103,10 @@ public class CustomMeetingDeliveryRepositoryImpl implements CustomMeetingDeliver
         Predicate receiverId = criteriaBuilder.equal(receiverDepartment.get("id"), criteria.getReceiverId());
         predicates.add(receiverId);
 
-        Predicate receiverStatus = criteriaBuilder.equal(receiver.get("status"), criteria.getStatus());
-        predicates.add(receiverStatus);
+        if (criteria.getStatus() == ViewStatus.READ.value || criteria.getStatus() == ViewStatus.UNREAD.value) {
+            Predicate receiverStatus = criteriaBuilder.equal(receiver.get("status"), criteria.getStatus());
+            predicates.add(receiverStatus);
+        }
 
         Predicate deliveryStatus = criteriaBuilder.equal(delivery.get("deliveryStatus"), 1);
         predicates.add(deliveryStatus);

@@ -9,8 +9,11 @@
 
 <div class="row justify-content-center margin-top-10">
   <div class="card">
+    <div class="justify-content-end">
+      <span class="close" style="cursor: pointer; padding-right: 5px" routerLink="/">&times;</span>
+    </div>
     <div class="card-body">
-      <div id="page-body" class="form-group">
+      <div class="form-group">
         <form name="searchForm" role="form" novalidate [formGroup]="searchForm">
           <div class="form-group row col-12">
             <div class="col-2">

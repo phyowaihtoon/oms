@@ -6,6 +6,7 @@ import creatip.oms.domain.MeetingReceiver;
 import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
 import creatip.oms.enumeration.CommonEnum.MeetingStatus;
 import creatip.oms.enumeration.CommonEnum.RequestFrom;
+import creatip.oms.enumeration.CommonEnum.ViewStatus;
 import creatip.oms.repository.MeetingAttachmentRepository;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.repository.MeetingReceiverRepository;
@@ -128,6 +129,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
             for (MeetingReceiver reciever : receiverList) {
                 reciever.setHeader(delivery);
+                reciever.setStatus(ViewStatus.UNREAD.value);
                 reciever = meetingReceiverRepository.save(reciever);
                 savedReceiverList.add(reciever);
             }
@@ -354,12 +356,12 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             if (data.isPresent()) {
                 MeetingDelivery delivery = data.get();
                 if (loginDepId == delivery.getSender().getId()) {
-                    delivery.setStatus((short) 1);
+                    delivery.setStatus(ViewStatus.READ.value);
                     meetingDeliveryRepository.save(delivery);
                 } else {
                     List<MeetingReceiver> list = meetingReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
                     for (MeetingReceiver receiver : list) {
-                        receiver.setStatus((short) 1);
+                        receiver.setStatus(ViewStatus.READ.value);
                         meetingReceiverRepository.save(receiver);
                     }
                 }
@@ -388,12 +390,12 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             if (data.isPresent()) {
                 MeetingDelivery delivery = data.get();
                 if (loginDepId == delivery.getSender().getId()) {
-                    delivery.setStatus((short) 0);
+                    delivery.setStatus(ViewStatus.UNREAD.value);
                     meetingDeliveryRepository.save(delivery);
                 } else {
                     List<MeetingReceiver> list = meetingReceiverRepository.findByHeaderIdAndReceiverId(deliveryId, loginDepId);
                     for (MeetingReceiver receiver : list) {
-                        receiver.setStatus((short) 0);
+                        receiver.setStatus(ViewStatus.UNREAD.value);
                         meetingReceiverRepository.save(receiver);
                     }
                 }
