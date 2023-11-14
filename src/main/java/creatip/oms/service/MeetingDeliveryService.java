@@ -1,6 +1,7 @@
 package creatip.oms.service;
 
 import creatip.oms.service.dto.MeetingDeliveryDTO;
+import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -27,4 +28,6 @@ public interface MeetingDeliveryService {
     ReplyMessage<String> markAsRead(Long deliveryId, Long loginDepId);
 
     ReplyMessage<String> markAsUnRead(Long deliveryId, Long loginDepId);
+
+    BaseMessage deleteAttachment(Long id);
 }

@@ -16,6 +16,7 @@ import creatip.oms.service.dto.DocumentReceiverDTO;
 import creatip.oms.service.mapper.DocumentAttachmentMapper;
 import creatip.oms.service.mapper.DocumentDeliveryMapper;
 import creatip.oms.service.mapper.DocumentReceiverMapper;
+import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.NotificationMessage;
 import creatip.oms.service.message.ReplyMessage;
@@ -107,6 +108,8 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
             List<DocumentReceiver> savedReceiverList = new ArrayList<DocumentReceiver>();
 
+            documentReceiverRepository.deleteByHeaderId(delivery.getId());
+
             for (DocumentReceiver reciever : receiverList) {
                 reciever.setHeader(delivery);
                 reciever.setStatus(ViewStatus.UNREAD.value);
@@ -170,7 +173,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(headerOptional.get());
             List<DocumentReceiver> recList = documentReceiverRepository.findByHeaderId(id);
             List<DocumentReceiverDTO> recListDTO = documentReceiverMapper.toDto(recList);
-            List<DocumentAttachment> attList = documentAttachmentRepository.findByHeaderId(id);
+            List<DocumentAttachment> attList = documentAttachmentRepository.findByHeaderIdAndDelFlag(id, "N");
             List<DocumentAttachmentDTO> attListDTO = documentAttachmentMapper.toDto(attList);
             deliveryMessage.setDocumentDelivery(deliveryDTO);
             deliveryMessage.setAttachmentList(attListDTO);
@@ -403,6 +406,22 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             log.error("Error while marking document as unread :", ex);
+        }
+
+        return replyMessage;
+    }
+
+    @Override
+    public BaseMessage deleteAttachment(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        try {
+            documentAttachmentRepository.updateDelFlagById(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("Document has been removed successfully");
+        } catch (Exception ex) {
+            log.error("Cannot remove document ", ex);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
+            replyMessage.setMessage("Cannot remove document");
         }
 
         return replyMessage;

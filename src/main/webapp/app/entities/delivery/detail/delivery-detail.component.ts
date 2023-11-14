@@ -231,28 +231,32 @@ export class DeliveryDetailComponent implements OnInit {
       this.showLoading('Loading File');
       this.deliveryService.getPreviewData(docId).subscribe(
         (res: HttpResponse<Blob>) => {
+          this.hideLoading();
+
           if (res.status === 200 && res.body) {
             const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
             modalRef.componentInstance.pdfBlobURL = res.body;
-          } else if (res.status === 204) {
-            const code = ResponseCode.WARNING;
-            const message = 'This file does not exist.';
-            this.showAlertMessage(code, message);
-          } else if (res.status === 205) {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Invalid file type.';
-            this.showAlertMessage(code, message);
           } else {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Cannot download file';
+            let code = res.headers.get('code');
+            let message = res.headers.get('message');
+            if (code === null || message === null) {
+              code = ResponseCode.RESPONSE_FAILED_CODE;
+              message = 'No Response Data from Server';
+            }
+
             this.showAlertMessage(code, message);
           }
-          this.hideLoading();
         },
-        () => {
+        error => {
           this.hideLoading();
-          const code = ResponseCode.RESPONSE_FAILED_CODE;
-          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          console.log('Error Response :', JSON.stringify(error));
+
+          let code = error.headers.get('code');
+          let message = error.headers.get('message');
+          if (code === null) {
+            code = ResponseCode.RESPONSE_FAILED_CODE;
+            message = 'No Response Data from Server';
+          }
           this.showAlertMessage(code, message);
         }
       );
@@ -264,27 +268,31 @@ export class DeliveryDetailComponent implements OnInit {
       this.showLoading('Downloading File');
       this.deliveryService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
+          this.hideLoading();
+
           if (res.status === 200 && res.body) {
             FileSaver.saveAs(res.body, fileName);
-          } else if (res.status === 204) {
-            const code = ResponseCode.WARNING;
-            const message = 'This file does not exist.';
-            this.showAlertMessage(code, message);
-          } else if (res.status === 205) {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Invalid file type.';
-            this.showAlertMessage(code, message);
           } else {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Cannot download file';
+            let code = res.headers.get('code');
+            let message = res.headers.get('message');
+            if (code === null || message === null) {
+              code = ResponseCode.RESPONSE_FAILED_CODE;
+              message = 'No Response Data from Server';
+            }
+
             this.showAlertMessage(code, message);
           }
-          this.hideLoading();
         },
-        () => {
+        error => {
           this.hideLoading();
-          const code = ResponseCode.RESPONSE_FAILED_CODE;
-          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          console.log('Error Response :', JSON.stringify(error));
+
+          let code = error.headers.get('code');
+          let message = error.headers.get('message');
+          if (code === null) {
+            code = ResponseCode.RESPONSE_FAILED_CODE;
+            message = 'No Response Data from Server';
+          }
           this.showAlertMessage(code, message);
         }
       );

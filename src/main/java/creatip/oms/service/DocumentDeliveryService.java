@@ -1,6 +1,7 @@
 package creatip.oms.service;
 
 import creatip.oms.service.dto.DocumentDeliveryDTO;
+import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.NotificationMessage;
 import creatip.oms.service.message.ReplyMessage;
@@ -28,4 +29,6 @@ public interface DocumentDeliveryService {
     ReplyMessage<String> markAsRead(Long deliveryId, Long loginDepId);
 
     ReplyMessage<String> markAsUnRead(Long deliveryId, Long loginDepId);
+
+    BaseMessage deleteAttachment(Long id);
 }

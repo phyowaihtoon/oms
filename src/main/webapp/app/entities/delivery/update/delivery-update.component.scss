@@ -130,18 +130,7 @@ h3 {
 
 .textbox {
   color: black;
-
   /*  padding-right: 50px; Adjust this value based on your button width */
-}
-
-.textbox-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 16em;
-  float: right;
-  background-color: rgb(221, 235, 141);
-  color: white;
 }
 
 .text-height {
@@ -269,7 +258,7 @@ h3 {
   background-color: #eeeeee;
 }
 
-.validate-span{
+.validate-span {
   height: 1.8em;
   display: block;
 }

@@ -15,4 +15,6 @@ public interface MeetingReceiverRepository extends JpaRepository<MeetingReceiver
     List<MeetingReceiver> findByHeaderId(Long headerId);
 
     List<MeetingReceiver> findByHeaderIdAndReceiverId(Long headerId, Long recieverId);
+
+    void deleteByHeaderId(Long headerId);
 }

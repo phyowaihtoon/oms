@@ -75,9 +75,14 @@ export class DeliveryService {
     });
   }
 
+  deleteAttachment(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/deleteAttachment/${id}`, '', { observe: 'response' });
+  }
+
   protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((documentDelivery: IDocumentDelivery) => {
+        console.log('Original Date from Server :', documentDelivery.sentDate);
         (documentDelivery.sentDate = documentDelivery.sentDate ? dayjs(documentDelivery.sentDate) : undefined),
           (documentDelivery.createdDate = documentDelivery.createdDate ? dayjs(documentDelivery.createdDate) : undefined);
       });

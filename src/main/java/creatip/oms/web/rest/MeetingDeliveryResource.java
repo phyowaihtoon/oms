@@ -14,6 +14,7 @@ import creatip.oms.service.MeetingDeliveryService;
 import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
+import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -672,6 +673,16 @@ public class MeetingDeliveryResource {
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(replyMessage);
+    }
+
+    @PutMapping("/meeting/deleteAttachment/{id}")
+    public ResponseEntity<BaseMessage> deleteAttachment(@PathVariable Long id) {
+        log.debug("Request to delete Document Delivery Attachment : {}", id);
+        BaseMessage replyMessage = meetingDeliveryService.deleteAttachment(id);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .body(replyMessage);
     }
 }

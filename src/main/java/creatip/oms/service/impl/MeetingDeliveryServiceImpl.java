@@ -17,6 +17,7 @@ import creatip.oms.service.dto.MeetingReceiverDTO;
 import creatip.oms.service.mapper.MeetingAttachmentMapper;
 import creatip.oms.service.mapper.MeetingDeliveryMapper;
 import creatip.oms.service.mapper.MeetingReceiverMapper;
+import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -127,6 +128,8 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
             List<MeetingReceiver> savedReceiverList = new ArrayList<MeetingReceiver>();
 
+            meetingReceiverRepository.deleteByHeaderId(delivery.getId());
+
             for (MeetingReceiver reciever : receiverList) {
                 reciever.setHeader(delivery);
                 reciever.setStatus(ViewStatus.UNREAD.value);
@@ -191,7 +194,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             MeetingDeliveryDTO deliveryDTO = meetingDeliveryMapper.toDto(headerOptional.get());
             List<MeetingReceiver> recList = meetingReceiverRepository.findByHeaderId(id);
             List<MeetingReceiverDTO> recListDTO = meetingReceiverMapper.toDto(recList);
-            List<MeetingAttachment> attList = meetingAttachmentRepository.findByHeaderId(id);
+            List<MeetingAttachment> attList = meetingAttachmentRepository.findByHeaderIdAndDelFlag(id, "N");
             List<MeetingAttachmentDTO> attListDTO = meetingAttachmentMapper.toDto(attList);
             meetingMessage.setMeetingDelivery(deliveryDTO);
             meetingMessage.setAttachmentList(attListDTO);
@@ -410,6 +413,22 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             replyMessage.setCode(ResponseCode.EXCEP_EX);
             replyMessage.setMessage(ex.getMessage());
             log.error("Error while marking meeting invitation as unread :", ex);
+        }
+
+        return replyMessage;
+    }
+
+    @Override
+    public BaseMessage deleteAttachment(Long id) {
+        BaseMessage replyMessage = new BaseMessage();
+        try {
+            meetingAttachmentRepository.updateDelFlagById(id);
+            replyMessage.setCode(ResponseCode.SUCCESS);
+            replyMessage.setMessage("Document has been removed successfully");
+        } catch (Exception ex) {
+            log.error("Cannot remove document ", ex);
+            replyMessage.setCode(ResponseCode.EXCEP_EX);
+            replyMessage.setMessage("Cannot remove document");
         }
 
         return replyMessage;

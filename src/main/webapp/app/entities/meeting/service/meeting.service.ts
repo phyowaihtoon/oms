@@ -82,6 +82,10 @@ export class MeetingService {
     });
   }
 
+  deleteAttachment(id: number): Observable<HttpResponse<IReplyMessage>> {
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/deleteAttachment/${id}`, '', { observe: 'response' });
+  }
+
   protected convertDateFromClient(meetingDelivery: IMeetingDelivery): IMeetingDelivery {
     return Object.assign({}, meetingDelivery, {
       startDate: meetingDelivery.startDate?.isValid() ? meetingDelivery.startDate.format('YYYY-MM-DDTHH:mm:ssZ') : undefined,

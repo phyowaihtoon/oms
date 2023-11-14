@@ -37,8 +37,7 @@ export class DeliveryDraftComponent implements OnInit {
     fromdate: [],
     todate: [],
     subject: [],
-    // departmentID: [0, [Validators.required, Validators.pattern('^[1-9]*$')]],
-    status: [],
+    status: [2],
     docno: [],
   });
 
@@ -50,15 +49,12 @@ export class DeliveryDraftComponent implements OnInit {
     protected translateService: TranslateService,
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
-    protected userAuthorityService: UserAuthorityService,
+    protected userAuthorityService: UserAuthorityService
   ) {}
 
   ngOnInit(): void {
-    
-    
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
-
 
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
@@ -68,7 +64,6 @@ export class DeliveryDraftComponent implements OnInit {
         console.log(error);
       }
     );
-
   }
 
   trackDepartmentByID(index: number, item: IDepartment): number {
@@ -96,10 +91,10 @@ export class DeliveryDraftComponent implements OnInit {
       const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
       const _status = this.searchForm.get(['status'])!.value;
       // const _receiverId = this.searchForm.get(['departmentID'])!.value;
-      const _subject = this.searchForm.get(['subject'])!.value;   
-      const _docno = this.searchForm.get(['docno'])!.value;      
+      const _subject = this.searchForm.get(['subject'])!.value;
+      const _docno = this.searchForm.get(['docno'])!.value;
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      const pageToLoad: number|undefined = page ?? this.page ?? 1;
+      const pageToLoad: number | undefined = page ?? this.page ?? 1;
 
       const Criteria = {
         ...new SearchCriteria(),
@@ -114,7 +109,7 @@ export class DeliveryDraftComponent implements OnInit {
 
       console.log(Criteria, 'xxx Criteria xxxx');
 
-      const requestParams = {    
+      const requestParams = {
         page: pageToLoad - 1,
         size: this.itemsPerPage,
         criteria: JSON.stringify(Criteria),

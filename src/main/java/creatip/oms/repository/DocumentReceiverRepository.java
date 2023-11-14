@@ -24,4 +24,6 @@ public interface DocumentReceiverRepository extends JpaRepository<DocumentReceiv
     List<DocumentReceiver> findByHeaderId(Long headerId);
 
     List<DocumentReceiver> findByHeaderIdAndReceiverId(Long headerId, Long recieverId);
+
+    void deleteByHeaderId(Long headerId);
 }

@@ -97,13 +97,13 @@
           <span jhiTranslate="omsApp.delivery.table.tableheader_sent" style="font-weight: 600">Document Sent</span>
         </div>
         <div class="col-3 d-flex justify-content-end">
+          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
+            <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+          </button>
+          <span style="width: 5px"></span>
           <button class="btn btn-primary btn-sm" (click)="searchDocument()">
             <fa-icon icon="search"></fa-icon>
             <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
-          </button>
-          <span style="width: 5px"></span>
-          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
-            <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
           </button>
         </div>
       </div>
@@ -129,7 +129,7 @@
                   <td>
                     {{ i + 1 }}
                   </td>
-                  <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
+                  <td>{{ doc.sentDate ? doc.sentDate.format('YYYY-MM-DD') : '-' }}</td>
                   <td>{{ doc.referenceNo }}</td>
                   <td>{{ doc.subject }}</td>
                   <td>{{ doc.sender?.departmentName }}</td>

@@ -14,6 +14,7 @@ import creatip.oms.service.FTPRepositoryService;
 import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.DocumentDeliveryDTO;
+import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -572,6 +573,7 @@ public class DocumentDeliveryResource {
             String message = String.format("Invalid file extension :%s", fileName);
             log.debug("Response Message : {}", message);
             HttpHeaders headers = new HttpHeaders();
+            headers.add("code", ResponseCode.ERROR_E00);
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
@@ -652,6 +654,16 @@ public class DocumentDeliveryResource {
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .body(replyMessage);
+    }
+
+    @PutMapping("/delivery/deleteAttachment/{id}")
+    public ResponseEntity<BaseMessage> deleteAttachment(@PathVariable Long id) {
+        log.debug("Request to delete Document Delivery Attachment : {}", id);
+        BaseMessage replyMessage = documentDeliveryService.deleteAttachment(id);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .body(replyMessage);
     }
 }

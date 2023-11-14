@@ -108,13 +108,13 @@
           <span jhiTranslate="omsApp.meeting.table.tableheader_received" style="font-weight: 600">Meeting List</span>
         </div>
         <div class="col-3 d-flex justify-content-end">
+          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
+            <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
+          </button>
+          <span style="width: 5px"></span>
           <button class="btn btn-primary btn-sm" (click)="searchDocument()">
             <fa-icon icon="search"></fa-icon>
             <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
-          </button>
-          <span style="width: 5px"></span>
-          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
-            <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
           </button>
         </div>
       </div>

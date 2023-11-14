@@ -37,7 +37,7 @@ export class MeetingDraftComponent implements OnInit {
     fromdate: [],
     todate: [],
     subject: [],
-    status: [],
+    status: [2],
     docno: [],
   });
 
