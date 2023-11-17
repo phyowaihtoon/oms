@@ -45,7 +45,7 @@ const meetingRoute: Routes = [
     path: 'new',
     component: MeetingUpdateComponent,
     resolve: {
-      department: MeetingRoutingResolveService,
+      meeting: MeetingRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -53,7 +53,7 @@ const meetingRoute: Routes = [
     path: ':id/edit',
     component: MeetingUpdateComponent,
     resolve: {
-      department: MeetingRoutingResolveService,
+      meeting: MeetingRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

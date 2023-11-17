@@ -2,16 +2,6 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import {
-  DeliveryMessage,
-  DocumentAttachment,
-  DocumentDelivery,
-  DocumentReceiver,
-  IDeliveryMessage,
-  IDocumentAttachment,
-  IDocumentDelivery,
-  IDocumentReceiver,
-} from 'app/entities/delivery/delivery.model';
 import { DeliveryService } from 'app/entities/delivery/service/delivery.service';
 import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
@@ -21,10 +11,11 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-import { IMeetingAttachment, IMeetingDelivery, IMeetingMessage, MeetingAttachment, MeetingDelivery, MeetingMessage } from '../meeting.model';
+import { IMeetingAttachment, IMeetingDelivery, IMeetingMessage, IMeetingReceiver, MeetingAttachment, MeetingDelivery, MeetingMessage, MeetingReceiver } from '../meeting.model';
 import { MeetingService } from '../service/meeting.service';
 import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'jhi-meeting-update',
@@ -82,6 +73,7 @@ export class MeetingUpdateComponent implements OnInit {
   public status = 'Info';
 
   constructor(
+    protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder,
     protected modalService: NgbModal,
     protected loadSetupService: LoadSetupService,
@@ -143,6 +135,13 @@ export class MeetingUpdateComponent implements OnInit {
       this.progressItems[2].title = this.translateService.instant('global.menu.meeting.Step3');
       this.progressItems[3].title = this.translateService.instant('global.menu.meeting.Step4');
     });
+
+    this.activatedRoute.data.subscribe(({ meeting }) => {
+
+      this.updateForm(meeting);
+
+
+    }); // I have checked route
   }
   // Demo purpose only, Data might come from Api calls/service
 
@@ -256,7 +255,7 @@ export class MeetingUpdateComponent implements OnInit {
 
     for (let i = 0; i < this._tempdocList.length; i++) {
       const tempFile = this._tempdocList[i];
-      this.addField('c://', tempFile.name, tempFile);
+      this.addField("", tempFile.name, tempFile);
     }
 
     this._tempdocList = [];
@@ -272,7 +271,7 @@ export class MeetingUpdateComponent implements OnInit {
     const attacheddocList = [];
     const meetingDelivery = this.createFrom(deliveryStatus);
 
-    console.log(meetingDelivery, 'xxxDocumentDeliveryxxx');
+    console.log(meetingDelivery, 'meetingDelivery');
 
     const docList = meetingDelivery.attachmentList ?? [];
 
@@ -298,8 +297,14 @@ export class MeetingUpdateComponent implements OnInit {
         attacheddocList.push(dmsDoc);
       }
     }
+    const meetingID = meetingDelivery.meetingDelivery!.id ?? undefined;
+    if (meetingID !== undefined) {
+      this.subscribeToSaveResponse(this.meetingService.update(formData, meetingID));
+    } else {
+      this.subscribeToSaveResponse(this.meetingService.save(formData, meetingDelivery));
+    }
 
-    this.subscribeToSaveResponse(this.meetingService.save(formData, meetingDelivery));
+  //  this.subscribeToSaveResponse(this.meetingService.save(formData, meetingDelivery));
   }
 
   showLoading(loadingMessage?: string): void {
@@ -395,8 +400,8 @@ export class MeetingUpdateComponent implements OnInit {
     };
   }
 
-  protected createFormReceiverList(): IDocumentReceiver[] {
-    const receiverList: IDocumentReceiver[] = [];
+  protected createFormReceiverList(): IMeetingReceiver[] {
+    const receiverList: IMeetingReceiver[] = [];
 
     this.toDepartments?.forEach((value, index) => {
       receiverList.push(this.createReceiverListDetail(1, value));
@@ -409,9 +414,9 @@ export class MeetingUpdateComponent implements OnInit {
     return receiverList;
   }
 
-  protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IDocumentReceiver {
+  protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IMeetingReceiver {
     return {
-      ...new DocumentReceiver(),
+      ...new MeetingReceiver(),
       id: undefined,
       receiverType: receiver_Type,
       status: 0,
@@ -457,29 +462,61 @@ export class MeetingUpdateComponent implements OnInit {
     };
   }
 
-  protected updateForm(deliveryMessage: IMeetingMessage): void {
-    this.updateDocDelivery(deliveryMessage.meetingDelivery!);
-    this.updateDocDetails(deliveryMessage.attachmentList);
+  protected updateForm(meetingMessage: IMeetingMessage): void {
+    this.updateMeetingDelivery(meetingMessage.meetingDelivery!);    
+    this.updateReceiverList(meetingMessage.receiverList!);
+   
     this.editForm.patchValue({
-      docList: this.updateDocDetails(deliveryMessage.attachmentList),
+      docList: this.updateMeetingDetails(meetingMessage.attachmentList),
+    });
+
+  }
+
+  protected updateMeetingDelivery(meetingDelivery: IMeetingDelivery): void {
+
+    console.log("this.meetingDelivery " , meetingDelivery);
+
+    this.editForm.patchValue({
+      id: meetingDelivery.id,
+      fromtime: meetingDelivery.startDate,
+      totime: meetingDelivery.endDate,
+      meetingDate: meetingDelivery.startDate,
+      location: meetingDelivery.place,
+      referenceno: meetingDelivery.referenceNo,
+      subject: meetingDelivery.subject,
+      body: meetingDelivery.description,
     });
   }
 
-  protected updateDocDelivery(docDelivery: IMeetingDelivery): void {
-    this.editForm.patchValue({
-      id: docDelivery.id,
-      docNo: docDelivery.referenceNo,
-      subject: docDelivery.subject,
-      body: docDelivery.description,
-    });
-  }
-
-  protected updateDocDetails(docList: IMeetingAttachment[] | undefined): void {
+  protected updateMeetingDetails(docList: IMeetingAttachment[] | undefined): void {
     let index = 0;
     docList?.forEach(data => {
-      this.addField('', '');
+      this.addField('', '');      
+      this.docList().controls[index].get(['id'])!.setValue(data.id);
       this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
+      this.docList().controls[index].get(['filePath'])!.setValue(data.filePath);
       index = index + 1;
     });
+  }
+
+  protected updateReceiverList(receiverList: IMeetingReceiver[]): void{
+
+    console.log("ReceiverList 1 : " , receiverList);
+
+    this.toDepartments = [];
+    this.ccDepartments = [];
+
+    console.log("ReceiverList 2 : " , receiverList);
+
+    receiverList.forEach((value, index) => {
+      if(value.receiverType === 1){
+        this.toDepartments?.push(value.receiver!) ;
+      }else{
+        this.ccDepartments?.push(value.receiver!) ;
+      }
+    });
+
+    
+    console.log("ReceiverList 3 : " , receiverList);
   }
 }

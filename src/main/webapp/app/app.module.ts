@@ -1,5 +1,5 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { registerLocaleData } from '@angular/common';
+import { DatePipe, registerLocaleData } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import locale from '@angular/common/locales/en';
 import { BrowserModule, Title } from '@angular/platform-browser';
@@ -63,6 +63,7 @@ import { PdfViewerComponent } from './entities/util/pdfviewer/pdf-viewer.compone
     { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
     { provide: NgbDateParserFormatter, useClass: NgbDateCustomParserFormatter },
     httpInterceptorProviders,
+    DatePipe
   ],
   declarations: [
     MainComponent,

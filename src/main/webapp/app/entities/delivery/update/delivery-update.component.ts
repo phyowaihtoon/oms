@@ -120,10 +120,9 @@ export class DeliveryUpdateComponent implements OnInit{
     });
 
     this.activatedRoute.data.subscribe(({ delivery }) => {
-     // this.documentDelivery = delivery?.documentDelivery;
-     // this.receiverList = delivery?.receiverList;
-     // this.attachmentList = delivery?.attachmentList;
-      console.log(delivery, "DELIVERY")
+
+      console.log("DELIVERY", delivery)
+
       this.updateForm(delivery);
 
     });
@@ -182,12 +181,10 @@ export class DeliveryUpdateComponent implements OnInit{
 
   onToDepartmentChange(event: any): void {
     this.toDepartments = event;
-    console.log(this.toDepartments, "to Dept");
   }
 
   onCcDepartmentChange(event: any): void {
     this.ccDepartments = event;
-    console.log(this.ccDepartments, "cc Dept");
   }
 
   submit():void{
@@ -206,9 +203,6 @@ export class DeliveryUpdateComponent implements OnInit{
 
    // add new field dynamically
    addField(filePath: string, fileName: string,  fileData?: File): void {
-
-    console.log(fileData, "FileDataxxxxxxxx")
-
     this.docList().push(this.newField(filePath, fileName, fileData));
   }
   
@@ -228,9 +222,7 @@ export class DeliveryUpdateComponent implements OnInit{
 
       if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
         this.removeFieldConfirm(i);
-      } else {
-        console.log("xxx");
-      }
+      } 
     }
     
   checkRepositoryURL(inputFileElement: HTMLInputElement): void {   
@@ -266,11 +258,7 @@ export class DeliveryUpdateComponent implements OnInit{
     const documentDelivery = this.createFrom(deliveryStatus);
     const docList = documentDelivery.attachmentList ?? [];    
     
-    console.log(documentDelivery, "documentDelivery")
-
     if (docList.length > 0) {
-
-      console.log("Document List xxxx update" , docList)
 
       for (const dmsDoc of docList) {
         const docDetailID = dmsDoc.id ?? undefined;
@@ -294,10 +282,6 @@ export class DeliveryUpdateComponent implements OnInit{
       }
     }
     formData.append('delivery', JSON.stringify(documentDelivery));
-    console.log(formData.get("files"), "formData Files");
-    // console.log(formData.get("delivery"), "formData");
-    // console.log("Document Delivery :",JSON.stringify(documentDelivery));
-
     const deliveryID = documentDelivery.documentDelivery!.id ?? undefined;
     if (deliveryID !== undefined) {
       this.subscribeToSaveResponse(this.deliveryService.update(formData, deliveryID));
@@ -353,8 +337,6 @@ export class DeliveryUpdateComponent implements OnInit{
     if (replyMessage !== null) {
       if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
-
-        console.log(replyMessage.data, "xxx Reply Message xxx");
 
         this.removeAllField();        
         this.updateForm(replyMessage.data);
@@ -447,11 +429,8 @@ export class DeliveryUpdateComponent implements OnInit{
 
     
   protected updateForm(deliveryMessage: IDeliveryMessage): void {
-
-    console.log("deliveryMessage.attachmentList", )
     this.updateDocDelivery(deliveryMessage.documentDelivery!);
     this.updateReceiverList(deliveryMessage.receiverList!);
-   // this.updateDocDetails(deliveryMessage.attachmentList);
     this.editForm.patchValue({      
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
     });
@@ -467,8 +446,6 @@ export class DeliveryUpdateComponent implements OnInit{
     });
   }
 
-
-
   protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
     let index = 0;
     docList?.forEach(data => { 
@@ -482,6 +459,13 @@ export class DeliveryUpdateComponent implements OnInit{
 
   protected updateReceiverList(receiverList: IDocumentReceiver[]): void{
 
+    console.log("ReceiverList 1 : " , receiverList);
+
+    this.toDepartments = [];
+    this.ccDepartments = [];
+
+    console.log("ReceiverList 2 : " , receiverList);
+
     receiverList.forEach((value, index) => {
       if(value.receiverType === 1){
         this.toDepartments?.push(value.receiver!) ;
@@ -489,5 +473,8 @@ export class DeliveryUpdateComponent implements OnInit{
         this.ccDepartments?.push(value.receiver!) ;
       }
     });
+
+    
+    console.log("ReceiverList 3 : " , receiverList);
   }
 }
