@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-5">
           <label jhiTranslate="omsApp.delivery.label.DocStatus" style="font-weight: bold">Status</label>
           <span style="padding-right: 50px"> {{ _docStatus.description }}</span>
           <button class="btn btn-primary btn-sm" (click)="markAsReadUnread()" [disabled]="isLoading">
@@ -43,6 +43,13 @@
             <span class="d-none d-md-inline">{{ _docStatus.actionLabel }}</span>
           </button>
         </div>
+
+        <div class="col-1">
+          <div class="justify-content-end">
+            <span class="close" style="cursor: pointer; padding-right: 5px" (click)="close()">&times;</span>
+          </div>
+        </div>
+
       </div>
 
       <div>
