@@ -350,4 +350,9 @@ export class MeetingDetailComponent implements OnInit {
 
     this.isInfo = false;
   }
+
+
+  close(): void{
+    window.history.back();
+  }
 }

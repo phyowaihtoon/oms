@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { IDepartment } from 'app/entities/department/department.model';
-import { SearchCriteria } from 'app/entities/util/criteria.model';
+import { ISearchCriteria, SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DeliveryService } from '../service/delivery.service';
 import { IDocumentDelivery } from '../delivery.model';
@@ -32,6 +32,7 @@ export class DeliveryReceivedComponent implements OnInit {
   departmentsList?: IDepartment[];
   documentDelivery?: IDocumentDelivery[];
   _departmentName: string | undefined = '';
+  _searchCriteria?: ISearchCriteria;
 
   searchForm = this.fb.group({
     fromdate: [],
@@ -98,7 +99,7 @@ export class DeliveryReceivedComponent implements OnInit {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       const pageToLoad: number | undefined = page ?? this.page ?? 1;
 
-      const Criteria = {
+      this._searchCriteria = {
         ...new SearchCriteria(),
         requestFrom: 2,
         dateFrom: startDate,
@@ -109,12 +110,10 @@ export class DeliveryReceivedComponent implements OnInit {
         referenceNo: _docno,
       };
 
-      console.log(Criteria, 'xxx Criteria xxxx');
-
       const requestParams = {
         page: pageToLoad - 1,
         size: this.itemsPerPage,
-        criteria: JSON.stringify(Criteria),
+        criteria: JSON.stringify(this._searchCriteria),
       };
 
       console.log(requestParams, 'xxx requestparams xxxx');
@@ -136,12 +135,12 @@ export class DeliveryReceivedComponent implements OnInit {
     }
   }
 
+
   protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean, page: number): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.documentDelivery = data!;
     this.page = page;
     this.isShowingAlert = this.documentDelivery.length === 0;
-    // this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
     this.ngbPaginationPage = this.page;
   }
 

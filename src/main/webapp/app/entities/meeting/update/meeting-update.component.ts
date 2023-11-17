@@ -16,7 +16,6 @@ import { MeetingService } from '../service/meeting.service';
 import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ActivatedRoute } from '@angular/router';
-
 @Component({
   selector: 'jhi-meeting-update',
   templateUrl: './meeting-update.component.html',
@@ -96,6 +95,25 @@ export class MeetingUpdateComponent implements OnInit {
     this.editForm.controls.meetingDate.valueChanges.subscribe(value => {
       // Update the targetText control's value
       this.editForm.controls.ccmeetingDate.setValue(value);
+    });
+    
+    this.editForm.controls.fromtime.valueChanges.subscribe(value => {
+      // Split the hours and minutes from the selected time
+      const [hours, minutes] = value.split(':').map(Number);
+
+      // Create a new Date object with the selected time
+      const selectedTime = new Date();
+      selectedTime.setHours(hours);
+      selectedTime.setMinutes(minutes);
+
+      // Add 1 hour to the selected time
+      selectedTime.setHours(selectedTime.getHours() + 1);
+
+      // Format the new time as 'HH:mm'
+      const newTime = `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`;
+
+      // Update the totime control's value with the new time
+      this.editForm.controls.totime.setValue(newTime);
     });
 
     this.editForm.controls.fromtime.valueChanges.subscribe(value => {
