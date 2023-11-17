@@ -207,8 +207,10 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     @Override
     public Page<MeetingDeliveryDTO> getReceivedMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
         Page<MeetingDelivery> page = null;
+        ZoneId zoneId = ZoneId.systemDefault();
+        String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page = meetingDeliveryRepository.findReceivedMeetingList(criteria.getReceiverId(), criteria.getDateOn(), pageable);
+            page = meetingDeliveryRepository.findReceivedMeetingList(criteria.getReceiverId(), criteria.getDateOn(), zoneCode, pageable);
         } else {
             page = meetingDeliveryRepository.findReceivedMeetingList(criteria, pageable);
         }
@@ -316,8 +318,10 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     @Override
     public Page<MeetingDeliveryDTO> getSentMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
         Page<MeetingDelivery> page = null;
+        ZoneId zoneId = ZoneId.systemDefault();
+        String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), criteria.getDateOn(), pageable);
+            page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), criteria.getDateOn(), zoneCode, pageable);
         } else {
             String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
             String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
@@ -328,6 +332,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                     criteria.getDateTo(),
                     subject,
                     referenceNo,
+                    zoneCode,
                     pageable
                 );
         }
@@ -337,6 +342,8 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
     @Override
     public Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        String zoneCode = zoneId.getId();
         String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
         String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
         Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(
@@ -345,6 +352,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             criteria.getDateTo(),
             subject,
             referenceNo,
+            zoneCode,
             pageable
         );
         return page.map(meetingDeliveryMapper::toDto);

@@ -23,22 +23,22 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
     @Query(
         value = "select DISTINCT md from MeetingDelivery md, MeetingReceiver mr " +
         "where md.id=mr.header.id and md.delFlag='N' and md.deliveryStatus=1 " +
-        "and mr.receiver.id=?1 and date(md.sentDate) = str_to_date(?2,'%d-%m-%Y') " +
+        "and mr.receiver.id=?1 and DATE(CONVERT_TZ(md.sentDate, 'UTC', ?3)) = str_to_date(?2,'%d-%m-%Y') " +
         "and mr.delFlag='N'"
     )
-    Page<MeetingDelivery> findReceivedMeetingList(Long receiverId, String sentDate, Pageable pageable);
+    Page<MeetingDelivery> findReceivedMeetingList(Long receiverId, String sentDate, String zoneCode, Pageable pageable);
 
     @Query(
         value = "select md from MeetingDelivery md " +
         "where md.delFlag='N' and md.deliveryStatus=1 " +
-        "and md.sender.id=?1 and date(md.sentDate) = str_to_date(?2,'%d-%m-%Y') "
+        "and md.sender.id=?1 and DATE(CONVERT_TZ(md.sentDate, 'UTC', ?3)) = str_to_date(?2,'%d-%m-%Y') "
     )
-    Page<MeetingDelivery> findSentMeetingList(Long senderId, String sentDate, Pageable pageable);
+    Page<MeetingDelivery> findSentMeetingList(Long senderId, String sentDate, String zoneCode, Pageable pageable);
 
     @Query(
         value = "select md from MeetingDelivery md " +
         "where md.delFlag='N' and md.deliveryStatus=1 and md.sender.id=?1 " +
-        "and date(md.sentDate) >= str_to_date(?2,'%d-%m-%Y') and date(md.sentDate) <= str_to_date(?3,'%d-%m-%Y') " +
+        "and DATE(CONVERT_TZ(md.sentDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y') and DATE(CONVERT_TZ(md.sentDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y') " +
         "and md.subject LIKE CONCAT('%', ?4, '%') " +
         "and md.referenceNo LIKE CONCAT('%', ?5, '%')"
     )
@@ -48,13 +48,14 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         String dateTo,
         String subject,
         String referenceNo,
+        String zoneCode,
         Pageable pageable
     );
 
     @Query(
         value = "select md from MeetingDelivery md " +
         "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 " +
-        "and date(md.createdDate) >= str_to_date(?2,'%d-%m-%Y')	and date(md.createdDate) <= str_to_date(?3,'%d-%m-%Y') " +
+        "and DATE(CONVERT_TZ(md.createdDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y') and DATE(CONVERT_TZ(md.createdDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y') " +
         "and md.subject LIKE CONCAT('%', ?4, '%') " +
         "and md.referenceNo LIKE CONCAT('%', ?5, '%')"
     )
@@ -64,6 +65,7 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         String dateTo,
         String subject,
         String referenceNo,
+        String zoneCode,
         Pageable pageable
     );
 

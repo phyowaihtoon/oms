@@ -8,6 +8,7 @@ import creatip.oms.enumeration.CommonEnum.ViewStatus;
 import creatip.oms.service.message.SearchCriteriaMessage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -124,7 +125,19 @@ public class CustomMeetingDeliveryRepositoryImpl implements CustomMeetingDeliver
             String dateFormat = "dd-MM-yyyy";
             if (criteria.getDateTo() != null && criteria.getDateTo().trim().length() > 0) {
                 try {
-                    Expression<Date> sentDateExpression = criteriaBuilder.function("DATE", Date.class, delivery.get("sentDate"));
+                    ZoneId zoneId = ZoneId.systemDefault();
+                    String zoneCode = zoneId.getId();
+                    Expression<Date> sentDateExpression = criteriaBuilder.function(
+                        "DATE",
+                        Date.class,
+                        criteriaBuilder.function(
+                            "CONVERT_TZ",
+                            Date.class,
+                            delivery.get("sentDate"),
+                            criteriaBuilder.literal("UTC"),
+                            criteriaBuilder.literal(zoneCode)
+                        )
+                    );
 
                     Date startDate = new SimpleDateFormat(dateFormat).parse(criteria.getDateFrom());
                     Date endDate = new SimpleDateFormat(dateFormat).parse(criteria.getDateTo());

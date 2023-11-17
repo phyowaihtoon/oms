@@ -293,12 +293,15 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     @Override
     public Page<DocumentDeliveryDTO> getReceivedDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
         Page<DocumentDelivery> page = null;
+        ZoneId zoneId = ZoneId.systemDefault();
+        String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
             page =
                 documentDeliveryRepository.findDocumentsReceived(
                     criteria.getReceiverId(),
                     criteria.getStatus(),
                     criteria.getDateOn(),
+                    zoneCode,
                     pageable
                 );
         } else {
@@ -310,8 +313,10 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     @Override
     public Page<DocumentDeliveryDTO> getSentDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
         Page<DocumentDelivery> page = null;
+        ZoneId zoneId = ZoneId.systemDefault();
+        String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page = documentDeliveryRepository.findDocumentsSent(criteria.getSenderId(), criteria.getDateOn(), pageable);
+            page = documentDeliveryRepository.findDocumentsSent(criteria.getSenderId(), criteria.getDateOn(), zoneCode, pageable);
         } else {
             String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
             String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
@@ -322,6 +327,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     criteria.getDateTo(),
                     subject,
                     referenceNo,
+                    zoneCode,
                     pageable
                 );
         }
@@ -330,6 +336,9 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
     @Override
     public Page<DocumentDeliveryDTO> getDeliveryDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        String zoneCode = zoneId.getId();
+
         String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
         String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
         Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(
@@ -338,6 +347,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             criteria.getDateTo(),
             subject,
             referenceNo,
+            zoneCode,
             pageable
         );
         return page.map(documentDeliveryMapper::toDto);
