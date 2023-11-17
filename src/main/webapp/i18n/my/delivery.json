@@ -23,7 +23,8 @@
         "FileUpload": "စာရွက်စာတမ်းများ",
         "DocStatus": "Status:",
         "MarkAsRead": "Mark As Read",
-        "MarkAsUnRead": "Mark As Unread"
+        "MarkAsUnRead": "Mark As Unread",
+        "Date": "ရက်စွဲ"
       },
       "table": {
         "tableheader_received": "ဝင်စာစာရင်း",
