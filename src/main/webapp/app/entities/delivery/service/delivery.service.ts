@@ -41,7 +41,9 @@ export class DeliveryService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IDeliveryMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+      .get<IDeliveryMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   findAllReceived(req?: any): Observable<EntityArrayResponseType> {
@@ -96,6 +98,15 @@ export class DeliveryService {
         (documentDelivery.sentDate = documentDelivery.sentDate ? dayjs(documentDelivery.sentDate) : undefined),
           (documentDelivery.createdDate = documentDelivery.createdDate ? dayjs(documentDelivery.createdDate) : undefined);
       });
+    }
+    return res;
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      if (res.body.documentDelivery) {
+        res.body.documentDelivery.sentDate = res.body.documentDelivery.sentDate ? dayjs(res.body.documentDelivery.sentDate) : undefined;
+      }
     }
     return res;
   }

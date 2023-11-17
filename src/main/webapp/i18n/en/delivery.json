@@ -23,7 +23,8 @@
         "FileUpload": "Attached Files",
         "DocStatus": "Status:",
         "MarkAsRead": "Mark As Read",
-        "MarkAsUnRead": "Mark As Unread"
+        "MarkAsUnRead": "Mark As Unread",
+        "Date": "Date"
       },
       "table": {
         "tableheader_received": "Document Received",

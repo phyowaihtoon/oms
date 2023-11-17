@@ -29,7 +29,7 @@ export class ApplicationUserUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    workflowAuthority: [null, [Validators.required]],
+    workflowAuthority: [],
     user: [null, Validators.required],
     userRole: [null, Validators.required],
     department: [],
@@ -101,7 +101,7 @@ export class ApplicationUserUpdateComponent implements OnInit {
   protected updateForm(applicationUser: IApplicationUser): void {
     this.editForm.patchValue({
       id: applicationUser.id,
-      workflowAuthority: applicationUser.workflowAuthority,
+      workflowAuthority: 0,
       user: applicationUser.user,
       userRole: applicationUser.userRole,
       department: applicationUser.department,
@@ -142,7 +142,7 @@ export class ApplicationUserUpdateComponent implements OnInit {
     return {
       ...new ApplicationUser(),
       id: this.editForm.get(['id'])!.value,
-      workflowAuthority: this.editForm.get(['workflowAuthority'])!.value,
+      workflowAuthority: 0,
       user: this.editForm.get(['user'])!.value,
       userRole: this.editForm.get(['userRole'])!.value,
       department: this.editForm.get(['department'])!.value,

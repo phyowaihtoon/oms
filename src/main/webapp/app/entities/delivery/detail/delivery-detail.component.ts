@@ -133,7 +133,7 @@ export class DeliveryDetailComponent implements OnInit {
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
-                this.showAlertMessage(replyCode, replyMsg);
+                // this.showAlertMessage(replyCode, replyMsg);
               } else {
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
@@ -168,7 +168,7 @@ export class DeliveryDetailComponent implements OnInit {
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
-                this.showAlertMessage(replyCode, replyMsg);
+                // this.showAlertMessage(replyCode, replyMsg);
               } else {
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
