@@ -9,7 +9,13 @@
       },
       "label": {
         "Date": "Date",
-        "Time": "Time"
+        "Time": "Time",
+        "DocNo": "Letter No.",
+        "Location": "Location",
+        "Subject": "Subject",
+        "Body": "Body",
+        "MDept": "To:",
+        "CDept": "Cc:"
       },
       "validateMsg": {
         "RequiredField": "This field is required.",

@@ -34,7 +34,8 @@ export class MeetingService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IMeetingMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http
+    .get<IMeetingMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
   findAllReceived(req?: any): Observable<EntityArrayResponseType> {
