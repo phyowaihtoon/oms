@@ -313,4 +313,8 @@ export class DeliveryDetailComponent implements OnInit {
 
     this.isInfo = false;
   }
+
+  close(): void{
+    window.history.back();
+  }
 }

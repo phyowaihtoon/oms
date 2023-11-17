@@ -12,10 +12,7 @@
       <h6 jhiTranslate="home.calendar">Calendar</h6>
       <ngb-datepicker class="date-picker-style" (dateSelect)="onDateSelected($event)" outsideDays="hidden"> </ngb-datepicker>
 
-      <div class="count-summary">
-        <h6><span jhiTranslate="home.meeting_draft">Meeting Draft</span> - {{ _draftSummary?.meetingCount }}</h6>
-        <h6><span jhiTranslate="home.document_draft">Document Draft</span> - {{ _draftSummary?.deliveryCount }}</h6>
-      </div>
+     
 
       <div class="meeting-card margin-top-30">
         <h4 class="meeting-header" jhiTranslate="home.meeting_title">Metting Invitation</h4>
@@ -33,6 +30,12 @@
           </div>
         </div>
       </div>
+
+      <div class="count-summary">
+        <h6><span jhiTranslate="home.meeting_draft">Meeting Draft</span> - {{ _draftSummary?.meetingCount }}</h6>
+        <h6><span jhiTranslate="home.document_draft">Document Draft</span> - {{ _draftSummary?.deliveryCount }}</h6>
+      </div>
+
     </div>
   </div>
 
@@ -77,18 +80,28 @@
           </table>
         </div>
       </div>
+
       <div class="box-footer">
-        <div class="row justify-content-center">
-          <ngb-pagination
-            [collectionSize]="totalItems_1"
-            [(page)]="ngbPaginationPage_1"
-            [pageSize]="itemsPerPage"
-            [maxSize]="5"
-            [rotate]="true"
-            [boundaryLinks]="true"
-            (pageChange)="loadDashboard1($event)"
-          ></ngb-pagination>
+        <div *ngIf="_dashboardData1 && _dashboardData1.length > 0">
+
+          <div class="row justify-content-center">
+            <jhi-item-count [params]="{ page: page_1, totalItems: totalItems_1, itemsPerPage: itemsPerPage }"></jhi-item-count>
+          </div>
+
+          <div class="row justify-content-center">
+            <ngb-pagination
+              [collectionSize]="totalItems_1"
+              [(page)]="ngbPaginationPage_1"
+              [pageSize]="itemsPerPage"
+              [maxSize]="5"
+              [rotate]="true"
+              [boundaryLinks]="true"
+              (pageChange)="loadDashboard1($event)"
+            ></ngb-pagination>
+          </div>
         </div>
+
+       
       </div>
     </div>
 
@@ -118,17 +131,25 @@
         </div>
       </div>
       <div class="box-footer">
-        <div class="row justify-content-center">
-          <ngb-pagination
-            [collectionSize]="totalItems_2"
-            [(page)]="ngbPaginationPage_2"
-            [pageSize]="itemsPerPage"
-            [maxSize]="5"
-            [rotate]="true"
-            [boundaryLinks]="true"
-            (pageChange)="loadDashboard2($event)"
-          ></ngb-pagination>
-        </div>
+
+        <div *ngIf="_dashboardData2 && _dashboardData2.length > 0">
+
+          <div class="row justify-content-center">
+            <jhi-item-count [params]="{ page: page_2, totalItems: totalItems_2, itemsPerPage: itemsPerPage }"></jhi-item-count>
+          </div>
+          <div class="row justify-content-center">
+            <ngb-pagination
+              [collectionSize]="totalItems_2"
+              [(page)]="ngbPaginationPage_2"
+              [pageSize]="itemsPerPage"
+              [maxSize]="5"
+              [rotate]="true"
+              [boundaryLinks]="true"
+              (pageChange)="loadDashboard2($event)"
+            ></ngb-pagination>
+          </div>
+          </div>
+        
       </div>
     </div>
   </div>
