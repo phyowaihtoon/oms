@@ -22,8 +22,7 @@
       "inbox": {
         "title": "Inbox",
         "DocumentReceived": "Document Received",
-        "DocumentDetails" : "Document Details"
-        
+        "DocumentDetails": "Document Details"
       },
       "delivery": {
         "title": "Delivery",
@@ -36,6 +35,7 @@
       },
       "meeting": {
         "title": "Meeting",
+        "MeetingDetail": "Meeting Details",
         "MeetingInvitation": "Meeting Invitation",
         "Sent": "Sent",
         "MeetingReceived": "Meeting Received",

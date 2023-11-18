@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LoginService } from 'app/login/login.service';
@@ -22,6 +22,8 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
   modalHeaderClass: string[] = [];
   modalButtonClass: string[] = [];
 
+  @Output() successMessage: EventEmitter<any> = new EventEmitter();
+
   constructor(
     public activeModal: NgbActiveModal,
     private userAuthorityService: UserAuthorityService,
@@ -35,6 +37,9 @@ export class InfoPopupComponent implements OnInit, OnDestroy {
   }
 
   dismiss(): void {
+    if (this.code === ResponseCode.SUCCESS) {
+      this.successMessage.emit(ResponseCode.SUCCESS);
+    }
     this.activeModal.dismiss();
     if (this.logoutFlag && this.code === ResponseCode.SUCCESS) {
       this.logout();

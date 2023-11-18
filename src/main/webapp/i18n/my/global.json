@@ -20,7 +20,7 @@
       "inbox": {
         "title": "ဝင်စာ",
         "DocumentReceived": "ဝင်စာများ",
-        "DocumentDetails" : "ဝင်စာအသေးစိတ်"
+        "DocumentDetails": "ဝင်စာအသေးစိတ်"
       },
       "delivery": {
         "title": "ထွက်စာ",
@@ -34,6 +34,7 @@
       },
       "meeting": {
         "title": "ဖိတ်ကြားစာ",
+        "MeetingDetail": "ဖိတ်ကြားစာအသေးစိတ်",
         "MeetingInvitation": "ဖိတ်ကြားခြင်း",
         "Sent": "ဖိတ်ကြားစာများ",
         "MeetingReceived": "ဖိတ်ကြားစာများ(လက်ခံ)",

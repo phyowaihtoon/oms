@@ -12,8 +12,6 @@ import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.c
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
 import * as FileSaver from 'file-saver';
-import * as dayjs from 'dayjs';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'jhi-meeting-detail',
@@ -21,7 +19,6 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./meeting-detail.component.scss'],
 })
 export class MeetingDetailComponent implements OnInit {
-
   isLoading = false;
   meetingDelivery?: IMeetingDelivery;
   receiverList?: IMeetingReceiver[] = [];
@@ -36,8 +33,8 @@ export class MeetingDetailComponent implements OnInit {
 
   meetingStartDateTime: any;
   meetingEndDateTime: any;
-  formattedStartDate:any;
-  formattedEndDate:any;
+  formattedStartDate: any;
+  formattedEndDate: any;
   meetingDate: any;
   meetingStartTime: any;
   meetingEndTime: any;
@@ -58,69 +55,55 @@ export class MeetingDetailComponent implements OnInit {
     protected modalService: NgbModal,
     protected meetingService: MeetingService,
     protected userAuthorityService: UserAuthorityService,
-    public datepipe: DatePipe,
-    protected translateService: TranslateService) {
-      this.modules = {
-        toolbar: [
-          ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-          ['blockquote', 'code-block'],
-  
-          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-          [{ font: [] }],
-          [{ align: [] }],
-        ],
-      };
+    protected translateService: TranslateService
+  ) {
+    this.modules = {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+        ['blockquote', 'code-block'],
 
-    // this.last_date =this.datepipe.transform(new Date(), 'MM/dd/yyyy');
-    // console.log("startDate...", this.last_date);
-    }
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ font: [] }],
+        [{ align: [] }],
+      ],
+    };
+  }
 
   ngOnInit(): void {
-    
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
     this._loginDepartment = userAuthority?.department;
 
     this.activatedRoute.data.subscribe(({ meeting }) => {
-
-      console.log("MEETING DELIVERY", meeting);
-      
-
       this.meetingDelivery = meeting?.meetingDelivery;
       this.receiverList = meeting?.receiverList;
       this.attachmentList = meeting?.attachmentList;
-
-     
-    }); // 
+    });
 
     this.getData();
-
   }
 
   previousState(): void {
     window.history.back();
   }
 
-  
   getData(): void {
-
     this.formattedStartDate = this.meetingDelivery?.startDate;
-    this.meetingStartDateTime = this.datepipe.transform(this.formattedStartDate,'yyyy-MM-dd hh:mm:ss'); 
-    const parts = this.meetingStartDateTime.split(" ");
-    this.meetingDate = parts[0];
-    this.meetingStartTime = parts[1];
-    
-    console.log("formattedStartDate", this.meetingStartDateTime );
-    console.log("this.meetingStartTime", this.meetingStartTime);
+    this.meetingStartDateTime = this.meetingDelivery ? this.meetingDelivery.startDate?.format('YYYY-MM-DD HH:mm:ss') : '';
+    const dateTimeStartParts = this.meetingStartDateTime.split(' ');
+    if (dateTimeStartParts.length > 1) {
+      this.meetingDate = dateTimeStartParts[0];
+      this.meetingStartTime = dateTimeStartParts[1];
+    }
 
     this.formattedEndDate = this.meetingDelivery?.endDate;
-    this.meetingEndDateTime = this.datepipe.transform(this.formattedEndDate,'yyyy-MM-dd hh:mm:ss'); 
-    const parts2 = this.meetingEndDateTime.split(" ");
-    this.meetingEndTime = parts2[1];
-    console.log("formattedEndDate", this.meetingEndDateTime );
-    console.log("this.meetingEndTime", this.meetingEndTime);
+    this.meetingEndDateTime = this.meetingDelivery ? this.meetingDelivery.endDate?.format('YYYY-MM-DD HH:mm:ss') : '';
+    const dateTimeEndParts = this.meetingEndDateTime.split(' ');
+    if (dateTimeEndParts.length > 1) {
+      this.meetingEndTime = dateTimeEndParts[1];
+    }
 
-    this.location = this.meetingDelivery?.place; 
+    this.location = this.meetingDelivery?.place;
     this.docNo = this.meetingDelivery?.referenceNo;
     this.subject = this.meetingDelivery?.subject;
     this.bodyDescription = this.meetingDelivery?.description;
@@ -178,7 +161,7 @@ export class MeetingDetailComponent implements OnInit {
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
-                this.showAlertMessage(replyCode, replyMsg);
+                // this.showAlertMessage(replyCode, replyMsg);
               } else {
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
@@ -213,7 +196,7 @@ export class MeetingDetailComponent implements OnInit {
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
-                this.showAlertMessage(replyCode, replyMsg);
+                // this.showAlertMessage(replyCode, replyMsg);
               } else {
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
@@ -351,8 +334,7 @@ export class MeetingDetailComponent implements OnInit {
     this.isInfo = false;
   }
 
-
-  close(): void{
+  close(): void {
     window.history.back();
   }
 }

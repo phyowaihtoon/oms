@@ -21,7 +21,6 @@ import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SharedUtils;
-import creatip.oms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -210,10 +209,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
 
         try {
@@ -226,10 +222,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         } catch (Exception ex) {
             String responseMessage = "Invalid request ," + ex.getMessage();
             log.debug("Message Response : {}", responseMessage);
@@ -237,24 +230,37 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
 
         if (meetingMessage == null) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idnull");
+            String responseMessage = "Bad Request : Invalid Meeting Data";
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
         if (meetingMessage.getMeetingDelivery().getId() == null) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idnull");
+            String responseMessage = "Bad Request : Invalid Meeting ID is null";
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
         if (!Objects.equals(id, meetingMessage.getMeetingDelivery().getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            String responseMessage = "Bad Request : Meeting ID does not match.";
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
 
         if (!meetingDeliveryRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            String responseMessage = "Bad Request : This Meeting ID does not exist. [" + id + "]";
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
 
         String docHeaderId = id.toString();
@@ -268,10 +274,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ex.getCode());
             result.setMessage(ex.getMessage());
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         } catch (Exception ex) {
             String errMessage = "Transaction could not be processed. Check details in application logs";
             log.debug("Message Response : {}", errMessage);
@@ -279,10 +282,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(errMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
         }
 
         if (result != null) {
