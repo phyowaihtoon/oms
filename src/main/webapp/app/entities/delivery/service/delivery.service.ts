@@ -7,7 +7,6 @@ import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { createRequestOption } from 'app/core/request/request-util';
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
-import { ISearchCriteria } from 'app/entities/util/criteria.model';
 import { SessionStorageService } from 'ngx-webstorage';
 
 export type EntityResponseType = HttpResponse<IDeliveryMessage>;
@@ -17,17 +16,15 @@ export type BlobType = HttpResponse<Blob>;
 @Injectable({
   providedIn: 'root',
 })
-
-
-
 export class DeliveryService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/delivery');
   private previousState: string = '';
 
   constructor(
-    protected http: HttpClient, 
+    protected http: HttpClient,
     private applicationConfigService: ApplicationConfigService,
-    private $sessionStorage: SessionStorageService) {}
+    private $sessionStorage: SessionStorageService
+  ) {}
 
   save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
     console.log('Delivery URL', this.resourceUrl);

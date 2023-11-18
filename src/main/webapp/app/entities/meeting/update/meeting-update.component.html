@@ -1,16 +1,15 @@
 <div class="d-flex justify-content-between margin-top-10">
   <div class="row">
-    <h5 jhiTranslate="global.menu.meeting.title" style="margin-left: 16px"> Meeting </h5>
-    <h5>&nbsp;>>&nbsp;</h5>    
-    <h5 jhiTranslate="global.menu.meeting.MeetingInvitation"> Meeting Invitation </h5>
+    <h5 jhiTranslate="global.menu.meeting.title" style="margin-left: 16px">Meeting</h5>
+    <h5>&nbsp;>>&nbsp;</h5>
+    <h5 jhiTranslate="global.menu.meeting.MeetingInvitation">Meeting Invitation</h5>
   </div>
   <h5>{{ _departmentName }}</h5>
 </div>
 
 <form name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="editForm" autocomplete="off">
- 
   <div class="row justify-content-center margin-top-10">
-    <div class="card">      
+    <div class="card">
       <div class="card-header main-container">
         <div class="progressbar">
           <div class="progress" id="progress"></div>
@@ -18,280 +17,280 @@
             <div class="progress-step" [class.progress-step-active]="progressStep == item.step" [attr.data-title]="item.title"></div>
           </span>
         </div>
-    </div>
+      </div>
 
-    <div class="card-body">
-      <div *ngIf="isInfo" class="form-group">
-        
-        <div *ngIf="editForm.get('meetingDate')!.invalid && (editForm.get('meetingDate')?.dirty || editForm.get('meetingDate')?.touched)">
-          <div *ngIf="editForm.get('meetingDate')?.errors?.required" style="text-align: right; color: red">
-            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredDate"> This Field is required. </span>
-          </div>
-        </div>
-        <div>
-          <label for="dateInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Date">Date:</label>
-          <input type="date" 
-             formControlName="meetingDate"
-             id="dateInput" 
-             name="dateInput">
-        </div>
-        
-        <div *ngIf="(editForm.get('fromtime')!.invalid || editForm.get('totime')!.invalid) && (editForm.get('fromtime')?.dirty || editForm.get('fromtime')?.touched ||editForm.get('totime')?.dirty || editForm.get('totime')?.touched)">
-          <div *ngIf="(editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required )" style="text-align: right; color: red">
-            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
-          </div>
-        </div>
-
-        <div>
-          
-          <label for="timeInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Time">Time:</label>
-          
-          <input type="time" 
-            id="fromtime" 
-            name="fromtime"            
-            formControlName="fromtime"> 
-
-          <label for="-">&nbsp; - &nbsp; </label>
-
-          <input type="time" 
-                  id="totime" 
-                  name="totime"
-                  formControlName="totime"> 
+      <div class="card-body">
+        <div *ngIf="isInfo" class="form-group">
+          <div *ngIf="editForm.get('meetingDate')!.invalid && (editForm.get('meetingDate')?.dirty || editForm.get('meetingDate')?.touched)">
+            <div *ngIf="editForm.get('meetingDate')?.errors?.required" style="text-align: right; color: red">
+              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredDate"> This Field is required. </span>
+            </div>
           </div>
 
-        <div *ngIf="editForm.get('location')!.invalid && (editForm.get('location')?.dirty || editForm.get('location')?.touched)">
-          <div *ngIf="editForm.get('location')?.errors?.required" style="text-align: right; color: red">
-            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          <div class="row col-12">
+            <label for="meetingDate" class="lbl-width" jhiTranslate="omsApp.meeting.label.Date">Date:</label>
+            <div class="input-group col-2" style="padding-left: 0px">
+              <input
+                class="form-control"
+                id="field_createdDate"
+                data-cy="createdDate"
+                placeholder="DD-MM-YYYY"
+                name="meetingDate"
+                formControlName="meetingDate"
+                ngbDatepicker
+                #meetingDate="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary btn-sm dms-icon-btn" id="createdDateButton" (click)="meetingDate.toggle()" type="button">
+                  <fa-icon icon="calendar-alt" [fixedWidth]="true"></fa-icon>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-        <input
-          type="text"
-          formControlName="location"
-          placeholder="{{ 'omsApp.meeting.placeholder.Location' | translate }}"
-          class="form-control div-padding text-height"
-          name="Location"
-          id="Location"
-          required
-        />
 
-        <div *ngIf="editForm.get('referenceno')!.invalid && (editForm.get('referenceno')?.dirty || editForm.get('referenceno')?.touched)">
-          <div *ngIf="editForm.get('referenceno')?.errors?.required" style="text-align: right; color: red">
-            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          <div
+            *ngIf="
+              (editForm.get('fromtime')!.invalid || editForm.get('totime')!.invalid) &&
+              (editForm.get('fromtime')?.dirty ||
+                editForm.get('fromtime')?.touched ||
+                editForm.get('totime')?.dirty ||
+                editForm.get('totime')?.touched)
+            "
+          >
+            <div
+              *ngIf="editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required"
+              style="text-align: right; color: red"
+            >
+              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
+            </div>
           </div>
-        </div>
-        <input
-          type="text"
-          formControlName="referenceno"
-          placeholder="{{ 'omsApp.meeting.placeholder.DocNo' | translate }}"
-          class="form-control div-padding text-height"
-          name="referenceno"
-          id="referenceno"
-          required
-        />
 
-        <div *ngIf="editForm.get('subject')!.invalid && (editForm.get('subject')?.dirty || editForm.get('subject')?.touched)">
-          <div *ngIf="editForm.get('subject')?.errors?.required" style="text-align: right; color: red">
-            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+          <div class="row col-12" style="padding-bottom: 3px">
+            <label for="timeInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Time">Time:</label>
+
+            <input type="time" id="fromtime" name="fromtime" formControlName="fromtime" />
+
+            <label for="-">&nbsp; - &nbsp; </label>
+
+            <input type="time" id="totime" name="totime" formControlName="totime" />
           </div>
-        </div>
 
-        <input
-          type="text"
-          formControlName="subject"
-          placeholder="{{ 'omsApp.meeting.placeholder.Subject' | translate }}"
-          class="form-control div-padding text-height"
-          name="subject"
-          id="subject"
-        />
+          <div *ngIf="editForm.get('location')!.invalid && (editForm.get('location')?.dirty || editForm.get('location')?.touched)">
+            <div *ngIf="editForm.get('location')?.errors?.required" style="text-align: right; color: red">
+              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+            </div>
+          </div>
 
-        <!-- <div *ngIf="editForm.get('body')!.invalid && (editForm.get('body')?.dirty || editForm.get('body')?.touched)">
+          <input
+            type="text"
+            formControlName="location"
+            placeholder="{{ 'omsApp.meeting.placeholder.Location' | translate }}"
+            class="form-control div-padding text-height"
+            name="Location"
+            id="Location"
+            required
+          />
+
+          <div *ngIf="editForm.get('referenceno')!.invalid && (editForm.get('referenceno')?.dirty || editForm.get('referenceno')?.touched)">
+            <div *ngIf="editForm.get('referenceno')?.errors?.required" style="text-align: right; color: red">
+              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+            </div>
+          </div>
+
+          <input
+            type="text"
+            formControlName="referenceno"
+            placeholder="{{ 'omsApp.meeting.placeholder.DocNo' | translate }}"
+            class="form-control div-padding text-height"
+            name="referenceno"
+            id="referenceno"
+            required
+          />
+
+          <div *ngIf="editForm.get('subject')!.invalid && (editForm.get('subject')?.dirty || editForm.get('subject')?.touched)">
+            <div *ngIf="editForm.get('subject')?.errors?.required" style="text-align: right; color: red">
+              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
+            </div>
+          </div>
+
+          <input
+            type="text"
+            formControlName="subject"
+            placeholder="{{ 'omsApp.meeting.placeholder.Subject' | translate }}"
+            class="form-control div-padding text-height"
+            name="subject"
+            id="subject"
+          />
+
+          <!-- <div *ngIf="editForm.get('body')!.invalid && (editForm.get('body')?.dirty || editForm.get('body')?.touched)">
           <div *ngIf="editForm.get('body')?.errors?.required" style="text-align: right; color: red">
             <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredField"> This Field is required. </span>
           </div>
         </div>         -->
-        <quill-editor [styles]="{height: '150px'}" [modules]="modules"
-        formControlName = "body" ></quill-editor> 
-
-      </div>
-
-      <div *ngIf="isReceiver" class="form-group">
-        <div *ngIf="toDepartments!.length === 0 " style="text-align: right; color: red">
-          <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredMainDept"> This Field is required. </span>
-        </div>  
-        <div class="textbox-wrapper div-padding">
-          <jhi-department-component
-            [placeholder]="toLabel"
-            [departments]="toDepartments"
-            (dbChanged)="onToDepartmentChange($event)"
-          ></jhi-department-component>
+          <quill-editor [styles]="{ height: '150px' }" [modules]="modules" formControlName="body"></quill-editor>
         </div>
 
-        <div class="textbox-wrapper div-padding">
-          <jhi-department-component
-            [placeholder]="ccLabel"
-            [departments]="ccDepartments"
-            (dbChanged)="onCcDepartmentChange($event)"
-          ></jhi-department-component>
+        <div *ngIf="isReceiver" class="form-group">
+          <div *ngIf="toDepartments!.length === 0" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredMainDept"> This Field is required. </span>
+          </div>
+          <div class="textbox-wrapper div-padding">
+            <jhi-department-component
+              [placeholder]="toLabel"
+              [departments]="toDepartments"
+              (dbChanged)="onToDepartmentChange($event)"
+            ></jhi-department-component>
+          </div>
+
+          <div class="textbox-wrapper div-padding">
+            <jhi-department-component
+              [placeholder]="ccLabel"
+              [departments]="ccDepartments"
+              (dbChanged)="onCcDepartmentChange($event)"
+            ></jhi-department-component>
+          </div>
         </div>
-      </div>
-      <div *ngIf="isAttachment" class="form-group">
-        <label class="form-control-label" for="text">&nbsp;</label>        
-        <div *ngIf="checkFormArrayEmpty()" style="text-align: right; color: red">
-          <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredFile"> This Field is required. </span>
-        </div>  
-        <form enctype="multipart/form-data">
-          <fieldset>
-            <div class="form-group">
-              <input #inputFileElement type="file" (change)="onUploadFiles($event)" name="files" multiple />
-            </div>
-          </fieldset>
-        </form>
+        <div *ngIf="isAttachment" class="form-group">
+          <label class="form-control-label" for="text">&nbsp;</label>
+          <div *ngIf="checkFormArrayEmpty()" style="text-align: right; color: red">
+            <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredFile"> This Field is required. </span>
+          </div>
+          <form enctype="multipart/form-data">
+            <fieldset>
+              <div class="form-group">
+                <input #inputFileElement type="file" (change)="onUploadFiles($event)" name="files" multiple />
+              </div>
+            </fieldset>
+          </form>
 
-        <div class="form-group" style="padding: 8px !important; overflow-x: auto">
-          <table class="table" formArrayName="docList">
-            <thead>
-              <tr class="bg-primary">
-                <th class="text-center" style="width: 25%">File Name</th>
-                <th class="text-center" style="width: 5%">#</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of docList().controls; last as isLast; let i = index" [formGroupName]="i">
-                <td>
-                  <input
-                    [title]="item.get(['fileName'])!.value"
-                    type="text"
-                    class="col-12 form-control"
-                    placeholder="fileName"
-                    formControlName="fileName"
-                    readonly
-                  />
-                </td>
-                <td style="padding-left: 10px">
-                  <span title="Remove" (click)="removeField(i)">
-                    <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div *ngIf="isSuccess" class="form-group">
-
-        <div>
-          <label for="dateInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Date">Date:</label>
-          <input type="date" readonly
-             formControlName="ccmeetingDate"
-             id="dateInput" 
-             name="dateInput">
-        </div>
-        
-        <div>
-          <label for="timeInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Time">Time:</label>
-          
-          <input type="time" readonly
-            id="fromtime" 
-            name="fromtime"            
-            formControlName="ccfromtime"> 
-
-          <label for="-">&nbsp; - &nbsp; </label>
-
-          <input type="time" readonly
-                  id="totime" 
-                  name="totime"
-                  formControlName="cctotime"> 
-        
-        </div>
-        
-        <input type="text" readonly class="textbox text-height form-control div-padding" 
-          formControlName="cc_location" />
-             
-        <div class="textbox-wrapper div-padding">
-          <jhi-department-component
-            [isReadonly]="true"
-            [departments]="toDepartments"
-          ></jhi-department-component>
+          <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+            <table class="table" formArrayName="docList">
+              <thead>
+                <tr class="bg-primary">
+                  <th class="text-center" style="width: 25%">File Name</th>
+                  <th class="text-center" style="width: 5%">#</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of docList().controls; last as isLast; let i = index" [formGroupName]="i">
+                  <td>
+                    <input
+                      [title]="item.get(['fileName'])!.value"
+                      type="text"
+                      class="col-12 form-control"
+                      placeholder="fileName"
+                      formControlName="fileName"
+                      readonly
+                    />
+                  </td>
+                  <td style="padding-left: 10px">
+                    <span title="Remove" (click)="removeField(i)">
+                      <fa-icon icon="minus" class="fa-icon-theme text-danger"></fa-icon>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="textbox-wrapper div-padding">
-          <jhi-department-component
-            [isReadonly]="true"
-            [departments]="ccDepartments"
-          ></jhi-department-component>
+        <div *ngIf="isSuccess" class="form-group">
+          <div class="row col-12">
+            <label for="ccmeetingDate" class="lbl-width" jhiTranslate="omsApp.meeting.label.Date">Date:</label>
+            <input class="form-control col-2" formControlName="ccmeetingDate" id="ccmeetingDate" name="ccmeetingDate" />
+          </div>
+
+          <div class="row col-12" style="padding-bottom: 3px">
+            <label for="timeInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Time">Time:</label>
+
+            <input type="time" readonly id="fromtime" name="fromtime" formControlName="ccfromtime" />
+
+            <label for="-">&nbsp; - &nbsp; </label>
+
+            <input type="time" readonly id="totime" name="totime" formControlName="cctotime" />
+          </div>
+
+          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_location" />
+
+          <div class="textbox-wrapper div-padding">
+            <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
+          </div>
+
+          <div class="textbox-wrapper div-padding">
+            <jhi-department-component [isReadonly]="true" [departments]="ccDepartments"></jhi-department-component>
+          </div>
+
+          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
+
+          <quill-editor
+            [styles]="{ height: '160px' }"
+            [modules]="{ toolbar: false }"
+            class="quill-readonly"
+            formControlName="cc_body"
+          ></quill-editor>
         </div>
-        
-        <input type="text" readonly class="textbox text-height form-control div-padding" 
-          formControlName="cc_subject" />
-
-        <quill-editor 
-          [styles]="{height: '160px'}" 
-          [modules]   = "{ toolbar: false }"
-          class="quill-readonly"
-        formControlName = "cc_body" ></quill-editor> 
-
-      </div>
-    </div>
-
-    <div class="card-footer">
-      <div *ngIf="isInfo" class="d-flex justify-content-end">
-        <button
-          class="btn btn-primary"
-          type="submit"
-          style="float: right"
-          (click)="goToStep2()"
-          [disabled]="
-          editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required || editForm.get('location')?.errors?.required || editForm.get('subject')?.errors?.required 
-          "
-        >
-          <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
-          <fa-icon icon="forward"></fa-icon>
-        </button>
       </div>
 
-      <div *ngIf="isReceiver" class="d-flex justify-content-between">
-        <button class="btn btn-primary" type="submit" style="float: left" (click)="goToStep1()">
-          <fa-icon icon="backward"></fa-icon>
-          <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back"> Back</span>
-        </button>
+      <div class="card-footer">
+        <div *ngIf="isInfo" class="d-flex justify-content-end">
+          <button
+            class="btn btn-primary"
+            type="submit"
+            style="float: right"
+            (click)="goToStep2()"
+            [disabled]="
+              editForm.get('fromtime')?.errors?.required ||
+              editForm.get('totime')?.errors?.required ||
+              editForm.get('location')?.errors?.required ||
+              editForm.get('subject')?.errors?.required
+            "
+          >
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
+            <fa-icon icon="forward"></fa-icon>
+          </button>
+        </div>
 
-        <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep3()" [disabled]="toDepartments!.length === 0">
-          <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
-          <fa-icon icon="forward"></fa-icon>
-        </button>
+        <div *ngIf="isReceiver" class="d-flex justify-content-between">
+          <button class="btn btn-primary" type="submit" style="float: left" (click)="goToStep1()">
+            <fa-icon icon="backward"></fa-icon>
+            <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back"> Back</span>
+          </button>
+
+          <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep3()" [disabled]="toDepartments!.length === 0">
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
+            <fa-icon icon="forward"></fa-icon>
+          </button>
+        </div>
+
+        <div *ngIf="isAttachment" class="d-flex justify-content-between">
+          <button class="btn btn-primary" type="submit" style="float: left" (click)="goToStep2()">
+            <fa-icon icon="backward"></fa-icon>
+            <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
+          </button>
+
+          <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep4()" [disabled]="checkFormArrayEmpty()">
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
+            <fa-icon icon="forward"></fa-icon>
+          </button>
+        </div>
+
+        <div *ngIf="isSuccess" class="d-flex justify-content-between">
+          <button class="btn btn-primary" type="submit" style="float: left" (click)="goToStep3()">
+            <fa-icon icon="backward"></fa-icon>
+            <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
+          </button>
+
+          <button class="btn btn-primary" type="submit" (click)="save(1)" [disabled]="isSaving">
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Send">Send</span>
+            <fa-icon icon="paper-plane"></fa-icon>
+          </button>
+
+          <button class="btn btn-primary" type="button" style="float: right" [disabled]="isSaving" (click)="save(0)">
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Draft">Draft</span>
+            <fa-icon icon="save"></fa-icon>
+          </button>
+        </div>
       </div>
-
-      <div *ngIf="isAttachment" class="d-flex justify-content-between">
-        <button class="btn btn-primary" type="submit" style="float: left" (click)="goToStep2()">
-          <fa-icon icon="backward"></fa-icon>
-          <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
-        </button>
-
-        <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep4()" [disabled]="checkFormArrayEmpty()">
-          <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
-          <fa-icon icon="forward"></fa-icon>
-        </button>
-
-      </div>
-
-      <div *ngIf="isSuccess" class="d-flex justify-content-between">
-        <button class="btn btn-primary" type="submit" style="float: left" (click)="goToStep3()">
-          <fa-icon icon="backward"></fa-icon>
-          <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
-        </button>
-
-        <button class="btn btn-primary" type="submit" (click)="save(1)" [disabled]="isSaving">
-          <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Send">Send</span>
-          <fa-icon icon="paper-plane"></fa-icon>
-        </button>
-
-        <button class="btn btn-primary" type="button" style="float: right" [disabled]="isSaving" (click)="save(0)">
-          <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Draft">Draft</span>
-          <fa-icon icon="save"></fa-icon>
-        </button>
-      </div>
-     </div>
     </div>
   </div>
 </form>

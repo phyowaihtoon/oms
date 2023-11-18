@@ -1,168 +1,164 @@
 <div class="d-flex justify-content-between margin-top-10">
-    <div class="row">
-      <h5 jhiTranslate="global.menu.inbox.title" style="margin-left: 16px">Inbox</h5>
-      <h5>&nbsp;>>&nbsp;</h5>
-      <h5 jhiTranslate="global.menu.inbox.DocumentDetails">Document Details</h5>
-    </div>
-    <h5>{{ _departmentName }}</h5>
+  <div class="row">
+    <h5 jhiTranslate="global.menu.meeting.title" style="margin-left: 16px">Meeting</h5>
+    <h5>&nbsp;>>&nbsp;</h5>
+    <h5 jhiTranslate="global.menu.meeting.MeetingDetail">Meeting Details</h5>
   </div>
-  
-  <div class="row justify-content-center">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-3">
-            <div *ngIf="isInfo" class="tab-header-select" (click)="showInfo()">
-              <fa-icon icon="angle-down" (click)="showInfo()"></fa-icon>&nbsp;
-              <span jhiTranslate="omsApp.delivery.label.Information"> Information</span>
-            </div>
-  
-            <div *ngIf="!isInfo" class="tab-header" (click)="showInfo()">
-              <fa-icon icon="angle-right" (click)="showInfo()"></fa-icon>&nbsp;
-              <span jhiTranslate="omsApp.delivery.label.Information">Information</span>
-            </div>
-          </div>
-  
-          <div class="col-3">
-            <div class="div-tab" *ngIf="isUploadDetail" class="tab-header-select" (click)="showUploadDetails()">
-              <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;
-              <span jhiTranslate="omsApp.delivery.label.FileUpload">Attached Files</span>
-            </div>
-  
-            <div *ngIf="!isUploadDetail" class="tab-header" (click)="showUploadDetails()">
-              <fa-icon icon="angle-right" (click)="showUploadDetails()"></fa-icon>&nbsp;
-              <span jhiTranslate="omsApp.delivery.label.FileUpload">Attached Files</span>
-            </div>
-          </div>
-  
-          <div class="col-5">
-            <label jhiTranslate="omsApp.delivery.label.DocStatus" style="font-weight: bold">Status</label>
-            <span style="padding-right: 50px"> {{ _docStatus.description }}</span>
-            <button class="btn btn-primary btn-sm" (click)="markAsReadUnread()" [disabled]="isLoading">
-              <fa-icon icon="envelope"></fa-icon>
-              <span class="d-none d-md-inline">{{ _docStatus.actionLabel }}</span>
-            </button>
-          </div>
+  <h5>{{ _departmentName }}</h5>
+</div>
 
-          <div class="col-1">
-            <div class="justify-content-end">
-              <span class="close" style="cursor: pointer; padding-right: 5px" (click)="close()">&times;</span>
-            </div>
+<div class="row justify-content-center">
+  <div class="card">
+    <div class="row delivery-card-header">
+      <div class="col-3">
+        <div *ngIf="isInfo" class="tab-header-select" (click)="showInfo()">
+          <fa-icon icon="angle-down" (click)="showInfo()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.Subject"> Subject</span>
+        </div>
+
+        <div *ngIf="!isInfo" class="tab-header" (click)="showInfo()">
+          <fa-icon icon="angle-right" (click)="showInfo()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.Subject">Subject</span>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <div class="div-tab" *ngIf="isUploadDetail" class="tab-header-select" (click)="showUploadDetails()">
+          <fa-icon icon="angle-down" (click)="showUploadDetails()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.FileUpload">Attached Files</span>
+        </div>
+
+        <div *ngIf="!isUploadDetail" class="tab-header" (click)="showUploadDetails()">
+          <fa-icon icon="angle-right" (click)="showUploadDetails()"></fa-icon>&nbsp;
+          <span jhiTranslate="omsApp.delivery.label.FileUpload">Attached Files</span>
+        </div>
+      </div>
+
+      <div class="col-5" style="padding-top: 3px">
+        <label jhiTranslate="omsApp.delivery.label.DocStatus" style="font-weight: bold">Status</label>
+        <span style="padding-right: 50px"> {{ _docStatus.description }}</span>
+        <button class="btn btn-primary btn-sm" (click)="markAsReadUnread()" [disabled]="isLoading">
+          <fa-icon icon="envelope"></fa-icon>
+          <span class="d-none d-md-inline">{{ _docStatus.actionLabel }}</span>
+        </button>
+      </div>
+
+      <div class="col-1">
+        <span class="close" style="cursor: pointer; padding-right: 5px" (click)="close()">&times;</span>
+      </div>
+    </div>
+
+    <div style="padding-left: 10px; padding-right: 15px; padding-bottom: 5px">
+      <input type="text" readonly class="text-height form-control" value="{{ subject }}" style="height: 2.5em" />
+    </div>
+
+    <div class="delivery-card-body">
+      <div *ngIf="isInfo" class="col-12">
+        <div class="row col-12">
+          <label
+            name="meetingDate"
+            for="meetingDate"
+            class="form-control-label"
+            style="padding-right: 10px"
+            jhiTranslate="omsApp.meeting.label.Date"
+            >Date</label
+          >
+          <input id="meetingDate" name="meetingDate" value="{{ meetingDate }}" style="height: 2.5em" class="textbox form-control col-2" />
+
+          <label
+            name="fromtime"
+            for="fromtime"
+            class="form-control-label"
+            style="padding-left: 10px; padding-right: 10px"
+            jhiTranslate="omsApp.meeting.label.Time"
+            >Time</label
+          >
+          <div>
+            <input type="time" readonly id="fromtime" name="fromtime" value="{{ meetingStartTime }}" />
+
+            <label for="-">&nbsp; - &nbsp; </label>
+
+            <input type="time" readonly id="totime" name="totime" value="{{ meetingEndTime }}" />
           </div>
         </div>
-  
-        <div>
-          <div *ngIf="isInfo" id="search-area" class="col-12">
-            
-            <label name="cc_subject" for="cc_subject" class="form-control-label" 
-                    jhiTranslate="omsApp.meeting.label.Date">Date</label>
-         
-              <input type="date" 
-              id="dateInput" 
-              name="dateInput"
-              value="{{meetingDate}}" 
-              class="textbox text-height form-control div-padding"
-              >   
-           
-            <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.meeting.label.Time">Time</label>
-            <div>    
-                <input type="time" 
-                    id="fromtime" 
-                    name="fromtime"            
-                    value="{{ meetingStartTime }}" > 
-                    <label for="-">&nbsp; - &nbsp; </label>
-                    <input type="time" 
-                    id="totime" 
-                    name="totime"            
-                    value="{{ meetingEndTime }}" > 
-            </div>
-           
 
-            <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.meeting.label.Location">Location</label>
-            <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ location }}" />
-  
-            <!-- XXXXXXXXXXXXXXX -->
- 
-            <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject">Subject</label>
-            <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ subject }}" />
-  
-            <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
-            <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ docNo }}" />
-  
-            <label name="senderDepartment" for="senderDepartment" class="form-control-label" jhiTranslate="omsApp.delivery.label.From"
-              >Doc No.</label>
-            <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ senderDepartment }}" />
-  
-            <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept"
-              >Main Dept.</label
-            >
-            <div class="textbox-wrapper div-padding">
-              <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
-            </div>
-  
-            <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept"
-              >CC Dept.</label
-            >
-            <div class="textbox-wrapper div-padding">
-              <jhi-department-component
-                *ngIf="ccDepartments && ccDepartments.length > 0"
-                [isReadonly]="true"
-                [departments]="ccDepartments"
-              ></jhi-department-component>
-            </div>
-  
-            <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Description</label>
-            <quill-editor
-              *ngIf="bodyDescription && bodyDescription.length > 0"
-              [styles]="{ height: '150px' }"
-              [modules]="{ toolbar: false }"
-              class="quill-readonly"
-              [(ngModel)]="bodyDescription"
-            ></quill-editor>
-          </div>
+        <label name="location" for="location" class="form-control-label" jhiTranslate="omsApp.meeting.label.Location">Location</label>
+        <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ location }}" />
+
+        <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
+        <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ docNo }}" />
+
+        <label name="senderDepartment" for="senderDepartment" class="form-control-label" jhiTranslate="omsApp.delivery.label.From"
+          >Doc No.</label
+        >
+        <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ senderDepartment }}" />
+
+        <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept"
+          >Main Dept.</label
+        >
+        <div class="textbox-wrapper div-padding">
+          <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
         </div>
-  
-        <div>
-          <div *ngIf="isUploadDetail" id="search-area" class="col-12">
-            <div class="table-responsive" style="padding: 8px !important">
-              <table class="table table-striped" aria-describedby="page-heading">
-                <thead>
-                  <tr class="bg-primary">
-                    <th scope="col">
-                      <span jhiTranslate="omsApp.delivery.table.No">No.</span>
-                    </th>
-                    <th scope="col">
-                      <span jhiTranslate="omsApp.delivery.table.FileName">File Name</span>
-                    </th>
-                    <th scope="col" style="text-align: center">
-                      <span jhiTranslate="omsApp.delivery.table.Preview">Preview</span>
-                    </th>
-                    <th scope="col" style="text-align: center">
-                      <span jhiTranslate="omsApp.delivery.table.Download">Download</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let docDetail of attachmentList; let i = index" data-cy="entityTable">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ docDetail.fileName }}</td>
-                    <td style="text-align: center">
-                      <span style="cursor: pointer" (click)="previewFile(docDetail.id, docDetail.fileName)">
-                        <fa-icon icon="eye"></fa-icon>
-                      </span>
-                    </td>
-                    <td style="text-align: center">
-                      <span style="cursor: pointer" (click)="downloadFile(docDetail.id, docDetail.fileName)">
-                        <fa-icon icon="download"></fa-icon>
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+
+        <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept"
+          >CC Dept.</label
+        >
+        <div class="textbox-wrapper div-padding">
+          <jhi-department-component
+            *ngIf="ccDepartments && ccDepartments.length > 0"
+            [isReadonly]="true"
+            [departments]="ccDepartments"
+          ></jhi-department-component>
+        </div>
+
+        <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Description</label>
+        <quill-editor
+          *ngIf="bodyDescription && bodyDescription.length > 0"
+          [styles]="{ height: '150px' }"
+          [modules]="{ toolbar: false }"
+          class="quill-readonly"
+          [(ngModel)]="bodyDescription"
+        ></quill-editor>
+      </div>
+
+      <div *ngIf="isUploadDetail" class="col-12">
+        <div class="table-responsive" style="padding: 8px !important">
+          <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+              <tr class="bg-primary">
+                <th scope="col">
+                  <span jhiTranslate="omsApp.delivery.table.No">No.</span>
+                </th>
+                <th scope="col">
+                  <span jhiTranslate="omsApp.delivery.table.FileName">File Name</span>
+                </th>
+                <th scope="col" style="text-align: center">
+                  <span jhiTranslate="omsApp.delivery.table.Preview">Preview</span>
+                </th>
+                <th scope="col" style="text-align: center">
+                  <span jhiTranslate="omsApp.delivery.table.Download">Download</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let docDetail of attachmentList; let i = index" data-cy="entityTable">
+                <td>{{ i + 1 }}</td>
+                <td>{{ docDetail.fileName }}</td>
+                <td style="text-align: center">
+                  <span style="cursor: pointer" (click)="previewFile(docDetail.id, docDetail.fileName)">
+                    <fa-icon icon="eye"></fa-icon>
+                  </span>
+                </td>
+                <td style="text-align: center">
+                  <span style="cursor: pointer" (click)="downloadFile(docDetail.id, docDetail.fileName)">
+                    <fa-icon icon="download"></fa-icon>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-  
+</div>

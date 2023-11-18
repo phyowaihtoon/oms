@@ -1,8 +1,17 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, Validators, FormArray, FormGroup} from '@angular/forms';
+import { FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
-import { DeliveryMessage, DocumentAttachment, DocumentDelivery, DocumentReceiver, IDeliveryMessage, IDocumentAttachment, IDocumentDelivery, IDocumentReceiver } from '../delivery.model';
+import {
+  DeliveryMessage,
+  DocumentAttachment,
+  DocumentDelivery,
+  DocumentReceiver,
+  IDeliveryMessage,
+  IDocumentAttachment,
+  IDocumentDelivery,
+  IDocumentReceiver,
+} from '../delivery.model';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,42 +19,39 @@ import { finalize } from 'rxjs/operators';
 import { DeliveryService } from '../service/delivery.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
-import { Department, HeadDepartment, IDepartment, IHeadDepartment } from 'app/entities/department/department.model';
+import { IDepartment } from 'app/entities/department/department.model';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { UserAuthorityService } from 'app/login/userauthority.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'jhi-delivery-up  ',
   templateUrl: './delivery-update.component.html',
   styleUrls: ['./delivery-update.component.scss'],
 })
-export class DeliveryUpdateComponent implements OnInit{
-
+export class DeliveryUpdateComponent implements OnInit {
   @ViewChild('inputFileElement') myInputVariable: ElementRef | undefined;
-       
+
   editForm = this.fb.group({
     id: [],
-    docNo:['', [Validators.required]],
-    subject:['', [Validators.required]],
-    msg_body:['', [Validators.required]],
+    docNo: ['', [Validators.required]],
+    subject: ['', [Validators.required]],
+    msg_body: ['', [Validators.required]],
     docList: this.fb.array([]),
     cc_docNo: ['', [Validators.required]],
     cc_body: ['', [Validators.required]],
     cc_subject: ['', [Validators.required]],
-
   });
 
-  
   public progressStep = 1;
   toLabel = 'To:';
   ccLabel = 'Cc:';
   toDepartments?: IDepartment[] = [];
-  ccDepartments?: IDepartment[] = []; 
-  modules = {};  
+  ccDepartments?: IDepartment[] = [];
+  modules = {};
   _departmentName: string | undefined = '';
   _deliveryMessage: IDeliveryMessage | undefined;
-  
+
   public progressItems = [
     { step: 1, title: 'Info' },
     { step: 2, title: 'Receiver' },
@@ -53,7 +59,6 @@ export class DeliveryUpdateComponent implements OnInit{
     { step: 4, title: 'Delivery' },
   ];
 
-  
   _modalRef?: NgbModalRef;
   _tempdocList: File[] = [];
   name = 'Progress Bar';
@@ -62,48 +67,46 @@ export class DeliveryUpdateComponent implements OnInit{
   isReceiver = false;
   isAttachment = false;
   isSuccess = false;
-  public counts = ["Info","Receiver","Attachment","Success"];
+  public counts = ['Info', 'Receiver', 'Attachment', 'Success'];
 
-  public status = "Info"
+  public status = 'Info';
 
   constructor(
     protected fb: FormBuilder,
     protected modalService: NgbModal,
+    private router: Router,
     protected loadSetupService: LoadSetupService,
     protected deliveryService: DeliveryService,
     protected translateService: TranslateService,
     protected userAuthorityService: UserAuthorityService,
-    protected activatedRoute: ActivatedRoute,
+    protected activatedRoute: ActivatedRoute
   ) {
-
-    this.editForm.controls.docNo.valueChanges.subscribe((value) => {
+    this.editForm.controls.docNo.valueChanges.subscribe(value => {
       // Update the targetText control's value
       this.editForm.controls.cc_docNo.setValue(value);
     });
-    this.editForm.controls.subject.valueChanges.subscribe((value) => {
+    this.editForm.controls.subject.valueChanges.subscribe(value => {
       // Update the targetText control's value
       this.editForm.controls.cc_subject.setValue(value);
     });
-    this.editForm.controls.msg_body.valueChanges.subscribe((value) => {
+    this.editForm.controls.msg_body.valueChanges.subscribe(value => {
       // Update the targetText control's value
-      this.editForm.controls.cc_body.setValue(value);      
+      this.editForm.controls.cc_body.setValue(value);
     });
 
     this.modules = {
-      'toolbar': [
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
         ['blockquote', 'code-block'],
 
-         [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-         [{ 'font': [] }],
-         [{ 'align': [] }],
-      ]
-    }  
+        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+        [{ font: [] }],
+        [{ align: [] }],
+      ],
+    };
   }
-  
-  ngOnInit(): void {
 
-    
+  ngOnInit(): void {
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
 
@@ -120,18 +123,12 @@ export class DeliveryUpdateComponent implements OnInit{
     });
 
     this.activatedRoute.data.subscribe(({ delivery }) => {
-
-      console.log("DELIVERY", delivery)
-
       this.updateForm(delivery);
-
     });
-
-
   }
-  // Demo purpose only, Data might come from Api calls/service 
+  // Demo purpose only, Data might come from Api calls/service
 
-  goToStep1(): void{    
+  goToStep1(): void {
     this.progressStep = 1;
     this.isInfo = true;
     this.isReceiver = false;
@@ -139,7 +136,7 @@ export class DeliveryUpdateComponent implements OnInit{
     this.isSuccess = false;
   }
 
-  goToStep2(): void{
+  goToStep2(): void {
     this.progressStep = 2;
     this.isInfo = false;
     this.isReceiver = true;
@@ -147,7 +144,7 @@ export class DeliveryUpdateComponent implements OnInit{
     this.isSuccess = false;
   }
 
-  goToStep3(): void{    
+  goToStep3(): void {
     this.progressStep = 3;
     this.isInfo = false;
     this.isReceiver = false;
@@ -155,7 +152,7 @@ export class DeliveryUpdateComponent implements OnInit{
     this.isSuccess = false;
   }
 
-  goToStep4(): void{    
+  goToStep4(): void {
     this.progressStep = 4;
     this.isInfo = false;
     this.isReceiver = false;
@@ -167,16 +164,13 @@ export class DeliveryUpdateComponent implements OnInit{
     return this.editForm.get('docList') as FormArray;
   }
 
-  checkFormArrayEmpty(): boolean { 
-
-   const formArray = this.editForm.get('docList') as FormArray;
-   if(formArray.length === 0) {
-    return true;
-   }
-   else{
-    return false;
-   }
-
+  checkFormArrayEmpty(): boolean {
+    const formArray = this.editForm.get('docList') as FormArray;
+    if (formArray.length === 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   onToDepartmentChange(event: any): void {
@@ -187,12 +181,12 @@ export class DeliveryUpdateComponent implements OnInit{
     this.ccDepartments = event;
   }
 
-  submit():void{
-    console.log("##### Save #####")
+  submit(): void {
+    console.log('##### Save #####');
   }
 
-   // create new field dynamically
-   newField(filePath: string, fileName: string, fileData?: File): FormGroup {
+  // create new field dynamically
+  newField(filePath: string, fileName: string, fileData?: File): FormGroup {
     return this.fb.group({
       id: [],
       filePath: [filePath, [Validators.required]],
@@ -201,11 +195,11 @@ export class DeliveryUpdateComponent implements OnInit{
     });
   }
 
-   // add new field dynamically
-   addField(filePath: string, fileName: string,  fileData?: File): void {
+  // add new field dynamically
+  addField(filePath: string, fileName: string, fileData?: File): void {
     this.docList().push(this.newField(filePath, fileName, fileData));
   }
-  
+
   removeFieldConfirm(i: number): void {
     this.docList().removeAt(i);
     this.myInputVariable!.nativeElement.value = '';
@@ -215,51 +209,49 @@ export class DeliveryUpdateComponent implements OnInit{
   removeAllField(): void {
     this.docList().clear();
   }
-  
-  removeField(i: number): void {
-      const docId = this.docList().controls[i].get(['id'])!.value;
-      const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
 
-      if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
-        this.removeFieldConfirm(i);
-      } 
+  removeField(i: number): void {
+    const docId = this.docList().controls[i].get(['id'])!.value;
+    const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
+
+    if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
+      this.removeFieldConfirm(i);
     }
-    
-  checkRepositoryURL(inputFileElement: HTMLInputElement): void {   
-      inputFileElement.click();
   }
 
-   // define a function to upload files
-   onUploadFiles(event: Event): void {
+  checkRepositoryURL(inputFileElement: HTMLInputElement): void {
+    inputFileElement.click();
+  }
 
+  // define a function to upload files
+  onUploadFiles(event: Event): void {
     const target = event.target as HTMLInputElement;
 
     for (let i = 0; i <= target.files!.length - 1; i++) {
       const selectedFile = target.files![i];
       this._tempdocList.push(selectedFile);
     }
-    
+
     for (let i = 0; i < this._tempdocList.length; i++) {
       const tempFile = this._tempdocList[i];
-      this.addField("", tempFile.name, tempFile);
+      this.addField('', tempFile.name, tempFile);
     }
 
     this._tempdocList = [];
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  save(deliveryStatus: number): void {   
+  save(deliveryStatus: number): void {
     this.showLoading('Saving Documents in Draft');
     this.isSaving = true;
     this.showLoading('Saving and Uploading Documents');
-    
+
     const formData = new FormData();
     const attacheddocList = [];
     const documentDelivery = this.createFrom(deliveryStatus);
-    const docList = documentDelivery.attachmentList ?? [];    
-    
-    if (docList.length > 0) {
+    const docList = documentDelivery.attachmentList ?? [];
 
+    if (docList.length > 0) {
       for (const dmsDoc of docList) {
         const docDetailID = dmsDoc.id ?? undefined;
         if (docDetailID === undefined && dmsDoc.fileData !== undefined) {
@@ -272,9 +264,9 @@ export class DeliveryUpdateComponent implements OnInit{
             dmsDoc.fileName = editedFileName;
           }
           const docDetailInfo = editedFileName;
-            // ?.concat('@')
-           // .concat(dmsDoc.filePath ?? '')
-           // .concat('@');
+          // ?.concat('@')
+          // .concat(dmsDoc.filePath ?? '')
+          // .concat('@');
           formData.append('files', dmsDoc.fileData, docDetailInfo);
         }
         delete dmsDoc['fileData'];
@@ -289,7 +281,7 @@ export class DeliveryUpdateComponent implements OnInit{
       this.subscribeToSaveResponse(this.deliveryService.save(formData));
     }
 
-  // this.subscribeToSaveResponse(this.deliveryService.save(formData));
+    // this.subscribeToSaveResponse(this.deliveryService.save(formData));
   }
 
   showLoading(loadingMessage?: string): void {
@@ -298,18 +290,20 @@ export class DeliveryUpdateComponent implements OnInit{
     this.hideLoading();
   }
 
-  
   showAlertMessage(msg1: string, msg2?: string): void {
     const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
     modalRef.componentInstance.code = msg1;
     modalRef.componentInstance.message = msg2;
+    modalRef.componentInstance.successMessage.subscribe((confirmed: string) => {
+      if (confirmed && confirmed === ResponseCode.SUCCESS) {
+        this.router.navigate(['']);
+      }
+    });
   }
 
   hideLoading(): void {
     this._modalRef?.close();
   }
-
- 
 
   protected createFrom(deliveryStatus: number): IDeliveryMessage {
     return {
@@ -321,10 +315,7 @@ export class DeliveryUpdateComponent implements OnInit{
     };
   }
 
-
-
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IReplyMessage>>): void {
-    
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccess(res),
       () => this.onSaveError()
@@ -338,18 +329,15 @@ export class DeliveryUpdateComponent implements OnInit{
       if (replyMessage.code === ResponseCode.SUCCESS) {
         this.editForm.get(['id'])?.setValue(replyMessage.data.id);
 
-        this.removeAllField();        
+        this.removeAllField();
         this.updateForm(replyMessage.data);
         const replyCode = replyMessage.code;
-        const replyMsg = replyMessage.message;        
+        const replyMsg = replyMessage.message;
         this.showAlertMessage(replyCode, replyMsg);
-
       } else {
-
         const replyCode = replyMessage.code;
-        const replyMsg = replyMessage.message;        
+        const replyMsg = replyMessage.message;
         this.showAlertMessage(replyCode, replyMsg);
-        
       }
     } else {
       this.onSaveError();
@@ -362,82 +350,79 @@ export class DeliveryUpdateComponent implements OnInit{
     this.showAlertMessage(replyCode, replyMsg);
   }
 
-    protected onSaveFinalize(): void {
-      this.isSaving = false;
-      this.hideLoading();
-    }
+  protected onSaveFinalize(): void {
+    this.isSaving = false;
+    this.hideLoading();
+  }
 
-    protected createFormDocDeli(deliveryStatusPara: number): IDocumentDelivery {
-      return {
-        ...new DocumentDelivery(),
-  
-        id: this.editForm.get(['id'])!.value,
-        referenceNo: this.editForm.get(['docNo'])!.value,
-        subject: this.editForm.get(['subject'])!.value,
-        description: this.editForm.get(['msg_body'])!.value,
-        deliveryStatus: deliveryStatusPara,
-        status: 1,
-        delFlag: 'N',
-        sender:  undefined,
-      };
-    }
-  
-    protected createFormReceiverList(): IDocumentReceiver[] {
-      const receiverList: IDocumentReceiver[] = [];
+  protected createFormDocDeli(deliveryStatusPara: number): IDocumentDelivery {
+    return {
+      ...new DocumentDelivery(),
 
-      this.toDepartments?.forEach((value, index) => {
-        receiverList.push(this.createReceiverListDetail(1, value)); 
-      });
+      id: this.editForm.get(['id'])!.value,
+      referenceNo: this.editForm.get(['docNo'])!.value,
+      subject: this.editForm.get(['subject'])!.value,
+      description: this.editForm.get(['msg_body'])!.value,
+      deliveryStatus: deliveryStatusPara,
+      status: 1,
+      delFlag: 'N',
+      sender: undefined,
+    };
+  }
 
-      this.ccDepartments?.forEach((value, index) => {
-        receiverList.push(this.createReceiverListDetail(2, value)); 
-      });
+  protected createFormReceiverList(): IDocumentReceiver[] {
+    const receiverList: IDocumentReceiver[] = [];
 
-      return receiverList;
-    }
-    
-    protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IDocumentReceiver {
-      return {
-        ...new DocumentReceiver(),
-        id: undefined,
-        receiverType: receiver_Type,
-        status: 0,
-        delFlag: 'N',
-        receiver: iDepartment,
-      };
-    }
-   
+    this.toDepartments?.forEach((value, index) => {
+      receiverList.push(this.createReceiverListDetail(1, value));
+    });
 
-    protected createFormdocList(): IDocumentAttachment[] {
-      const fieldList: IDocumentAttachment[] = [];
-      this.docList().controls.forEach(data => {
-        fieldList.push(this.createdocListDetail(data));
-      });
-      return fieldList;
-    }
-  
-    protected createdocListDetail(data: any): IDocumentAttachment {
-      return {
-        ...new DocumentAttachment(),
-        id: data.get(['id'])!.value,
-        filePath: data.get(['filePath'])!.value,
-        fileName: data.get(['fileName'])!.value,
-        delFlag: 'N',
-        fileData: data.get(['fileData'])!.value,
-      };
-    }
+    this.ccDepartments?.forEach((value, index) => {
+      receiverList.push(this.createReceiverListDetail(2, value));
+    });
 
-    
+    return receiverList;
+  }
+
+  protected createReceiverListDetail(receiver_Type: number, iDepartment: IDepartment): IDocumentReceiver {
+    return {
+      ...new DocumentReceiver(),
+      id: undefined,
+      receiverType: receiver_Type,
+      status: 0,
+      delFlag: 'N',
+      receiver: iDepartment,
+    };
+  }
+
+  protected createFormdocList(): IDocumentAttachment[] {
+    const fieldList: IDocumentAttachment[] = [];
+    this.docList().controls.forEach(data => {
+      fieldList.push(this.createdocListDetail(data));
+    });
+    return fieldList;
+  }
+
+  protected createdocListDetail(data: any): IDocumentAttachment {
+    return {
+      ...new DocumentAttachment(),
+      id: data.get(['id'])!.value,
+      filePath: data.get(['filePath'])!.value,
+      fileName: data.get(['fileName'])!.value,
+      delFlag: 'N',
+      fileData: data.get(['fileData'])!.value,
+    };
+  }
+
   protected updateForm(deliveryMessage: IDeliveryMessage): void {
     this.updateDocDelivery(deliveryMessage.documentDelivery!);
     this.updateReceiverList(deliveryMessage.receiverList!);
-    this.editForm.patchValue({      
+    this.editForm.patchValue({
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
     });
   }
 
-
-  protected updateDocDelivery(docDelivery: IDocumentDelivery):void{
+  protected updateDocDelivery(docDelivery: IDocumentDelivery): void {
     this.editForm.patchValue({
       id: docDelivery.id,
       docNo: docDelivery.referenceNo,
@@ -448,33 +433,31 @@ export class DeliveryUpdateComponent implements OnInit{
 
   protected updateDocDetails(docList: IDocumentAttachment[] | undefined): void {
     let index = 0;
-    docList?.forEach(data => { 
+    docList?.forEach(data => {
       this.addField('', '');
       this.docList().controls[index].get(['id'])!.setValue(data.id);
       this.docList().controls[index].get(['fileName'])!.setValue(data.fileName);
       this.docList().controls[index].get(['filePath'])!.setValue(data.filePath);
-     index = index + 1;
+      index = index + 1;
     });
   }
 
-  protected updateReceiverList(receiverList: IDocumentReceiver[]): void{
-
-    console.log("ReceiverList 1 : " , receiverList);
+  protected updateReceiverList(receiverList: IDocumentReceiver[]): void {
+    console.log('ReceiverList 1 : ', receiverList);
 
     this.toDepartments = [];
     this.ccDepartments = [];
 
-    console.log("ReceiverList 2 : " , receiverList);
+    console.log('ReceiverList 2 : ', receiverList);
 
     receiverList.forEach((value, index) => {
-      if(value.receiverType === 1){
-        this.toDepartments?.push(value.receiver!) ;
-      }else{
-        this.ccDepartments?.push(value.receiver!) ;
+      if (value.receiverType === 1) {
+        this.toDepartments?.push(value.receiver!);
+      } else {
+        this.ccDepartments?.push(value.receiver!);
       }
     });
 
-    
-    console.log("ReceiverList 3 : " , receiverList);
+    console.log('ReceiverList 3 : ', receiverList);
   }
 }

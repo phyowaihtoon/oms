@@ -27,15 +27,19 @@ export class MeetingService {
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
-  update(formData: FormData, id: number): Observable<HttpResponse<IReplyMessage>> {
-    return this.http.put<IReplyMessage>(`${this.resourceUrl}/${id}`, formData, {
-      observe: 'response',
-    });
+  update(formData: FormData, message: IMeetingMessage, id: number): Observable<HttpResponse<IReplyMessage>> {
+    if (message.meetingDelivery) {
+      const meetingDelivery = this.convertDateFromClient(message.meetingDelivery);
+      message.meetingDelivery = meetingDelivery;
+      formData.append('meeting', JSON.stringify(message));
+    }
+    return this.http.put<IReplyMessage>(`${this.resourceUrl}/${id}`, formData, { observe: 'response' });
   }
 
   find(id: number): Observable<EntityResponseType> {
     return this.http
-    .get<IMeetingMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+      .get<IMeetingMessage>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   findAllReceived(req?: any): Observable<EntityArrayResponseType> {
@@ -60,7 +64,9 @@ export class MeetingService {
   }
 
   getScheduledMeetingList(): Observable<EntityArrayResponseType> {
-    return this.http.get<IMeetingDelivery[]>(`${this.resourceUrl}/scheduled`, { observe: 'response' });
+    return this.http
+      .get<IMeetingDelivery[]>(`${this.resourceUrl}/scheduled`, { observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   getPreviewData(attachmentId: number): Observable<BlobType> {
@@ -98,8 +104,21 @@ export class MeetingService {
     if (res.body) {
       res.body.forEach((meetingDelivery: IMeetingDelivery) => {
         (meetingDelivery.sentDate = meetingDelivery.sentDate ? dayjs(meetingDelivery.sentDate) : undefined),
+          (meetingDelivery.startDate = meetingDelivery.startDate ? dayjs(meetingDelivery.startDate) : undefined),
+          (meetingDelivery.endDate = meetingDelivery.endDate ? dayjs(meetingDelivery.endDate) : undefined),
           (meetingDelivery.createdDate = meetingDelivery.createdDate ? dayjs(meetingDelivery.createdDate) : undefined);
       });
+    }
+    return res;
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      if (res.body.meetingDelivery) {
+        res.body.meetingDelivery.sentDate = res.body.meetingDelivery.sentDate ? dayjs(res.body.meetingDelivery.sentDate) : undefined;
+        res.body.meetingDelivery.startDate = res.body.meetingDelivery.startDate ? dayjs(res.body.meetingDelivery.startDate) : undefined;
+        res.body.meetingDelivery.endDate = res.body.meetingDelivery.endDate ? dayjs(res.body.meetingDelivery.endDate) : undefined;
+      }
     }
     return res;
   }
