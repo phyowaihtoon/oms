@@ -100,16 +100,19 @@
           <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
         </div>
 
-        <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept"
+        <div 
+          *ngIf="ccDepartments && ccDepartments.length > 0">
+          <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept"
           >CC Dept.</label
-        >
-        <div class="textbox-wrapper div-padding">
-          <jhi-department-component
-            *ngIf="ccDepartments && ccDepartments.length > 0"
-            [isReadonly]="true"
-            [departments]="ccDepartments"
-          ></jhi-department-component>
+          >
+          <div class="textbox-wrapper div-padding">
+            <jhi-department-component
+              [isReadonly]="true"
+              [departments]="ccDepartments"
+            ></jhi-department-component>
+          </div>
         </div>
+        
 
         <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Description</label>
         <quill-editor

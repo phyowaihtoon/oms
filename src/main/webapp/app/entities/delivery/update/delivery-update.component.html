@@ -141,13 +141,17 @@
             [departments]="toDepartments"
           ></jhi-department-component>
         </div>
-        <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept" >CC Dept.</label>
-        <div class="textbox-wrapper div-padding">
-          <jhi-department-component
-            [isReadonly]="true"
-            [departments]="ccDepartments"
-          ></jhi-department-component>
+
+        <div *ngIf="ccDepartments && ccDepartments.length > 0">
+          <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept" >CC Dept.</label>
+          <div class="textbox-wrapper div-padding">
+            <jhi-department-component
+              [isReadonly]="true"
+              [departments]="ccDepartments"
+            ></jhi-department-component>
+          </div>
         </div>
+
         <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject" >Sub.</label>
         <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
         <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body" >Bod.</label>
