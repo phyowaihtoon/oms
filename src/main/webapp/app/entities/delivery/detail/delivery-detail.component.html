@@ -7,7 +7,7 @@
   <h5>{{ _departmentName }}</h5>
 </div>
 
-<div class="row justify-content-center">
+<div class="row justify-content-center margin-top-10">
   <div class="card">
     <div class="row delivery-card-header">
       <div class="col-3">
@@ -91,13 +91,14 @@
         </div>
 
         <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Description</label>
+
         <quill-editor
           *ngIf="bodyDescription && bodyDescription.length > 0"
-          [styles]="{ height: '150px' }"
           [modules]="{ toolbar: false }"
           class="quill-readonly"
           [(ngModel)]="bodyDescription"
         ></quill-editor>
+        <!-- <div  class="text-div" [innerHTML]="bodyDescription"></div> -->
       </div>
 
       <div *ngIf="isUploadDetail" class="col-12">

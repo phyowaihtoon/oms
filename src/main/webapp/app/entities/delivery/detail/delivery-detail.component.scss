@@ -1,5 +1,5 @@
 .card {
-  width: 70%;
+  width: 90%;
   height: 80vh; //auto; //
   margin-top: 10px;
   margin-bottom: 10px;
@@ -33,6 +33,12 @@
   pointer-events: none; /* Disable pointer events to prevent interaction */
   cursor: not-allowed; /* Change the cursor to not-allowed to indicate it's not editable */
   opacity: 0.7; /* Optionally reduce opacity to further indicate readonly */
+}
+
+:host ::ng-deep .quill-readonly .ql-container {
+  background-color: #eee;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
 }
 
 .div-padding {
@@ -69,4 +75,15 @@ h6 {
   border-radius: 5px;
   height: 40px;
   cursor: pointer;
+}
+
+.text-div {
+  display: block;
+  background-color: #eee;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  opacity: 1;
+  padding: 0rem 0.75rem;
+  //font-size: 0.75rem;
+  //font-weight: 400;
 }
