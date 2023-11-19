@@ -1,15 +1,15 @@
-body{
-  font-size:1em;
-   height: 100%;
+body {
+  font-size: 1em;
+  height: 100%;
 }
 
 h3 {
   font-family: Lato;
   text-align: center;
-  color:	#0080ff;
+  color: #0080ff;
 }
 
-.circles{
+.circles {
   height: 0.938em;
   width: 0.938em;
   border: 0.188em solid #000;
@@ -17,108 +17,108 @@ h3 {
   display: inline-block;
 }
 
-.active{
-    background-color:#ffa500;
+.active {
+  background-color: #ffa500;
 }
 
-.circle-desc-active{
-font-weight: bold;
+.circle-desc-active {
+  font-weight: bold;
 }
 
-.bar{
+.bar {
   width: 16%;
   height: 0.063em;
-  margin-bottom:0.469em;
+  margin-bottom: 0.469em;
   border: 0.031em solid #000;
-  color:#000;
-  background-color:#000;
+  color: #000;
+  background-color: #000;
   display: inline-block;
-  text-align:center;
-  margin:"0 auto";
+  text-align: center;
+  margin: '0 auto';
 }
 
-.container{
-  min-width:320px;
-  margin: "0px auto";
+.container {
+  min-width: 320px;
+  margin: '0px auto';
   text-align: center;
 }
 
-.circle-desc{
- position: absolute;
- top:1.000em;
- font-size: 1.125em;
- width: auto;
- max-width:9.375em;
- margin-left:-0.750em;
+.circle-desc {
+  position: absolute;
+  top: 1em;
+  font-size: 1.125em;
+  width: auto;
+  max-width: 9.375em;
+  margin-left: -0.75em;
 }
 
-@media only screen and (max-width: 320px){
-   body {
-     font-size:20%
+@media only screen and (max-width: 320px) {
+  body {
+    font-size: 20%;
   }
-} 
+}
 
 /*extra small devices*/
-@media only screen and (max-width: 600px){
-   body {
-     font-size:40%
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 40%;
   }
-} 
+}
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-   body {
-     font-size:60%
+  body {
+    font-size: 60%;
   }
-} 
+}
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
   body {
-     font-size:80%
+    font-size: 80%;
   }
-} 
+}
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
   body {
-     font-size:100%
+    font-size: 100%;
   }
-} 
+}
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
-   body {
-     font-size:120%
+  body {
+    font-size: 120%;
   }
 }
 
-#info{
+#info {
   padding-top: 3%;
   padding-left: 3%;
 }
-#receiver{
+#receiver {
   padding-top: 3%;
   padding-left: 3%;
 }
-#attachment{
+#attachment {
   padding-top: 3%;
   padding-left: 3%;
 }
-#success{
+#success {
   padding-top: 3%;
   padding-left: 3%;
 }
 
-.div-padding{
+.div-padding {
   margin-bottom: 10px;
 }
 
-.btn-text-padding-right{
+.btn-text-padding-right {
   padding-right: 2em;
 }
 
-.btn-text-padding-left{
+.btn-text-padding-left {
   padding-left: 2em;
 }
 
@@ -131,7 +131,7 @@ font-weight: bold;
 .textbox {
   color: black;
 
- /*  padding-right: 50px; Adjust this value based on your button width */
+  /*  padding-right: 50px; Adjust this value based on your button width */
 }
 
 .textbox-button {
@@ -144,23 +144,22 @@ font-weight: bold;
   color: white;
 }
 
-.text-height{
+.text-height {
   height: 3em;
 }
 
-
 .card {
-width: 80%;
-height: 80vh;
-margin-top: 10px;
-margin-bottom: 10px;
-min-height: 450px;
-// background: linear-gradient(to top, rgba(57, 144, 144, 0.5) 0%, rgb(6 15 45) 100%);
-//background: linear-gradient(to top, rgb(223 227 227 / 50%) 90%, #f5f9fa 100%);
-background-color: #ffffff;
-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
--moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
--webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  height: 80vh;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-height: 450px;
+  // background: linear-gradient(to top, rgba(57, 144, 144, 0.5) 0%, rgb(6 15 45) 100%);
+  //background: linear-gradient(to top, rgb(223 227 227 / 50%) 90%, #f5f9fa 100%);
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .card-header-title {
@@ -168,96 +167,95 @@ box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   min-height: 40px;
   padding: 8px 16px 0px 16px !important;
   border-bottom: none;
- }
- 
+}
+
 .card-header {
-background-color: #ffffff;
-min-height: 70px;
-padding: 8px 16px 0px 16px !important;
-border-bottom: none;
+  background-color: #ffffff;
+  min-height: 70px;
+  padding: 8px 16px 0px 16px !important;
+  border-bottom: none;
 }
 
 .card-body {
-background-color: #ffffff;
-padding: 10px 32px 10px 32px !important;
-overflow-y: auto;
+  background-color: #ffffff;
+  padding: 10px 32px 10px 32px !important;
+  overflow-y: auto;
 }
 .card-footer {
-background-color: #ffffff;
-min-height: 40px;
-padding: 0px 32px 0px 32px !important;
-border-top: none;
+  background-color: #ffffff;
+  min-height: 40px;
+  padding: 0px 32px 0px 32px !important;
+  border-top: none;
 }
 
 .main-container {
-width: 100%;
-height: auto;
-display: flex;
-align-items: center;
-flex-direction: column;
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 // step progress bar
 .progressbar {
-width: 50%;
-position: relative;
-display: flex;
-justify-content: space-between;
-counter-reset: step;
+  width: 50%;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  counter-reset: step;
 }
 
 .progressbar::before,
 .progress {
-content: '';
-position: absolute;
-top: 50%;
-height: 4px;
-width: 100%;
-background-color: #dcdcdc;
-//background-color: red;
-transform: translateY(-50%);
-//z-index: -1;
+  content: '';
+  position: absolute;
+  top: 50%;
+  height: 4px;
+  width: 100%;
+  background-color: #dcdcdc;
+  //background-color: red;
+  transform: translateY(-50%);
+  //z-index: -1;
 }
 
 .progress {
-background-color: #063a8e;
-width: 0%;
+  background-color: #063a8e;
+  width: 0%;
 }
 
 .progress-step {
-width: 35px;
-height: 35px;
-background-color: #dcdcdc;
-//background-color: black;
-border-radius: 50%;
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1;
+  width: 35px;
+  height: 35px;
+  background-color: #dcdcdc;
+  //background-color: black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
 }
 
 .progress-step::before {
-counter-increment: step;
-content: counter(step);
-//color: green;
+  counter-increment: step;
+  content: counter(step);
+  //color: green;
 }
 
 .progress-step::after {
-content: attr(data-title);
-position: absolute;
-top: calc(100% + 0.5rem);
-font-size: 12px;
-color: #666;
-width: 100px;
-text-align: center;
+  content: attr(data-title);
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  font-size: 12px;
+  color: #666;
+  width: 100px;
+  text-align: center;
 }
 
 .progress-step-active {
-//background-color: var(--primary-color);
-background-color: #063a8e;
-color: #eeeeee !important;
+  //background-color: var(--primary-color);
+  background-color: #063a8e;
+  color: #eeeeee !important;
 }
-
 
 .quill-readonly {
   background-color: #f2f2f2; /* Set a background color to indicate readonly */
@@ -267,7 +265,7 @@ color: #eeeeee !important;
 }
 
 /* Style for date input */
-input[type="date"] {
+input[type='date'] {
   padding: 4px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -276,12 +274,12 @@ input[type="date"] {
   transition: border-color 0.2s;
 }
 
-input[type="date"]:hover {
+input[type='date']:hover {
   border-color: #555;
 }
 
 /* Style for time input */
-input[type="time"] {
+input[type='time'] {
   padding: 4px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -290,28 +288,27 @@ input[type="time"] {
   transition: border-color 0.2s;
 }
 
-input[type="time"]:hover {
+input[type='time']:hover {
   border-color: #555;
 }
 
-.lbl-width{
+.lbl-width {
   width: 100px;
 }
 
-
 .quill-readonly {
   // background-color: #eeeeee; /* Set a background color to indicate readonly */
-   pointer-events: none; /* Disable pointer events to prevent interaction */
-   cursor: not-allowed; /* Change the cursor to not-allowed to indicate it's not editable */
-   opacity: 0.7; /* Optionally reduce opacity to further indicate readonly */
-   .ql-container{
-       .ql-editor{
-         background-color: #eeeeee;
-       }
-   }
- } 
- 
-.validate-span{
+  pointer-events: none; /* Disable pointer events to prevent interaction */
+  cursor: not-allowed; /* Change the cursor to not-allowed to indicate it's not editable */
+  opacity: 0.7; /* Optionally reduce opacity to further indicate readonly */
+  .ql-container {
+    .ql-editor {
+      background-color: #eeeeee;
+    }
+  }
+}
+
+.validate-span {
   height: 1.8em;
   display: block;
 }
