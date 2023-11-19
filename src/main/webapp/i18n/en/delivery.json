@@ -12,6 +12,10 @@
         "RequiredMainDept": "Please choose at least one department.",
         "RequiredFile": "Please choose at least one attachment"
       },
+      "deleted": "Document Mapping is successfully deleted",
+      "delete": {
+        "question": "Are you sure you want to delete this document : {{ id }}?"
+      },
       "label": {
         "DocNo": "Document No.",
         "Subject": "Subject:",

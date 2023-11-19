@@ -23,6 +23,7 @@ import { IDepartment } from 'app/entities/department/department.model';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog/document-delete-dialog.component';
 
 @Component({
   selector: 'jhi-delivery-up  ',
@@ -211,11 +212,21 @@ export class DeliveryUpdateComponent implements OnInit {
   }
 
   removeField(i: number): void {
+
     const docId = this.docList().controls[i].get(['id'])!.value;
-    const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
+    const docFileName = this.docList().controls[i].get(['fileName'])!.value;
 
     if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
       this.removeFieldConfirm(i);
+    }else{
+      const dmsDocument = { ...new DocumentAttachment(), id: docId, fileName: docFileName };
+      const modalRef = this.modalService.open(DocumentDeleteDialogComponent, { size: 'md', backdrop: 'static' });
+      modalRef.componentInstance.dmsDocument = dmsDocument;
+      modalRef.componentInstance.confirmMessage.subscribe((confirmed: string) => {
+        if (confirmed && confirmed === 'YES') {
+          this.subscribeToSaveResponseCheckFileexist(this.deliveryService.deleteAttachment(docId), i);
+        }
+      });
     }
   }
 
@@ -304,6 +315,38 @@ export class DeliveryUpdateComponent implements OnInit {
   hideLoading(): void {
     this._modalRef?.close();
   }
+
+  
+  protected subscribeToSaveResponseCheckFileexist(result: Observable<HttpResponse<IReplyMessage>>, i: number): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessCheckFileexist(res, i),
+      () => this.onSaveErrorCheckFileexist()
+    );
+  }
+
+  protected onSaveSuccessCheckFileexist(result: HttpResponse<IReplyMessage>, i: number): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.ERROR_E00) {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        // this.showAlertMessage(replyCode, replyMsg);
+        this.removeFieldConfirm(i);
+      } else {
+        this.removeFieldConfirm(i);
+      }
+    } else {
+      this.onSaveErrorCheckFileexist();
+    }
+  }
+
+  protected onSaveErrorCheckFileexist(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
+  }
+  
 
   protected createFrom(deliveryStatus: number): IDeliveryMessage {
     return {

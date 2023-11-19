@@ -24,6 +24,7 @@ import { MeetingService } from '../service/meeting.service';
 import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
+import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog/document-delete-dialog.component';
 @Component({
   selector: 'jhi-meeting-update',
   templateUrl: './meeting-update.component.html',
@@ -35,7 +36,7 @@ export class MeetingUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     location: ['', [Validators.required]],
-    referenceno: [''],
+    referenceno: ['', [Validators.required]],
     fromtime: [null, [Validators.required]],
     totime: [null, [Validators.required]],
     meetingDate: [null, [Validators.required]],
@@ -45,6 +46,7 @@ export class MeetingUpdateComponent implements OnInit {
     cDeptList: [],
     docList: this.fb.array([]),
     cc_location: ['', [Validators.required]],
+    cc_referenceno: ['', [Validators.required]],
     cc_body: ['', [Validators.required]],
     cc_subject: ['', [Validators.required]],
     ccfromtime: [null, [Validators.required]],
@@ -89,6 +91,12 @@ export class MeetingUpdateComponent implements OnInit {
     protected translateService: TranslateService,
     protected userAuthorityService: UserAuthorityService
   ) {
+
+    
+    this.editForm.controls.referenceno.valueChanges.subscribe(value => {
+      //   // Update the targetText control's value
+      this.editForm.controls.cc_referenceno.setValue(value);
+    });
     this.editForm.controls.location.valueChanges.subscribe(value => {
       //   // Update the targetText control's value
       this.editForm.controls.cc_location.setValue(value);
@@ -255,12 +263,19 @@ export class MeetingUpdateComponent implements OnInit {
 
   removeField(i: number): void {
     const docId = this.docList().controls[i].get(['id'])!.value;
-    const dmsFileName = this.docList().controls[i].get(['fileName'])!.value;
+    const docFileName = this.docList().controls[i].get(['fileName'])!.value;
 
     if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
       this.removeFieldConfirm(i);
-    } else {
-      console.log('xxx');
+    } else{
+      const dmsDocument = { ...new MeetingAttachment(), id: docId, fileName: docFileName };
+      const modalRef = this.modalService.open(DocumentDeleteDialogComponent, { size: 'md', backdrop: 'static' });
+      modalRef.componentInstance.dmsDocument = dmsDocument;
+      modalRef.componentInstance.confirmMessage.subscribe((confirmed: string) => {
+        if (confirmed && confirmed === 'YES') {
+          this.subscribeToSaveResponseCheckFileexist(this.meetingService.deleteAttachment(docId), i);
+        }
+      });
     }
   }
 
@@ -352,6 +367,36 @@ export class MeetingUpdateComponent implements OnInit {
     this._modalRef?.close();
   }
 
+  protected subscribeToSaveResponseCheckFileexist(result: Observable<HttpResponse<IReplyMessage>>, i: number): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
+      res => this.onSaveSuccessCheckFileexist(res, i),
+      () => this.onSaveErrorCheckFileexist()
+    );
+  }
+
+  protected onSaveSuccessCheckFileexist(result: HttpResponse<IReplyMessage>, i: number): void {
+    const replyMessage: IReplyMessage | null = result.body;
+
+    if (replyMessage !== null) {
+      if (replyMessage.code === ResponseCode.ERROR_E00) {
+        const replyCode = replyMessage.code;
+        const replyMsg = replyMessage.message;
+        // this.showAlertMessage(replyCode, replyMsg);
+        this.removeFieldConfirm(i);
+      } else {
+        this.removeFieldConfirm(i);
+      }
+    } else {
+      this.onSaveErrorCheckFileexist();
+    }
+  }
+
+  protected onSaveErrorCheckFileexist(): void {
+    const replyCode = ResponseCode.RESPONSE_FAILED_CODE;
+    const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
+    this.showAlertMessage(replyCode, replyMsg);
+  }
+  
   protected createFrom(deliveryStatus: number): IMeetingMessage {
     return {
       ...new MeetingMessage(),

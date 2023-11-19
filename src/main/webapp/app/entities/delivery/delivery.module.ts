@@ -7,6 +7,7 @@ import { DeliveryReceivedComponent } from './received/delivery-received.componen
 import { DeliveryRoutingModule } from './route/delivery-routing.module';
 import { DeliveryDraftComponent } from './draft/delivery-draft.component';
 import { QuillModule } from 'ngx-quill';
+import { DocumentDeleteDialogComponent } from './delete/document-delete-dialog/document-delete-dialog.component';
 
 @NgModule({
   imports: [SharedModule, 
@@ -19,6 +20,7 @@ import { QuillModule } from 'ngx-quill';
     DeliverySentComponent,
     DeliveryReceivedComponent,
     DeliveryDraftComponent,
+    DocumentDeleteDialogComponent,
   ],
 })
 export class DeliveryModule {}
