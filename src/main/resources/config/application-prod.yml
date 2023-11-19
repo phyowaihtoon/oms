@@ -33,9 +33,9 @@ spring:
       enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://desktop-a1nuieg:3306/oms?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: omsuser
-    password: oms@user
+    url: jdbc:mysql://localhost:3306/oms?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: root
+    password: admin@123
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -87,8 +87,8 @@ server:
 ftpserver:
   host: 127.0.0.1
   port: 21
-  username: ftp-user2
-  password: ftp@user2
+  username: ftpuser1
+  password: ftpuser1
 
 # ===================================================================
 # JHipster specific properties

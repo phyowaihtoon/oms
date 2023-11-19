@@ -29,8 +29,11 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,15 +190,26 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     public List<NotificationMessage> getNotification(Long departmentId) {
         List<NotificationMessage> notiList = new ArrayList<NotificationMessage>();
         List<DocumentReceiver> list = documentReceiverRepository.findUnReadMailByRecieverId(departmentId);
+        Set<DocumentDelivery> deliveryList = null;
         for (DocumentReceiver receiver : list) {
-            NotificationMessage notiMessage = new NotificationMessage();
-            DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(receiver.getHeader());
-            notiMessage.setId(deliveryDTO.getId());
-            notiMessage.setReferenceNo(deliveryDTO.getReferenceNo());
-            notiMessage.setSubject(deliveryDTO.getSubject());
-            notiMessage.setSenderName(deliveryDTO.getSender().getDepartmentName());
-            notiList.add(notiMessage);
+            deliveryList = new HashSet<DocumentDelivery>();
+            deliveryList.add(receiver.getHeader());
         }
+
+        if (deliveryList != null) {
+            Iterator<DocumentDelivery> iterator = deliveryList.iterator();
+            while (iterator.hasNext()) {
+                DocumentDelivery documentDelivery = iterator.next();
+                NotificationMessage notiMessage = new NotificationMessage();
+                DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(documentDelivery);
+                notiMessage.setId(deliveryDTO.getId());
+                notiMessage.setReferenceNo(deliveryDTO.getReferenceNo());
+                notiMessage.setSubject(deliveryDTO.getSubject());
+                notiMessage.setSenderName(deliveryDTO.getSender().getDepartmentName());
+                notiList.add(notiMessage);
+            }
+        }
+
         return notiList;
     }
 
