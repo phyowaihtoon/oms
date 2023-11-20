@@ -91,8 +91,6 @@ export class MeetingUpdateComponent implements OnInit {
     protected translateService: TranslateService,
     protected userAuthorityService: UserAuthorityService
   ) {
-
-    
     this.editForm.controls.referenceno.valueChanges.subscribe(value => {
       //   // Update the targetText control's value
       this.editForm.controls.cc_referenceno.setValue(value);
@@ -214,8 +212,6 @@ export class MeetingUpdateComponent implements OnInit {
   }
   checkFormArrayEmpty(): boolean {
     const formArray = this.editForm.get('docList') as FormArray;
-    console.log(formArray.length, 'DocList');
-
     if (formArray.length === 0) {
       return true;
     } else {
@@ -224,16 +220,10 @@ export class MeetingUpdateComponent implements OnInit {
   }
   onToDepartmentChange(event: any): void {
     this.toDepartments = event;
-    console.log(this.toDepartments, 'to Dept');
   }
 
   onCcDepartmentChange(event: any): void {
     this.ccDepartments = event;
-    console.log(this.ccDepartments, 'cc Dept');
-  }
-
-  submit(): void {
-    console.log('##### Save #####');
   }
 
   // create new field dynamically
@@ -267,7 +257,7 @@ export class MeetingUpdateComponent implements OnInit {
 
     if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
       this.removeFieldConfirm(i);
-    } else{
+    } else {
       const dmsDocument = { ...new MeetingAttachment(), id: docId, fileName: docFileName };
       const modalRef = this.modalService.open(DocumentDeleteDialogComponent, { size: 'md', backdrop: 'static' });
       modalRef.componentInstance.dmsDocument = dmsDocument;
@@ -396,7 +386,7 @@ export class MeetingUpdateComponent implements OnInit {
     const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
     this.showAlertMessage(replyCode, replyMsg);
   }
-  
+
   protected createFrom(deliveryStatus: number): IMeetingMessage {
     return {
       ...new MeetingMessage(),

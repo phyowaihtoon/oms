@@ -12,8 +12,6 @@
       <h6 jhiTranslate="home.calendar">Calendar</h6>
       <ngb-datepicker class="date-picker-style" (dateSelect)="onDateSelected($event)" outsideDays="hidden"> </ngb-datepicker>
 
-     
-
       <div class="meeting-card margin-top-30">
         <h4 class="meeting-header" jhiTranslate="home.meeting_title">Metting Invitation</h4>
         <div *ngFor="let data of _meetingList">
@@ -35,7 +33,6 @@
         <h6><span jhiTranslate="home.meeting_draft">Meeting Draft</span> - {{ _draftSummary?.meetingCount }}</h6>
         <h6><span jhiTranslate="home.document_draft">Document Draft</span> - {{ _draftSummary?.deliveryCount }}</h6>
       </div>
-
     </div>
   </div>
 
@@ -66,15 +63,17 @@
                 <th style="width: 20%" jhiTranslate="home.document_no"><span>Document No.</span></th>
                 <th style="width: 30%" jhiTranslate="home.subject"><span>Subject</span></th>
                 <th style="width: 30%" jhiTranslate="home.department"><span>Department</span></th>
-                <th style="width: 20%">#</th>
+                <th style="width: 20%; text-align: center">#</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of _dashboardData1">
                 <td>{{ data.referenceNo }}</td>
-                <td>{{ data.subject }}</td>
+                <td>{{ data.subject ? (data.subject | truncateText: 25) : '' }}</td>
                 <td>{{ data.sender?.departmentName }}</td>
-                <td><a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', data.id, 'view']">View Details</a></td>
+                <td style="text-align: center">
+                  <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', data.id, 'view']">View Details</a>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -83,7 +82,6 @@
 
       <div class="box-footer">
         <div *ngIf="_dashboardData1 && _dashboardData1.length > 0">
-
           <div class="row justify-content-center">
             <jhi-item-count [params]="{ page: page_1, totalItems: totalItems_1, itemsPerPage: itemsPerPage }"></jhi-item-count>
           </div>
@@ -100,8 +98,6 @@
             ></ngb-pagination>
           </div>
         </div>
-
-       
       </div>
     </div>
 
@@ -114,26 +110,25 @@
           <table class="table table-striped">
             <thead>
               <tr class="bg-primary">
-                <!-- jhiTranslate="dmsApp.department.subdepartment" -->
                 <th style="width: 20%" jhiTranslate="home.document_no"><span>Document No.</span></th>
-                <th style="width: 30%" jhiTranslate="home.subject"><span>Subject</span></th>
-                <th style="width: 20%">#</th>
+                <th style="width: 60%" jhiTranslate="home.subject"><span>Subject</span></th>
+                <th style="width: 20%; text-align: center">#</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of _dashboardData2">
                 <td>{{ data.referenceNo }}</td>
                 <td>{{ data.subject }}</td>
-                <td><a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', data.id, 'view']">View Details</a></td>
+                <td style="text-align: center">
+                  <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', data.id, 'view']">View Details</a>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
       <div class="box-footer">
-
         <div *ngIf="_dashboardData2 && _dashboardData2.length > 0">
-
           <div class="row justify-content-center">
             <jhi-item-count [params]="{ page: page_2, totalItems: totalItems_2, itemsPerPage: itemsPerPage }"></jhi-item-count>
           </div>
@@ -148,8 +143,7 @@
               (pageChange)="loadDashboard2($event)"
             ></ngb-pagination>
           </div>
-          </div>
-        
+        </div>
       </div>
     </div>
   </div>

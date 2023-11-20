@@ -15,6 +15,7 @@ import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
 import creatip.oms.service.message.BaseMessage;
+import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -102,10 +103,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         try {
@@ -118,10 +116,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String responseMessage = "Invalid request ," + ex.getMessage();
             log.debug("Message Response : {}", responseMessage);
@@ -129,10 +124,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         if (deliveryMessage != null && deliveryMessage.getMeetingDelivery().getId() != null) {
@@ -144,10 +136,19 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
+        }
+
+        if (deliveryMessage.getMeetingDelivery().getReferenceNo().length() > 50) {
+            String responseMessage = String.format(
+                "Document Number exceeds maximum length 50 [%s]",
+                deliveryMessage.getMeetingDelivery().getReferenceNo()
+            );
+            log.debug("Message Response : {}", responseMessage);
+            result = new ReplyMessage<MeetingMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
         }
 
         try {
@@ -159,10 +160,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ex.getCode());
             result.setMessage(ex.getMessage());
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String errMessage = "Transaction could not be processed. Check details in application logs";
             log.debug("Message Response : {}", errMessage);
@@ -170,10 +168,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(errMessage);
-            return ResponseEntity
-                .created(new URI("/api/meeting/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         String docHeaderId = "";
@@ -189,6 +184,10 @@ public class MeetingDeliveryResource {
             .created(new URI("/api/meeting/" + docHeaderId))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
+    }
+
+    private ResponseEntity<ReplyMessage<MeetingMessage>> replyToClient(ReplyMessage<MeetingMessage> result) {
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
     }
 
     @PutMapping("/meeting/{id}")
@@ -209,7 +208,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
 
         try {
@@ -222,7 +221,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String responseMessage = "Invalid request ," + ex.getMessage();
             log.debug("Message Response : {}", responseMessage);
@@ -230,7 +229,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
 
         if (meetingMessage == null) {
@@ -238,21 +237,21 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
         if (meetingMessage.getMeetingDelivery().getId() == null) {
             String responseMessage = "Bad Request : Invalid Meeting ID is null";
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
         if (!Objects.equals(id, meetingMessage.getMeetingDelivery().getId())) {
             String responseMessage = "Bad Request : Meeting ID does not match.";
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
 
         if (!meetingDeliveryRepository.existsById(id)) {
@@ -260,7 +259,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
 
         String docHeaderId = id.toString();
@@ -274,7 +273,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ex.getCode());
             result.setMessage(ex.getMessage());
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String errMessage = "Transaction could not be processed. Check details in application logs";
             log.debug("Message Response : {}", errMessage);
@@ -282,7 +281,7 @@ public class MeetingDeliveryResource {
             result = new ReplyMessage<MeetingMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(errMessage);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
+            return replyToClient(result);
         }
 
         if (result != null) {

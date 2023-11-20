@@ -182,10 +182,6 @@ export class DeliveryUpdateComponent implements OnInit {
     this.ccDepartments = event;
   }
 
-  submit(): void {
-    console.log('##### Save #####');
-  }
-
   // create new field dynamically
   newField(filePath: string, fileName: string, fileData?: File): FormGroup {
     return this.fb.group({
@@ -212,13 +208,12 @@ export class DeliveryUpdateComponent implements OnInit {
   }
 
   removeField(i: number): void {
-
     const docId = this.docList().controls[i].get(['id'])!.value;
     const docFileName = this.docList().controls[i].get(['fileName'])!.value;
 
     if (this.docList().controls[i].get(['id'])!.value === null || this.docList().controls[i].get(['id'])!.value === undefined) {
       this.removeFieldConfirm(i);
-    }else{
+    } else {
       const dmsDocument = { ...new DocumentAttachment(), id: docId, fileName: docFileName };
       const modalRef = this.modalService.open(DocumentDeleteDialogComponent, { size: 'md', backdrop: 'static' });
       modalRef.componentInstance.dmsDocument = dmsDocument;
@@ -253,9 +248,13 @@ export class DeliveryUpdateComponent implements OnInit {
   }
 
   save(deliveryStatus: number): void {
-    this.showLoading('Saving Documents in Draft');
     this.isSaving = true;
-    this.showLoading('Saving and Uploading Documents');
+    if (deliveryStatus === 0) {
+      this.showLoading('Saving Letter Draft');
+    }
+    if (deliveryStatus === 1) {
+      this.showLoading('Sending Letter');
+    }
 
     const formData = new FormData();
     const attacheddocList = [];
@@ -275,9 +274,6 @@ export class DeliveryUpdateComponent implements OnInit {
             dmsDoc.fileName = editedFileName;
           }
           const docDetailInfo = editedFileName;
-          // ?.concat('@')
-          // .concat(dmsDoc.filePath ?? '')
-          // .concat('@');
           formData.append('files', dmsDoc.fileData, docDetailInfo);
         }
         delete dmsDoc['fileData'];
@@ -291,8 +287,6 @@ export class DeliveryUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.deliveryService.save(formData));
     }
-
-    // this.subscribeToSaveResponse(this.deliveryService.save(formData));
   }
 
   showLoading(loadingMessage?: string): void {
@@ -316,7 +310,6 @@ export class DeliveryUpdateComponent implements OnInit {
     this._modalRef?.close();
   }
 
-  
   protected subscribeToSaveResponseCheckFileexist(result: Observable<HttpResponse<IReplyMessage>>, i: number): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe(
       res => this.onSaveSuccessCheckFileexist(res, i),
@@ -346,7 +339,6 @@ export class DeliveryUpdateComponent implements OnInit {
     const replyMsg = 'Error occured while connecting to server. Please, check network connection with your server.';
     this.showAlertMessage(replyCode, replyMsg);
   }
-  
 
   protected createFrom(deliveryStatus: number): IDeliveryMessage {
     return {
@@ -486,13 +478,8 @@ export class DeliveryUpdateComponent implements OnInit {
   }
 
   protected updateReceiverList(receiverList: IDocumentReceiver[]): void {
-    console.log('ReceiverList 1 : ', receiverList);
-
     this.toDepartments = [];
     this.ccDepartments = [];
-
-    console.log('ReceiverList 2 : ', receiverList);
-
     receiverList.forEach((value, index) => {
       if (value.receiverType === 1) {
         this.toDepartments?.push(value.receiver!);
@@ -500,7 +487,5 @@ export class DeliveryUpdateComponent implements OnInit {
         this.ccDepartments?.push(value.receiver!);
       }
     });
-
-    console.log('ReceiverList 3 : ', receiverList);
   }
 }

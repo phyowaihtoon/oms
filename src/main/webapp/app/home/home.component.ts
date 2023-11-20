@@ -16,7 +16,6 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { Subscription } from 'rxjs';
 import * as dayjs from 'dayjs';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'jhi-home',

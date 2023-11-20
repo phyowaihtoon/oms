@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionStorageService } from 'ngx-webstorage';
@@ -35,7 +35,6 @@ export class NavbarComponent implements OnInit {
     private accountService: AccountService,
     private profileService: ProfileService,
     private userAuthorityService: UserAuthorityService,
-    private ngZone: NgZone,
     private router: Router,
     protected modalService: NgbModal
   ) {
@@ -54,12 +53,12 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(['/login']);
     }
 
-    const interval$ = interval(5000);
-    interval$.subscribe(() => this.getUserNotiCount());
-  }
+    // Initializing Notification Count
+    this.getUserNotiCount();
 
-  showCodeInfo(): void {
-    const userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    // Updating Notification after every 1 minute
+    const interval$ = interval(60000);
+    interval$.subscribe(() => this.getUserNotiCount());
   }
 
   changeLanguage(languageKey: string): void {
@@ -111,14 +110,12 @@ export class NavbarComponent implements OnInit {
   }
 
   getUserNotiCount(): void {
-    console.log('Trying to get Notification Count :');
     if (this.isAuthenticated()) {
       this.userAuthorityService.getUserNotiCount().subscribe(
         (res: HttpResponse<IUserNotification[]>) => {
           if (res.body) {
             this._notificationList = res.body;
             this._notiCount = this._notificationList.length;
-            console.log('Notification Count :', this._notificationList.length);
           }
         },
         error => {

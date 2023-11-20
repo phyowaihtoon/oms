@@ -7,7 +7,7 @@
   <h5>{{ _departmentName }}</h5>
 </div>
 
-<form name="editForm" role="form" novalidate (ngSubmit)="submit()" [formGroup]="editForm" autocomplete="off">
+<form name="editForm" role="form" novalidate [formGroup]="editForm" autocomplete="off">
   <div class="row justify-content-center margin-top-10">
     <div class="card">
       <div class="card-header main-container">
@@ -120,7 +120,7 @@
             class="form-control div-padding text-height"
             name="subject"
             id="subject"
-          />          
+          />
           <quill-editor [styles]="{ height: '150px' }" [modules]="modules" formControlName="body"></quill-editor>
         </div>
 
@@ -189,55 +189,57 @@
         </div>
 
         <div *ngIf="isSuccess" class="form-group">
+          <div class="row col-12">
+            <label for="ccmeetingDate" class="form-control-label" jhiTranslate="omsApp.meeting.label.Date" style="padding-right: 10px"
+              >Date:</label
+            >
+            <input
+              class="form-control col-2"
+              style="height: 2.5em"
+              formControlName="ccmeetingDate"
+              id="ccmeetingDate"
+              name="ccmeetingDate"
+            />
 
-          <div class="row col-12 " >                  
-              <label for="ccmeetingDate" 
-              class="form-control-label" 
-              jhiTranslate="omsApp.meeting.label.Date"
-              style="padding-right: 10px">Date:</label>
-              <input class="form-control col-2" style="height: 2.5em"  formControlName="ccmeetingDate" id="ccmeetingDate" name="ccmeetingDate" />
-          
-              <label for="timeInput" class="form-control-label" jhiTranslate="omsApp.meeting.label.Time" 
-                style="padding-left: 10px; padding-right: 10px">Time:</label>
-    
-                <input type="time" readonly id="fromtime" name="fromtime" formControlName="ccfromtime" />    
-                <label for="-">&nbsp; - &nbsp; </label>    
-                <input type="time" readonly id="totime" name="totime" formControlName="cctotime" />
-                                 
+            <label
+              for="timeInput"
+              class="form-control-label"
+              jhiTranslate="omsApp.meeting.label.Time"
+              style="padding-left: 10px; padding-right: 10px"
+              >Time:</label
+            >
+
+            <input type="time" readonly id="fromtime" name="fromtime" formControlName="ccfromtime" />
+            <label for="-">&nbsp; - &nbsp; </label>
+            <input type="time" readonly id="totime" name="totime" formControlName="cctotime" />
           </div>
 
-          
           <label name="location" for="location" class="form-control-label" jhiTranslate="omsApp.meeting.label.Location">Location</label>
           <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_location" />
 
           <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
-          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_referenceno"/>
+          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_referenceno" />
 
           <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept"
-          >Main Dept.</label>      
+            >Main Dept.</label
+          >
           <div class="textbox-wrapper div-padding">
             <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
           </div>
 
           <div *ngIf="ccDepartments && ccDepartments.length > 0">
-            <label 
-            name="ccDepartments" 
-            for="ccDepartments" 
-            class="form-control-label"             
-            jhiTranslate="omsApp.delivery.label.CDept">CC Dept.</label>
+            <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept"
+              >CC Dept.</label
+            >
             <div class="textbox-wrapper div-padding">
-              <jhi-department-component [isReadonly]="true" 
-              [departments]="ccDepartments"></jhi-department-component>
+              <jhi-department-component [isReadonly]="true" [departments]="ccDepartments"></jhi-department-component>
             </div>
           </div>
-         
 
-          <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject"
-          >subject</label>  
+          <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject">subject</label>
           <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
 
-          <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body"
-          >Body</label>  
+          <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Body</label>
           <quill-editor
             [styles]="{ height: '160px' }"
             [modules]="{ toolbar: false }"

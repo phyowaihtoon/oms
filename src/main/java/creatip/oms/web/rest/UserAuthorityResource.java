@@ -14,6 +14,8 @@ import creatip.oms.service.message.NotificationMessage;
 import creatip.oms.service.message.SysConfigMessage;
 import creatip.oms.service.message.UserAuthorityMessage;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,8 @@ public class UserAuthorityResource {
     private final SysConfigService sysConfigService;
     private final RoleDashboardAccessService roleDashboardAccessService;
     private final DocumentDeliveryService documentDeliveryService;
+
+    private final Logger log = LoggerFactory.getLogger(UserAuthorityResource.class);
 
     public UserAuthorityResource(
         ApplicationUserService applicationUserService,
@@ -78,8 +82,21 @@ public class UserAuthorityResource {
 
     @GetMapping("/noticount")
     public List<NotificationMessage> getUserNotiCount() {
+        log.debug("Request to get Notification");
+
         User loginUser = userService.getUserWithAuthorities().get();
         ApplicationUserDTO appUserDTO = applicationUserService.findOneByUserID(loginUser.getId());
-        return this.documentDeliveryService.getNotification(appUserDTO.getDepartment().getId());
+        if (appUserDTO == null || appUserDTO.getDepartment() == null) {
+            String message = loginUser.getLogin() + " is not linked with any department.";
+            log.debug(message);
+        }
+
+        log.debug("Login User Information: User ID [{}] , Department [{}] ", loginUser.getLogin(), appUserDTO.getDepartment());
+
+        List<NotificationMessage> notiList = this.documentDeliveryService.getNotification(appUserDTO.getDepartment().getId());
+
+        log.debug("Total notification count : {{}}", notiList.size());
+
+        return notiList;
     }
 }

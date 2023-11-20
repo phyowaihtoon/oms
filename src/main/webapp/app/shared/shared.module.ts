@@ -14,6 +14,8 @@ import { ItemCountComponent } from './pagination/item-count.component';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { DepartmentPopupComponent } from 'app/entities/util/departementpopup/department-popup.component';
 import { DepartmentCustomComponent } from 'app/entities/util/departement-custom-component/department-custom.component';
+import { TruncateNumberPipe } from './truncate/truncate-number.pipe';
+import { TruncateTextPipe } from './truncate/truncate-text.pipe';
 
 @NgModule({
   imports: [SharedLibsModule],
@@ -26,6 +28,8 @@ import { DepartmentCustomComponent } from 'app/entities/util/departement-custom-
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TruncateNumberPipe,
+    TruncateTextPipe,
     SortByDirective,
     SortDirective,
     ItemCountComponent,
@@ -43,6 +47,8 @@ import { DepartmentCustomComponent } from 'app/entities/util/departement-custom-
     DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
+    TruncateNumberPipe,
+    TruncateTextPipe,
     SortByDirective,
     SortDirective,
     ItemCountComponent,

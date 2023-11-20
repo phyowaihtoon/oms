@@ -190,24 +190,21 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     public List<NotificationMessage> getNotification(Long departmentId) {
         List<NotificationMessage> notiList = new ArrayList<NotificationMessage>();
         List<DocumentReceiver> list = documentReceiverRepository.findUnReadMailByRecieverId(departmentId);
-        Set<DocumentDelivery> deliveryList = null;
+        Set<DocumentDelivery> deliveryList = new HashSet<DocumentDelivery>();
         for (DocumentReceiver receiver : list) {
-            deliveryList = new HashSet<DocumentDelivery>();
             deliveryList.add(receiver.getHeader());
         }
 
-        if (deliveryList != null) {
-            Iterator<DocumentDelivery> iterator = deliveryList.iterator();
-            while (iterator.hasNext()) {
-                DocumentDelivery documentDelivery = iterator.next();
-                NotificationMessage notiMessage = new NotificationMessage();
-                DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(documentDelivery);
-                notiMessage.setId(deliveryDTO.getId());
-                notiMessage.setReferenceNo(deliveryDTO.getReferenceNo());
-                notiMessage.setSubject(deliveryDTO.getSubject());
-                notiMessage.setSenderName(deliveryDTO.getSender().getDepartmentName());
-                notiList.add(notiMessage);
-            }
+        Iterator<DocumentDelivery> iterator = deliveryList.iterator();
+        while (iterator.hasNext()) {
+            DocumentDelivery documentDelivery = iterator.next();
+            NotificationMessage notiMessage = new NotificationMessage();
+            DocumentDeliveryDTO deliveryDTO = documentDeliveryMapper.toDto(documentDelivery);
+            notiMessage.setId(deliveryDTO.getId());
+            notiMessage.setReferenceNo(deliveryDTO.getReferenceNo());
+            notiMessage.setSubject(deliveryDTO.getSubject());
+            notiMessage.setSenderName(deliveryDTO.getSender().getDepartmentName());
+            notiList.add(notiMessage);
         }
 
         return notiList;
@@ -221,7 +218,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             log.debug("Connected successfully to FTP Server : {}", ftpSession.getHostPort());
 
             Instant currentInstant = Instant.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()); // Adjust to your desired time zone
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault());
             String dateInString = formatter.format(currentInstant);
 
             String deliveryID = "ID" + header.getId();

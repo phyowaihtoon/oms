@@ -21,7 +21,6 @@ import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SharedUtils;
-import creatip.oms.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -103,10 +102,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         try {
@@ -119,10 +115,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String responseMessage = "Invalid request ," + ex.getMessage();
             log.debug("Message Response : {}", responseMessage);
@@ -130,10 +123,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         if (deliveryMessage != null && deliveryMessage.getDocumentDelivery().getId() != null) {
@@ -145,10 +135,21 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
+        }
+
+        if (deliveryMessage != null && deliveryMessage.getDocumentDelivery().getReferenceNo() != null) {
+            if (deliveryMessage.getDocumentDelivery().getReferenceNo().length() > 50) {
+                String responseMessage = String.format(
+                    "Document Number exceeds maximum length 50 [%s]",
+                    deliveryMessage.getDocumentDelivery().getReferenceNo()
+                );
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<DeliveryMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
         }
 
         try {
@@ -160,10 +161,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ex.getCode());
             result.setMessage(ex.getMessage());
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String errMessage = "Transaction could not be processed. Check details in application logs";
             log.debug("Message Response : {}", errMessage);
@@ -171,10 +169,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(errMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         String docHeaderId = "";
@@ -210,10 +205,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         try {
@@ -226,10 +218,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String responseMessage = "Invalid request ," + ex.getMessage();
             log.debug("Message Response : {}", responseMessage);
@@ -237,24 +226,50 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(responseMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         if (deliveryMessage == null) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idnull");
+            String responseMessage = "Bad Request : Document Delivery Data";
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
         }
         if (deliveryMessage.getDocumentDelivery().getId() == null) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idnull");
+            String responseMessage = "Bad Request : Document Delivery ID is null";
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
         }
+
         if (!Objects.equals(id, deliveryMessage.getDocumentDelivery().getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            String responseMessage = "Bad Request : DocumentDelivery ID does not match.";
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
         }
 
         if (!documentDeliveryRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            String responseMessage = "Bad Request : This Document Delivery ID does not exist. [" + id + "]";
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
+        }
+
+        if (deliveryMessage.getDocumentDelivery().getReferenceNo().length() > 50) {
+            String responseMessage = String.format(
+                "Document Number exceeds maximum length 50 [%s]",
+                deliveryMessage.getDocumentDelivery().getReferenceNo()
+            );
+            log.debug("Message Response : {}", responseMessage);
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
         }
 
         String docHeaderId = id.toString();
@@ -268,10 +283,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ex.getCode());
             result.setMessage(ex.getMessage());
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         } catch (Exception ex) {
             String errMessage = "Transaction could not be processed. Check details in application logs";
             log.debug("Message Response : {}", errMessage);
@@ -279,10 +291,7 @@ public class DocumentDeliveryResource {
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.EXCEP_EX);
             result.setMessage(errMessage);
-            return ResponseEntity
-                .created(new URI("/api/delivery/"))
-                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, ""))
-                .body(result);
+            return replyToClient(result);
         }
 
         if (result != null) {
@@ -293,6 +302,10 @@ public class DocumentDeliveryResource {
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, docHeaderId))
             .body(result);
+    }
+
+    private ResponseEntity<ReplyMessage<DeliveryMessage>> replyToClient(ReplyMessage<DeliveryMessage> result) {
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, "")).body(result);
     }
 
     @GetMapping("/delivery/{id}")
@@ -373,6 +386,8 @@ public class DocumentDeliveryResource {
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
+
+        log.debug("Login User Information: User ID [{}] , Department [{}] ", loginUser.getLogin(), appUserDTO.getDepartment());
 
         criteriaMessage.setReceiverId(appUserDTO.getDepartment().getId());
 
@@ -540,14 +555,16 @@ public class DocumentDeliveryResource {
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
 
-        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        /*
+         * Giving file name "abc" is to avoid character encoding issue for Myanmar font
+         */
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
         header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
         return ResponseEntity
             .ok()
             .headers(header)
-            //.contentLength(file.length())
+            // .contentLength(file.length())
             .body(replyMessage.getData());
     }
 
@@ -588,14 +605,16 @@ public class DocumentDeliveryResource {
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
 
-        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        /*
+         * Giving file name "abc" is to avoid character encoding issue for Myanmar font
+         */
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
         header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
         return ResponseEntity
             .ok()
             .headers(header)
-            //.contentLength(file.length())
+            // .contentLength(file.length())
             .body(replyMessage.getData());
     }
 

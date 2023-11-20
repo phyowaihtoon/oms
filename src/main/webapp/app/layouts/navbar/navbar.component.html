@@ -6,12 +6,7 @@
     <span class="navbar-version">{{ version }}</span>
      -->
   </a>
-  <!--
-  <span style="width: 5px"></span>
-  <span style="cursor: pointer; color: #fff" (click)="showCodeInfo()">
-    <fa-icon icon="info-circle"></fa-icon>
-  </span>
-  -->
+
   <span style="width: 5px"></span>
   <a *ngSwitchCase="true" class="nav-link" routerLink="/">
     <span>
@@ -42,14 +37,14 @@
         <a class="dropdown-toggle nav-link noti-dropdown" ngbDropdownToggle (click)="collapseNavbar()">
           <span class="icon-container">
             <fa-icon icon="bell"></fa-icon>
-            <span class="notification-count">{{ _notiCount }}</span>
+            <span class="notification-count">{{ _notiCount | truncateNumber: 2 }}</span>
           </span>
         </a>
         <ul *ngIf="_notiCount > 0" class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
           <li *ngFor="let notiItem of _notificationList">
-            <a class="dropdown-item" (click)="collapseNavbar()" [routerLink]="['/delivery', notiItem.id, 'view']">
-              <span>{{ notiItem.referenceNo }}</span>
-              <span>{{ notiItem.subject }}</span>
+            <a class="dropdown-item" (click)="collapseNavbar()" [routerLink]="['/delivery', notiItem.id, 'view']" style="padding-left: 3px">
+              <span style="font-weight: bold"> {{ notiItem.referenceNo ? (notiItem.referenceNo | truncateText: 10) : '' }} - </span>
+              <span>{{ notiItem.subject ? (notiItem.subject | truncateText: 20) : '' }}</span>
             </a>
           </li>
         </ul>
