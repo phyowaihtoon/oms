@@ -1,0 +1,89 @@
+.card {
+  width: 90%;
+  height: 80vh; //auto; //
+  margin-top: 10px;
+  margin-bottom: 10px;
+  min-height: 450px;
+  // background: linear-gradient(to top, rgba(57, 144, 144, 0.5) 0%, rgb(6 15 45) 100%);
+  //background: linear-gradient(to top, rgb(223 227 227 / 50%) 90%, #f5f9fa 100%);
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.delivery-card-header {
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.delivery-card-body {
+  background-color: #ffffff;
+  margin: 3px 10px 3px 10px !important;
+  padding: 5px 0px 0px 0px !important;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+}
+
+.quill-readonly {
+  // background-color: #eeeeee; /* Set a background color to indicate readonly */
+  pointer-events: none; /* Disable pointer events to prevent interaction */
+  cursor: not-allowed; /* Change the cursor to not-allowed to indicate it's not editable */
+  opacity: 0.7; /* Optionally reduce opacity to further indicate readonly */
+}
+
+:host ::ng-deep .quill-readonly .ql-container {
+  background-color: #eee;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+}
+
+.div-padding {
+  margin-bottom: 10px;
+}
+
+.text-height {
+  height: 3em;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.tab-header-select {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tab-header {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.text-div {
+  display: block;
+  background-color: #eee;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  opacity: 1;
+  padding: 0rem 0.75rem;
+  //font-size: 0.75rem;
+  //font-weight: 400;
+}

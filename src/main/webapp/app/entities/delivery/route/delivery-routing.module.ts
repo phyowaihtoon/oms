@@ -7,6 +7,7 @@ import { DeliveryDetailComponent } from '../detail/delivery-detail.component';
 import { DeliverySentComponent } from '../sent/delivery-sent.component';
 import { DeliveryReceivedComponent } from '../received/delivery-received.component';
 import { DeliveryDraftComponent } from '../draft/delivery-draft.component';
+import { DeliveryDetailSentComponent } from '../detail-sent/delivery-detail-sent.component';
 
 const deliveryRoute: Routes = [
   {
@@ -36,6 +37,14 @@ const deliveryRoute: Routes = [
   {
     path: ':id/view',
     component: DeliveryDetailComponent,
+    resolve: {
+      delivery: DeliveryRoutingResolveService,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':id/view-sent',
+    component: DeliveryDetailSentComponent,
     resolve: {
       delivery: DeliveryRoutingResolveService,
     },

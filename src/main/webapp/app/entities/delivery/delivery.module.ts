@@ -8,15 +8,15 @@ import { DeliveryRoutingModule } from './route/delivery-routing.module';
 import { DeliveryDraftComponent } from './draft/delivery-draft.component';
 import { QuillModule } from 'ngx-quill';
 import { DocumentDeleteDialogComponent } from './delete/document-delete-dialog/document-delete-dialog.component';
+import { DeliveryDetailSentComponent } from './detail-sent/delivery-detail-sent.component';
 
 @NgModule({
-  imports: [SharedModule, 
-    DeliveryRoutingModule,    
-    QuillModule.forRoot(),],
-    
+  imports: [SharedModule, DeliveryRoutingModule, QuillModule.forRoot()],
+
   declarations: [
     DeliveryUpdateComponent,
     DeliveryDetailComponent,
+    DeliveryDetailSentComponent,
     DeliverySentComponent,
     DeliveryReceivedComponent,
     DeliveryDraftComponent,
