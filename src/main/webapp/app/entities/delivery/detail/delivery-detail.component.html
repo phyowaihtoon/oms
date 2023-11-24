@@ -52,8 +52,8 @@
       <input type="text" readonly class="text-height form-control" value="{{ subject }}" style="height: 2.5em" />
     </div>
 
-    <div class="delivery-card-body">
-      <div *ngIf="isInfo" class="col-12">
+    <div class="delivery-card-body" >
+      <div *ngIf="isInfo" class="col-12" style="margin-bottom: 10px;">
         <div class="row">
           <label name="docNo" for="docNo" class="form-control-label col-2" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
           <input type="text" readonly class="text-height form-control div-padding col-3" value="{{ docNo }}" />

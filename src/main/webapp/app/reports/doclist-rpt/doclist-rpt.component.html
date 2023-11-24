@@ -1,10 +1,14 @@
-<div id="page-heading" class="row">
-  <div class="col-8">
-    <span>Report</span>
-    <span> >> Document List Report</span>
+<div class="d-flex justify-content-between margin-top-10">
+  <div class="row">
+    <h5 jhiTranslate="global.menu.report.title" style="margin-left: 16px">Delivery</h5>
+    <h5>&nbsp;>>&nbsp;</h5>
+    <h5 jhiTranslate="global.menu.report.docReceivedRpt">Document Sent</h5>
   </div>
+  <h5>{{ _logindepartmentName }}</h5>
+</div>
 
-  <div class="col-4 d-flex justify-content-end">
+<div id="page-heading" class="row">
+  <div class="col-12 d-flex justify-content-end margin-top-10">
     <button
       type="button"
       (click)="generate()"
@@ -126,9 +130,26 @@
             </div>
           </div>
           <div class="col-3">
-            <input type="text" class="form-control" name="userId" formControlName="userId" />
+            <select class="form-control" id="department" data-cy="department" name="department" formControlName="departmentID">
+              <option [value]="0" selected>-</option>
+              <option [value]="department.id" *ngFor="let department of departmentsList; trackBy: trackDepartmentByID">
+                {{ department.departmentName }}
+              </option>
+            </select>
           </div>
-          <div></div>
+          <div>
+            <select
+            class="form-control "
+            id="field_status"
+            name="status"
+            [(ngModel)]="_lStatus"
+            (change)="onStatusChange($event)"
+          >
+            <option value="2" jhiTranslate="home.status_all">All</option>
+            <option value="0" jhiTranslate="home.status_unread">Unread</option>
+            <option value="1" jhiTranslate="home.status_read">Read</option>
+          </select>
+          </div>
         </div>
       </div>
     </form>

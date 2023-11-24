@@ -23,7 +23,7 @@ export class ReportService {
   }
 
   generateDocMappingListRpt2(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
-    return this.http.post<IReplyMessage>(this.docMappingListRptURL2, reportDTO, { observe: 'response' });
+    return this.http.post<IReplyMessage>(this.docMappingListRptURL, reportDTO, { observe: 'response' });
   }
 
   showPDF(fileName: string): Observable<Blob> {

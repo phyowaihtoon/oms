@@ -14,6 +14,7 @@
     "meeting_date": "Date",
     "meeting_time": "Time",
     "meeting_location": "Location",
+    "status_all": "All",
     "status_unread": "Unread",
     "status_read": "Read",
     "view_details": "View Details"

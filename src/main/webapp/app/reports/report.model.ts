@@ -9,6 +9,11 @@ export interface IRptParamsDTO {
   rptPS3?: string;
   rptPS4?: string;
   rptPS5?: string;
+  rptPS6?: string;
+  rptPS7?: string;
+  rptPS8?: string;
+  rptPS9?: string;
+  rptPS10?: string;
 }
 
 export class RptParamsDTO implements IRptParamsDTO {
@@ -22,6 +27,11 @@ export class RptParamsDTO implements IRptParamsDTO {
     public rptPS2?: string,
     public rptPS3?: string,
     public rptPS4?: string,
-    public rptPS5?: string
+    public rptPS5?: string,
+    public rptPS6?: string,
+    public rptPS7?: string,
+    public rptPS8?: string,
+    public rptPS9?: string,
+    public rptPS10?: string
   ) {}
 }

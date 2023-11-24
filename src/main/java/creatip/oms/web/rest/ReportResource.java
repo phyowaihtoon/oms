@@ -80,11 +80,11 @@ public class ReportResource {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
         String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
-        String rptFileName = SharedUtils.generateFileName("DocumentMappingRpt");
+        String rptFileName = SharedUtils.generateFileName("DocumentListRpt");
         rptParams.setRptFileName(rptFileName);
         rptParams.setRptOutputPath(rptOutputPath);
-        rptParams.setRptJrxml("DocumentMappingRpt.jrxml");
-        rptParams.setRptJasper("DocumentMappingRpt.jrxml");
+        rptParams.setRptJrxml("DocumentListRpt.jrxml");
+        rptParams.setRptJasper("DocumentListRpt.jrxml");
         ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
         return replyMessage;
     }

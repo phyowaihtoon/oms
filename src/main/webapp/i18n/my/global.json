@@ -15,7 +15,8 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
-        "title": "အစီရင်ခံစာ"
+        "title": "အစီရင်ခံစာ",
+        "docReceivedRpt": "ဝင်စာအစီရင်ခံစာ"
       },
       "inbox": {
         "title": "ဝင်စာ",
