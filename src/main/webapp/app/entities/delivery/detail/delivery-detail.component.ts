@@ -58,21 +58,35 @@ export class DeliveryDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
     this._loginDepartment = userAuthority?.department;
+   
 
-    this.activatedRoute.data.subscribe(({ delivery }) => {
+    this.activatedRoute.data.subscribe(({ delivery }) => {     
       this.documentDelivery = delivery?.documentDelivery;
       this.receiverList = delivery?.receiverList;
-      this.attachmentList = delivery?.attachmentList;
+      this.attachmentList = delivery?.attachmentList;    
+      this.clearform();  
+      this.getData();
     });
-
-    this.getData();
+   
   }
 
   previousState(): void {
     window.history.back();
+  }
+
+  clearform() : void {
+
+    this.docNo = '';
+    this.subject = '';
+    this.bodyDescription = '';
+    this.senderDepartment = '';
+    this.toDepartments = [];
+    this.ccDepartments  = [];
+
   }
 
   getData(): void {
