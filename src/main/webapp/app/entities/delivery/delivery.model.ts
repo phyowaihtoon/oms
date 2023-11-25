@@ -12,6 +12,7 @@ export interface IDocumentDelivery {
   delFlag?: string;
   sender?: IDepartment;
   createdDate?: dayjs.Dayjs;
+  receiverType?: number;
 }
 
 export class DocumentDelivery implements IDocumentDelivery {
@@ -25,7 +26,8 @@ export class DocumentDelivery implements IDocumentDelivery {
     public status?: number,
     public delFlag?: string,
     public sender?: IDepartment,
-    public createdDate?: dayjs.Dayjs
+    public createdDate?: dayjs.Dayjs,
+    public receiverType?: number
   ) {}
 }
 
