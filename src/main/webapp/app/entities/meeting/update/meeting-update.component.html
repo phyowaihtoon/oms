@@ -191,13 +191,7 @@
             <label for="ccmeetingDate" class="form-control-label" jhiTranslate="omsApp.meeting.label.Date" style="padding-right: 10px"
               >Date:</label
             >
-            <input
-              class="form-control col-2"
-              style="height: 2.5em"
-              formControlName="ccmeetingDate"
-              id="ccmeetingDate"
-              name="ccmeetingDate"
-            />
+            <input class="form-control col-2" formControlName="ccmeetingDate" id="ccmeetingDate" name="ccmeetingDate" />
 
             <label
               for="timeInput"
@@ -207,16 +201,16 @@
               >Time:</label
             >
 
-            <input type="time" readonly id="fromtime" name="fromtime" formControlName="ccfromtime" />
+            <input type="time" class="form-control col-2" readonly id="fromtime" name="fromtime" formControlName="ccfromtime" />
             <label for="-">&nbsp; - &nbsp; </label>
-            <input type="time" readonly id="totime" name="totime" formControlName="cctotime" />
+            <input type="time" class="form-control col-2" readonly id="totime" name="totime" formControlName="cctotime" />
           </div>
 
           <label name="location" for="location" class="form-control-label" jhiTranslate="omsApp.meeting.label.Location">Location</label>
-          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_location" />
+          <input type="text" readonly class="textbox form-control div-padding" formControlName="cc_location" />
 
           <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
-          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_referenceno" />
+          <input type="text" readonly class="textbox form-control div-padding" formControlName="cc_referenceno" />
 
           <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept"
             >Main Dept.</label
@@ -235,7 +229,7 @@
           </div>
 
           <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject">subject</label>
-          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
+          <input type="text" readonly class="textbox form-control div-padding" formControlName="cc_subject" />
 
           <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Body</label>
           <quill-editor [modules]="{ toolbar: false }" class="quill-readonly" formControlName="cc_body"></quill-editor>

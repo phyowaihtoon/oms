@@ -19,12 +19,11 @@
 
 .delivery-card-body {
   background-color: #ffffff;
-  margin: 3px 10px 3px 10px !important;
-  padding: 5px 0px 0px 0px !important;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  //margin: 3px 10px 3px 10px !important;
+  //padding: 5px 0px 0px 0px !important;
+  //box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  // -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+  //-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
   overflow-y: auto;
 }
 
@@ -33,16 +32,24 @@
   pointer-events: none; /* Disable pointer events to prevent interaction */
   cursor: not-allowed; /* Change the cursor to not-allowed to indicate it's not editable */
   opacity: 0.7; /* Optionally reduce opacity to further indicate readonly */
+  .ql-container {
+    .ql-editor {
+      background-color: #eeeeee;
+    }
+  }
 }
 
 :host ::ng-deep .quill-readonly .ql-container {
-  background-color: #eee;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
+  min-height: 15vh !important;
+}
+
+:host ::ng-deep .quill-readonly .ql-container .ql-editor {
+  background-color: #eeeeee;
+  min-height: 15vh !important;
 }
 
 .div-padding {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .text-height {

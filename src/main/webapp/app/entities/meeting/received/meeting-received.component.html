@@ -124,29 +124,22 @@
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
+                <tr class="bg-primary"></tr>
                 <tr class="bg-primary">
-                  <th style="width: 5%; text-align: center" jhiTranslate="omsApp.meeting.table.No"><span>No.</span></th>
-                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.meeting.table.Date"><span>Date</span></th>
-                  <th style="width: 15%; text-align: center" jhiTranslate="omsApp.meeting.table.DocumentNo">
-                    <span>Document No.</span>
-                  </th>
-                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.meeting.table.Subject">
-                    <span>Subject</span>
-                  </th>
-                  <th style="width: 35%; text-align: center" jhiTranslate="omsApp.meeting.table.Department">
-                    <span>Department</span>
-                  </th>
-                  <th style="width: 10%; text-align: center">#</th>
+                  <th style="width: 5%; text-align: center" jhiTranslate="omsApp.delivery.table.No">No.</th>
+                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date">Date></th>
+                  <th style="width: 15%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">Document No.></th>
+                  <th style="width: 30%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject">Subject</th>
+                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.delivery.table.Department">Department</th>
+                  <th style="width: 15%; text-align: center">#</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let meetingDelivery of meetingDeliveryList; let i = index" data-cy="entityTable">
-                  <td>
-                    {{ i + 1 }}
-                  </td>
+                  <td style="text-align: right; padding-right: 8px">{{ i + 1 }}</td>
                   <td>{{ meetingDelivery.sentDate ? meetingDelivery.sentDate.format('DD-MM-YYYY') : '-' }}</td>
                   <td>{{ meetingDelivery.referenceNo }}</td>
-                  <td>{{ meetingDelivery.subject }}</td>
+                  <td>{{ meetingDelivery.subject ? (meetingDelivery.subject | truncateText: 35) : '' }}</td>
                   <td>{{ meetingDelivery.sender?.departmentName }}</td>
                   <td style="text-align: center">
                     <a href="#" jhiTranslate="home.view_details" [routerLink]="['/meeting', meetingDelivery.id, 'view']">View Details</a>

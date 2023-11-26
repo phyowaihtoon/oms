@@ -124,7 +124,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let doc of documentDelivery; let i = index" data-cy="entityTable">
-                  <td>{{ i + 1 }}</td>
+                  <td style="text-align: right; padding-right: 8px">{{ i + 1 }}</td>
                   <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
                   <td>{{ doc.referenceNo }}</td>
                   <td>{{ doc.subject ? (doc.subject | truncateText: 35) : '' }}</td>
