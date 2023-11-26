@@ -236,7 +236,6 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                     filePath += "//" + fullDirectory[i];
 
                     boolean isPathExists = ftpSession.exists(directory);
-
                     if (!isPathExists) {
                         boolean isCreated = ftpSession.mkdir(directory);
                         if (!isCreated) {

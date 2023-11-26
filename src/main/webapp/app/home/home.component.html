@@ -19,7 +19,7 @@
             <span
               ><h6>{{ data.subject }}</h6></span
             >
-            <span><span jhiTranslate="home.meeting_date"></span>: {{ data.startDate ? data.startDate.format('DD-MMM-YYYY') : '-' }}</span>
+            <span><span jhiTranslate="home.meeting_date"></span>: {{ data.startDate ? data.startDate.format('DD-MM-YYYY') : '-' }}</span>
             <span
               ><span jhiTranslate="home.meeting_time"></span>: {{ data.startDate ? data.startDate.format('hh:mm A') : '-' }} -
               {{ data.endDate ? data.endDate.format('hh:mm A') : '-' }}</span
@@ -69,7 +69,7 @@
             <tbody>
               <tr *ngFor="let data of _dashboardData1">
                 <td>{{ data.referenceNo }}</td>
-                <td>{{ data.subject ? (data.subject | truncateText: 25) : '' }}</td>
+                <td>{{ data.subject ? (data.subject | truncateText: 30) : '' }}</td>
                 <td>{{ data.sender?.departmentName }}</td>
                 <td style="text-align: center">
                   <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', data.id, 'view']">View Details</a>
@@ -118,7 +118,7 @@
             <tbody>
               <tr *ngFor="let data of _dashboardData2">
                 <td>{{ data.referenceNo }}</td>
-                <td>{{ data.subject }}</td>
+                <td>{{ data.subject ? (data.subject | truncateText: 55) : '' }}</td>
                 <td style="text-align: center">
                   <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', data.id, 'view-sent']">View Details</a>
                 </td>

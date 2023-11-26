@@ -27,6 +27,23 @@
             </div>
           </div>
 
+          <div
+            *ngIf="
+              (editForm.get('fromtime')!.invalid || editForm.get('totime')!.invalid) &&
+              (editForm.get('fromtime')?.dirty ||
+                editForm.get('fromtime')?.touched ||
+                editForm.get('totime')?.dirty ||
+                editForm.get('totime')?.touched)
+            "
+          >
+            <div
+              *ngIf="editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required"
+              style="text-align: right; color: red"
+            >
+              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
+            </div>
+          </div>
+
           <div class="row col-12">
             <label for="meetingDate" class="lbl-width" jhiTranslate="omsApp.meeting.label.Date">Date:</label>
             <div class="input-group col-2" style="padding-left: 0px">
@@ -46,33 +63,14 @@
                 </button>
               </div>
             </div>
-          </div>
 
-          <div
-            *ngIf="
-              (editForm.get('fromtime')!.invalid || editForm.get('totime')!.invalid) &&
-              (editForm.get('fromtime')?.dirty ||
-                editForm.get('fromtime')?.touched ||
-                editForm.get('totime')?.dirty ||
-                editForm.get('totime')?.touched)
-            "
-          >
-            <div
-              *ngIf="editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required"
-              style="text-align: right; color: red"
-            >
-              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
-            </div>
-          </div>
-
-          <div class="row col-12" style="padding-bottom: 3px">
             <label for="timeInput" class="lbl-width" jhiTranslate="omsApp.meeting.label.Time">Time:</label>
 
-            <input type="time" id="fromtime" name="fromtime" formControlName="fromtime" />
+            <input class="form-control col-2" type="time" id="fromtime" name="fromtime" formControlName="fromtime" />
 
             <label for="-">&nbsp; - &nbsp; </label>
 
-            <input type="time" id="totime" name="totime" formControlName="totime" />
+            <input class="form-control col-2" type="time" id="totime" name="totime" formControlName="totime" />
           </div>
 
           <div *ngIf="editForm.get('location')!.invalid && (editForm.get('location')?.dirty || editForm.get('location')?.touched)">
@@ -83,9 +81,9 @@
 
           <input
             type="text"
+            class="form-control div-padding"
             formControlName="location"
             placeholder="{{ 'omsApp.meeting.placeholder.Location' | translate }}"
-            class="form-control div-padding text-height"
             name="Location"
             id="Location"
             required
@@ -99,9 +97,9 @@
 
           <input
             type="text"
+            class="form-control div-padding"
             formControlName="referenceno"
             placeholder="{{ 'omsApp.meeting.placeholder.DocNo' | translate }}"
-            class="form-control div-padding text-height"
             name="referenceno"
             id="referenceno"
             required
@@ -115,13 +113,13 @@
 
           <input
             type="text"
+            class="form-control div-padding"
             formControlName="subject"
             placeholder="{{ 'omsApp.meeting.placeholder.Subject' | translate }}"
-            class="form-control div-padding text-height"
             name="subject"
             id="subject"
           />
-          <quill-editor [styles]="{ height: '150px' }" [modules]="modules" formControlName="body"></quill-editor>
+          <quill-editor [modules]="modules" formControlName="body"></quill-editor>
         </div>
 
         <div *ngIf="isReceiver" class="form-group">
@@ -157,7 +155,7 @@
             </fieldset>
           </form>
 
-          <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+          <div class="form-group" style="overflow-x: auto">
             <table class="table" formArrayName="docList">
               <thead>
                 <tr class="bg-primary">
@@ -240,12 +238,7 @@
           <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
 
           <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Body</label>
-          <quill-editor
-            [styles]="{ height: '160px' }"
-            [modules]="{ toolbar: false }"
-            class="quill-readonly"
-            formControlName="cc_body"
-          ></quill-editor>
+          <quill-editor [modules]="{ toolbar: false }" class="quill-readonly" formControlName="cc_body"></quill-editor>
         </div>
       </div>
 
