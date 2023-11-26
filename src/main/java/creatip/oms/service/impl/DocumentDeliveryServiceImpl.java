@@ -4,6 +4,7 @@ import creatip.oms.domain.DocumentAttachment;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.domain.DocumentReceiver;
 import creatip.oms.enumeration.CommonEnum.DeliveryStatus;
+import creatip.oms.enumeration.CommonEnum.ReceiverType;
 import creatip.oms.enumeration.CommonEnum.RequestFrom;
 import creatip.oms.enumeration.CommonEnum.ViewStatus;
 import creatip.oms.repository.DocumentAttachmentRepository;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.integration.ftp.session.FtpSession;
 import org.springframework.stereotype.Service;
@@ -302,22 +304,44 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
     @Override
     public Page<DocumentDeliveryDTO> getReceivedDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
-        Page<DocumentDelivery> page = null;
+        Page<DocumentDeliveryDTO> pageDTO = null;
         ZoneId zoneId = ZoneId.systemDefault();
         String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page =
-                documentDeliveryRepository.findDocumentsReceived(
-                    criteria.getReceiverId(),
-                    criteria.getStatus(),
-                    criteria.getDateOn(),
-                    zoneCode,
-                    pageable
-                );
+            Page<DocumentDelivery> page = documentDeliveryRepository.findDocumentsReceived(
+                criteria.getReceiverId(),
+                criteria.getStatus(),
+                criteria.getDateOn(),
+                zoneCode,
+                pageable
+            );
+
+            List<DocumentDeliveryDTO> modifiedList = new ArrayList<DocumentDeliveryDTO>();
+            page.forEach(
+                documentDelivery -> {
+                    DocumentDeliveryDTO dto = documentDeliveryMapper.toDto(documentDelivery);
+                    List<DocumentReceiver> receiverList = documentReceiverRepository.findByHeaderIdAndReceiverIdAndReceiverType(
+                        dto.getId(),
+                        criteria.getReceiverId(),
+                        ReceiverType.MAIN.value
+                    );
+
+                    if (receiverList != null && receiverList.size() > 0) dto.setReceiverType(
+                        ReceiverType.MAIN.value
+                    ); else dto.setReceiverType(ReceiverType.CC.value);
+
+                    modifiedList.add(dto);
+                }
+            );
+
+            Pageable pageableDTO = page.getPageable();
+            pageDTO = new PageImpl<>(modifiedList, pageableDTO, page.getTotalElements());
         } else {
-            page = documentDeliveryRepository.findDocumentsReceived(criteria, pageable);
+            Page<DocumentDelivery> page = documentDeliveryRepository.findDocumentsReceived(criteria, pageable);
+            return page.map(documentDeliveryMapper::toDto);
         }
-        return page.map(documentDeliveryMapper::toDto);
+
+        return pageDTO;
     }
 
     @Override

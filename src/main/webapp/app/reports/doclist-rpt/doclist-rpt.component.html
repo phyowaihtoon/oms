@@ -1,10 +1,14 @@
-<div id="page-heading" class="row">
-  <div class="col-8">
-    <span>Report</span>
-    <span> >> Document List Report</span>
+<div class="d-flex justify-content-between margin-top-10">
+  <div class="row">
+    <h5 jhiTranslate="global.menu.report.title" style="margin-left: 16px">Report</h5>
+    <h5>&nbsp;>>&nbsp;</h5>
+    <h5 jhiTranslate="global.menu.report.docReceivedRpt">Document Received Report</h5>
   </div>
+  <h5>{{ _logindepartmentName }}</h5>
+</div>
 
-  <div class="col-4 d-flex justify-content-end">
+<div id="page-heading" class="row">
+  <div class="col-12 d-flex justify-content-end margin-top-10">
     <button
       type="button"
       (click)="generate()"
@@ -24,23 +28,25 @@
 </div>
 
 <div id="page-body">
-  <div><fa-icon icon="angle-down"></fa-icon>&nbsp;<span jhiTranslate="report.docmapping.criteriaLbl">Report Criteria</span></div>
+  <div><fa-icon icon="angle-down"></fa-icon>&nbsp;<span jhiTranslate="report.documentReceived.criteriaLbl">Report Criteria</span></div>
 
   <div class="col-12" style="padding-top: 10px">
     <form name="editForm" role="form" novalidate (ngSubmit)="generate()" [formGroup]="editForm">
       <div id="rpt-search-area" class="row form-group">
         <div class="row col-12">
           <div class="col-3">
-            <label class="form-control-label" jhiTranslate="report.docmapping.uploadfromdate" for="field_startDate"> Start Date </label>
+            <label class="form-control-label" jhiTranslate="report.documentReceived.startdate" for="field_startDate"> Start Date </label>
           </div>
           <div class="col-3">
-            <label class="form-control-label" jhiTranslate="report.docmapping.uploadtodate" for="field_endDate"> End Date </label>
+            <label class="form-control-label" jhiTranslate="report.documentReceived.enddate" for="field_endDate"> End Date </label>
           </div>
           <div class="col-3">
-            <label class="form-control-label" jhiTranslate="report.docmapping.template" for="field_docType">Department</label>
+            <label class="form-control-label" jhiTranslate="report.documentReceived.departmentFrom" for="field_docType"
+              >Department (From)</label
+            >
           </div>
           <div class="col-3">
-            <label class="form-control-label" jhiTranslate="report.docmapping.user" for="field_docType">User</label>
+            <label class="form-control-label" jhiTranslate="report.documentReceived.status" for="field_docType">Status</label>
           </div>
         </div>
         <div class="row col-12">
@@ -126,9 +132,20 @@
             </div>
           </div>
           <div class="col-3">
-            <input type="text" class="form-control" name="userId" formControlName="userId" />
+            <select class="form-control" id="department" data-cy="department" name="department" formControlName="departmentID">
+              <option [value]="0" selected>-</option>
+              <option [value]="department.id" *ngFor="let department of departmentsList; trackBy: trackDepartmentByID">
+                {{ department.departmentName }}
+              </option>
+            </select>
           </div>
-          <div></div>
+          <div>
+            <select class="form-control" id="field_status" name="status" [(ngModel)]="_lStatus" (change)="onStatusChange($event)">
+              <option value="2" jhiTranslate="home.status_all">All</option>
+              <option value="0" jhiTranslate="home.status_unread">Unread</option>
+              <option value="1" jhiTranslate="home.status_read">Read</option>
+            </select>
+          </div>
         </div>
       </div>
     </form>

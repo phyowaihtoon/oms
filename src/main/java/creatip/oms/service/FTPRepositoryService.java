@@ -4,7 +4,6 @@ import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
 import creatip.oms.util.SysConfigVariables;
-import creatip.oms.web.rest.DocumentDeliveryResource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,6 +77,7 @@ public class FTPRepositoryService {
         FtpSession ftpSession = null;
         PDDocument orgPDDDocument = null;
         ByteArrayOutputStream outputStream = null;
+        InputStream inputStream = null;
 
         try {
             ftpSession = this.ftpSessionFactory.getSession();
@@ -96,7 +96,7 @@ public class FTPRepositoryService {
 
             if (SysConfigVariables.PDF_PREVIEW_LIMIT_ENABLED.equals("Y") && SysConfigVariables.PDF_PREVIEW_VALUE != null) {
                 int previewPageLimit = Integer.parseInt(SysConfigVariables.PDF_PREVIEW_VALUE);
-                InputStream inputStream = ftpSession.readRaw(filePath);
+                inputStream = ftpSession.readRaw(filePath);
                 orgPDDDocument = PDDocument.load(inputStream);
 
                 if (previewPageLimit >= orgPDDDocument.getNumberOfPages()) {
@@ -158,6 +158,15 @@ public class FTPRepositoryService {
                     outputStream.close();
                 } catch (IOException ex) {
                     logger.error("Error while closing Output Stream :", ex);
+                }
+            }
+
+            //Closing Input Stream
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ex) {
+                    logger.error("Error while closing Input Stream :", ex);
                 }
             }
         }

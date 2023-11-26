@@ -7,14 +7,12 @@
     "validation": {
       "datePattern": "Date must be entered in DD-MM-YYYY"
     },
-    "docmapping": {
+    "documentReceived": {
       "criteriaLbl": "REPORT CRITERIA",
       "startdate": "Start Date",
       "enddate": "End Date",
-      "uploadfromdate": "Upload From Date",
-      "uploadtodate": "Upload To Date",
-      "template": "Department",
-      "user": "Entry User"
+      "departmentFrom": "Department (From)",
+      "status": "Status"
     }
   }
 }

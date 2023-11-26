@@ -83,6 +83,15 @@ export class MeetingReceivedComponent implements OnInit {
     }
   }
 
+  clearForm(): void {
+    this.searchForm.get(['fromdate'])?.patchValue('');
+    this.searchForm.get(['todate'])?.patchValue('');
+    this.searchForm.get(['departmentID'])?.patchValue(0);
+    this.searchForm.get(['status'])?.patchValue(2);
+    this.searchForm.get(['subject'])?.patchValue('');
+    this.searchForm.get(['docno'])?.patchValue('');
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
       this.isShowingResult = true;

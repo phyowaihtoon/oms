@@ -75,16 +75,16 @@ public class ReportResource {
             .body(resource);
     }
 
-    @PostMapping("/docmap-rpt")
+    @PostMapping("/docreceived-rpt")
     public ReplyMessage<RptParamsMessage> generateDocumentListRpt(@Valid @RequestBody RptParamsMessage rptParams) {
         User loginUser = userService.getUserWithAuthorities().get();
         String rptOutFolder = context.getRealPath("RPT_OUTPUT");
         String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
-        String rptFileName = SharedUtils.generateFileName("DocumentMappingRpt");
+        String rptFileName = SharedUtils.generateFileName("DocumentReceivedListRpt");
         rptParams.setRptFileName(rptFileName);
         rptParams.setRptOutputPath(rptOutputPath);
-        rptParams.setRptJrxml("DocumentMappingRpt.jrxml");
-        rptParams.setRptJasper("DocumentMappingRpt.jrxml");
+        rptParams.setRptJrxml("DocumentReceivedListRpt.jrxml");
+        rptParams.setRptJasper("DocumentReceivedListRpt.jrxml");
         ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
         return replyMessage;
     }

@@ -40,6 +40,8 @@ public class DocumentDeliveryDTO implements Serializable {
 
     private Instant lastModifiedDate;
 
+    private short receiverType;
+
     public Long getId() {
         return id;
     }
@@ -142,6 +144,14 @@ public class DocumentDeliveryDTO implements Serializable {
 
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public short getReceiverType() {
+        return receiverType;
+    }
+
+    public void setReceiverType(short receiverType) {
+        this.receiverType = receiverType;
     }
 
     @Override

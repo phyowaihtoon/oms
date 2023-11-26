@@ -15,6 +15,12 @@ public class RptParamsMessage {
     private String rptPS4;
     private String rptPS5;
 
+    private String rptPS6;
+    private String rptPS7;
+    private String rptPS8;
+    private String rptPS9;
+    private String rptPS10;
+    
     public String getRptTitleName() {
         return rptTitleName;
     }
@@ -102,4 +108,46 @@ public class RptParamsMessage {
     public void setRptPS5(String rptPS5) {
         this.rptPS5 = rptPS5;
     }
+
+	public String getRptPS6() {
+		return rptPS6;
+	}
+
+	public void setRptPS6(String rptPS6) {
+		this.rptPS6 = rptPS6;
+	}
+
+	public String getRptPS7() {
+		return rptPS7;
+	}
+
+	public void setRptPS7(String rptPS7) {
+		this.rptPS7 = rptPS7;
+	}
+
+	public String getRptPS8() {
+		return rptPS8;
+	}
+
+	public void setRptPS8(String rptPS8) {
+		this.rptPS8 = rptPS8;
+	}
+
+	public String getRptPS9() {
+		return rptPS9;
+	}
+
+	public void setRptPS9(String rptPS9) {
+		this.rptPS9 = rptPS9;
+	}
+
+	public String getRptPS10() {
+		return rptPS10;
+	}
+
+	public void setRptPS10(String rptPS10) {
+		this.rptPS10 = rptPS10;
+	}
+    
+    
 }

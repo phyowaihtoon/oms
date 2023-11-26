@@ -29,13 +29,13 @@ public class CommonEnum {
     }
 
     public enum ReceiverType {
-        MAIN(1, "Main"),
-        CC(2, "Cc");
+        MAIN((short) 1, "Main"),
+        CC((short) 2, "Cc");
 
-        public int value;
+        public short value;
         public String description;
 
-        ReceiverType(int value, String description) {
+        ReceiverType(short value, String description) {
             this.value = value;
             this.description = description;
         }

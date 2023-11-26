@@ -15,7 +15,6 @@ import creatip.oms.service.UserService;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
 import creatip.oms.service.message.BaseMessage;
-import creatip.oms.service.message.DeliveryMessage;
 import creatip.oms.service.message.MeetingMessage;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.SearchCriteriaMessage;
@@ -139,16 +138,32 @@ public class MeetingDeliveryResource {
             return replyToClient(result);
         }
 
-        if (deliveryMessage.getMeetingDelivery().getReferenceNo().length() > 50) {
-            String responseMessage = String.format(
-                "Document Number exceeds maximum length 50 [%s]",
-                deliveryMessage.getMeetingDelivery().getReferenceNo()
-            );
-            log.debug("Message Response : {}", responseMessage);
-            result = new ReplyMessage<MeetingMessage>();
-            result.setCode(ResponseCode.ERROR_E00);
-            result.setMessage(responseMessage);
-            return replyToClient(result);
+        if (deliveryMessage.getMeetingDelivery().getReferenceNo() != null) {
+            String referenceNo = deliveryMessage.getMeetingDelivery().getReferenceNo().trim();
+            deliveryMessage.getMeetingDelivery().setReferenceNo(referenceNo);
+
+            if (referenceNo.length() > 50) {
+                String responseMessage = String.format("Document Number exceeds maximum length 50 [%s]", referenceNo);
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<MeetingMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
+        }
+
+        if (deliveryMessage != null && deliveryMessage.getMeetingDelivery().getDescription() != null) {
+            String description = deliveryMessage.getMeetingDelivery().getDescription().trim();
+            deliveryMessage.getMeetingDelivery().setDescription(description);
+
+            if (description.length() > 3000) {
+                String responseMessage = "Description is too long. It exceeds maximum length: 3000 characters";
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<MeetingMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
         }
 
         try {
@@ -260,6 +275,34 @@ public class MeetingDeliveryResource {
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
             return replyToClient(result);
+        }
+
+        if (meetingMessage.getMeetingDelivery().getReferenceNo() != null) {
+            String referenceNO = meetingMessage.getMeetingDelivery().getReferenceNo().trim();
+            meetingMessage.getMeetingDelivery().setReferenceNo(referenceNO);
+
+            if (referenceNO.length() > 50) {
+                String responseMessage = String.format("Document Number exceeds maximum length 50 [%s]", referenceNO);
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<MeetingMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
+        }
+
+        if (meetingMessage.getMeetingDelivery().getDescription() != null) {
+            String description = meetingMessage.getMeetingDelivery().getDescription().trim();
+            meetingMessage.getMeetingDelivery().setDescription(description);
+
+            if (description.length() > 3000) {
+                String responseMessage = "Description is too long. It exceeds maximum length: 3000 characters";
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<MeetingMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
         }
 
         String docHeaderId = id.toString();
@@ -560,14 +603,16 @@ public class MeetingDeliveryResource {
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
 
-        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        /*
+         * Giving file name "abc" is to avoid character encoding issue for Myanmar font
+         */
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
         header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
         return ResponseEntity
             .ok()
             .headers(header)
-            //.contentLength(file.length())
+            // .contentLength(file.length())
             .body(replyMessage.getData());
     }
 
@@ -606,14 +651,16 @@ public class MeetingDeliveryResource {
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
 
-        /* Giving file name "abc" is to avoid character encoding issue for Myanmar font */
+        /*
+         * Giving file name "abc" is to avoid character encoding issue for Myanmar font
+         */
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=abc" + extension);
         header.setContentType(new MediaType("application", extension, StandardCharsets.UTF_8));
         return ResponseEntity
             .ok()
             .headers(header)
-            //.contentLength(file.length())
+            // .contentLength(file.length())
             .body(replyMessage.getData());
     }
 

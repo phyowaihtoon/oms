@@ -126,7 +126,15 @@ public class DocumentDeliveryResource {
             return replyToClient(result);
         }
 
-        if (deliveryMessage != null && deliveryMessage.getDocumentDelivery().getId() != null) {
+        if (deliveryMessage == null) {
+            String responseMessage = "Bad Request :Invalid Document Delivery Data";
+            result = new ReplyMessage<DeliveryMessage>();
+            result.setCode(ResponseCode.ERROR_E00);
+            result.setMessage(responseMessage);
+            return replyToClient(result);
+        }
+
+        if (deliveryMessage.getDocumentDelivery().getId() != null) {
             String responseMessage = String.format(
                 "Bad Request ,a new record cannot have an ID %s",
                 "[" + deliveryMessage.getDocumentDelivery().getId() + "]"
@@ -138,12 +146,26 @@ public class DocumentDeliveryResource {
             return replyToClient(result);
         }
 
-        if (deliveryMessage != null && deliveryMessage.getDocumentDelivery().getReferenceNo() != null) {
-            if (deliveryMessage.getDocumentDelivery().getReferenceNo().length() > 50) {
-                String responseMessage = String.format(
-                    "Document Number exceeds maximum length 50 [%s]",
-                    deliveryMessage.getDocumentDelivery().getReferenceNo()
-                );
+        if (deliveryMessage.getDocumentDelivery().getReferenceNo() != null) {
+            String referenceNo = deliveryMessage.getDocumentDelivery().getReferenceNo().trim();
+            deliveryMessage.getDocumentDelivery().setReferenceNo(referenceNo);
+
+            if (referenceNo.length() > 50) {
+                String responseMessage = String.format("Document Number exceeds maximum length 50 [%s]", referenceNo);
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<DeliveryMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
+        }
+
+        if (deliveryMessage != null && deliveryMessage.getDocumentDelivery().getDescription() != null) {
+            String description = deliveryMessage.getDocumentDelivery().getDescription().trim();
+            deliveryMessage.getDocumentDelivery().setDescription(description);
+
+            if (description.length() > 3000) {
+                String responseMessage = "Description is too long. It exceeds maximum length: 3000 characters";
                 log.debug("Message Response : {}", responseMessage);
                 result = new ReplyMessage<DeliveryMessage>();
                 result.setCode(ResponseCode.ERROR_E00);
@@ -230,12 +252,13 @@ public class DocumentDeliveryResource {
         }
 
         if (deliveryMessage == null) {
-            String responseMessage = "Bad Request : Document Delivery Data";
+            String responseMessage = "Bad Request :Invalid Document Delivery Data";
             result = new ReplyMessage<DeliveryMessage>();
             result.setCode(ResponseCode.ERROR_E00);
             result.setMessage(responseMessage);
             return replyToClient(result);
         }
+
         if (deliveryMessage.getDocumentDelivery().getId() == null) {
             String responseMessage = "Bad Request : Document Delivery ID is null";
             result = new ReplyMessage<DeliveryMessage>();
@@ -260,19 +283,33 @@ public class DocumentDeliveryResource {
             return replyToClient(result);
         }
 
-        if (deliveryMessage.getDocumentDelivery().getReferenceNo().length() > 50) {
-            String responseMessage = String.format(
-                "Document Number exceeds maximum length 50 [%s]",
-                deliveryMessage.getDocumentDelivery().getReferenceNo()
-            );
-            log.debug("Message Response : {}", responseMessage);
-            result = new ReplyMessage<DeliveryMessage>();
-            result.setCode(ResponseCode.ERROR_E00);
-            result.setMessage(responseMessage);
-            return replyToClient(result);
+        if (deliveryMessage.getDocumentDelivery().getReferenceNo() != null) {
+            String referenceNo = deliveryMessage.getDocumentDelivery().getReferenceNo().trim();
+            deliveryMessage.getDocumentDelivery().setReferenceNo(referenceNo);
+
+            if (referenceNo.length() > 50) {
+                String responseMessage = String.format("Document Number exceeds maximum length 50 [%s]", referenceNo);
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<DeliveryMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
         }
 
-        String docHeaderId = id.toString();
+        if (deliveryMessage.getDocumentDelivery().getDescription() != null) {
+            String description = deliveryMessage.getDocumentDelivery().getDescription().trim();
+            deliveryMessage.getDocumentDelivery().setDescription(description);
+
+            if (description.length() > 3000) {
+                String responseMessage = "Description is too long. It exceeds maximum length: 3000 characters";
+                log.debug("Message Response : {}", responseMessage);
+                result = new ReplyMessage<DeliveryMessage>();
+                result.setCode(ResponseCode.ERROR_E00);
+                result.setMessage(responseMessage);
+                return replyToClient(result);
+            }
+        }
 
         try {
             deliveryMessage.getDocumentDelivery().setSender(appUserDTO.getDepartment());
@@ -297,6 +334,8 @@ public class DocumentDeliveryResource {
         if (result != null) {
             log.debug("Message Response : {}", result.getMessage());
         }
+
+        String docHeaderId = id.toString();
 
         return ResponseEntity
             .ok()

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbDateStruct, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { IReplyMessage } from 'app/entities/util/reply-message.model';
@@ -10,6 +10,8 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 import { IRptParamsDTO, RptParamsDTO } from '../report.model';
 import { ReportService } from '../service/report.service';
 import { HttpResponse } from '@angular/common/http';
+import { IDepartment } from 'app/entities/department/department.model';
+import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
   selector: 'jhi-doclist-rpt',
@@ -26,9 +28,13 @@ export class DoclistRptComponent implements OnInit {
   isShowingAlert = false;
   _modalRef?: NgbModalRef;
   rptParams?: IRptParamsDTO;
-  rptTitleName: string = 'Document List Report';
-  rptFileName: string = 'DocumentListRpt';
+  rptTitleName: string = 'Document Received Report';
+  rptFileName: string = 'DocumentReceivedListRpt';
   rptFormat: string = '.pdf';
+  departmentsList?: IDepartment[];
+  _logindepartmentName: string | undefined = '';
+  _loginDepartmentId: number | undefined = 0;
+  _lStatus = 2;
 
   editForm = this.fb.group({
     rptTitleName: [],
@@ -36,7 +42,7 @@ export class DoclistRptComponent implements OnInit {
     rptFormat: [],
     startDate: [null, [Validators.required]],
     endDate: [null, [Validators.required]],
-    metaDataHeaderId: [],
+    departmentID: [],
     userId: [''],
   });
 
@@ -46,21 +52,34 @@ export class DoclistRptComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder,
     protected router: Router,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected userAuthorityService: UserAuthorityService
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ userAuthority }) => {
-      this._userAuthority = userAuthority;
-      this._activeMenuItem = userAuthority.activeMenu.menuItem;
-    });
+    const _userAuthority = this.userAuthorityService.retrieveUserAuthority();
+    this._logindepartmentName = _userAuthority?.department?.departmentName;
+    this._loginDepartmentId = _userAuthority?.department?.id;
+
+    this.loadSetupService.loadAllSubDepartments().subscribe(
+      (res: HttpResponse<IDepartment[]>) => {
+        this.departmentsList = res.body ?? [];
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  trackDepartmentByID(index: number, item: IDepartment): number {
+    return item.id!;
   }
 
   generate(): void {
     this.isGenerating = true;
     const reportData = this.createFromForm();
     this.showLoading('Generating Report');
-    this.reportService.generateDocMappingListRpt2(reportData).subscribe(
+    this.reportService.generateDocReceivedListRpt(reportData).subscribe(
       res => {
         setTimeout(() => this._modalRef?.close(), 1000);
 
@@ -105,13 +124,22 @@ export class DoclistRptComponent implements OnInit {
     this.isShowingAlert = false;
   }
 
+  onStatusChange(e: any): void {
+    this._lStatus = e.target.value;
+  }
+
+  getDepartmentNameById(id: number): string | undefined {
+    const dept = this.departmentsList!.find(obj => obj.id === id);
+    return dept ? dept.departmentName : undefined;
+  }
+
   protected createFromForm(): IRptParamsDTO {
     const startDate = this.editForm.get(['startDate'])!.value.format('DD-MM-YYYY');
     const endDate = this.editForm.get(['endDate'])!.value.format('DD-MM-YYYY');
-    const metaDataID = this.editForm.get(['metaDataHeaderId'])!.value;
-    const userID = this.editForm.get(['userId'])!.value;
+    const departmentID = this.editForm.get(['departmentID'])!.value;
 
-    console.log('Userid', userID);
+    // const logindepartmentID = this.editForm.get(['departmentID'])!.value;
+    // const userID = this.editForm.get(['userId'])!.value;
 
     return {
       ...new RptParamsDTO(),
@@ -122,9 +150,14 @@ export class DoclistRptComponent implements OnInit {
       rptJrxml: '',
       rptPS1: startDate,
       rptPS2: endDate,
-      rptPS3: metaDataID,
-      rptPS4: userID,
-      rptPS5: '',
+      rptPS3: departmentID,
+      rptPS4: this._loginDepartmentId?.toString(),
+      rptPS5: this._lStatus.toString(),
+      rptPS6: this.getDepartmentNameById(+departmentID),
+      rptPS7: this._logindepartmentName,
+      rptPS8: '',
+      rptPS9: '',
+      rptPS10: '',
     };
   }
 }
