@@ -14,7 +14,8 @@
       "uploadfromdate": "Upload From Date",
       "uploadtodate": "Upload To Date",
       "template": "Department",
-      "user": "Entry User"
+      "user": "Entry User",
+      "status": "Status"
     }
   }
 }
