@@ -80,6 +80,15 @@ export class MeetingSentComponent implements OnInit {
       this.loadPage(1);
     }
   }
+
+  clearForm(): void {
+    this.searchForm.get(['fromdate'])?.patchValue('');
+    this.searchForm.get(['todate'])?.patchValue('');
+    this.searchForm.get(['status'])?.patchValue(2);
+    this.searchForm.get(['subject'])?.patchValue('');
+    this.searchForm.get(['docno'])?.patchValue('');
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
       this.isShowingResult = true;

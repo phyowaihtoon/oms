@@ -109,7 +109,7 @@
           <span jhiTranslate="omsApp.delivery.table.tableheader_received" style="font-weight: 600">Document Received</span>
         </div>
         <div class="col-3 d-flex justify-content-end">
-          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
+          <button class="btn btn-primary btn-sm" [disabled]="isLoading" (click)="clearForm()">
             <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
           </button>
           <span style="width: 5px"></span>
@@ -157,7 +157,7 @@
             </table>
           </div>
         </div>
-        
+
         <div class="box-footer">
           <div *ngIf="documentDelivery && documentDelivery.length > 0">
             <div class="row justify-content-center">

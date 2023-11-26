@@ -97,7 +97,7 @@
           <span jhiTranslate="omsApp.delivery.table.tableheader_draft" style="font-weight: 600">Delivery Draft</span>
         </div>
         <div class="col-3 d-flex justify-content-end">
-          <button class="btn btn-primary btn-sm" [disabled]="isLoading">
+          <button class="btn btn-primary btn-sm" [disabled]="isLoading" (click)="clearForm()">
             <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
           </button>
           <span style="width: 5px"></span>
