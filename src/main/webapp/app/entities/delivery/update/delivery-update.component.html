@@ -28,9 +28,9 @@
           </div>
           <input
             type="text"
+            class="form-control div-padding"
             formControlName="docNo"
             placeholder="{{ 'omsApp.delivery.placeholder.DocNo' | translate }}"
-            class="form-control div-padding text-height"
             name="docNo"
             id="docNo"
             required
@@ -43,14 +43,14 @@
           </div>
           <input
             type="text"
+            class="form-control div-padding"
             formControlName="subject"
             placeholder="{{ 'omsApp.delivery.placeholder.Subject' | translate }}"
-            class="form-control div-padding text-height"
             name="subject"
             id="subject"
           />
 
-          <quill-editor [styles]="{ height: '220px' }" [modules]="modules" formControlName="msg_body"></quill-editor>
+          <quill-editor [modules]="modules" formControlName="msg_body"></quill-editor>
         </div>
 
         <div *ngIf="isReceiver" class="form-group">
@@ -90,7 +90,7 @@
             </fieldset>
           </form>
 
-          <div class="form-group" style="padding: 8px !important; overflow-x: auto">
+          <div class="form-group" style="overflow-x: auto">
             <table class="table" formArrayName="docList">
               <thead>
                 <tr class="bg-primary">
@@ -123,7 +123,7 @@
 
         <div *ngIf="isSuccess" class="form-group">
           <label name="cc_docNo" for="cc_docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
-          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_docNo" />
+          <input type="text" readonly class="textbox form-control div-padding" formControlName="cc_docNo" />
           <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept"
             >Main Dept.</label
           >
@@ -141,14 +141,9 @@
           </div>
 
           <label name="cc_subject" for="cc_subject" class="form-control-label" jhiTranslate="omsApp.delivery.label.Subject">Sub.</label>
-          <input type="text" readonly class="textbox text-height form-control div-padding" formControlName="cc_subject" />
+          <input type="text" readonly class="textbox form-control div-padding" formControlName="cc_subject" />
           <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Bod.</label>
-          <quill-editor
-            [styles]="{ height: '220px' }"
-            [modules]="{ toolbar: false }"
-            class="quill-readonly"
-            formControlName="cc_body"
-          ></quill-editor>
+          <quill-editor [modules]="{ toolbar: false }" class="quill-readonly" formControlName="cc_body"></quill-editor>
         </div>
       </div>
 

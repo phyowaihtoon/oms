@@ -48,12 +48,12 @@
       </div>
     </div>
 
-    <div style="padding-left: 10px; padding-right: 15px; padding-bottom: 5px">
-      <input type="text" readonly class="text-height form-control" value="{{ subject }}" style="height: 2.5em" />
+    <div style="padding-left: 16px; padding-right: 16px; padding-bottom: 8px">
+      <input type="text" readonly class="form-control" value="{{ subject }}" style="height: 2.5em" />
     </div>
 
     <div class="delivery-card-body">
-      <div *ngIf="isInfo" class="col-12" style="margin-bottom: 10px;">
+      <div *ngIf="isInfo" class="col-12" style="margin-bottom: 8px">
         <div class="row col-12">
           <label
             name="meetingDate"
@@ -83,15 +83,15 @@
         </div>
 
         <label name="location" for="location" class="form-control-label" jhiTranslate="omsApp.meeting.label.Location">Location</label>
-        <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ location }}" />
+        <input type="text" readonly class="textbox form-control div-padding" value="{{ location }}" />
 
         <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
-        <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ docNo }}" />
+        <input type="text" readonly class="textbox form-control div-padding" value="{{ docNo }}" />
 
         <label name="senderDepartment" for="senderDepartment" class="form-control-label" jhiTranslate="omsApp.delivery.label.From"
           >Doc No.</label
         >
-        <input type="text" readonly class="textbox text-height form-control div-padding" value="{{ senderDepartment }}" />
+        <input type="text" readonly class="textbox form-control div-padding" value="{{ senderDepartment }}" />
 
         <label name="toDepartments" for="toDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.MDept"
           >Main Dept.</label
@@ -100,19 +100,14 @@
           <jhi-department-component [isReadonly]="true" [departments]="toDepartments"></jhi-department-component>
         </div>
 
-        <div 
-          *ngIf="ccDepartments && ccDepartments.length > 0">
+        <div *ngIf="ccDepartments && ccDepartments.length > 0">
           <label name="ccDepartments" for="ccDepartments" class="form-control-label" jhiTranslate="omsApp.delivery.label.CDept"
-          >CC Dept.</label
+            >CC Dept.</label
           >
           <div class="textbox-wrapper div-padding">
-            <jhi-department-component
-              [isReadonly]="true"
-              [departments]="ccDepartments"
-            ></jhi-department-component>
+            <jhi-department-component [isReadonly]="true" [departments]="ccDepartments"></jhi-department-component>
           </div>
         </div>
-        
 
         <label name="cc_body" for="cc_body" class="form-control-label" jhiTranslate="omsApp.delivery.label.Body">Description</label>
         <quill-editor
@@ -128,23 +123,21 @@
           <table class="table table-striped" aria-describedby="page-heading">
             <thead>
               <tr class="bg-primary">
-                <th scope="col">
-                  <span jhiTranslate="omsApp.delivery.table.No">No.</span>
-                </th>
-                <th scope="col">
+                <th scope="col" style="width: 10%; text-align: center"><span jhiTranslate="omsApp.delivery.table.No">No.</span></th>
+                <th scope="col" style="width: 60%; text-align: center">
                   <span jhiTranslate="omsApp.delivery.table.FileName">File Name</span>
                 </th>
-                <th scope="col" style="text-align: center">
+                <th scope="col" style="width: 15%; text-align: center">
                   <span jhiTranslate="omsApp.delivery.table.Preview">Preview</span>
                 </th>
-                <th scope="col" style="text-align: center">
+                <th scope="col" style="width: 15%; text-align: center">
                   <span jhiTranslate="omsApp.delivery.table.Download">Download</span>
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let docDetail of attachmentList; let i = index" data-cy="entityTable">
-                <td>{{ i + 1 }}</td>
+                <td style="text-align: right; padding-right: 8px">{{ i + 1 }}</td>
                 <td>{{ docDetail.fileName }}</td>
                 <td style="text-align: center">
                   <span style="cursor: pointer" (click)="previewFile(docDetail.id, docDetail.fileName)">

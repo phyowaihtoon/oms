@@ -308,6 +308,19 @@ input[type='time']:hover {
   }
 }
 
+:host ::ng-deep .quill-readonly .ql-container {
+  min-height: 15vh !important;
+}
+
+:host ::ng-deep .quill-readonly .ql-container .ql-editor {
+  background-color: #eeeeee;
+  min-height: 15vh !important;
+}
+
+:host ::ng-deep .ql-container {
+  min-height: 30vh;
+}
+
 .validate-span {
   height: 1.8em;
   display: block;
