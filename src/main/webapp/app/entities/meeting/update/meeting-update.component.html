@@ -36,12 +36,12 @@
                 editForm.get('totime')?.touched)
             "
           >
-            <div
-              *ngIf="editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required"
-              style="text-align: right; color: red"
-            >
-              <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
-            </div>
+              <div
+                *ngIf="editForm.get('fromtime')?.errors?.required || editForm.get('totime')?.errors?.required"
+                style="text-align: right; color: red"
+              >
+                <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredTime"> This Field is required. </span>
+              </div>
           </div>
 
           <div class="row col-12">
@@ -143,10 +143,10 @@
           </div>
         </div>
         <div *ngIf="isAttachment" class="form-group">
-          <label class="form-control-label" for="text">&nbsp;</label>
+          <!-- <label class="form-control-label" for="text">&nbsp;</label>
           <div *ngIf="checkFormArrayEmpty()" style="text-align: right; color: red">
             <span class="validate-span" jhiTranslate="omsApp.meeting.validateMsg.RequiredFile"> This Field is required. </span>
-          </div>
+          </div> -->
           <form enctype="multipart/form-data">
             <fieldset>
               <div class="form-group">
@@ -244,6 +244,7 @@
             style="float: right"
             (click)="goToStep2()"
             [disabled]="
+              editForm.get('meetingDate')?.errors?.required ||
               editForm.get('fromtime')?.errors?.required ||
               editForm.get('totime')?.errors?.required ||
               editForm.get('location')?.errors?.required ||
@@ -273,7 +274,7 @@
             <span class="btn-text-padding-left" jhiTranslate="omsApp.meeting.button.Back">Back</span>
           </button>
 
-          <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep4()" [disabled]="checkFormArrayEmpty()">
+          <button class="btn btn-primary" type="submit" style="float: right" (click)="goToStep4()" > <!-- [disabled]="checkFormArrayEmpty()" -->
             <span class="btn-text-padding-right" jhiTranslate="omsApp.meeting.button.Next">Next</span>
             <fa-icon icon="forward"></fa-icon>
           </button>
