@@ -7,15 +7,14 @@
     "validation": {
       "datePattern": "Date must be entered in DD-MM-YYYY"
     },
-    "docmapping": {
+    "documentReceived": {
       "criteriaLbl": "REPORT CRITERIA",
       "startdate": "နေ့ရက်မှ",
       "enddate": "နေ့ရက်ထိ",
       "uploadfromdate": "နေ့ရက်မှ",
       "uploadtodate": "နေ့ရက်ထိ",
-      "template": "ဌာန",
-      "status": "အခြေအနေ",
-      "user": "ထည့်သွင်းသူ"
+      "departmentFrom": "ဌာန (မှ)",
+      "status": "အခြေအနေ"
     }
   }
 }

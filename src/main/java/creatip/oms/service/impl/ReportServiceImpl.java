@@ -1,9 +1,6 @@
 package creatip.oms.service.impl;
 
-import creatip.oms.domain.Department;
-import creatip.oms.repository.DepartmentRepository;
 import creatip.oms.service.ReportService;
-import creatip.oms.service.dto.DepartmentDTO;
 import creatip.oms.service.message.ReplyMessage;
 import creatip.oms.service.message.RptDataMessage;
 import creatip.oms.service.message.RptParamsMessage;
@@ -13,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
@@ -35,20 +31,19 @@ public class ReportServiceImpl implements ReportService {
         ReplyMessage<RptParamsMessage> replyMessage = new ReplyMessage<RptParamsMessage>();
 
         try {
-        	
             StoredProcedureQuery query = em.createStoredProcedureQuery("DocumentDeliveryListRpt");
             query.registerStoredProcedureParameter("frmDate", String.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("toDate", String.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("deptid", Long.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("loginDeptid", Long.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("docstatus", Integer.class, ParameterMode.IN);
-            
+
             query.setParameter("frmDate", rptPara.getRptPS1());
             query.setParameter("toDate", rptPara.getRptPS2());
-            query.setParameter("deptid", rptPara.getRptPS3() == null? 0L: Long.parseLong(rptPara.getRptPS3()));
-            query.setParameter("loginDeptid", rptPara.getRptPS4() == null? 0L: Long.parseLong(rptPara.getRptPS4()));
+            query.setParameter("deptid", rptPara.getRptPS3() == null ? 0L : Long.parseLong(rptPara.getRptPS3()));
+            query.setParameter("loginDeptid", rptPara.getRptPS4() == null ? 0L : Long.parseLong(rptPara.getRptPS4()));
             query.setParameter("docstatus", Integer.parseInt(rptPara.getRptPS5()));
-            
+
             List<Object[]> resultList = query.getResultList();
             if (resultList == null || resultList.size() == 0) {
                 replyMessage.setCode(ResponseCode.WARNING);
@@ -70,11 +65,12 @@ public class ReportServiceImpl implements ReportService {
             }
 
             Map<String, Object> parameters = new HashMap<String, Object>();
-            
+
             parameters.put("frmDate", rptPara.getRptPS1());
             parameters.put("toDate", rptPara.getRptPS2());
-            parameters.put("deptName", rptPara.getRptPS6()==null?"အားလုံး": rptPara.getRptPS6());           
-            
+            parameters.put("deptName", rptPara.getRptPS6());
+            parameters.put("loginDeptName", rptPara.getRptPS7());
+
             String rptFilePath = ReportPrint.print(documentList, rptPara, parameters);
             if (rptFilePath == null || rptFilePath.equals("")) {
                 replyMessage.setCode(ResponseCode.ERROR_E00);
@@ -97,5 +93,5 @@ public class ReportServiceImpl implements ReportService {
         replyMessage.setMessage("Report is successfully generated");
         replyMessage.setData(rptPara);
         return replyMessage;
-    }    
+    }
 }

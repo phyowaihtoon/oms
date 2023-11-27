@@ -71,6 +71,14 @@ export class DeliverySentComponent implements OnInit {
     return item.id!;
   }
 
+  clearForm(): void {
+    this.searchForm.get(['fromdate'])?.patchValue('');
+    this.searchForm.get(['todate'])?.patchValue('');
+    this.searchForm.get(['status'])?.patchValue(2);
+    this.searchForm.get(['subject'])?.patchValue('');
+    this.searchForm.get(['docno'])?.patchValue('');
+  }
+
   searchDocument(): void {
     if (this.searchForm.invalid) {
       // this.searchForm.get('metaDataHdrID')!.markAsTouched();
