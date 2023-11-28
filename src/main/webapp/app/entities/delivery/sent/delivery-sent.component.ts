@@ -77,6 +77,7 @@ export class DeliverySentComponent implements OnInit {
     this.searchForm.get(['status'])?.patchValue(2);
     this.searchForm.get(['subject'])?.patchValue('');
     this.searchForm.get(['docno'])?.patchValue('');
+    this.documentDelivery = [];
   }
 
   searchDocument(): void {

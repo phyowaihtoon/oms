@@ -11,7 +11,7 @@ import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.mod
 import * as FileSaver from 'file-saver';
 import { DeliveryService } from '../service/delivery.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'jhi-delivery-detail-sent',
@@ -69,6 +69,16 @@ export class DeliveryDetailSentComponent implements OnInit {
     });
 
     this.getData();
+
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      if (this._docStatus.status === 1) {
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
+        this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
+      } else {
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
+        this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
+      }
+    });
   }
 
   previousState(): void {
@@ -84,11 +94,11 @@ export class DeliveryDetailSentComponent implements OnInit {
     if (this._loginDepartment?.id === this.documentDelivery?.sender?.id) {
       if (this.documentDelivery?.status === 1) {
         this._docStatus.status = 1;
-        this._docStatus.description = 'Read';
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
         this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
       } else {
         this._docStatus.status = 0;
-        this._docStatus.description = 'Unread';
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
         this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
       }
     }
@@ -103,11 +113,11 @@ export class DeliveryDetailSentComponent implements OnInit {
       if (this._loginDepartment?.id === value.receiver?.id) {
         if (value.status === 1) {
           this._docStatus.status = 1;
-          this._docStatus.description = 'Read';
+          this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
           this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
         } else {
           this._docStatus.status = 0;
-          this._docStatus.description = 'Unread';
+          this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
           this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
         }
       }
@@ -129,7 +139,7 @@ export class DeliveryDetailSentComponent implements OnInit {
             if (replyMessage !== null) {
               if (replyMessage.code === ResponseCode.SUCCESS) {
                 this._docStatus.status = 1;
-                this._docStatus.description = 'Read';
+                this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
@@ -164,7 +174,7 @@ export class DeliveryDetailSentComponent implements OnInit {
             if (replyMessage !== null) {
               if (replyMessage.code === ResponseCode.SUCCESS) {
                 this._docStatus.status = 0;
-                this._docStatus.description = 'Unread';
+                this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
