@@ -2,7 +2,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `DocumentDeliveryListRpt`(IN frmDate
 IN deptid bigint, IN loginDeptid bigint, IN docstatus int)
 BEGIN
 	IF  deptid = 0 and docstatus = 2 THEN
-		SELECT DATE(dd.created_date), dd.reference_no, dd.Subject, d.department_name,
+		SELECT DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')), dd.reference_no, dd.Subject, d.department_name,
         CASE
 			WHEN dr.status = 1 THEN 'ဖတ်ပြီး'
 			WHEN dr.status = 0 THEN 'မဖတ်ရသေး'
@@ -18,7 +18,7 @@ BEGIN
         AND dr.receiver_id = loginDeptid;
 	
     ELSEIF  deptid <> 0 and docstatus <> 2 THEN
-		SELECT DATE(dd.created_date), dd.reference_no, dd.Subject, d.department_name,
+		SELECT DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')), dd.reference_no, dd.Subject, d.department_name,
         CASE
 			WHEN dr.status = 1 THEN 'ဖတ်ပြီး'
 			WHEN dr.status = 0 THEN 'မဖတ်ရသေး'
@@ -35,7 +35,7 @@ BEGIN
         AND dd.sender_id = deptid;
 	
      ELSEIF  deptid <> 0 and docstatus = 2 THEN
-		SELECT DATE(dd.created_date), dd.reference_no, dd.Subject, d.department_name,
+		SELECT DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')), dd.reference_no, dd.Subject, d.department_name,
         CASE
 			WHEN dr.status = 1 THEN 'ဖတ်ပြီး'
 			WHEN dr.status = 0 THEN 'မဖတ်ရသေး'
@@ -51,7 +51,7 @@ BEGIN
         AND dr.receiver_id = loginDeptid AND dd.sender_id = deptid;
         
 	ELSE  
-		SELECT DATE(dd.created_date), dd.reference_no, dd.Subject, d.department_name, 
+		SELECT DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')), dd.reference_no, dd.Subject, d.department_name, 
         CASE
 			WHEN dr.status = 1 THEN 'ဖတ်ပြီး'
 			WHEN dr.status = 0 THEN 'မဖတ်ရသေး'
