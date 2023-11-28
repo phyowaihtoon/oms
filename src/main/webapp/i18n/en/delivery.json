@@ -18,7 +18,7 @@
       },
       "label": {
         "DocNo": "Document No.",
-        "Subject": "Subject:",
+        "Subject": "Subject",
         "Body": "Description:",
         "From": "From:",
         "MDept": "To:",
@@ -58,6 +58,10 @@
         "status": "Status",
         "search": "Search",
         "DocNo": "Document No."
+      },
+      "Data": {
+        "read": "Read",
+        "unread": "Unread"
       }
     }
   }

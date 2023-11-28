@@ -5,7 +5,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IDepartment } from 'app/entities/department/department.model';
 import { MeetingService } from '../service/meeting.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { HttpResponse } from '@angular/common/http';
 import { IReplyMessage, ResponseCode } from 'app/entities/util/reply-message.model';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
@@ -81,6 +81,16 @@ export class MeetingDetailComponent implements OnInit {
     });
 
     this.getData();
+
+    this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      if (this._docStatus.status === 1) {
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
+        this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
+      } else {
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
+        this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
+      }
+    });
   }
 
   previousState(): void {
@@ -112,11 +122,11 @@ export class MeetingDetailComponent implements OnInit {
     if (this._loginDepartment?.id === this.meetingDelivery?.sender?.id) {
       if (this.meetingDelivery?.status === 1) {
         this._docStatus.status = 1;
-        this._docStatus.description = 'Read';
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
         this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
       } else {
         this._docStatus.status = 0;
-        this._docStatus.description = 'Unread';
+        this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
         this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
       }
     }
@@ -131,11 +141,11 @@ export class MeetingDetailComponent implements OnInit {
       if (this._loginDepartment?.id === value.receiver?.id) {
         if (value.status === 1) {
           this._docStatus.status = 1;
-          this._docStatus.description = 'Read';
+          this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
           this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
         } else {
           this._docStatus.status = 0;
-          this._docStatus.description = 'Unread';
+          this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
           this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
         }
       }
@@ -157,7 +167,7 @@ export class MeetingDetailComponent implements OnInit {
             if (replyMessage !== null) {
               if (replyMessage.code === ResponseCode.SUCCESS) {
                 this._docStatus.status = 1;
-                this._docStatus.description = 'Read';
+                this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.read');
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsUnRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
@@ -192,7 +202,7 @@ export class MeetingDetailComponent implements OnInit {
             if (replyMessage !== null) {
               if (replyMessage.code === ResponseCode.SUCCESS) {
                 this._docStatus.status = 0;
-                this._docStatus.description = 'Unread';
+                this._docStatus.description = this.translateService.instant('omsApp.delivery.Data.unread');
                 this._docStatus.actionLabel = this.translateService.instant('omsApp.delivery.label.MarkAsRead');
                 const replyCode = replyMessage.code;
                 const replyMsg = replyMessage.message;
@@ -259,28 +269,32 @@ export class MeetingDetailComponent implements OnInit {
       this.showLoading('Loading File');
       this.meetingService.getPreviewData(docId).subscribe(
         (res: HttpResponse<Blob>) => {
+          this.hideLoading();
+
           if (res.status === 200 && res.body) {
             const modalRef = this.modalService.open(PdfViewerComponent, { size: 'xl', backdrop: 'static', centered: true });
             modalRef.componentInstance.pdfBlobURL = res.body;
-          } else if (res.status === 204) {
-            const code = ResponseCode.WARNING;
-            const message = 'This file does not exist.';
-            this.showAlertMessage(code, message);
-          } else if (res.status === 205) {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Invalid file type.';
-            this.showAlertMessage(code, message);
           } else {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Cannot download file';
+            let code = res.headers.get('code');
+            let message = res.headers.get('message');
+            if (code === null || message === null) {
+              code = ResponseCode.RESPONSE_FAILED_CODE;
+              message = 'No Response Data from Server';
+            }
+
             this.showAlertMessage(code, message);
           }
-          this.hideLoading();
         },
-        () => {
+        error => {
           this.hideLoading();
-          const code = ResponseCode.RESPONSE_FAILED_CODE;
-          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          console.log('Error Response :', JSON.stringify(error));
+
+          let code = error.headers.get('code');
+          let message = error.headers.get('message');
+          if (code === null) {
+            code = ResponseCode.RESPONSE_FAILED_CODE;
+            message = 'No Response Data from Server';
+          }
           this.showAlertMessage(code, message);
         }
       );
@@ -292,27 +306,31 @@ export class MeetingDetailComponent implements OnInit {
       this.showLoading('Downloading File');
       this.meetingService.downloadFile(docId).subscribe(
         (res: HttpResponse<Blob>) => {
+          this.hideLoading();
+
           if (res.status === 200 && res.body) {
             FileSaver.saveAs(res.body, fileName);
-          } else if (res.status === 204) {
-            const code = ResponseCode.WARNING;
-            const message = 'This file does not exist.';
-            this.showAlertMessage(code, message);
-          } else if (res.status === 205) {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Invalid file type.';
-            this.showAlertMessage(code, message);
           } else {
-            const code = ResponseCode.ERROR_E00;
-            const message = 'Cannot download file';
+            let code = res.headers.get('code');
+            let message = res.headers.get('message');
+            if (code === null || message === null) {
+              code = ResponseCode.RESPONSE_FAILED_CODE;
+              message = 'No Response Data from Server';
+            }
+
             this.showAlertMessage(code, message);
           }
-          this.hideLoading();
         },
-        () => {
+        error => {
           this.hideLoading();
-          const code = ResponseCode.RESPONSE_FAILED_CODE;
-          const message = 'Error occured while connecting to server. Please, check network connection with your server.';
+          console.log('Error Response :', JSON.stringify(error));
+
+          let code = error.headers.get('code');
+          let message = error.headers.get('message');
+          if (code === null) {
+            code = ResponseCode.RESPONSE_FAILED_CODE;
+            message = 'No Response Data from Server';
+          }
           this.showAlertMessage(code, message);
         }
       );

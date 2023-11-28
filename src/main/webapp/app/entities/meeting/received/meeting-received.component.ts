@@ -90,6 +90,7 @@ export class MeetingReceivedComponent implements OnInit {
     this.searchForm.get(['status'])?.patchValue(2);
     this.searchForm.get(['subject'])?.patchValue('');
     this.searchForm.get(['docno'])?.patchValue('');
+    this.meetingDeliveryList = [];
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
