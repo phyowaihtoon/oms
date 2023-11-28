@@ -1,7 +1,7 @@
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDate, NgbDateStruct, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
@@ -22,7 +22,9 @@ import * as dayjs from 'dayjs';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('dp') datepicker?: NgbDatepicker;
+
   account: Account | null = null;
   authSubscription?: Subscription;
   _userAuthority?: IUserAuthority | null;
@@ -36,9 +38,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   totalItems_2 = 10;
   page_2?: number;
   ngbPaginationPage_2 = 1;
-
-  // predicate!: string;
-  // ascending!: boolean;
 
   _departmentName: string | undefined = '';
   _lDate: NgbDate = this.calendar.getToday();
@@ -56,13 +55,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     private calendar: NgbCalendar,
     private loadSetupService: LoadSetupService,
     private meetingService: MeetingService,
-    private deliveryService: DeliveryService,
-    private ngbDateParserFormatter: NgbDateParserFormatter
+    private deliveryService: DeliveryService
   ) {}
 
   ngOnInit(): void {
-    // const date = new Date();
-
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
     /*  if (this.isAuthenticated()) {
       this._userAuthority = this.userAuthorityService.retrieveUserAuthority();
@@ -74,6 +70,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getMeetingList();
     this.loadDashboard1(1);
     this.loadDashboard2(1);
+  }
+
+  ngAfterViewInit(): void {
+    this.makeTodayDateSelected();
   }
 
   isAuthenticated(): boolean {
@@ -110,6 +110,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onRefresh(): void {
+    this.makeTodayDateSelected();
+
     this._lDate = this.calendar.getToday();
     this.getDraftSummary();
     this.getMeetingList();
@@ -216,5 +218,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onError2(): void {
     this.ngbPaginationPage_2 = this.page_2 ?? 1;
+  }
+
+  private makeTodayDateSelected(): void {
+    const today = this.calendar.getToday();
+    const dateToFocus: NgbDateStruct = { year: today.year, month: today.month, day: today.day };
+    this.datepicker?.focusDate(dateToFocus);
+    this.datepicker?.focusSelect();
   }
 }
