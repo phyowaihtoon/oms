@@ -16,6 +16,8 @@ export interface IMeetingDelivery {
   delFlag?: string;
   sender?: IDepartment;
   createdDate?: dayjs.Dayjs;
+  receiverList?: IReceiverInfo[]; // This filed data is not needed to pass to server side
+  rowExpanded?: boolean; // This filed data is not needed to pass to server side
 }
 
 export class MeetingDelivery implements IMeetingDelivery {
@@ -39,6 +41,12 @@ export class MeetingDelivery implements IMeetingDelivery {
 
 export function getMeetingIdentifier(delivery: IMeetingDelivery): number | undefined {
   return delivery.id;
+}
+
+export interface IReceiverInfo {
+  departmentId?: number;
+  receiverType?: number;
+  departmentName?: string;
 }
 
 export interface IMeetingReceiver {

@@ -41,7 +41,8 @@
         "Date": "Date",
         "DocumentNo": "Document No.",
         "Subject": "Subject",
-        "Department": "Department"
+        "DepartmentTo": "Department (Receiver)",
+        "DepartmentFrom": "Department"
       },
       "placeholder": {
         "DocNo": "Document No.",

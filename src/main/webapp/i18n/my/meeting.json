@@ -47,7 +47,8 @@
         "Date": "ရက်စွဲ",
         "DocumentNo": "စာအမှတ်",
         "Subject": "အကြောင်းအရာ",
-        "Department": "ဌာန"
+        "DepartmentTo": "ဌာန (လက်ခံ)",
+        "DepartmentFrom": "ဌာန"
       }
     }
   }

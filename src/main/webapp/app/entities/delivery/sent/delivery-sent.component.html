@@ -101,7 +101,7 @@
             <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
           </button>
           <span style="width: 5px"></span>
-          <button class="btn btn-primary btn-sm" (click)="searchDocument()">
+          <button class="btn btn-primary btn-sm" (click)="searchDocumentDelivery()">
             <fa-icon icon="search"></fa-icon>
             <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
           </button>
@@ -115,10 +115,10 @@
               <thead>
                 <tr class="bg-primary">
                   <th style="width: 5%; text-align: center" jhiTranslate="omsApp.delivery.table.No">No.</th>
-                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date">Date></th>
-                  <th style="width: 15%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">Document No.></th>
-                  <th style="width: 30%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject">Subject</th>
-                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.delivery.table.Department">Department</th>
+                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date">Date</th>
+                  <th style="width: 15%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">Document No.</th>
+                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject">Subject</th>
+                  <th style="width: 30%; text-align: center" jhiTranslate="omsApp.delivery.table.DepartmentTo">Department</th>
                   <th style="width: 15%; text-align: center">#</th>
                 </tr>
               </thead>
@@ -126,11 +126,43 @@
                 <tr *ngFor="let doc of documentDelivery; let i = index" data-cy="entityTable">
                   <td style="text-align: right; padding-right: 8px">{{ i + 1 }}</td>
                   <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
-                  <td>{{ doc.referenceNo }}</td>
-                  <td>{{ doc.subject ? (doc.subject | truncateText: 35) : '' }}</td>
-                  <td>{{ doc.sender?.departmentName }}</td>
+                  <td title="{{ doc.referenceNo }}">{{ doc.referenceNo ? (doc.referenceNo | truncateText: 12) : '' }}</td>
+                  <td title="{{ doc.subject }}">{{ doc.subject ? (doc.subject | truncateText: 35) : '' }}</td>
+                  <td>
+                    {{ doc.receiverList ? doc.receiverList[0].departmentName : '-' }}
+                    <span
+                      *ngIf="doc.receiverList && doc.receiverList.length > 1"
+                      (click)="doc.rowExpanded = !doc.rowExpanded"
+                      style="cursor: pointer; padding-left: 3px; color: blue; font-size: 9pt"
+                    >
+                      {{ doc.rowExpanded ? ' - ' : ' + ' }} {{ doc.receiverList.length - 1 }} Others
+                    </span>
+                    <table *ngIf="doc.rowExpanded && doc.receiverList && doc.receiverList.length > 1">
+                      <tbody>
+                        <tr *ngFor="let receiver of doc.receiverList.slice(1); let i = index" style="background-color: transparent">
+                          <td *ngIf="receiver.receiverType === 1">{{ receiver.departmentName }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div *ngIf="doc.rowExpanded && doc.receiverList && doc.receiverList.length > 1 && containCc(doc.receiverList)">
+                      <span style="font-weight: bold" jhiTranslate="omsApp.delivery.label.CDept">Cc:</span>
+                      <table>
+                        <tbody>
+                          <tr *ngFor="let receiver of doc.receiverList.slice(1); let i = index" style="background-color: transparent">
+                            <td *ngIf="receiver.receiverType === 2">{{ receiver.departmentName }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
                   <td style="text-align: center">
-                    <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', doc.id, 'view-sent']">View Details</a>
+                    <span
+                      (click)="goToViewDetails(doc.id)"
+                      jhiTranslate="home.view_details"
+                      style="color: blue; text-decoration: underline; cursor: pointer ;"
+                    >
+                      View Details
+                    </span>
                   </td>
                 </tr>
               </tbody>

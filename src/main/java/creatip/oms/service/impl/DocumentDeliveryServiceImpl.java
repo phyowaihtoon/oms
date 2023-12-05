@@ -14,8 +14,10 @@ import creatip.oms.service.DocumentDeliveryService;
 import creatip.oms.service.dto.DocumentAttachmentDTO;
 import creatip.oms.service.dto.DocumentDeliveryDTO;
 import creatip.oms.service.dto.DocumentReceiverDTO;
+import creatip.oms.service.dto.ReceiverInfoDTO;
 import creatip.oms.service.mapper.DocumentAttachmentMapper;
 import creatip.oms.service.mapper.DocumentDeliveryMapper;
+import creatip.oms.service.mapper.DocumentReceiverInfoMapper;
 import creatip.oms.service.mapper.DocumentReceiverMapper;
 import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.DeliveryMessage;
@@ -60,6 +62,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     private final DocumentDeliveryMapper documentDeliveryMapper;
     private final DocumentAttachmentMapper documentAttachmentMapper;
     private final DocumentReceiverMapper documentReceiverMapper;
+    private final DocumentReceiverInfoMapper receiverInfoMapper;
 
     private ReplyMessage<DeliveryMessage> replyMessage;
 
@@ -72,6 +75,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         DocumentDeliveryMapper documentDeliveryMapper,
         DocumentAttachmentMapper documentAttachmentMapper,
         DocumentReceiverMapper documentReceiverMapper,
+        DocumentReceiverInfoMapper receiverInfoMapper,
         FTPSessionFactory ftpSessionFactory
     ) {
         this.documentDeliveryRepository = documentDeliveryRepository;
@@ -80,6 +84,7 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
         this.documentDeliveryMapper = documentDeliveryMapper;
         this.documentAttachmentMapper = documentAttachmentMapper;
         this.documentReceiverMapper = documentReceiverMapper;
+        this.receiverInfoMapper = receiverInfoMapper;
         this.replyMessage = new ReplyMessage<DeliveryMessage>();
         this.ftpSessionFactory = ftpSessionFactory;
     }
@@ -346,35 +351,74 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
 
     @Override
     public Page<DocumentDeliveryDTO> getSentDeliveryList(SearchCriteriaMessage criteria, Pageable pageable) {
-        Page<DocumentDelivery> page = null;
+        Page<DocumentDeliveryDTO> pageDTO = null;
         ZoneId zoneId = ZoneId.systemDefault();
         String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page = documentDeliveryRepository.findDocumentsSent(criteria.getSenderId(), criteria.getDateOn(), zoneCode, pageable);
+            Page<DocumentDelivery> page = documentDeliveryRepository.findDocumentsSent(
+                criteria.getSenderId(),
+                criteria.getDateOn(),
+                zoneCode,
+                pageable
+            );
+            return page.map(documentDeliveryMapper::toDto);
         } else {
             String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
             String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
-            page =
-                documentDeliveryRepository.findDocumentsSent(
-                    criteria.getSenderId(),
-                    criteria.getDateFrom(),
-                    criteria.getDateTo(),
-                    subject,
-                    referenceNo,
-                    zoneCode,
-                    pageable
-                );
+
+            Set<Short> setOfStatus = new HashSet<Short>();
+            // value 2 will extract all status : read and unread
+            if (criteria.getStatus() == 2) {
+                for (ViewStatus enumData : ViewStatus.values()) {
+                    setOfStatus.add(enumData.value);
+                }
+            } else setOfStatus.add(criteria.getStatus());
+
+            Page<DocumentDelivery> page = documentDeliveryRepository.findDocumentsSent(
+                criteria.getSenderId(),
+                criteria.getDateFrom(),
+                criteria.getDateTo(),
+                subject,
+                referenceNo,
+                zoneCode,
+                setOfStatus,
+                pageable
+            );
+
+            List<DocumentDeliveryDTO> modifiedList = new ArrayList<DocumentDeliveryDTO>();
+            page.forEach(
+                documentDelivery -> {
+                    DocumentDeliveryDTO dto = documentDeliveryMapper.toDto(documentDelivery);
+                    List<DocumentReceiver> receiverList = documentReceiverRepository.findByHeaderId(dto.getId());
+                    List<ReceiverInfoDTO> receiverInfoList = this.receiverInfoMapper.toDto(receiverList);
+                    dto.setReceiverList(receiverInfoList);
+                    modifiedList.add(dto);
+                }
+            );
+
+            Pageable pageableDTO = page.getPageable();
+            pageDTO = new PageImpl<>(modifiedList, pageableDTO, page.getTotalElements());
         }
-        return page.map(documentDeliveryMapper::toDto);
+
+        return pageDTO;
     }
 
     @Override
     public Page<DocumentDeliveryDTO> getDeliveryDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
+        Page<DocumentDeliveryDTO> pageDTO = null;
         ZoneId zoneId = ZoneId.systemDefault();
         String zoneCode = zoneId.getId();
 
         String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
         String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
+        Set<Short> setOfStatus = new HashSet<Short>();
+        // value 2 will extract all status : read and unread
+        if (criteria.getStatus() == 2) {
+            for (ViewStatus enumData : ViewStatus.values()) {
+                setOfStatus.add(enumData.value);
+            }
+        } else setOfStatus.add(criteria.getStatus());
+
         Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(
             criteria.getSenderId(),
             criteria.getDateFrom(),
@@ -382,9 +426,25 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             subject,
             referenceNo,
             zoneCode,
+            setOfStatus,
             pageable
         );
-        return page.map(documentDeliveryMapper::toDto);
+
+        List<DocumentDeliveryDTO> modifiedList = new ArrayList<DocumentDeliveryDTO>();
+        page.forEach(
+            documentDelivery -> {
+                DocumentDeliveryDTO dto = documentDeliveryMapper.toDto(documentDelivery);
+                List<DocumentReceiver> receiverList = documentReceiverRepository.findByHeaderId(dto.getId());
+                List<ReceiverInfoDTO> receiverInfoList = this.receiverInfoMapper.toDto(receiverList);
+                dto.setReceiverList(receiverInfoList);
+                modifiedList.add(dto);
+            }
+        );
+
+        Pageable pageableDTO = page.getPageable();
+        pageDTO = new PageImpl<>(modifiedList, pageableDTO, page.getTotalElements());
+
+        return pageDTO;
     }
 
     @Override

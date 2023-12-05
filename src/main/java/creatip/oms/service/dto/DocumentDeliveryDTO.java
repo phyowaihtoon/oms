@@ -2,6 +2,7 @@ package creatip.oms.service.dto;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 public class DocumentDeliveryDTO implements Serializable {
@@ -41,6 +42,8 @@ public class DocumentDeliveryDTO implements Serializable {
     private Instant lastModifiedDate;
 
     private short receiverType;
+
+    private List<ReceiverInfoDTO> receiverList;
 
     public Long getId() {
         return id;
@@ -152,6 +155,14 @@ public class DocumentDeliveryDTO implements Serializable {
 
     public void setReceiverType(short receiverType) {
         this.receiverType = receiverType;
+    }
+
+    public List<ReceiverInfoDTO> getReceiverList() {
+        return receiverList;
+    }
+
+    public void setReceiverList(List<ReceiverInfoDTO> receiverList) {
+        this.receiverList = receiverList;
     }
 
     @Override

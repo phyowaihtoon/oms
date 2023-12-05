@@ -8,6 +8,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 import { SessionStorageService } from 'ngx-webstorage';
+import { ISearchCriteria } from 'app/entities/util/criteria.model';
 
 export type EntityResponseType = HttpResponse<IDeliveryMessage>;
 export type EntityArrayResponseType = HttpResponse<IDocumentDelivery[]>;
@@ -26,8 +27,33 @@ export class DeliveryService {
     private $sessionStorage: SessionStorageService
   ) {}
 
+  getSearchCriteria(key: string): ISearchCriteria | null {
+    const searchedCriteria: ISearchCriteria | null = this.$sessionStorage.retrieve(key);
+    if (this.previousState === key) {
+      return searchedCriteria;
+    } else {
+      this.clearSearchCriteria(key);
+      return null;
+    }
+  }
+
+  clearSearchCriteria(key: string): void {
+    this.$sessionStorage.clear(key);
+  }
+
+  storeSearchCriteria(key: string, searchCriteria?: ISearchCriteria): void {
+    this.$sessionStorage.store(key, searchCriteria);
+  }
+
+  setPreviousState(preState: string): void {
+    this.previousState = preState;
+  }
+
+  clearPreviousState(): void {
+    this.previousState = '';
+  }
+
   save(formData: FormData): Observable<HttpResponse<IReplyMessage>> {
-    console.log('Delivery URL', this.resourceUrl);
     return this.http.post<IReplyMessage>(this.resourceUrl, formData, { observe: 'response' });
   }
 
@@ -91,7 +117,6 @@ export class DeliveryService {
   protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((documentDelivery: IDocumentDelivery) => {
-        console.log('Original Date from Server :', documentDelivery.sentDate);
         (documentDelivery.sentDate = documentDelivery.sentDate ? dayjs(documentDelivery.sentDate) : undefined),
           (documentDelivery.createdDate = documentDelivery.createdDate ? dayjs(documentDelivery.createdDate) : undefined);
       });

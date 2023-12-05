@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router, Event as NavigationEvent } from '@angular/router';
 import { IMeetingAttachment, IMeetingDelivery, IMeetingReceiver } from '../meeting.model';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IDepartment } from 'app/entities/department/department.model';
@@ -12,6 +12,7 @@ import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.c
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
 import { PdfViewerComponent } from 'app/entities/util/pdfviewer/pdf-viewer.component';
 import * as FileSaver from 'file-saver';
+import { MEETING_SENT_KEY } from 'app/config/input.constants';
 
 @Component({
   selector: 'jhi-meeting-detail',
@@ -55,7 +56,8 @@ export class MeetingDetailComponent implements OnInit {
     protected modalService: NgbModal,
     protected meetingService: MeetingService,
     protected userAuthorityService: UserAuthorityService,
-    protected translateService: TranslateService
+    protected translateService: TranslateService,
+    protected router: Router
   ) {
     this.modules = {
       toolbar: [
@@ -67,6 +69,15 @@ export class MeetingDetailComponent implements OnInit {
         [{ align: [] }],
       ],
     };
+
+    this.router.events.subscribe((event: NavigationEvent) => {
+      if (event instanceof NavigationStart) {
+        // This event will trigger every time navigating back
+        if (event.restoredState) {
+          this.meetingService.setPreviousState(MEETING_SENT_KEY);
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -93,7 +104,7 @@ export class MeetingDetailComponent implements OnInit {
     });
   }
 
-  previousState(): void {
+  closeForm(): void {
     window.history.back();
   }
 

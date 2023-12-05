@@ -65,9 +65,9 @@
           </div>
           <div class="col-4">
             <select class="form-control" id="staus" data-cy="status" name="status" formControlName="status">
-              <option [value]="2">All</option>
-              <option [value]="1">Read</option>
-              <option [value]="0">Unread</option>
+              <option [value]="2" jhiTranslate="home.status_all">All</option>
+              <option [value]="1" jhiTranslate="home.status_read">Read</option>
+              <option [value]="0" jhiTranslate="home.status_unread">Unread</option>
             </select>
           </div>
         </div>
@@ -113,7 +113,7 @@
             <span class="d-none d-md-inline" jhiTranslate="entity.action.clear">Clear</span>
           </button>
           <span style="width: 5px"></span>
-          <button class="btn btn-primary btn-sm" (click)="searchDocument()">
+          <button class="btn btn-primary btn-sm" (click)="searchDocumentDelivery()">
             <fa-icon icon="search"></fa-icon>
             <span class="d-none d-md-inline" jhiTranslate="entity.action.search">Search</span>
           </button>
@@ -130,7 +130,7 @@
                   <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date">Date></th>
                   <th style="width: 15%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">Document No.></th>
                   <th style="width: 30%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject">Subject</th>
-                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.delivery.table.Department">Department</th>
+                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.delivery.table.DepartmentFrom">Department</th>
                   <th style="width: 15%; text-align: center">#</th>
                 </tr>
               </thead>
@@ -142,7 +142,13 @@
                   <td>{{ doc.subject ? (doc.subject | truncateText: 35) : '' }}</td>
                   <td>{{ doc.sender?.departmentName }}</td>
                   <td style="text-align: center">
-                    <a href="#" jhiTranslate="home.view_details" [routerLink]="['/delivery', doc.id, 'view']">View Details</a>
+                    <span
+                      (click)="goToViewDetails(doc.id)"
+                      jhiTranslate="home.view_details"
+                      style="color: blue; text-decoration: underline; cursor: pointer ;"
+                    >
+                      View Details
+                    </span>
                   </td>
                 </tr>
               </tbody>

@@ -3,6 +3,7 @@ package creatip.oms.repository;
 import creatip.oms.domain.Department;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.repository.custom.CustomDocumentDeliveryRepository;
+import java.util.Collection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,7 +33,8 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
         "where dd.delFlag='N' and dd.deliveryStatus=1 and dd.sender.id=?1 " +
         "and date(CONVERT_TZ(dd.sentDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y') and date(CONVERT_TZ(dd.sentDate, 'UTC',?6)) <= str_to_date(?3,'%d-%m-%Y') " +
         "and dd.subject LIKE CONCAT('%', ?4, '%') " +
-        "and dd.referenceNo LIKE CONCAT('%', ?5, '%')"
+        "and dd.referenceNo LIKE CONCAT('%', ?5, '%') " +
+        "and dd.status IN ?7 "
     )
     Page<DocumentDelivery> findDocumentsSent(
         Long senderId,
@@ -41,6 +43,7 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
         String subject,
         String referenceNo,
         String zoneCode,
+        Collection<Short> status,
         Pageable pageable
     );
 
@@ -49,7 +52,8 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
         "where dd.delFlag='N' and dd.deliveryStatus=0 and dd.sender.id=?1 " +
         "and date(CONVERT_TZ(dd.createdDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y')	and date(CONVERT_TZ(dd.createdDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y')" +
         "and dd.subject LIKE CONCAT('%', ?4, '%') " +
-        "and dd.referenceNo LIKE CONCAT('%', ?5, '%')"
+        "and dd.referenceNo LIKE CONCAT('%', ?5, '%') " +
+        "and dd.status IN ?7 "
     )
     Page<DocumentDelivery> findDeliveryDraftList(
         Long senderId,
@@ -58,6 +62,7 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
         String subject,
         String referenceNo,
         String zoneCode,
+        Collection<Short> status,
         Pageable pageable
     );
 

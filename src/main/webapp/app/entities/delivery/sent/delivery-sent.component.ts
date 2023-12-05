@@ -1,15 +1,16 @@
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
+import { DELIVERY_SENT_KEY } from 'app/config/input.constants';
 import { IDepartment } from 'app/entities/department/department.model';
-import { SearchCriteria } from 'app/entities/util/criteria.model';
+import { ISearchCriteria, SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DeliveryService } from '../service/delivery.service';
-import { IDocumentDelivery } from '../delivery.model';
+import { IDocumentDelivery, IReceiverInfo } from '../delivery.model';
 import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 
@@ -18,7 +19,7 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
   templateUrl: './delivery-sent.component.html',
   styleUrls: ['./delivery-sent.component.scss'],
 })
-export class DeliverySentComponent implements OnInit {
+export class DeliverySentComponent implements OnInit, OnDestroy {
   isShowingFilters = true;
   isShowingResult = false;
   isShowingAlert = false;
@@ -60,6 +61,11 @@ export class DeliverySentComponent implements OnInit {
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
+
+        const searchedCriteria = this.deliveryService.getSearchCriteria(DELIVERY_SENT_KEY);
+        if (searchedCriteria) {
+          this.updateCriteriaData(searchedCriteria);
+        }
       },
       error => {
         console.log(error);
@@ -67,8 +73,17 @@ export class DeliverySentComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    this.deliveryService.clearPreviousState();
+  }
+
   trackDepartmentByID(index: number, item: IDepartment): number {
     return item.id!;
+  }
+
+  containCc(receiverList: IReceiverInfo[]): boolean {
+    const ccDepartments = receiverList.filter(receiver => receiver.receiverType === 2);
+    return ccDepartments.length > 0;
   }
 
   clearForm(): void {
@@ -78,60 +93,71 @@ export class DeliverySentComponent implements OnInit {
     this.searchForm.get(['subject'])?.patchValue('');
     this.searchForm.get(['docno'])?.patchValue('');
     this.documentDelivery = [];
+    this.deliveryService.clearSearchCriteria(DELIVERY_SENT_KEY);
   }
 
-  searchDocument(): void {
+  goToViewDetails(id?: number): void {
+    this.deliveryService.storeSearchCriteria(DELIVERY_SENT_KEY, this.createCriteriaData());
+    this.router.navigate(['/delivery', id, 'view-sent']);
+  }
+
+  searchDocumentDelivery(): void {
     if (this.searchForm.invalid) {
-      // this.searchForm.get('metaDataHdrID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
-      // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
       this.loadPage(1);
     }
   }
 
+  updateCriteriaData(criteria: ISearchCriteria): void {
+    const startDate = dayjs(criteria.dateFrom, 'DD-MM-YYYY');
+    const endDate = dayjs(criteria.dateTo, 'DD-MM-YYYY');
+
+    this.searchForm.get('fromdate')?.patchValue(startDate);
+    this.searchForm.get('todate')?.patchValue(endDate);
+    this.searchForm.get('status')?.patchValue(criteria.status);
+    this.searchForm.get('subject')?.patchValue(criteria.subject);
+    this.searchForm.get('docno')?.patchValue(criteria.referenceNo);
+    this.searchDocumentDelivery();
+  }
+
+  createCriteriaData(): ISearchCriteria {
+    const startDate = this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY');
+    const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
+    const _status = this.searchForm.get(['status'])!.value;
+    const _subject = this.searchForm.get(['subject'])!.value;
+    const _docno = this.searchForm.get(['docno'])!.value;
+
+    const Criteria = {
+      ...new SearchCriteria(),
+      requestFrom: 2,
+      dateFrom: startDate,
+      dateTo: endDate,
+      status: _status,
+      subject: _subject,
+      referenceNo: _docno,
+    };
+
+    return Criteria;
+  }
+
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-      // this.searchForm.get('departmentID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
-      // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
-      const startDate = this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY');
-      const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
-      const _status = this.searchForm.get(['status'])!.value;
-      // const _receiverId = this.searchForm.get(['departmentID'])!.value;
-      const _subject = this.searchForm.get(['subject'])!.value;
-      const _docno = this.searchForm.get(['docno'])!.value;
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      const pageToLoad: number | undefined = page ?? this.page ?? 1;
-
-      const Criteria = {
-        ...new SearchCriteria(),
-        requestFrom: 2,
-        dateFrom: startDate,
-        dateTo: endDate,
-        status: _status,
-        // receiverId: _receiverId,
-        subject: _subject,
-        referenceNo: _docno,
-      };
-
-      console.log(Criteria, 'xxx Criteria xxxx');
-
+      const pageToLoad: number = page ?? this.page;
+      const searchCriteria = this.createCriteriaData();
       const requestParams = {
         page: pageToLoad - 1,
         size: this.itemsPerPage,
-        criteria: JSON.stringify(Criteria),
+        criteria: JSON.stringify(searchCriteria),
       };
-
-      console.log(requestParams, 'xxx requestparams xxxx');
 
       this.deliveryService.findAllSent(requestParams).subscribe(
         (res: HttpResponse<IDocumentDelivery[]>) => {
           const result = res.body;
-          console.log(result, ' xxxxx result xxxxxxxx');
           this.onSuccess(res.body, res.headers, !dontNavigate, pageToLoad);
 
           if (!res.ok) {
@@ -148,9 +174,6 @@ export class DeliverySentComponent implements OnInit {
   formatDate(date: dayjs.Dayjs): string {
     const format = 'YYYY-MM-DD';
     return date.format(format);
-
-    // const format = 'YYYY-MM-DD';
-    // const m_date = dayjs(this.editForm.get(['meetingDate'])!.value, { format });
   }
 
   protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean, page: number): void {
