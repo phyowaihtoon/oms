@@ -7,6 +7,9 @@ import { IReplyMessage } from 'app/entities/util/reply-message.model';
 import { createRequestOption } from 'app/core/request/request-util';
 import { map } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
+import { ISearchCriteria } from 'app/entities/util/criteria.model';
+import { SessionStorageService } from 'ngx-webstorage';
+
 export type EntityResponseType = HttpResponse<IMeetingMessage>;
 export type EntityArrayResponseType = HttpResponse<IMeetingDelivery[]>;
 export type BlobType = HttpResponse<Blob>;
@@ -16,7 +19,38 @@ export type BlobType = HttpResponse<Blob>;
 })
 export class MeetingService {
   public resourceUrl = this.applicationConfigService.getEndpointFor('api/meeting');
-  constructor(protected http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
+  private previousState: string = '';
+  constructor(
+    protected http: HttpClient,
+    private applicationConfigService: ApplicationConfigService,
+    private $sessionStorage: SessionStorageService
+  ) {}
+
+  getSearchCriteria(key: string): ISearchCriteria | null {
+    const searchedCriteria: ISearchCriteria | null = this.$sessionStorage.retrieve(key);
+    if (this.previousState === key) {
+      return searchedCriteria;
+    } else {
+      this.clearSearchCriteria(key);
+      return null;
+    }
+  }
+
+  clearSearchCriteria(key: string): void {
+    this.$sessionStorage.clear(key);
+  }
+
+  storeSearchCriteria(key: string, searchCriteria?: ISearchCriteria): void {
+    this.$sessionStorage.store(key, searchCriteria);
+  }
+
+  setPreviousState(preState: string): void {
+    this.previousState = preState;
+  }
+
+  clearPreviousState(): void {
+    this.previousState = '';
+  }
 
   save(formData: FormData, message: IMeetingMessage): Observable<HttpResponse<IReplyMessage>> {
     if (message.meetingDelivery) {

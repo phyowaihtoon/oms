@@ -9,7 +9,7 @@ import { IDepartment } from 'app/entities/department/department.model';
 import { SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { DeliveryService } from '../service/delivery.service';
-import { IDocumentDelivery } from '../delivery.model';
+import { IDocumentDelivery, IReceiverInfo } from '../delivery.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 
 @Component({
@@ -68,6 +68,11 @@ export class DeliveryDraftComponent implements OnInit {
 
   trackDepartmentByID(index: number, item: IDepartment): number {
     return item.id!;
+  }
+
+  containCc(receiverList: IReceiverInfo[]): boolean {
+    const ccDepartments = receiverList.filter(receiver => receiver.receiverType === 2);
+    return ccDepartments.length > 0;
   }
 
   searchDocument(): void {

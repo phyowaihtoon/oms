@@ -14,8 +14,10 @@ import creatip.oms.service.MeetingDeliveryService;
 import creatip.oms.service.dto.MeetingAttachmentDTO;
 import creatip.oms.service.dto.MeetingDeliveryDTO;
 import creatip.oms.service.dto.MeetingReceiverDTO;
+import creatip.oms.service.dto.ReceiverInfoDTO;
 import creatip.oms.service.mapper.MeetingAttachmentMapper;
 import creatip.oms.service.mapper.MeetingDeliveryMapper;
+import creatip.oms.service.mapper.MeetingReceiverInfoMapper;
 import creatip.oms.service.mapper.MeetingReceiverMapper;
 import creatip.oms.service.message.BaseMessage;
 import creatip.oms.service.message.MeetingMessage;
@@ -29,12 +31,15 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.integration.ftp.session.FtpSession;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,6 +61,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     private final MeetingDeliveryMapper meetingDeliveryMapper;
     private final MeetingAttachmentMapper meetingAttachmentMapper;
     private final MeetingReceiverMapper meetingReceiverMapper;
+    private final MeetingReceiverInfoMapper receiverInfoMapper;
 
     private ReplyMessage<MeetingMessage> replyMessage;
 
@@ -68,6 +74,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         MeetingDeliveryMapper meetingDeliveryMapper,
         MeetingAttachmentMapper meetingAttachmentMapper,
         MeetingReceiverMapper meetingReceiverMapper,
+        MeetingReceiverInfoMapper receiverInfoMapper,
         FTPSessionFactory ftpSessionFactory
     ) {
         this.meetingDeliveryRepository = meetingDeliveryRepository;
@@ -76,6 +83,7 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
         this.meetingDeliveryMapper = meetingDeliveryMapper;
         this.meetingAttachmentMapper = meetingAttachmentMapper;
         this.meetingReceiverMapper = meetingReceiverMapper;
+        this.receiverInfoMapper = receiverInfoMapper;
         this.replyMessage = new ReplyMessage<MeetingMessage>();
         this.ftpSessionFactory = ftpSessionFactory;
     }
@@ -102,11 +110,11 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     @Override
     @Transactional(rollbackFor = UploadFailedException.class)
     public ReplyMessage<MeetingMessage> save(MeetingMessage message, List<MultipartFile> attachedFiles) throws UploadFailedException {
-//        if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
-//            replyMessage.setCode(ResponseCode.ERROR_E00);
-//            replyMessage.setMessage("Please, attach document");
-//            return replyMessage;
-//        }
+        //        if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
+        //            replyMessage.setCode(ResponseCode.ERROR_E00);
+        //            replyMessage.setMessage("Please, attach document");
+        //            return replyMessage;
+        //        }
 
         try {
             log.debug("Saving Meeting Delivery");
@@ -317,35 +325,71 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
 
     @Override
     public Page<MeetingDeliveryDTO> getSentMeetingList(SearchCriteriaMessage criteria, Pageable pageable) {
-        Page<MeetingDelivery> page = null;
+        Page<MeetingDeliveryDTO> pageDTO = null;
         ZoneId zoneId = ZoneId.systemDefault();
         String zoneCode = zoneId.getId();
         if (criteria.getRequestFrom() == RequestFrom.DASHBOARD.value) {
-            page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), criteria.getDateOn(), zoneCode, pageable);
+            Page<MeetingDelivery> page = meetingDeliveryRepository.findSentMeetingList(
+                criteria.getSenderId(),
+                criteria.getDateOn(),
+                zoneCode,
+                pageable
+            );
+            return page.map(meetingDeliveryMapper::toDto);
         } else {
             String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
             String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
-            page =
-                meetingDeliveryRepository.findSentMeetingList(
-                    criteria.getSenderId(),
-                    criteria.getDateFrom(),
-                    criteria.getDateTo(),
-                    subject,
-                    referenceNo,
-                    zoneCode,
-                    pageable
-                );
+            Set<Short> setOfStatus = new HashSet<Short>();
+            // value 2 will extract all status : read and unread
+            if (criteria.getStatus() == 2) {
+                for (ViewStatus enumData : ViewStatus.values()) {
+                    setOfStatus.add(enumData.value);
+                }
+            } else setOfStatus.add(criteria.getStatus());
+            Page<MeetingDelivery> page = meetingDeliveryRepository.findSentMeetingList(
+                criteria.getSenderId(),
+                criteria.getDateFrom(),
+                criteria.getDateTo(),
+                subject,
+                referenceNo,
+                zoneCode,
+                setOfStatus,
+                pageable
+            );
+
+            List<MeetingDeliveryDTO> modifiedList = new ArrayList<MeetingDeliveryDTO>();
+            page.forEach(
+                documentDelivery -> {
+                    MeetingDeliveryDTO dto = meetingDeliveryMapper.toDto(documentDelivery);
+                    List<MeetingReceiver> receiverList = meetingReceiverRepository.findByHeaderId(dto.getId());
+                    List<ReceiverInfoDTO> receiverInfoList = this.receiverInfoMapper.toDto(receiverList);
+                    dto.setReceiverList(receiverInfoList);
+                    modifiedList.add(dto);
+                }
+            );
+
+            Pageable pageableDTO = page.getPageable();
+            pageDTO = new PageImpl<>(modifiedList, pageableDTO, page.getTotalElements());
         }
 
-        return page.map(meetingDeliveryMapper::toDto);
+        return pageDTO;
     }
 
     @Override
     public Page<MeetingDeliveryDTO> getMeetingDraftList(SearchCriteriaMessage criteria, Pageable pageable) {
+        Page<MeetingDeliveryDTO> pageDTO = null;
         ZoneId zoneId = ZoneId.systemDefault();
         String zoneCode = zoneId.getId();
         String subject = criteria.getSubject() == null ? "" : criteria.getSubject();
         String referenceNo = criteria.getReferenceNo() == null ? "" : criteria.getReferenceNo();
+        Set<Short> setOfStatus = new HashSet<Short>();
+        // value 2 will extract all status : read and unread
+        if (criteria.getStatus() == 2) {
+            for (ViewStatus enumData : ViewStatus.values()) {
+                setOfStatus.add(enumData.value);
+            }
+        } else setOfStatus.add(criteria.getStatus());
+
         Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(
             criteria.getSenderId(),
             criteria.getDateFrom(),
@@ -353,9 +397,25 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             subject,
             referenceNo,
             zoneCode,
+            setOfStatus,
             pageable
         );
-        return page.map(meetingDeliveryMapper::toDto);
+
+        List<MeetingDeliveryDTO> modifiedList = new ArrayList<MeetingDeliveryDTO>();
+        page.forEach(
+            meetingDelivery -> {
+                MeetingDeliveryDTO dto = meetingDeliveryMapper.toDto(meetingDelivery);
+                List<MeetingReceiver> receiverList = meetingReceiverRepository.findByHeaderId(dto.getId());
+                List<ReceiverInfoDTO> receiverInfoList = this.receiverInfoMapper.toDto(receiverList);
+                dto.setReceiverList(receiverInfoList);
+                modifiedList.add(dto);
+            }
+        );
+
+        Pageable pageableDTO = page.getPageable();
+        pageDTO = new PageImpl<>(modifiedList, pageableDTO, page.getTotalElements());
+
+        return pageDTO;
     }
 
     @Override
