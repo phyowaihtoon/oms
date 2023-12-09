@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IDocumentAttachment, IDocumentDelivery, IDocumentReceiver } from '../delivery.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router, Event as NavigationEvent } from '@angular/router';
 import { IDepartment } from 'app/entities/department/department.model';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -12,6 +12,7 @@ import * as FileSaver from 'file-saver';
 import { DeliveryService } from '../service/delivery.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { DELIVERY_SENT_KEY } from 'app/config/input.constants';
 
 @Component({
   selector: 'jhi-delivery-detail-sent',
@@ -41,6 +42,7 @@ export class DeliveryDetailSentComponent implements OnInit {
   constructor(
     protected activatedRoute: ActivatedRoute,
     protected modalService: NgbModal,
+    protected router: Router,
     protected deliveryService: DeliveryService,
     protected userAuthorityService: UserAuthorityService,
     protected translateService: TranslateService
@@ -55,6 +57,15 @@ export class DeliveryDetailSentComponent implements OnInit {
         [{ align: [] }],
       ],
     };
+
+    this.router.events.subscribe((event: NavigationEvent) => {
+      if (event instanceof NavigationStart) {
+        // This event will trigger every time navigating back
+        if (event.restoredState) {
+          this.deliveryService.setPreviousState(DELIVERY_SENT_KEY);
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -81,7 +92,7 @@ export class DeliveryDetailSentComponent implements OnInit {
     });
   }
 
-  previousState(): void {
+  closeForm(): void {
     window.history.back();
   }
 

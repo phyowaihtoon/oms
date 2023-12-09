@@ -1,9 +1,7 @@
 package creatip.oms.service.mapper;
 
 import creatip.oms.domain.DocumentDelivery;
-import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.service.dto.DocumentDeliveryDTO;
-import creatip.oms.service.dto.MeetingDeliveryDTO;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import org.mapstruct.Mapper;

@@ -12,7 +12,9 @@ export interface IDocumentDelivery {
   delFlag?: string;
   sender?: IDepartment;
   createdDate?: dayjs.Dayjs;
-  receiverType?: number;
+  receiverType?: number; // This filed data is not needed to pass to server side
+  receiverList?: IReceiverInfo[]; // This filed data is not needed to pass to server side
+  rowExpanded?: boolean; // This filed data is not needed to pass to server side
 }
 
 export class DocumentDelivery implements IDocumentDelivery {
@@ -27,7 +29,9 @@ export class DocumentDelivery implements IDocumentDelivery {
     public delFlag?: string,
     public sender?: IDepartment,
     public createdDate?: dayjs.Dayjs,
-    public receiverType?: number
+    public receiverType?: number,
+    public receiverList?: IReceiverInfo[],
+    public rowExpanded?: boolean
   ) {}
 }
 
@@ -59,6 +63,12 @@ export interface IDocumentAttachment {
   fileName?: string;
   delFlag?: string;
   fileData?: File; // This filed data is not needed to pass to server side, only used in client side
+}
+
+export interface IReceiverInfo {
+  departmentId?: number;
+  receiverType?: number;
+  departmentName?: string;
 }
 
 export class DocumentAttachment implements IDocumentAttachment {

@@ -26,9 +26,9 @@
           </div>
           <div class="col-4">
             <select class="form-control" id="staus" data-cy="status" name="status" formControlName="status">
-              <option [value]="2">All</option>
-              <option [value]="1">Read</option>
-              <option [value]="0">Unread</option>
+              <option [value]="2" jhiTranslate="home.status_all">All</option>
+              <option [value]="1" jhiTranslate="home.status_read">Read</option>
+              <option [value]="0" jhiTranslate="home.status_unread">Unread</option>
             </select>
           </div>
         </div>
@@ -114,11 +114,11 @@
             <table class="table table-striped">
               <thead>
                 <tr class="bg-primary">
-                  <th style="width: 5%; text-align: center" jhiTranslate="omsApp.delivery.table.No">No.</th>
-                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.delivery.table.Date">Date></th>
-                  <th style="width: 15%; text-align: center" jhiTranslate="omsApp.delivery.table.DocumentNo">Document No.></th>
-                  <th style="width: 30%; text-align: center" jhiTranslate="omsApp.delivery.table.Subject">Subject</th>
-                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.delivery.table.Department">Department</th>
+                  <th style="width: 5%; text-align: center" jhiTranslate="omsApp.meeting.table.No">No.</th>
+                  <th style="width: 10%; text-align: center" jhiTranslate="omsApp.meeting.table.Date">Date></th>
+                  <th style="width: 15%; text-align: center" jhiTranslate="omsApp.meeting.table.DocumentNo">Document No.></th>
+                  <th style="width: 30%; text-align: center" jhiTranslate="omsApp.meeting.table.Subject">Subject</th>
+                  <th style="width: 25%; text-align: center" jhiTranslate="omsApp.meeting.table.DepartmentTo">Department</th>
                   <th style="width: 15%; text-align: center">#</th>
                 </tr>
               </thead>
@@ -128,7 +128,46 @@
                   <td>{{ meetingDelivery.createdDate ? meetingDelivery.createdDate.format('DD-MM-YYYY') : '-' }}</td>
                   <td>{{ meetingDelivery.referenceNo }}</td>
                   <td>{{ meetingDelivery.subject ? (meetingDelivery.subject | truncateText: 35) : '' }}</td>
-                  <td>{{ meetingDelivery.sender?.departmentName }}</td>
+                  <td>
+                    {{ meetingDelivery.receiverList ? meetingDelivery.receiverList[0].departmentName : '-' }}
+                    <span
+                      *ngIf="meetingDelivery.receiverList && meetingDelivery.receiverList.length > 1"
+                      (click)="meetingDelivery.rowExpanded = !meetingDelivery.rowExpanded"
+                      style="cursor: pointer; padding-left: 3px; color: blue; font-size: 9pt"
+                    >
+                      {{ meetingDelivery.rowExpanded ? ' - ' : ' + ' }} {{ meetingDelivery.receiverList.length - 1 }} Others
+                    </span>
+                    <table *ngIf="meetingDelivery.rowExpanded && meetingDelivery.receiverList && meetingDelivery.receiverList.length > 1">
+                      <tbody>
+                        <tr
+                          *ngFor="let receiver of meetingDelivery.receiverList.slice(1); let i = index"
+                          style="background-color: transparent"
+                        >
+                          <td *ngIf="receiver.receiverType === 1">{{ receiver.departmentName }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div
+                      *ngIf="
+                        meetingDelivery.rowExpanded &&
+                        meetingDelivery.receiverList &&
+                        meetingDelivery.receiverList.length > 1 &&
+                        containCc(meetingDelivery.receiverList)
+                      "
+                    >
+                      <span style="font-weight: bold" jhiTranslate="omsApp.delivery.label.CDept">Cc:</span>
+                      <table>
+                        <tbody>
+                          <tr
+                            *ngFor="let receiver of meetingDelivery.receiverList.slice(1); let i = index"
+                            style="background-color: transparent"
+                          >
+                            <td *ngIf="receiver.receiverType === 2">{{ receiver.departmentName }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
                   <td style="text-align: center">
                     <a href="#" jhiTranslate="home.view_details" [routerLink]="['/meeting', meetingDelivery.id, 'edit']">View Details</a>
                   </td>

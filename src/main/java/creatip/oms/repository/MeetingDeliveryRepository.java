@@ -4,6 +4,7 @@ import creatip.oms.domain.Department;
 import creatip.oms.domain.DocumentDelivery;
 import creatip.oms.domain.MeetingDelivery;
 import creatip.oms.repository.custom.CustomMeetingDeliveryRepository;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +41,8 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         "where md.delFlag='N' and md.deliveryStatus=1 and md.sender.id=?1 " +
         "and DATE(CONVERT_TZ(md.sentDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y') and DATE(CONVERT_TZ(md.sentDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y') " +
         "and md.subject LIKE CONCAT('%', ?4, '%') " +
-        "and md.referenceNo LIKE CONCAT('%', ?5, '%')"
+        "and md.referenceNo LIKE CONCAT('%', ?5, '%') " +
+        "and md.status IN ?7 "
     )
     Page<MeetingDelivery> findSentMeetingList(
         Long senderId,
@@ -49,6 +51,7 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         String subject,
         String referenceNo,
         String zoneCode,
+        Collection<Short> status,
         Pageable pageable
     );
 
@@ -57,7 +60,8 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 " +
         "and DATE(CONVERT_TZ(md.createdDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y') and DATE(CONVERT_TZ(md.createdDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y') " +
         "and md.subject LIKE CONCAT('%', ?4, '%') " +
-        "and md.referenceNo LIKE CONCAT('%', ?5, '%')"
+        "and md.referenceNo LIKE CONCAT('%', ?5, '%') " +
+        "and md.status IN ?7 "
     )
     Page<MeetingDelivery> findMeetingDraftList(
         Long senderId,
@@ -66,6 +70,7 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         String subject,
         String referenceNo,
         String zoneCode,
+        Collection<Short> status,
         Pageable pageable
     );
 

@@ -1,25 +1,27 @@
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { IDepartment } from 'app/entities/department/department.model';
-import { SearchCriteria } from 'app/entities/util/criteria.model';
+import { ISearchCriteria, SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { MeetingService } from '../service/meeting.service';
 import { IMeetingDelivery } from '../meeting.model';
 import { ResponseCode } from 'app/entities/util/reply-message.model';
 import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
+import * as dayjs from 'dayjs';
+import { MEETING_SENT_KEY } from 'app/config/input.constants';
 
 @Component({
   selector: 'jhi-meeting-received',
   templateUrl: './meeting-received.component.html',
   styleUrls: ['./meeting-received.component.scss'],
 })
-export class MeetingReceivedComponent implements OnInit {
+export class MeetingReceivedComponent implements OnInit, OnDestroy {
   isShowingFilters = true;
   isShowingResult = false;
   isShowingAlert = false;
@@ -61,6 +63,11 @@ export class MeetingReceivedComponent implements OnInit {
     this.loadSetupService.loadAllSubDepartments().subscribe(
       (res: HttpResponse<IDepartment[]>) => {
         this.departmentsList = res.body ?? [];
+
+        const searchedCriteria = this.meetingService.getSearchCriteria(MEETING_SENT_KEY);
+        if (searchedCriteria) {
+          this.updateCriteriaData(searchedCriteria);
+        }
       },
       error => {
         console.log(error);
@@ -68,16 +75,23 @@ export class MeetingReceivedComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    this.meetingService.clearPreviousState();
+  }
+
   trackDepartmentByID(index: number, item: IDepartment): number {
     return item.id!;
   }
 
-  searchDocument(): void {
+  goToViewDetails(id?: number): void {
+    this.meetingService.storeSearchCriteria(MEETING_SENT_KEY, this.createCriteriaData());
+    this.router.navigate(['/meeting', id, 'view']);
+  }
+
+  searchMeetingInvitation(): void {
     if (this.searchForm.invalid) {
-      // this.searchForm.get('metaDataHdrID')!.markAsTouched();
       this.isShowingResult = true;
       this.isShowingAlert = true;
-      // this._alertMessage = this.translateService.instant('dmsApp.document.home.selectRequired');
     } else {
       this.loadPage(1);
     }
@@ -91,6 +105,35 @@ export class MeetingReceivedComponent implements OnInit {
     this.searchForm.get(['subject'])?.patchValue('');
     this.searchForm.get(['docno'])?.patchValue('');
     this.meetingDeliveryList = [];
+    this.meetingService.clearSearchCriteria(MEETING_SENT_KEY);
+  }
+
+  updateCriteriaData(criteria: ISearchCriteria): void {
+    const startDate = dayjs(criteria.dateFrom, 'DD-MM-YYYY');
+    const endDate = dayjs(criteria.dateTo, 'DD-MM-YYYY');
+
+    this.searchForm.get('fromdate')?.patchValue(startDate);
+    this.searchForm.get('todate')?.patchValue(endDate);
+    this.searchForm.get('departmentID')?.patchValue(criteria.senderId);
+    this.searchForm.get('status')?.patchValue(criteria.status);
+    this.searchForm.get('subject')?.patchValue(criteria.subject);
+    this.searchForm.get('docno')?.patchValue(criteria.referenceNo);
+    this.searchMeetingInvitation();
+  }
+
+  createCriteriaData(): ISearchCriteria {
+    const searchCriteria = {
+      ...new SearchCriteria(),
+      requestFrom: 2,
+      dateFrom: this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY'),
+      dateTo: this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY'),
+      status: this.searchForm.get(['status'])!.value,
+      senderId: this.searchForm.get(['departmentID'])!.value,
+      subject: this.searchForm.get(['subject'])!.value,
+      referenceNo: this.searchForm.get(['docno'])!.value,
+    };
+
+    return searchCriteria;
   }
 
   loadPage(page?: number, dontNavigate?: boolean): void {
@@ -98,22 +141,13 @@ export class MeetingReceivedComponent implements OnInit {
       this.isShowingResult = true;
       this.isShowingAlert = true;
     } else {
-      const Criteria = {
-        ...new SearchCriteria(),
-        requestFrom: 2,
-        dateFrom: this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY'),
-        dateTo: this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY'),
-        status: this.searchForm.get(['status'])!.value,
-        senderId: this.searchForm.get(['departmentID'])!.value,
-        subject: this.searchForm.get(['subject'])!.value,
-        referenceNo: this.searchForm.get(['docno'])!.value,
-      };
-
+      const searchCriteria = this.createCriteriaData();
       const pageToLoad: number = page ?? this.page ?? 1;
+
       const requestParams = {
         page: pageToLoad - 1,
         size: this.itemsPerPage,
-        criteria: JSON.stringify(Criteria),
+        criteria: JSON.stringify(searchCriteria),
       };
 
       this.meetingService.findAllReceived(requestParams).subscribe(

@@ -10,7 +10,7 @@ import { SearchCriteria } from 'app/entities/util/criteria.model';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { MeetingService } from '../service/meeting.service';
-import { IMeetingDelivery } from '../meeting.model';
+import { IMeetingDelivery, IReceiverInfo } from '../meeting.model';
 
 @Component({
   selector: 'jhi-meeting-draft',
@@ -68,6 +68,11 @@ export class MeetingDraftComponent implements OnInit {
 
   trackDepartmentByID(index: number, item: IDepartment): number {
     return item.id!;
+  }
+
+  containCc(receiverList: IReceiverInfo[]): boolean {
+    const ccDepartments = receiverList.filter(receiver => receiver.receiverType === 2);
+    return ccDepartments.length > 0;
   }
 
   searchDocument(): void {
