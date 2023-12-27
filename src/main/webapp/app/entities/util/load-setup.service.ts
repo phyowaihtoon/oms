@@ -15,6 +15,7 @@ export type DraftSummaryType = HttpResponse<IDraftSummary>;
 import { ICodeType, IDocumentStatus, IDraftSummary, IPriority, IWorkflowAuthority } from './setup.model';
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { IDepartment, IHeadDepartment } from '../department/department.model';
+import { IUser } from '../user/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -46,5 +47,10 @@ export class LoadSetupService {
   loadDraftSummary(): Observable<DraftSummaryType> {
     const childURL = '/draftsummary';
     return this.http.get<IDraftSummary>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadAllUsers(): Observable<HttpResponse<IUser[]>> {
+    const childURL = '/users';
+    return this.http.get<IUser[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 }

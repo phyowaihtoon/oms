@@ -2,9 +2,11 @@ package creatip.oms.web.rest;
 
 import creatip.oms.domain.User;
 import creatip.oms.enumeration.CommonEnum.PriorityEnum;
+import creatip.oms.security.AuthoritiesConstants;
 import creatip.oms.service.ApplicationUserService;
 import creatip.oms.service.LoadSetupService;
 import creatip.oms.service.UserService;
+import creatip.oms.service.dto.AdminUserDTO;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.DepartmentDTO;
@@ -15,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,5 +77,14 @@ public class LoadSetupResource {
             return null;
         }
         return this.loadSetupService.getDraftSummary(appUserDTO.getDepartment());
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize(
+        " hasAuthority(\"" + AuthoritiesConstants.SYSTEM_USER + "\") or hasAuthority(\"" + AuthoritiesConstants.APPLICATION_USER + "\")"
+    )
+    public List<AdminUserDTO> getAllUsers() {
+        List<AdminUserDTO> list = userService.getAllUsers();
+        return list;
     }
 }
