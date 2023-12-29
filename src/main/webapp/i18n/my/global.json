@@ -150,7 +150,8 @@
       "search": "ရှာမည်",
       "clear": "ရှင်းလင်းမည်",
       "generate": "ထုတ်မည်",
-      "select": "ရွေးချယ်မည်"
+      "select": "ရွေးချယ်မည်",
+      "confirm": "လုပ်ဆောင်မည်"
     },
     "detail": {
       "field": "Field",

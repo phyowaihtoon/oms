@@ -22,7 +22,9 @@
         "RequiredDate": "Please choose Date.",
         "RequiredTime": "Please choose Time.",
         "RequiredMainDept": "Please choose at least one department.",
-        "RequiredFile": "Please choose at least one attachment"
+        "RequiredFile": "Please choose at least one attachment",
+        "RequiredLocation": "Please enter location.",
+        "RequiredDocumentNo": "Please enter letter number."
       },
       "deleted": "Document Mapping is successfully deleted",
       "delete": {

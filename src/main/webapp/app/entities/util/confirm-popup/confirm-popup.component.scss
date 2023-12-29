@@ -1,0 +1,25 @@
+.oms-modal-header {
+  padding: 3px 3px;
+}
+
+.oms-modal-row {
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.oms-modal-col {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+#oms-confirm-message {
+  font-weight: bold;
+}
+
+//Overriding modal class for popup size
+::ng-deep .modal-lg {
+  min-width: 500px;
+  max-width: 550px;
+}

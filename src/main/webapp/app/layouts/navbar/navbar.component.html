@@ -40,6 +40,7 @@
             <span class="notification-count">{{ _notiCount | truncateNumber: 2 }}</span>
           </span>
         </a>
+        <!--
         <ul *ngIf="_notiCount > 0" class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
           <li *ngFor="let notiItem of _notificationList">
             <a class="dropdown-item" (click)="collapseNavbar()" [routerLink]="['/delivery', notiItem.id, 'view']" style="padding-left: 3px">
@@ -48,6 +49,7 @@
             </a>
           </li>
         </ul>
+        -->
       </li>
 
       <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->

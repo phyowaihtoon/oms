@@ -16,6 +16,7 @@ import { DepartmentPopupComponent } from 'app/entities/util/departementpopup/dep
 import { DepartmentCustomComponent } from 'app/entities/util/departement-custom-component/department-custom.component';
 import { TruncateNumberPipe } from './truncate/truncate-number.pipe';
 import { TruncateTextPipe } from './truncate/truncate-text.pipe';
+import { ConfirmPopupComponent } from 'app/entities/util/confirm-popup/confirm-popup.component';
 
 @NgModule({
   imports: [SharedLibsModule],
@@ -36,6 +37,7 @@ import { TruncateTextPipe } from './truncate/truncate-text.pipe';
     InfoPopupComponent,
     DepartmentPopupComponent,
     DepartmentCustomComponent,
+    ConfirmPopupComponent,
   ],
   exports: [
     SharedLibsModule,
@@ -55,6 +57,7 @@ import { TruncateTextPipe } from './truncate/truncate-text.pipe';
     InfoPopupComponent,
     DepartmentPopupComponent,
     DepartmentCustomComponent,
+    ConfirmPopupComponent,
   ],
 })
 export class SharedModule {}

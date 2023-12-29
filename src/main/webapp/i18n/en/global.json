@@ -17,7 +17,7 @@
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "report": {
-        "title": "Report", 
+        "title": "Report",
         "docReceivedRpt": "Document Received Report"
       },
       "inbox": {
@@ -151,6 +151,7 @@
       "search": "Search",
       "clear": "Clear",
       "ok": "OK",
+      "confirm": "Confirm",
       "generate": "Generate",
       "select": "Select",
       "proceed": "Proceed",

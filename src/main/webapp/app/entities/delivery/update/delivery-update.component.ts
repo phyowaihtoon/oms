@@ -24,6 +24,7 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog/document-delete-dialog.component';
+import { ConfirmPopupComponent } from 'app/entities/util/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'jhi-delivery-up  ',
@@ -247,15 +248,24 @@ export class DeliveryUpdateComponent implements OnInit {
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  save(deliveryStatus: number): void {
-    this.isSaving = true;
+  confirmSave(deliveryStatus: number): void {
     if (deliveryStatus === 0) {
       this.showLoading('Saving Letter Draft');
+      this.save(deliveryStatus);
     }
     if (deliveryStatus === 1) {
-      this.showLoading('Sending Letter');
+      const modalRef = this.modalService.open(ConfirmPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+      modalRef.componentInstance.actionMessage.subscribe((confirmed: string) => {
+        if (confirmed && confirmed === 'CONFIRM') {
+          this.showLoading('Sending Letter');
+          this.save(deliveryStatus);
+        }
+      });
     }
+  }
 
+  save(deliveryStatus: number): void {
+    this.isSaving = true;
     const formData = new FormData();
     const attacheddocList = [];
     const documentDelivery = this.createFrom(deliveryStatus);
