@@ -2,7 +2,7 @@
   <div class="row">
     <h5 jhiTranslate="global.menu.report.title" style="margin-left: 16px">Report</h5>
     <h5>&nbsp;>>&nbsp;</h5>
-    <h5 jhiTranslate="global.menu.report.docReceivedRpt">Document Received Report</h5>
+    <h5 jhiTranslate="global.menu.report.docSentRpt">Document Sent Report</h5>
   </div>
   <h5>{{ _logindepartmentName }}</h5>
 </div>
@@ -41,8 +41,8 @@
             <label class="form-control-label" jhiTranslate="report.documentReceived.enddate" for="field_endDate"> End Date </label>
           </div>
           <div class="col-3">
-            <label class="form-control-label" jhiTranslate="report.documentReceived.departmentFrom" for="field_docType"
-              >Department (From)</label
+            <label class="form-control-label" jhiTranslate="report.documentReceived.departmentTo" for="field_docType"
+              >Department (To)</label
             >
           </div>
         </div>
@@ -128,6 +128,7 @@
               </small>
             </div>
           </div>
+
           <div class="col-3">
             <select class="form-control" id="department" data-cy="department" name="department" formControlName="departmentID">
               <option [value]="0" selected>-</option>

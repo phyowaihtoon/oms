@@ -1,0 +1,7 @@
+update menu_group set router_link='' where id = 5;
+
+update menu_item set name='ဝင်စာ', menu_code='INCRPT', translate_key='global.menu.report.docReceivedRpt',router_link='report/inletter-rpt'
+ where id=26;
+
+insert into menu_item (name,menu_code,translate_key,fa_icon,router_link,order_no,menu_group_id)
+values('ထွက်စာ','OUTRPT','global.menu.report.docSentRpt','','report/outletter-rpt',2,5);

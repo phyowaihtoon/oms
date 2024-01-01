@@ -80,10 +80,17 @@
 
             <input type="time" readonly id="totime" name="totime" value="{{ meetingEndTime }}" />
           </div>
-        </div>
 
-        <label name="location" for="location" class="form-control-label" jhiTranslate="omsApp.meeting.label.Location">Location</label>
-        <input type="text" readonly class="textbox form-control div-padding" value="{{ location }}" />
+          <label
+            style="padding-left: 10px; padding-right: 10px"
+            name="location"
+            for="location"
+            class="form-control-label"
+            jhiTranslate="omsApp.meeting.label.Location"
+            >Location</label
+          >
+          <input style="height: 2.5em" type="text" class="textbox form-control col-4" value="{{ location }}" />
+        </div>
 
         <label name="docNo" for="docNo" class="form-control-label" jhiTranslate="omsApp.delivery.label.DocNo">Doc No.</label>
         <input type="text" readonly class="textbox form-control div-padding" value="{{ docNo }}" />

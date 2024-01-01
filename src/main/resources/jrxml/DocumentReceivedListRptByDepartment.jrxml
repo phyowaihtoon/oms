@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DocumentReceivedListRpt" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="770" leftMargin="36" rightMargin="36" topMargin="20" bottomMargin="20" uuid="f3f5a3f0-dfbd-41e3-b396-6a2b47afd7dc">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DocumentReceivedListRptByDepartment" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="770" leftMargin="36" rightMargin="36" topMargin="20" bottomMargin="20" uuid="f3f5a3f0-dfbd-41e3-b396-6a2b47afd7dc">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="design\DataAdapterForDocListRpt.jrdax"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
@@ -154,23 +154,7 @@
 				<text><![CDATA[ရက်စွဲ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="470" y="0" width="300" height="30" uuid="4783e03d-5011-45a7-b025-c3f043c99c6c">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="MyPyidaungsu" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ဌာန (မှ)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="130" y="0" width="110" height="30" uuid="304bd0d6-c127-4fad-bef0-06b4b5c5749b">
+				<reportElement x="130" y="0" width="210" height="30" uuid="304bd0d6-c127-4fad-bef0-06b4b5c5749b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -185,12 +169,13 @@
 				<text><![CDATA[စာအမှတ်]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="240" y="0" width="230" height="30" uuid="a06bec70-0be5-4a0c-a882-d2be2be12fbb"/>
+				<reportElement x="341" y="0" width="430" height="30" uuid="a06bec70-0be5-4a0c-a882-d2be2be12fbb"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="MyPyidaungsu" size="12" isBold="true"/>
@@ -217,7 +202,7 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="ContainerHeight" x="130" y="0" width="110" height="35" uuid="24fb6ef0-e67a-4dcb-840b-6bd78b0bdabb">
+				<reportElement stretchType="ContainerHeight" x="130" y="0" width="210" height="35" uuid="24fb6ef0-e67a-4dcb-840b-6bd78b0bdabb">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dac73a9c-c658-478a-96ff-3e7a7a582537"/>
 				</reportElement>
 				<box leftPadding="2">
@@ -249,7 +234,7 @@
 				<textFieldExpression><![CDATA[$F{dataS3}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="ContainerHeight" x="240" y="0" width="230" height="35" uuid="23410296-432e-45f9-9797-9bdd16e4c5b4">
+				<reportElement stretchType="ContainerHeight" x="341" y="0" width="430" height="35" uuid="23410296-432e-45f9-9797-9bdd16e4c5b4">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="60a659fb-3a39-4350-b8c9-cb16836556e5"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -263,21 +248,6 @@
 					<font fontName="MyPyidaungsu" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dataS2}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement stretchType="ContainerHeight" x="470" y="0" width="300" height="35" uuid="9985f244-8309-4602-b05e-4a8f1ed37d7e">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="124475c5-7307-4423-aa67-73d7e9f2f424"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box leftPadding="2">
-					<topPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="MyPyidaungsu" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{dataS6}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

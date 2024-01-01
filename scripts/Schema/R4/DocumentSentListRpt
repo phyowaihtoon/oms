@@ -1,0 +1,33 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DocumentSentListRpt`(IN frmDate varchar(10),IN toDate varchar(10), IN loginDeptid bigint,IN receiverDeptId bigint)
+BEGIN
+	IF receiverDeptId = 0 THEN
+		SELECT DISTINCT
+        DATE_FORMAT(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon'), '%d-%m-%Y') as SentDate,
+        dd.reference_no, 
+        dd.Subject,
+        dep.department_name,
+        dd.id
+		FROM document_delivery dd
+		LEFT JOIN document_receiver dr ON dr.header_id = dd.id
+		LEFT JOIN department dep ON  dep.id = dr.receiver_id
+		WHERE dd.delivery_status = 1 AND dd.del_flag = 'N'
+        AND DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')) >= STR_TO_DATE(frmDate, '%d-%m-%Y')  
+		AND DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')) <= STR_TO_DATE(toDate, '%d-%m-%Y')
+        AND dd.sender_id = loginDeptid;
+	else
+		SELECT DISTINCT
+        DATE_FORMAT(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon'), '%d-%m-%Y') as SentDate,
+        dd.reference_no, 
+        dd.Subject,
+        dep.department_name,
+        dd.id
+		FROM document_delivery dd
+		LEFT JOIN document_receiver dr ON dr.header_id = dd.id
+		LEFT JOIN department dep ON  dep.id = dr.receiver_id
+		WHERE dd.delivery_status = 1 AND dd.del_flag = 'N'
+        AND DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')) >= STR_TO_DATE(frmDate, '%d-%m-%Y')  
+		AND DATE(CONVERT_TZ(dd.sent_Date, 'UTC', 'Asia/Yangon')) <= STR_TO_DATE(toDate, '%d-%m-%Y')
+        AND dd.sender_id = loginDeptid
+        AND dr.receiver_id = receiverDeptId;
+    END IF;
+END

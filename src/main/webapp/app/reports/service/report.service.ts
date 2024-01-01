@@ -11,14 +11,23 @@ export type EntityResponseType = HttpResponse<IReplyMessage>;
   providedIn: 'root',
 })
 export class ReportService {
-  public docMappingListRptURL = this.applicationConfigService.getEndpointFor('api/docreceived-rpt');
+  public docReceivedListRptURL = this.applicationConfigService.getEndpointFor('api/docreceived-rpt');
+  public docSentListRptURL = this.applicationConfigService.getEndpointFor('api/docsent-rpt');
   public showPDFUrl = this.applicationConfigService.getEndpointFor('api/viewPdf');
   public downloadUrl = this.applicationConfigService.getEndpointFor('api/download');
 
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
   generateDocReceivedListRpt(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
-    return this.http.post<IReplyMessage>(this.docMappingListRptURL, reportDTO, { observe: 'response' });
+    return this.http.post<IReplyMessage>(this.docReceivedListRptURL, reportDTO, { observe: 'response' });
+  }
+
+  generateDocumentReceivedListRptByDepartment(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
+    return this.http.post<IReplyMessage>(`${this.docReceivedListRptURL}/bydept`, reportDTO, { observe: 'response' });
+  }
+
+  generateDocSentListRpt(reportDTO: IRptParamsDTO): Observable<EntityResponseType> {
+    return this.http.post<IReplyMessage>(this.docSentListRptURL, reportDTO, { observe: 'response' });
   }
 
   showPDF(fileName: string): Observable<Blob> {
