@@ -15,11 +15,11 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'jhi-doclist-rpt',
-  templateUrl: './doclist-rpt.component.html',
-  styleUrls: ['./doclist-rpt.component.scss'],
+  selector: 'jhi-outletter-rpt',
+  templateUrl: './outletter-rpt.component.html',
+  styleUrls: ['./outletter-rpt.component.scss'],
 })
-export class DoclistRptComponent implements OnInit {
+export class OutLetterRptComponent implements OnInit {
   isGenerating = false;
   _replyMessage: IReplyMessage | null = null;
   _userAuthority?: IUserAuthority;
@@ -29,10 +29,10 @@ export class DoclistRptComponent implements OnInit {
   isShowingAlert = false;
   _modalRef?: NgbModalRef;
   rptParams?: IRptParamsDTO;
-  rptTitleName: string = 'Document Received Report';
-  rptFileName: string = 'DocumentReceivedListRpt';
-  rptFormat: string = '.pdf';
   departmentsList?: IDepartment[];
+  rptTitleName: string = 'Document Sent Report';
+  rptFileName: string = 'DocumentSentListRpt';
+  rptFormat: string = '.pdf';
   _logindepartmentName: string | undefined = '';
   _loginDepartmentId: number | undefined = 0;
 
@@ -71,26 +71,11 @@ export class DoclistRptComponent implements OnInit {
     );
   }
 
-  trackDepartmentByID(index: number, item: IDepartment): number {
-    return item.id!;
-  }
-
   generate(): void {
     this.isGenerating = true;
     const reportData = this.createFromForm();
     this.showLoading('Generating Report');
-
-    const departmentID = this.editForm.get(['departmentID'])!.value;
-
-    if (departmentID && departmentID > 0) {
-      this.generateDocumentReceivedListRptByDepartment(reportData);
-    } else {
-      this.generateDocReceivedListRpt(reportData);
-    }
-  }
-
-  generateDocReceivedListRpt(reportDTO: IRptParamsDTO): void {
-    this.reportService.generateDocReceivedListRpt(reportDTO).subscribe(
+    this.reportService.generateDocSentListRpt(reportData).subscribe(
       res => {
         setTimeout(() => this._modalRef?.close(), 1000);
 
@@ -100,7 +85,7 @@ export class DoclistRptComponent implements OnInit {
           this.rptParams = this._replyMessage.data;
           this.router.navigate(['report/report-viewer'], {
             queryParams: {
-              rptTitleName: this.translateService.instant('global.menu.report.docReceivedRpt'),
+              rptTitleName: this.translateService.instant('global.menu.report.docSentRpt'),
               rptFileName: this.rptParams?.rptFileName,
               rptFormat: this.rptParams?.rptFormat,
             },
@@ -122,37 +107,8 @@ export class DoclistRptComponent implements OnInit {
     );
   }
 
-  generateDocumentReceivedListRptByDepartment(reportDTO: IRptParamsDTO): void {
-    this.reportService.generateDocumentReceivedListRptByDepartment(reportDTO).subscribe(
-      res => {
-        setTimeout(() => this._modalRef?.close(), 1000);
-
-        this._replyMessage = res.body;
-
-        if (this._replyMessage?.code === '000') {
-          this.rptParams = this._replyMessage.data;
-          this.router.navigate(['report/report-viewer'], {
-            queryParams: {
-              rptTitleName: this.translateService.instant('global.menu.report.docReceivedRpt'),
-              rptFileName: this.rptParams?.rptFileName,
-              rptFormat: this.rptParams?.rptFormat,
-            },
-          });
-        } else {
-          this.isShowingAlert = true;
-          this.isGenerating = false;
-          this._messageCode = this._replyMessage?.code;
-          this._alertMessage = this._replyMessage?.message;
-        }
-      },
-      error => {
-        this._modalRef?.close();
-        this.isShowingAlert = true;
-        this.isGenerating = false;
-        this._messageCode = '';
-        this._alertMessage = 'Connection is not available. Please, check network connection with your server.';
-      }
-    );
+  trackDepartmentByID(index: number, item: IDepartment): number {
+    return item.id!;
   }
 
   showLoading(loadingMessage?: string): void {
@@ -176,7 +132,7 @@ export class DoclistRptComponent implements OnInit {
   protected createFromForm(): IRptParamsDTO {
     const startDate = this.editForm.get(['startDate'])!.value.format('DD-MM-YYYY');
     const endDate = this.editForm.get(['endDate'])!.value.format('DD-MM-YYYY');
-    const departmentID = this.editForm.get(['departmentID'])!.value;
+    const receiverDeptId = this.editForm.get(['departmentID'])!.value;
 
     return {
       ...new RptParamsDTO(),
@@ -187,10 +143,10 @@ export class DoclistRptComponent implements OnInit {
       rptJrxml: '',
       rptPS1: startDate,
       rptPS2: endDate,
-      rptPS3: departmentID,
-      rptPS4: this._loginDepartmentId?.toString(),
-      rptPS5: this.getDepartmentNameById(+departmentID),
-      rptPS6: this._logindepartmentName,
+      rptPS3: this._loginDepartmentId?.toString(),
+      rptPS4: receiverDeptId,
+      rptPS5: this._logindepartmentName,
+      rptPS6: this.getDepartmentNameById(+receiverDeptId),
       rptPS7: '',
       rptPS8: '',
       rptPS9: '',

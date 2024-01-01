@@ -16,7 +16,8 @@
       },
       "report": {
         "title": "အစီရင်ခံစာ",
-        "docReceivedRpt": "ဝင်စာအစီရင်ခံစာ"
+        "docReceivedRpt": "ဝင်စာအစီရင်ခံစာ",
+        "docSentRpt": "ထွက်စာအစီရင်ခံစာ"
       },
       "inbox": {
         "title": "ဝင်စာ",
@@ -25,6 +26,7 @@
       },
       "delivery": {
         "title": "ထွက်စာ",
+        "SentDetails": "ထွက်စာအသေးစိတ်",
         "DocumentDelivery": "ထွက်စာပို့ရန်",
         "Sent": "ထွက်စာများ",
         "Draft": "Draft",

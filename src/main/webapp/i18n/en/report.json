@@ -12,6 +12,7 @@
       "startdate": "Start Date",
       "enddate": "End Date",
       "departmentFrom": "Department (From)",
+      "departmentTo": "Department (To)",
       "status": "Status"
     }
   }

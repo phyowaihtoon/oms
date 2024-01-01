@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { UserAuthorityResolveService } from 'app/login/user-authority-resolve.service';
 import { ReportViewerComponent } from '../container/report-viewer.component';
 import { DoclistRptComponent } from '../doclist-rpt/doclist-rpt.component';
+import { OutLetterRptComponent } from '../outletter-rpt/outletter-rpt.component';
 
 @NgModule({
   declarations: [],
@@ -13,13 +14,23 @@ import { DoclistRptComponent } from '../doclist-rpt/doclist-rpt.component';
         component: ReportViewerComponent,
       },
       {
-        path: 'doclist-rpt',
+        path: 'inletter-rpt',
         component: DoclistRptComponent,
         resolve: {
           userAuthority: UserAuthorityResolveService,
         },
         data: {
-          menuCode: 'DOCLR',
+          menuCode: 'INCRPT',
+        },
+      },
+      {
+        path: 'outletter-rpt',
+        component: OutLetterRptComponent,
+        resolve: {
+          userAuthority: UserAuthorityResolveService,
+        },
+        data: {
+          menuCode: 'OUTRPT',
         },
       },
     ]),

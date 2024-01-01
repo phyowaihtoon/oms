@@ -1,7 +1,7 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="download()" [formGroup]="editForm">
   <div id="page-heading" class="row">
     <div class="col-6">
-      <span>Report</span>
+      <span jhiTranslate="global.menu.report.title">Report</span>
       <span> >> {{ rptTitleName }}</span>
     </div>
     <div class="col-6 d-flex justify-content-end">
@@ -44,6 +44,7 @@
     [showBookmarkButton]="false"
     [showSecondaryToolbarButton]="false"
     [showOpenFileButton]="false"
+    [enablePrint]="false"
     [zoom]="'100%'"
   >
   </ngx-extended-pdf-viewer>

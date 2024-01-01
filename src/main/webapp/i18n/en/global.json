@@ -18,7 +18,8 @@
       },
       "report": {
         "title": "Report",
-        "docReceivedRpt": "Document Received Report"
+        "docReceivedRpt": "Document Received Report",
+        "docSentRpt": "Document Sent Report"
       },
       "inbox": {
         "title": "Inbox",
@@ -27,6 +28,7 @@
       },
       "delivery": {
         "title": "Delivery",
+        "SentDetails": "Document Details",
         "DocumentDelivery": "Document Delivery",
         "Sent": "Sent",
         "Step1": "Info",
