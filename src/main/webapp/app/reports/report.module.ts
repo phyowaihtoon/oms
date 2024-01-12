@@ -4,9 +4,10 @@ import { ReportViewerComponent } from './container/report-viewer.component';
 import { ReportFormRoutingModule } from './route/report-form-routing.module';
 import { LoadingPopupComponent } from 'app/entities/util/loading/loading-popup.component';
 import { DoclistRptComponent } from './doclist-rpt/doclist-rpt.component';
+import { OutLetterRptComponent } from './outletter-rpt/outletter-rpt.component';
 
 @NgModule({
   imports: [SharedModule, ReportFormRoutingModule],
-  declarations: [ReportViewerComponent, LoadingPopupComponent, DoclistRptComponent],
+  declarations: [ReportViewerComponent, LoadingPopupComponent, DoclistRptComponent, OutLetterRptComponent],
 })
 export class ReportModule {}

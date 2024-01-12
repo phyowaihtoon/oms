@@ -25,6 +25,7 @@ import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog/document-delete-dialog.component';
+import { ConfirmPopupComponent } from 'app/entities/util/confirm-popup/confirm-popup.component';
 @Component({
   selector: 'jhi-meeting-update',
   templateUrl: './meeting-update.component.html',
@@ -291,15 +292,24 @@ export class MeetingUpdateComponent implements OnInit {
     this.myInputVariable!.nativeElement.value = '';
   }
 
-  save(deliveryStatus: number): void {
-    this.isSaving = true;
+  confirmSave(deliveryStatus: number): void {
     if (deliveryStatus === 0) {
       this.showLoading('Saving Meeting Draft');
+      this.save(deliveryStatus);
     }
     if (deliveryStatus === 1) {
-      this.showLoading('Sending Meeting Invitation');
+      const modalRef = this.modalService.open(ConfirmPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+      modalRef.componentInstance.actionMessage.subscribe((confirmed: string) => {
+        if (confirmed && confirmed === 'CONFIRM') {
+          this.showLoading('Sending Meeting Invitation');
+          this.save(deliveryStatus);
+        }
+      });
     }
+  }
 
+  save(deliveryStatus: number): void {
+    this.isSaving = true;
     const formData = new FormData();
     const attacheddocList = [];
     const meetingDelivery = this.createFrom(deliveryStatus);

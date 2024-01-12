@@ -13,7 +13,6 @@ import { IUserRole } from 'app/entities/user-role/user-role.model';
 import { UserRoleService } from 'app/entities/user-role/service/user-role.service';
 import { DepartmentService } from 'app/entities/department/service/department.service';
 import { LoadSetupService } from 'app/entities/util/load-setup.service';
-import { IWorkflowAuthority } from 'app/entities/util/setup.model';
 import { IDepartment } from 'app/entities/department/department.model';
 
 @Component({
@@ -115,11 +114,12 @@ export class ApplicationUserUpdateComponent implements OnInit {
   }
 
   protected loadRelationshipsOptions(): void {
-    this.userService
-      .query()
-      .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
-      .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing(users, this.editForm.get('user')!.value)))
-      .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
+    this.loadSetupService.loadAllUsers().subscribe(res => {
+      console.log('User List :', res);
+      if (res.body) {
+        this.usersSharedCollection = res.body;
+      }
+    });
 
     this.userRoleService
       .query()

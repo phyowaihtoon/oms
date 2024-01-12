@@ -88,4 +88,32 @@ public class ReportResource {
         ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentListRpt(rptParams);
         return replyMessage;
     }
+
+    @PostMapping("/docreceived-rpt/bydept")
+    public ReplyMessage<RptParamsMessage> generateDocumentReceivedListRptByDepartment(@Valid @RequestBody RptParamsMessage rptParams) {
+        User loginUser = userService.getUserWithAuthorities().get();
+        String rptOutFolder = context.getRealPath("RPT_OUTPUT");
+        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
+        String rptFileName = SharedUtils.generateFileName("DocumentReceivedListRptByDepartment");
+        rptParams.setRptFileName(rptFileName);
+        rptParams.setRptOutputPath(rptOutputPath);
+        rptParams.setRptJrxml("DocumentReceivedListRptByDepartment.jrxml");
+        rptParams.setRptJasper("DocumentReceivedListRptByDepartment.jrxml");
+        ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentReceivedListRptByDepartment(rptParams);
+        return replyMessage;
+    }
+
+    @PostMapping("/docsent-rpt")
+    public ReplyMessage<RptParamsMessage> generateDocumentSentListRpt(@Valid @RequestBody RptParamsMessage rptParams) {
+        User loginUser = userService.getUserWithAuthorities().get();
+        String rptOutFolder = context.getRealPath("RPT_OUTPUT");
+        String rptOutputPath = rptOutFolder + File.separator + loginUser.getLogin() + File.separator;
+        String rptFileName = SharedUtils.generateFileName("DocumentSentListRpt");
+        rptParams.setRptFileName(rptFileName);
+        rptParams.setRptOutputPath(rptOutputPath);
+        rptParams.setRptJrxml("DocumentSentListRpt.jrxml");
+        rptParams.setRptJasper("DocumentSentListRpt.jrxml");
+        ReplyMessage<RptParamsMessage> replyMessage = this.reportService.generateDocumentSentListRpt(rptParams);
+        return replyMessage;
+    }
 }
