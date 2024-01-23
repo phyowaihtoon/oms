@@ -20,9 +20,8 @@ import { UserAuthorityService } from 'app/login/userauthority.service';
   styleUrls: ['./delivery-sent.component.scss'],
 })
 export class DeliverySentComponent implements OnInit, OnDestroy {
-  isShowingFilters = true;
-  isShowingResult = false;
   isShowingAlert = false;
+  alertMessage: string | null = 'No records found';
   isLoading = false;
 
   totalItems = 10;
@@ -65,6 +64,18 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
         const searchedCriteria = this.deliveryService.getSearchCriteria(DELIVERY_SENT_KEY);
         if (searchedCriteria) {
           this.updateCriteriaData(searchedCriteria);
+        } else {
+          const todayDate = dayjs().startOf('day');
+          const defaultCriteria = {
+            ...new SearchCriteria(),
+            requestFrom: 2,
+            dateFrom: todayDate.format('DD-MM-YYYY'),
+            dateTo: todayDate.format('DD-MM-YYYY'),
+            status: 2,
+            subject: undefined,
+            referenceNo: undefined,
+          };
+          this.updateCriteriaData(defaultCriteria);
         }
       },
       error => {
@@ -87,11 +98,13 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
   }
 
   clearForm(): void {
-    this.searchForm.get(['fromdate'])?.patchValue('');
-    this.searchForm.get(['todate'])?.patchValue('');
+    this.isShowingAlert = false;
+    this.alertMessage = '';
+    this.searchForm.get(['fromdate'])?.patchValue(null);
+    this.searchForm.get(['todate'])?.patchValue(null);
     this.searchForm.get(['status'])?.patchValue(2);
-    this.searchForm.get(['subject'])?.patchValue('');
-    this.searchForm.get(['docno'])?.patchValue('');
+    this.searchForm.get(['subject'])?.patchValue(null);
+    this.searchForm.get(['docno'])?.patchValue(null);
     this.documentDelivery = [];
     this.deliveryService.clearSearchCriteria(DELIVERY_SENT_KEY);
   }
@@ -103,7 +116,6 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
 
   searchDocumentDelivery(): void {
     if (this.searchForm.invalid) {
-      this.isShowingResult = true;
       this.isShowingAlert = true;
     } else {
       this.loadPage(1);
@@ -123,8 +135,8 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
   }
 
   createCriteriaData(): ISearchCriteria {
-    const startDate = this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY');
-    const endDate = this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY');
+    const startDate = this.searchForm.get(['fromdate'])!.value?.format('DD-MM-YYYY');
+    const endDate = this.searchForm.get(['todate'])!.value?.format('DD-MM-YYYY');
     const _status = this.searchForm.get(['status'])!.value;
     const _subject = this.searchForm.get(['subject'])!.value;
     const _docno = this.searchForm.get(['docno'])!.value;
@@ -144,7 +156,6 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
 
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-      this.isShowingResult = true;
       this.isShowingAlert = true;
     } else {
       const pageToLoad: number = page ?? this.page;
@@ -157,23 +168,21 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
 
       this.deliveryService.findAllSent(requestParams).subscribe(
         (res: HttpResponse<IDocumentDelivery[]>) => {
-          const result = res.body;
           this.onSuccess(res.body, res.headers, !dontNavigate, pageToLoad);
 
           if (!res.ok) {
-            console.log('Error Message :', res.headers.get('message'));
+            this.documentDelivery = [];
+            this.isShowingAlert = true;
+            this.alertMessage = res.headers.get('message');
           }
         },
         res => {
-          console.log('Error Message :', res.headers.get('message'));
+          this.documentDelivery = [];
+          this.isShowingAlert = true;
+          this.alertMessage = res.headers.get('message');
         }
       );
     }
-  }
-
-  formatDate(date: dayjs.Dayjs): string {
-    const format = 'YYYY-MM-DD';
-    return date.format(format);
   }
 
   protected onSuccess(data: IDocumentDelivery[] | null, headers: HttpHeaders, navigate: boolean, page: number): void {
@@ -181,11 +190,7 @@ export class DeliverySentComponent implements OnInit, OnDestroy {
     this.documentDelivery = data!;
     this.page = page;
     this.isShowingAlert = this.documentDelivery.length === 0;
-    // this._alertMessage = this.translateService.instant('dmsApp.document.home.notFound');
+    this.alertMessage = this.documentDelivery.length === 0 ? 'No records found' : '';
     this.ngbPaginationPage = this.page;
-  }
-
-  protected onError(): void {
-    //  this.ngbPaginationPage = this.page ?? 1;
   }
 }

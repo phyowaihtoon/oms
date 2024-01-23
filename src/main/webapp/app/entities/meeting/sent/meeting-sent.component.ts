@@ -11,8 +11,6 @@ import { LoadSetupService } from 'app/entities/util/load-setup.service';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { MeetingService } from '../service/meeting.service';
 import { IMeetingDelivery, IReceiverInfo } from '../meeting.model';
-import { InfoPopupComponent } from 'app/entities/util/infopopup/info-popup.component';
-import { ResponseCode } from 'app/entities/util/reply-message.model';
 import * as dayjs from 'dayjs';
 import { MEETING_SENT_KEY } from 'app/config/input.constants';
 
@@ -22,9 +20,8 @@ import { MEETING_SENT_KEY } from 'app/config/input.constants';
   styleUrls: ['./meeting-sent.component.scss'],
 })
 export class MeetingSentComponent implements OnInit, OnDestroy {
-  isShowingFilters = true;
-  isShowingResult = false;
   isShowingAlert = false;
+  alertMessage: string | null = 'No records found';
   isLoading = false;
 
   totalItems = 0;
@@ -67,6 +64,18 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
         const searchedCriteria = this.meetingService.getSearchCriteria(MEETING_SENT_KEY);
         if (searchedCriteria) {
           this.updateCriteriaData(searchedCriteria);
+        } else {
+          const todayDate = dayjs().startOf('day');
+          const defaultCriteria = {
+            ...new SearchCriteria(),
+            requestFrom: 2,
+            dateFrom: todayDate.format('DD-MM-YYYY'),
+            dateTo: todayDate.format('DD-MM-YYYY'),
+            status: 2,
+            subject: undefined,
+            referenceNo: undefined,
+          };
+          this.updateCriteriaData(defaultCriteria);
         }
       },
       error => {
@@ -95,7 +104,6 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
 
   searchMeetingInvitation(): void {
     if (this.searchForm.invalid) {
-      this.isShowingResult = true;
       this.isShowingAlert = true;
     } else {
       this.loadPage(1);
@@ -103,11 +111,13 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
   }
 
   clearForm(): void {
-    this.searchForm.get(['fromdate'])?.patchValue('');
-    this.searchForm.get(['todate'])?.patchValue('');
+    this.isShowingAlert = false;
+    this.alertMessage = '';
+    this.searchForm.get(['fromdate'])?.patchValue(null);
+    this.searchForm.get(['todate'])?.patchValue(null);
     this.searchForm.get(['status'])?.patchValue(2);
-    this.searchForm.get(['subject'])?.patchValue('');
-    this.searchForm.get(['docno'])?.patchValue('');
+    this.searchForm.get(['subject'])?.patchValue(null);
+    this.searchForm.get(['docno'])?.patchValue(null);
     this.meetingDeliveryList = [];
     this.meetingService.clearSearchCriteria(MEETING_SENT_KEY);
   }
@@ -128,8 +138,8 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
     const searchCriteria = {
       ...new SearchCriteria(),
       requestFrom: 2,
-      dateFrom: this.searchForm.get(['fromdate'])!.value.format('DD-MM-YYYY'),
-      dateTo: this.searchForm.get(['todate'])!.value.format('DD-MM-YYYY'),
+      dateFrom: this.searchForm.get(['fromdate'])!.value?.format('DD-MM-YYYY'),
+      dateTo: this.searchForm.get(['todate'])!.value?.format('DD-MM-YYYY'),
       status: this.searchForm.get(['status'])!.value,
       subject: this.searchForm.get(['subject'])!.value,
       referenceNo: this.searchForm.get(['docno'])!.value,
@@ -139,7 +149,6 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
 
   loadPage(page?: number, dontNavigate?: boolean): void {
     if (this.searchForm.invalid) {
-      this.isShowingResult = true;
       this.isShowingAlert = true;
     } else {
       const searchCriteria = this.createCriteriaData();
@@ -155,16 +164,16 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
         (res: HttpResponse<IMeetingDelivery[]>) => {
           this.onSuccess(res.body, res.headers, pageToLoad, !dontNavigate);
           if (!res.ok) {
-            console.log('Error Message :', res.headers.get('message'));
+            this.meetingDeliveryList = [];
+            this.isShowingAlert = true;
+            this.alertMessage = res.headers.get('message');
           }
         },
         error => {
           this.ngbPaginationPage = this.page;
-          const replyCode = ResponseCode.WARNING;
-          const replyMsg = error.headers.get('message');
-          if (replyMsg) {
-            this.showAlertMessage(replyCode, replyMsg);
-          }
+          this.meetingDeliveryList = [];
+          this.isShowingAlert = true;
+          this.alertMessage = error.headers.get('message');
         }
       );
     }
@@ -174,17 +183,12 @@ export class MeetingSentComponent implements OnInit, OnDestroy {
     return item.id!;
   }
 
-  private showAlertMessage(msg1: string, msg2?: string): void {
-    const modalRef = this.modalService.open(InfoPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
-    modalRef.componentInstance.code = msg1;
-    modalRef.componentInstance.message = msg2;
-  }
-
   private onSuccess(data: IMeetingDelivery[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
     this.meetingDeliveryList = data ?? [];
     this.isShowingAlert = this.meetingDeliveryList.length === 0;
+    this.alertMessage = this.meetingDeliveryList.length === 0 ? 'No records found' : '';
     this.ngbPaginationPage = this.page;
   }
 }

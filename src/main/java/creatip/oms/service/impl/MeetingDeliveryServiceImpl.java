@@ -26,6 +26,7 @@ import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
+import creatip.oms.util.SharedUtils;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -346,16 +347,24 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
                     setOfStatus.add(enumData.value);
                 }
             } else setOfStatus.add(criteria.getStatus());
-            Page<MeetingDelivery> page = meetingDeliveryRepository.findSentMeetingList(
-                criteria.getSenderId(),
-                criteria.getDateFrom(),
-                criteria.getDateTo(),
-                subject,
-                referenceNo,
-                zoneCode,
-                setOfStatus,
-                pageable
-            );
+
+            Page<MeetingDelivery> page = null;
+
+            if (!SharedUtils.isDateStringValid(criteria.getDateFrom()) || !SharedUtils.isDateStringValid(criteria.getDateTo())) {
+                page = meetingDeliveryRepository.findSentMeetingList(criteria.getSenderId(), subject, referenceNo, setOfStatus, pageable);
+            } else {
+                page =
+                    meetingDeliveryRepository.findSentMeetingList(
+                        criteria.getSenderId(),
+                        criteria.getDateFrom(),
+                        criteria.getDateTo(),
+                        subject,
+                        referenceNo,
+                        zoneCode,
+                        setOfStatus,
+                        pageable
+                    );
+            }
 
             List<MeetingDeliveryDTO> modifiedList = new ArrayList<MeetingDeliveryDTO>();
             page.forEach(
@@ -390,16 +399,23 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
             }
         } else setOfStatus.add(criteria.getStatus());
 
-        Page<MeetingDelivery> page = meetingDeliveryRepository.findMeetingDraftList(
-            criteria.getSenderId(),
-            criteria.getDateFrom(),
-            criteria.getDateTo(),
-            subject,
-            referenceNo,
-            zoneCode,
-            setOfStatus,
-            pageable
-        );
+        Page<MeetingDelivery> page = null;
+
+        if (!SharedUtils.isDateStringValid(criteria.getDateFrom()) || !SharedUtils.isDateStringValid(criteria.getDateTo())) {
+            page = meetingDeliveryRepository.findMeetingDraftList(criteria.getSenderId(), subject, referenceNo, setOfStatus, pageable);
+        } else {
+            page =
+                meetingDeliveryRepository.findMeetingDraftList(
+                    criteria.getSenderId(),
+                    criteria.getDateFrom(),
+                    criteria.getDateTo(),
+                    subject,
+                    referenceNo,
+                    zoneCode,
+                    setOfStatus,
+                    pageable
+                );
+        }
 
         List<MeetingDeliveryDTO> modifiedList = new ArrayList<MeetingDeliveryDTO>();
         page.forEach(

@@ -57,6 +57,21 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
 
     @Query(
         value = "select md from MeetingDelivery md " +
+        "where md.delFlag='N' and md.deliveryStatus=1 and md.sender.id=?1 " +
+        "and md.subject LIKE CONCAT('%', ?2, '%') " +
+        "and md.referenceNo LIKE CONCAT('%', ?3, '%') " +
+        "and md.status IN ?4 "
+    )
+    Page<MeetingDelivery> findSentMeetingList(
+        Long senderId,
+        String subject,
+        String referenceNo,
+        Collection<Short> status,
+        Pageable pageable
+    );
+
+    @Query(
+        value = "select md from MeetingDelivery md " +
         "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 " +
         "and DATE(CONVERT_TZ(md.createdDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y') and DATE(CONVERT_TZ(md.createdDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y') " +
         "and md.subject LIKE CONCAT('%', ?4, '%') " +
@@ -70,6 +85,21 @@ public interface MeetingDeliveryRepository extends JpaRepository<MeetingDelivery
         String subject,
         String referenceNo,
         String zoneCode,
+        Collection<Short> status,
+        Pageable pageable
+    );
+
+    @Query(
+        value = "select md from MeetingDelivery md " +
+        "where md.delFlag='N' and md.deliveryStatus=0 and md.sender.id=?1 " +
+        "and md.subject LIKE CONCAT('%', ?2, '%') " +
+        "and md.referenceNo LIKE CONCAT('%', ?3, '%') " +
+        "and md.status IN ?4 "
+    )
+    Page<MeetingDelivery> findMeetingDraftList(
+        Long senderId,
+        String subject,
+        String referenceNo,
         Collection<Short> status,
         Pageable pageable
     );
