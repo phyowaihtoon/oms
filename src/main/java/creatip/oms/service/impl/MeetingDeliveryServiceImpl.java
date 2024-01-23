@@ -111,11 +111,24 @@ public class MeetingDeliveryServiceImpl implements MeetingDeliveryService {
     @Override
     @Transactional(rollbackFor = UploadFailedException.class)
     public ReplyMessage<MeetingMessage> save(MeetingMessage message, List<MultipartFile> attachedFiles) throws UploadFailedException {
-        //        if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
-        //            replyMessage.setCode(ResponseCode.ERROR_E00);
-        //            replyMessage.setMessage("Please, attach document");
-        //            return replyMessage;
-        //        }
+        if (message == null) {
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage("Invalid request data");
+            return replyMessage;
+        }
+        if (message.getMeetingDelivery() == null) {
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage("Invalid request data");
+            return replyMessage;
+        }
+
+        if (message.getMeetingDelivery().getDeliveryStatus() == DeliveryStatus.SENT.value) {
+            if (message.getReceiverList() == null || message.getReceiverList().size() == 0) {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("No receiver found. Please, add receiver");
+                return replyMessage;
+            }
+        }
 
         try {
             log.debug("Saving Meeting Delivery");

@@ -93,10 +93,31 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
     @Override
     @Transactional(rollbackFor = UploadFailedException.class)
     public ReplyMessage<DeliveryMessage> save(DeliveryMessage message, List<MultipartFile> attachedFiles) throws UploadFailedException {
-        if (message != null && message.getAttachmentList() != null && message.getAttachmentList().size() == 0) {
+        if (message == null) {
             replyMessage.setCode(ResponseCode.ERROR_E00);
-            replyMessage.setMessage("Please, attach document");
+            replyMessage.setMessage("Invalid request data");
             return replyMessage;
+        }
+        if (message.getDocumentDelivery() == null) {
+            replyMessage.setCode(ResponseCode.ERROR_E00);
+            replyMessage.setMessage("Invalid request data");
+            return replyMessage;
+        }
+
+        if (message.getDocumentDelivery().getDeliveryStatus() == DeliveryStatus.SENT.value) {
+            if (message.getAttachmentList() == null || message.getAttachmentList().size() == 0) {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("No attached files found. Please, attach document");
+                return replyMessage;
+            }
+        }
+
+        if (message.getDocumentDelivery().getDeliveryStatus() == DeliveryStatus.SENT.value) {
+            if (message.getReceiverList() == null || message.getReceiverList().size() == 0) {
+                replyMessage.setCode(ResponseCode.ERROR_E00);
+                replyMessage.setMessage("No receiver found. Please, add receiver");
+                return replyMessage;
+            }
         }
 
         try {
