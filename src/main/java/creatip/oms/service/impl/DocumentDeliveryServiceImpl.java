@@ -27,6 +27,7 @@ import creatip.oms.service.message.SearchCriteriaMessage;
 import creatip.oms.service.message.UploadFailedException;
 import creatip.oms.util.FTPSessionFactory;
 import creatip.oms.util.ResponseCode;
+import creatip.oms.util.SharedUtils;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -374,16 +375,23 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
                 }
             } else setOfStatus.add(criteria.getStatus());
 
-            Page<DocumentDelivery> page = documentDeliveryRepository.findDocumentsSent(
-                criteria.getSenderId(),
-                criteria.getDateFrom(),
-                criteria.getDateTo(),
-                subject,
-                referenceNo,
-                zoneCode,
-                setOfStatus,
-                pageable
-            );
+            Page<DocumentDelivery> page = null;
+
+            if (!SharedUtils.isDateStringValid(criteria.getDateFrom()) || !SharedUtils.isDateStringValid(criteria.getDateTo())) {
+                page = documentDeliveryRepository.findDocumentsSent(criteria.getSenderId(), subject, referenceNo, setOfStatus, pageable);
+            } else {
+                page =
+                    documentDeliveryRepository.findDocumentsSent(
+                        criteria.getSenderId(),
+                        criteria.getDateFrom(),
+                        criteria.getDateTo(),
+                        subject,
+                        referenceNo,
+                        zoneCode,
+                        setOfStatus,
+                        pageable
+                    );
+            }
 
             List<DocumentDeliveryDTO> modifiedList = new ArrayList<DocumentDeliveryDTO>();
             page.forEach(
@@ -419,16 +427,23 @@ public class DocumentDeliveryServiceImpl implements DocumentDeliveryService {
             }
         } else setOfStatus.add(criteria.getStatus());
 
-        Page<DocumentDelivery> page = documentDeliveryRepository.findDeliveryDraftList(
-            criteria.getSenderId(),
-            criteria.getDateFrom(),
-            criteria.getDateTo(),
-            subject,
-            referenceNo,
-            zoneCode,
-            setOfStatus,
-            pageable
-        );
+        Page<DocumentDelivery> page = null;
+
+        if (!SharedUtils.isDateStringValid(criteria.getDateFrom()) || !SharedUtils.isDateStringValid(criteria.getDateTo())) {
+            page = documentDeliveryRepository.findDeliveryDraftList(criteria.getSenderId(), subject, referenceNo, setOfStatus, pageable);
+        } else {
+            page =
+                documentDeliveryRepository.findDeliveryDraftList(
+                    criteria.getSenderId(),
+                    criteria.getDateFrom(),
+                    criteria.getDateTo(),
+                    subject,
+                    referenceNo,
+                    zoneCode,
+                    setOfStatus,
+                    pageable
+                );
+        }
 
         List<DocumentDeliveryDTO> modifiedList = new ArrayList<DocumentDeliveryDTO>();
         page.forEach(

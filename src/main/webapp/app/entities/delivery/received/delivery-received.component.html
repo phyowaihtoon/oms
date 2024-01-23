@@ -43,6 +43,7 @@
           <div class="col-4">
             <div class="input-group">
               <input
+                readonly
                 class="form-control"
                 id="fromdate"
                 data-cy="fromdate"
@@ -79,6 +80,7 @@
           <div class="col-4">
             <div class="input-group">
               <input
+                readonly
                 class="form-control"
                 id="todate"
                 data-cy="todate"
@@ -135,6 +137,9 @@
                 </tr>
               </thead>
               <tbody>
+                <tr *ngIf="isShowingAlert" style="background: #b0f3aa">
+                  <td style="height: 50px; vertical-align: middle" colspan="6">{{ alertMessage }}</td>
+                </tr>
                 <tr *ngFor="let doc of documentDelivery; let i = index" data-cy="entityTable">
                   <td style="text-align: right; padding-right: 8px">{{ i + 1 }}</td>
                   <td>{{ doc.sentDate ? doc.sentDate.format('DD-MM-YYYY') : '-' }}</td>
@@ -145,7 +150,7 @@
                     <span
                       (click)="goToViewDetails(doc.id)"
                       jhiTranslate="home.view_details"
-                      style="color: blue; text-decoration: underline; cursor: pointer ;"
+                      style="color: blue; text-decoration: underline; cursor: pointer"
                     >
                       View Details
                     </span>

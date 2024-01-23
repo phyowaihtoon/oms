@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import org.springframework.util.ResourceUtils;
 
@@ -53,8 +51,11 @@ public class SharedUtils {
         } catch (ParseException e) {
             // Parsing failed; the date is not valid
             return false;
+        } catch (Exception ex) {
+            return false;
         }
     }
+
     //For reference
     /*
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -70,4 +71,12 @@ public class SharedUtils {
 	log.debug("Current Time: toString {} , with formatter{} ",currentDateTime.toString(),formatter2.format(currentDateTime));
 	log.debug("End Time:toString {}, with formatter {} ",meetingEndTime.toString(),formatter2.format(meetingEndTime));
 	*/
+
+    public static boolean isNullOrEmpty(String value) {
+        if (value == null) return true;
+
+        if (value.isBlank()) return true;
+
+        return false;
+    }
 }

@@ -41,6 +41,7 @@
           <div class="col-4">
             <div class="input-group">
               <input
+                readonly
                 class="form-control"
                 id="fromdate"
                 data-cy="fromdate"
@@ -73,6 +74,7 @@
           <div class="col-4">
             <div class="input-group">
               <input
+                readonly
                 class="form-control"
                 id="todate"
                 data-cy="todate"
@@ -123,6 +125,10 @@
                 </tr>
               </thead>
               <tbody>
+                <tr *ngIf="isShowingAlert" style="background: #b0f3aa">
+                  <td style="height: 50px; vertical-align: middle" colspan="6">{{ alertMessage }}</td>
+                </tr>
+
                 <tr *ngFor="let meetingDelivery of meetingDeliveryList; let i = index" data-cy="entityTable">
                   <td style="text-align: right; padding-right: 8px">{{ i + 1 }}</td>
                   <td>{{ meetingDelivery.createdDate ? meetingDelivery.createdDate.format('DD-MM-YYYY') : '-' }}</td>

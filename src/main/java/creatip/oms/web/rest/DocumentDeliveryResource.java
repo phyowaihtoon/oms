@@ -407,13 +407,18 @@ public class DocumentDeliveryResource {
 
         if (
             criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
-            (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
+            SharedUtils.isNullOrEmpty(criteriaMessage.getReferenceNo()) &&
+            SharedUtils.isNullOrEmpty(criteriaMessage.getSubject())
         ) {
-            String message = String.format("Invalid Date, %s", criteriaMessage.getDateFrom() + " , " + criteriaMessage.getDateTo());
-            log.debug("Response Message : {}", message);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("message", message);
-            return ResponseEntity.badRequest().headers(headers).body(null);
+            if (
+                !SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo())
+            ) {
+                String message = String.format("Invalid Date, %s", criteriaMessage.getDateFrom() + " , " + criteriaMessage.getDateTo());
+                log.debug("Response Message : {}", message);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("message", message);
+                return ResponseEntity.badRequest().headers(headers).body(null);
+            }
         }
 
         User loginUser = userService.getUserWithAuthorities().get();
@@ -481,13 +486,18 @@ public class DocumentDeliveryResource {
 
         if (
             criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
-            (!SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo()))
+            SharedUtils.isNullOrEmpty(criteriaMessage.getReferenceNo()) &&
+            SharedUtils.isNullOrEmpty(criteriaMessage.getSubject())
         ) {
-            String message = String.format("Invalid Date, %s", criteriaMessage.getDateFrom() + " , " + criteriaMessage.getDateTo());
-            log.debug("Response Message : {}", message);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("message", message);
-            return ResponseEntity.badRequest().headers(headers).body(null);
+            if (
+                !SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo())
+            ) {
+                String message = String.format("Invalid Date, %s", criteriaMessage.getDateFrom() + " , " + criteriaMessage.getDateTo());
+                log.debug("Response Message : {}", message);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("message", message);
+                return ResponseEntity.badRequest().headers(headers).body(null);
+            }
         }
 
         User loginUser = userService.getUserWithAuthorities().get();
@@ -539,6 +549,22 @@ public class DocumentDeliveryResource {
             HttpHeaders headers = new HttpHeaders();
             headers.add("message", message);
             return ResponseEntity.badRequest().headers(headers).body(null);
+        }
+
+        if (
+            criteriaMessage.getRequestFrom() == RequestFrom.INQUIRY.value &&
+            SharedUtils.isNullOrEmpty(criteriaMessage.getReferenceNo()) &&
+            SharedUtils.isNullOrEmpty(criteriaMessage.getSubject())
+        ) {
+            if (
+                !SharedUtils.isDateStringValid(criteriaMessage.getDateFrom()) || !SharedUtils.isDateStringValid(criteriaMessage.getDateTo())
+            ) {
+                String message = String.format("Invalid Date, %s", criteriaMessage.getDateFrom() + " , " + criteriaMessage.getDateTo());
+                log.debug("Response Message : {}", message);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("message", message);
+                return ResponseEntity.badRequest().headers(headers).body(null);
+            }
         }
 
         User loginUser = userService.getUserWithAuthorities().get();

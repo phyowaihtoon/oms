@@ -49,6 +49,21 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
 
     @Query(
         value = "select dd from DocumentDelivery dd " +
+        "where dd.delFlag='N' and dd.deliveryStatus=1 and dd.sender.id=?1 " +
+        "and dd.subject LIKE CONCAT('%', ?2, '%') " +
+        "and dd.referenceNo LIKE CONCAT('%', ?3, '%') " +
+        "and dd.status IN ?4 "
+    )
+    Page<DocumentDelivery> findDocumentsSent(
+        Long senderId,
+        String subject,
+        String referenceNo,
+        Collection<Short> status,
+        Pageable pageable
+    );
+
+    @Query(
+        value = "select dd from DocumentDelivery dd " +
         "where dd.delFlag='N' and dd.deliveryStatus=0 and dd.sender.id=?1 " +
         "and date(CONVERT_TZ(dd.createdDate, 'UTC', ?6)) >= str_to_date(?2,'%d-%m-%Y')	and date(CONVERT_TZ(dd.createdDate, 'UTC', ?6)) <= str_to_date(?3,'%d-%m-%Y')" +
         "and dd.subject LIKE CONCAT('%', ?4, '%') " +
@@ -62,6 +77,21 @@ public interface DocumentDeliveryRepository extends JpaRepository<DocumentDelive
         String subject,
         String referenceNo,
         String zoneCode,
+        Collection<Short> status,
+        Pageable pageable
+    );
+
+    @Query(
+        value = "select dd from DocumentDelivery dd " +
+        "where dd.delFlag='N' and dd.deliveryStatus=0 and dd.sender.id=?1 " +
+        "and dd.subject LIKE CONCAT('%', ?2, '%') " +
+        "and dd.referenceNo LIKE CONCAT('%', ?3, '%') " +
+        "and dd.status IN ?4 "
+    )
+    Page<DocumentDelivery> findDeliveryDraftList(
+        Long senderId,
+        String subject,
+        String referenceNo,
         Collection<Short> status,
         Pageable pageable
     );
