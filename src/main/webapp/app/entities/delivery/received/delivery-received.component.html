@@ -52,6 +52,7 @@
                 formControlName="fromdate"
                 ngbDatepicker
                 #fromdate="ngbDatepicker"
+                (dateSelect)="onStartDateSelect($event)"
               />
               <div class="input-group-append">
                 <button class="btn btn-primary btn-sm dms-icon-btn" id="fromdateButton" (click)="fromdate.toggle()" type="button">

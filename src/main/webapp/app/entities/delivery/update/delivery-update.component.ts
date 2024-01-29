@@ -50,7 +50,6 @@ export class DeliveryUpdateComponent implements OnInit {
   ccLabel = 'Cc:';
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = [];
-  modules = {};
   _departmentName: string | undefined = '';
   _deliveryMessage: IDeliveryMessage | undefined;
 
@@ -63,15 +62,21 @@ export class DeliveryUpdateComponent implements OnInit {
 
   _modalRef?: NgbModalRef;
   _tempdocList: File[] = [];
-  name = 'Progress Bar';
   isSaving = false;
   isInfo = true;
   isReceiver = false;
   isAttachment = false;
   isSuccess = false;
-  public counts = ['Info', 'Receiver', 'Attachment', 'Success'];
+  modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      ['blockquote', 'code-block'],
 
-  public status = 'Info';
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ font: [] }],
+      [{ align: [] }],
+    ],
+  };
 
   constructor(
     protected fb: FormBuilder,
@@ -95,17 +100,6 @@ export class DeliveryUpdateComponent implements OnInit {
       // Update the targetText control's value
       this.editForm.controls.cc_body.setValue(value);
     });
-
-    this.modules = {
-      toolbar: [
-        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-        ['blockquote', 'code-block'],
-
-        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-        [{ font: [] }],
-        [{ align: [] }],
-      ],
-    };
   }
 
   ngOnInit(): void {
@@ -128,7 +122,6 @@ export class DeliveryUpdateComponent implements OnInit {
       this.updateForm(delivery);
     });
   }
-  // Demo purpose only, Data might come from Api calls/service
 
   goToStep1(): void {
     this.progressStep = 1;
@@ -166,7 +159,7 @@ export class DeliveryUpdateComponent implements OnInit {
     return this.editForm.get('docList') as FormArray;
   }
 
-  checkFormArrayEmpty(): boolean {
+  isEmptyAttachedFile(): boolean {
     const formArray = this.editForm.get('docList') as FormArray;
     if (formArray.length === 0) {
       return true;
@@ -248,19 +241,73 @@ export class DeliveryUpdateComponent implements OnInit {
     this.myInputVariable!.nativeElement.value = '';
   }
 
+  goBackToPendingStep(): void {
+    if (this.editForm.get('docNo')?.errors?.required) {
+      this.editForm.get('docNo')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.editForm.get('subject')?.errors?.required) {
+      this.editForm.get('subject')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.toDepartments!.length === 0) {
+      this.goToStep2();
+      return;
+    }
+
+    if (this.isEmptyAttachedFile()) {
+      this.goToStep3();
+      return;
+    }
+
+    this.goToStep4();
+  }
+
+  validateForm(): boolean {
+    if (this.editForm.get('docNo')?.errors?.required) {
+      this.editForm.get('docNo')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.editForm.get('subject')?.errors?.required) {
+      this.editForm.get('subject')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.toDepartments!.length === 0) {
+      this.goToStep2();
+      return false;
+    }
+
+    if (this.isEmptyAttachedFile()) {
+      this.goToStep3();
+      return false;
+    }
+
+    return true;
+  }
+
   confirmSave(deliveryStatus: number): void {
     if (deliveryStatus === 0) {
       this.showLoading('Saving Letter Draft');
       this.save(deliveryStatus);
     }
     if (deliveryStatus === 1) {
-      const modalRef = this.modalService.open(ConfirmPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
-      modalRef.componentInstance.actionMessage.subscribe((confirmed: string) => {
-        if (confirmed && confirmed === 'CONFIRM') {
-          this.showLoading('Sending Letter');
-          this.save(deliveryStatus);
-        }
-      });
+      if (this.validateForm()) {
+        const modalRef = this.modalService.open(ConfirmPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+        modalRef.componentInstance.actionMessage.subscribe((confirmed: string) => {
+          if (confirmed && confirmed === 'CONFIRM') {
+            this.showLoading('Sending Letter');
+            this.save(deliveryStatus);
+          }
+        });
+      }
     }
   }
 
@@ -465,6 +512,8 @@ export class DeliveryUpdateComponent implements OnInit {
     this.editForm.patchValue({
       docList: this.updateDocDetails(deliveryMessage.attachmentList),
     });
+
+    this.goBackToPendingStep();
   }
 
   protected updateDocDelivery(docDelivery: IDocumentDelivery): void {

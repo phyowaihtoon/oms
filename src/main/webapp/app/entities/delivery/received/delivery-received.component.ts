@@ -2,7 +2,7 @@ import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { IDepartment } from 'app/entities/department/department.model';
@@ -84,6 +84,11 @@ export class DeliveryReceivedComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     );
+  }
+
+  onStartDateSelect(selectedDate: NgbDate): void {
+    const startDate = dayjs(`${selectedDate.year}-${selectedDate.month}-${selectedDate.day}`);
+    this.searchForm.get(['todate'])?.patchValue(startDate);
   }
 
   ngOnDestroy(): void {

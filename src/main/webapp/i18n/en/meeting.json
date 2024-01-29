@@ -19,6 +19,7 @@
       },
       "validateMsg": {
         "RequiredField": "This field is required.",
+        "RequiredSubject": "Subject is required.",
         "RequiredDate": "Please choose Date.",
         "RequiredTime": "Please choose Time.",
         "RequiredMainDept": "Please choose at least one department.",

@@ -49,6 +49,7 @@
                 formControlName="fromdate"
                 ngbDatepicker
                 #fromdate="ngbDatepicker"
+                (dateSelect)="onStartDateSelect($event)"
               />
               <div class="input-group-append">
                 <button class="btn btn-primary btn-sm dms-icon-btn" id="fromdateButton" (click)="fromdate.toggle()" type="button">
@@ -132,7 +133,7 @@
                   <td>{{ doc.referenceNo }}</td>
                   <td>{{ doc.subject ? (doc.subject | truncateText: 35) : '' }}</td>
                   <td>
-                    {{ doc.receiverList ? doc.receiverList[0].departmentName : '-' }}
+                    {{ doc.receiverList && doc.receiverList.length > 1 ? doc.receiverList[0].departmentName : '-' }}
                     <span
                       *ngIf="doc.receiverList && doc.receiverList.length > 1"
                       (click)="doc.rowExpanded = !doc.rowExpanded"

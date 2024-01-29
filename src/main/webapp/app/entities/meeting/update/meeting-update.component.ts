@@ -23,7 +23,7 @@ import {
 import { MeetingService } from '../service/meeting.service';
 import * as dayjs from 'dayjs';
 import { UserAuthorityService } from 'app/login/userauthority.service';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentDeleteDialogComponent } from '../delete/document-delete-dialog/document-delete-dialog.component';
 import { ConfirmPopupComponent } from 'app/entities/util/confirm-popup/confirm-popup.component';
 @Component({
@@ -60,7 +60,6 @@ export class MeetingUpdateComponent implements OnInit {
   ccLabel = 'Cc:';
   toDepartments?: IDepartment[] = [];
   ccDepartments?: IDepartment[] = [];
-  modules = {};
   _departmentName: string | undefined = '';
 
   public progressItems = [
@@ -72,15 +71,21 @@ export class MeetingUpdateComponent implements OnInit {
 
   _modalRef?: NgbModalRef;
   _tempdocList: File[] = [];
-  name = 'Progress Bar';
   isSaving = false;
   isInfo = true;
   isReceiver = false;
   isAttachment = false;
   isSuccess = false;
-  public counts = ['Info', 'Receiver', 'Attachment', 'Success'];
+  modules = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      ['blockquote', 'code-block'],
 
-  public status = 'Info';
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ font: [] }],
+      [{ align: [] }],
+    ],
+  };
 
   constructor(
     protected activatedRoute: ActivatedRoute,
@@ -92,66 +97,51 @@ export class MeetingUpdateComponent implements OnInit {
     protected translateService: TranslateService,
     protected userAuthorityService: UserAuthorityService
   ) {
+    // Defining Value Change Events
     this.editForm.controls.referenceno.valueChanges.subscribe(value => {
-      //   // Update the targetText control's value
       this.editForm.controls.cc_referenceno.setValue(value);
     });
     this.editForm.controls.location.valueChanges.subscribe(value => {
-      //   // Update the targetText control's value
       this.editForm.controls.cc_location.setValue(value);
     });
     this.editForm.controls.subject.valueChanges.subscribe(value => {
-      // Update the targetText control's value
       this.editForm.controls.cc_subject.setValue(value);
     });
     this.editForm.controls.body.valueChanges.subscribe(value => {
-      // Update the targetText control's value
       this.editForm.controls.cc_body.setValue(value);
     });
     this.editForm.controls.meetingDate.valueChanges.subscribe(value => {
-      // Update the targetText control's value
-      const selectedDate = value.format('DD-MM-YYYY');
+      const selectedDate = value?.format('DD-MM-YYYY');
       this.editForm.controls.ccmeetingDate.setValue(selectedDate);
     });
 
     this.editForm.controls.fromtime.valueChanges.subscribe(value => {
-      // Split the hours and minutes from the selected time
-      const [hours, minutes] = value.split(':').map(Number);
+      if (value) {
+        // Split the hours and minutes from the selected time
+        const [hours, minutes] = value.split(':').map(Number);
 
-      // Create a new Date object with the selected time
-      const selectedTime = new Date();
-      selectedTime.setHours(hours);
-      selectedTime.setMinutes(minutes);
+        // Create a new Date object with the selected time
+        const selectedTime = new Date();
+        selectedTime.setHours(hours);
+        selectedTime.setMinutes(minutes);
 
-      // Add 1 hour to the selected time
-      selectedTime.setHours(selectedTime.getHours() + 1);
+        // Add 1 hour to the selected time
+        selectedTime.setHours(selectedTime.getHours() + 1);
 
-      // Format the new time as 'HH:mm'
-      const newTime = `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`;
+        // Format the new time as 'HH:mm'
+        const newTime = `${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`;
 
-      // Update the totime control's value with the new time
-      this.editForm.controls.totime.setValue(newTime);
+        // Update the totime control's value with the new time
+        this.editForm.controls.totime.setValue(newTime);
+      }
     });
 
     this.editForm.controls.fromtime.valueChanges.subscribe(value => {
-      // Update the targetText control's value
       this.editForm.controls.ccfromtime.setValue(value);
     });
     this.editForm.controls.totime.valueChanges.subscribe(value => {
-      // Update the targetText control's value
       this.editForm.controls.cctotime.setValue(value);
     });
-
-    this.modules = {
-      toolbar: [
-        ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-        ['blockquote', 'code-block'],
-
-        [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-        [{ font: [] }],
-        [{ align: [] }],
-      ],
-    };
   }
 
   ngOnInit(): void {
@@ -174,7 +164,6 @@ export class MeetingUpdateComponent implements OnInit {
       this.updateForm(meeting);
     });
   }
-  // Demo purpose only, Data might come from Api calls/service
 
   goToStep1(): void {
     this.progressStep = 1;
@@ -211,6 +200,7 @@ export class MeetingUpdateComponent implements OnInit {
   docList(): FormArray {
     return this.editForm.get('docList') as FormArray;
   }
+
   checkFormArrayEmpty(): boolean {
     const formArray = this.editForm.get('docList') as FormArray;
     if (formArray.length === 0) {
@@ -219,6 +209,7 @@ export class MeetingUpdateComponent implements OnInit {
       return false;
     }
   }
+
   onToDepartmentChange(event: any): void {
     this.toDepartments = event;
   }
@@ -292,19 +283,113 @@ export class MeetingUpdateComponent implements OnInit {
     this.myInputVariable!.nativeElement.value = '';
   }
 
+  isEmptyAttachedFile(): boolean {
+    const formArray = this.editForm.get('docList') as FormArray;
+    if (formArray.length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  goBackToPendingStep(): void {
+    if (this.editForm.get('meetingDate')?.errors?.required) {
+      this.editForm.get('meetingDate')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.editForm.get('fromtime')?.errors?.required) {
+      this.editForm.get('fromtime')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.editForm.get('totime')?.errors?.required) {
+      this.editForm.get('totime')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.editForm.get('location')?.errors?.required) {
+      this.editForm.get('location')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.editForm.get('subject')?.errors?.required) {
+      this.editForm.get('subject')?.markAllAsTouched();
+      this.goToStep1();
+      return;
+    }
+
+    if (this.toDepartments!.length === 0) {
+      this.goToStep2();
+      return;
+    }
+
+    if (this.isEmptyAttachedFile()) {
+      this.goToStep3();
+      return;
+    }
+
+    this.goToStep4();
+  }
+
+  validateForm(): boolean {
+    if (this.editForm.get('meetingDate')?.errors?.required) {
+      this.editForm.get('meetingDate')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.editForm.get('fromtime')?.errors?.required) {
+      this.editForm.get('fromtime')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.editForm.get('totime')?.errors?.required) {
+      this.editForm.get('totime')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.editForm.get('location')?.errors?.required) {
+      this.editForm.get('location')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.editForm.get('subject')?.errors?.required) {
+      this.editForm.get('subject')?.markAllAsTouched();
+      this.goToStep1();
+      return false;
+    }
+
+    if (this.toDepartments!.length === 0) {
+      this.goToStep2();
+      return false;
+    }
+
+    return true;
+  }
+
   confirmSave(deliveryStatus: number): void {
     if (deliveryStatus === 0) {
       this.showLoading('Saving Meeting Draft');
       this.save(deliveryStatus);
     }
     if (deliveryStatus === 1) {
-      const modalRef = this.modalService.open(ConfirmPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
-      modalRef.componentInstance.actionMessage.subscribe((confirmed: string) => {
-        if (confirmed && confirmed === 'CONFIRM') {
-          this.showLoading('Sending Meeting Invitation');
-          this.save(deliveryStatus);
-        }
-      });
+      if (this.validateForm()) {
+        const modalRef = this.modalService.open(ConfirmPopupComponent, { size: 'lg', backdrop: 'static', centered: true });
+        modalRef.componentInstance.actionMessage.subscribe((confirmed: string) => {
+          if (confirmed && confirmed === 'CONFIRM') {
+            this.showLoading('Sending Meeting Invitation');
+            this.save(deliveryStatus);
+          }
+        });
+      }
     }
   }
 
@@ -400,7 +485,6 @@ export class MeetingUpdateComponent implements OnInit {
   protected createFrom(deliveryStatus: number): IMeetingMessage {
     return {
       ...new MeetingMessage(),
-
       meetingDelivery: this.createFormMetingDelivery(deliveryStatus),
       receiverList: this.createFormReceiverList(),
       attachmentList: this.createFormdocList(),
@@ -450,22 +534,29 @@ export class MeetingUpdateComponent implements OnInit {
     this.hideLoading();
   }
 
-  protected createFormMetingDelivery(deliveryStatusPara: number): IMeetingDelivery {
-    const meetingSetDate = this.editForm.get(['meetingDate'])!.value.format('YYYY-MM-DD');
-    const s_date = dayjs(String(meetingSetDate) + String(this.editForm.get(['fromtime'])!.value));
-    const e_date = dayjs(String(meetingSetDate) + String(this.editForm.get(['totime'])!.value));
+  protected createFormMetingDelivery(deliveryStatusValue: number): IMeetingDelivery {
+    const meetingSetDate = this.editForm.get(['meetingDate'])!.value?.format('YYYY-MM-DD');
+    let startDateTime, endDateTime;
+    if (meetingSetDate) {
+      startDateTime = dayjs(String(meetingSetDate) + String(this.editForm.get(['fromtime'])!.value));
+      endDateTime = dayjs(String(meetingSetDate) + String(this.editForm.get(['totime'])!.value));
+    } else {
+      const todayDate = dayjs().startOf('day');
+      startDateTime = dayjs(todayDate.format('YYYY-MM-DD') + String(this.editForm.get(['fromtime'])!.value));
+      endDateTime = dayjs(todayDate.format('YYYY-MM-DD') + String(this.editForm.get(['totime'])!.value));
+    }
 
     return {
       ...new MeetingDelivery(),
       id: this.editForm.get(['id'])!.value,
       referenceNo: this.editForm.get(['referenceno'])!.value,
       sentDate: undefined,
-      startDate: s_date,
-      endDate: e_date,
+      startDate: startDateTime,
+      endDate: endDateTime,
       place: this.editForm.get(['location'])!.value,
       subject: this.editForm.get(['subject'])!.value,
       description: this.editForm.get(['body'])!.value,
-      deliveryStatus: deliveryStatusPara,
+      deliveryStatus: deliveryStatusValue,
       meetingStatus: 1,
       status: 1,
       delFlag: 'N',
@@ -536,12 +627,26 @@ export class MeetingUpdateComponent implements OnInit {
   }
 
   protected updateForm(meetingMessage: IMeetingMessage): void {
-    this.updateMeetingDelivery(meetingMessage.meetingDelivery!);
-    this.updateReceiverList(meetingMessage.receiverList!);
+    if (meetingMessage.meetingDelivery) {
+      this.updateMeetingDelivery(meetingMessage.meetingDelivery!);
+      this.goBackToPendingStep();
+    } else {
+      // Binding default values
+      const todayDate = dayjs().startOf('day');
+      this.editForm.get(['meetingDate'])?.patchValue(todayDate);
+    }
+
+    if (meetingMessage.receiverList) {
+      this.updateReceiverList(meetingMessage.receiverList);
+    }
 
     this.editForm.patchValue({
       docList: this.updateMeetingDetails(meetingMessage.attachmentList),
     });
+
+    if (meetingMessage.meetingDelivery) {
+      this.goBackToPendingStep();
+    }
   }
 
   protected updateMeetingDelivery(meetingDelivery: IMeetingDelivery): void {

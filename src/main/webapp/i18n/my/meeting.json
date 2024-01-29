@@ -19,6 +19,7 @@
       },
       "validateMsg": {
         "RequiredField": "ဤနေရာတွင်စာသားထည့်ရန်လိုအပ်ပါသည်။",
+        "RequiredSubject": "အကြောင်းအရာထည့်ရန်လိုအပ်ပါသည်။",
         "RequiredDate": "ရက်စွဲရွေးပါ။",
         "RequiredTime": "အချိန်ရွေးပါ။",
         "RequiredMainDept": "အနည်းဆုံးဌာနတစ်ခုရွေးပါ။",

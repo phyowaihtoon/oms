@@ -23,10 +23,11 @@
         <div *ngIf="isInfo" class="form-group">
           <div *ngIf="editForm.get('docNo')!.invalid && (editForm.get('docNo')?.dirty || editForm.get('docNo')?.touched)">
             <div *ngIf="editForm.get('docNo')?.errors?.required" style="text-align: right; color: red">
-              <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredField"> This Field is required. </span>
+              <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredLetterNo"> This Field is required. </span>
             </div>
           </div>
           <input
+            style="height: 30px"
             type="text"
             class="form-control div-padding"
             formControlName="docNo"
@@ -38,10 +39,11 @@
 
           <div *ngIf="editForm.get('subject')!.invalid && (editForm.get('subject')?.dirty || editForm.get('subject')?.touched)">
             <div *ngIf="editForm.get('subject')?.errors?.required" style="text-align: right; color: red">
-              <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredField"> This Field is required. </span>
+              <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredSubject"> This Field is required. </span>
             </div>
           </div>
           <input
+            style="height: 30px"
             type="text"
             class="form-control div-padding"
             formControlName="subject"
@@ -78,7 +80,7 @@
         <div *ngIf="isAttachment" class="form-group">
           <label class="form-control-label" for="text">&nbsp;</label>
 
-          <div *ngIf="checkFormArrayEmpty()" style="text-align: right; color: red">
+          <div *ngIf="isEmptyAttachedFile()" style="text-align: right; color: red">
             <span class="validate-span" jhiTranslate="omsApp.delivery.validateMsg.RequiredFile"> This Field is required. </span>
           </div>
 
@@ -148,13 +150,32 @@
       </div>
 
       <div class="card-footer">
-        <div *ngIf="isInfo" class="d-flex justify-content-end">
+        <div *ngIf="isInfo" class="d-flex justify-content-between">
+          <span style="width: 50px"></span>
+          <button
+            class="btn btn-primary"
+            type="button"
+            [disabled]="
+              isSaving ||
+              (editForm.get('docNo')?.errors?.required &&
+                editForm.get('subject')?.errors?.required &&
+                editForm.get('msg_body')?.errors?.required)
+            "
+            (click)="confirmSave(0)"
+          >
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Draft">Draft</span>
+            <fa-icon icon="save"></fa-icon>
+          </button>
           <button
             class="btn btn-primary"
             type="button"
             style="float: right"
             (click)="goToStep2()"
-            [disabled]="editForm.get('docNo')?.errors?.required || editForm.get('subject')?.errors?.required"
+            [disabled]="
+              editForm.get('docNo')?.errors?.required &&
+              editForm.get('subject')?.errors?.required &&
+              editForm.get('msg_body')?.errors?.required
+            "
           >
             <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Next">Next</span>
             <fa-icon icon="forward"></fa-icon>
@@ -164,10 +185,15 @@
         <div *ngIf="isReceiver" class="d-flex justify-content-between">
           <button class="btn btn-primary" type="button" style="float: left" (click)="goToStep1()">
             <fa-icon icon="backward"></fa-icon>
-            <span class="btn-text-padding-left" jhiTranslate="omsApp.delivery.button.Back"> Back</span>
+            <span class="btn-text-padding-left" jhiTranslate="omsApp.delivery.button.Back">Back</span>
           </button>
 
-          <button class="btn btn-primary" type="button" style="float: right" (click)="goToStep3()" [disabled]="toDepartments!.length === 0">
+          <button class="btn btn-primary" type="button" [disabled]="isSaving" (click)="confirmSave(0)">
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Draft">Draft</span>
+            <fa-icon icon="save"></fa-icon>
+          </button>
+
+          <button class="btn btn-primary" type="button" style="float: right" (click)="goToStep3()">
             <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Next">Next</span>
             <fa-icon icon="forward"></fa-icon>
           </button>
@@ -179,7 +205,12 @@
             <span class="btn-text-padding-left" jhiTranslate="omsApp.delivery.button.Back">Back</span>
           </button>
 
-          <button class="btn btn-primary" type="button" style="float: right" (click)="goToStep4()" [disabled]="checkFormArrayEmpty()">
+          <button class="btn btn-primary" type="button" [disabled]="isSaving" (click)="confirmSave(0)">
+            <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Draft">Draft</span>
+            <fa-icon icon="save"></fa-icon>
+          </button>
+
+          <button class="btn btn-primary" type="button" style="float: right" (click)="goToStep4()">
             <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Next">Next</span>
             <fa-icon icon="forward"></fa-icon>
           </button>
@@ -196,10 +227,12 @@
             <fa-icon icon="paper-plane"></fa-icon>
           </button>
 
-          <button class="btn btn-primary" type="button" style="float: right" [disabled]="isSaving" (click)="confirmSave(0)">
+          <button class="btn btn-primary" type="button" [disabled]="isSaving" (click)="confirmSave(0)">
             <span class="btn-text-padding-right" jhiTranslate="omsApp.delivery.button.Draft">Draft</span>
             <fa-icon icon="save"></fa-icon>
           </button>
+
+          <span style="width: 100px"></span>
         </div>
       </div>
     </div>

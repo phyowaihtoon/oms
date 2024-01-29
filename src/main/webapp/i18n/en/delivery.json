@@ -9,6 +9,8 @@
       },
       "validateMsg": {
         "RequiredField": "This field is required.",
+        "RequiredLetterNo": "Letter Number is required.",
+        "RequiredSubject": "Subject is required.",
         "RequiredMainDept": "Please choose at least one department.",
         "RequiredFile": "Please choose at least one attachment"
       },
