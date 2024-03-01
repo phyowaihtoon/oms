@@ -7,6 +7,7 @@ import creatip.oms.service.ApplicationUserService;
 import creatip.oms.service.LoadSetupService;
 import creatip.oms.service.UserService;
 import creatip.oms.service.dto.AdminUserDTO;
+import creatip.oms.service.dto.AnnouncementDTO;
 import creatip.oms.service.dto.ApplicationUserDTO;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.DepartmentDTO;
@@ -86,5 +87,10 @@ public class LoadSetupResource {
     public List<AdminUserDTO> getAllUsers() {
         List<AdminUserDTO> list = userService.getAllUsers();
         return list;
+    }
+
+    @GetMapping("/announcement")
+    public List<AnnouncementDTO> loadAllAnnouncement() {
+        return this.loadSetupService.getAllAnnouncements();
     }
 }

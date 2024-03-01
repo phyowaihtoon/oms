@@ -181,6 +181,14 @@
               <span jhiTranslate="global.menu.entities.department">Department</span>
             </a>
           </li>
+
+          <li>
+            <a class="dropdown-item" routerLink="announcement" routerLinkActive="active" (click)="collapseNavbar()">
+              <fa-icon icon="caret-right" [fixedWidth]="true"></fa-icon>
+              <span jhiTranslate="global.menu.entities.announcement">Announcement</span>
+            </a>
+          </li>
+
           <!--
           <li>
             <a class="dropdown-item" routerLink="sysconfig" routerLinkActive="active" (click)="collapseNavbar()">

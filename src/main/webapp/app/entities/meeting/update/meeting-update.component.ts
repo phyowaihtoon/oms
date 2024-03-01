@@ -628,7 +628,7 @@ export class MeetingUpdateComponent implements OnInit {
 
   protected updateForm(meetingMessage: IMeetingMessage): void {
     if (meetingMessage.meetingDelivery) {
-      this.updateMeetingDelivery(meetingMessage.meetingDelivery!);
+      this.updateMeetingDelivery(meetingMessage.meetingDelivery);
       this.goBackToPendingStep();
     } else {
       // Binding default values

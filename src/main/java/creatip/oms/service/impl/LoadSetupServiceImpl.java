@@ -1,18 +1,22 @@
 package creatip.oms.service.impl;
 
+import creatip.oms.domain.Announcement;
 import creatip.oms.domain.DashboardTemplate;
 import creatip.oms.domain.Department;
 import creatip.oms.domain.HeadDepartment;
+import creatip.oms.repository.AnnouncementRepository;
 import creatip.oms.repository.DashboardTemplateRepository;
 import creatip.oms.repository.DepartmentRepository;
 import creatip.oms.repository.DocumentDeliveryRepository;
 import creatip.oms.repository.HeadDepartmentRepository;
 import creatip.oms.repository.MeetingDeliveryRepository;
 import creatip.oms.service.LoadSetupService;
+import creatip.oms.service.dto.AnnouncementDTO;
 import creatip.oms.service.dto.DashboardTemplateDto;
 import creatip.oms.service.dto.DepartmentDTO;
 import creatip.oms.service.dto.DraftSummaryDTO;
 import creatip.oms.service.dto.HeadDepartmentDTO;
+import creatip.oms.service.mapper.AnnouncementMapper;
 import creatip.oms.service.mapper.DashboardTemplateMapper;
 import creatip.oms.service.mapper.DepartmentMapper;
 import creatip.oms.service.mapper.HeadDepartmentMapper;
@@ -36,6 +40,9 @@ public class LoadSetupServiceImpl implements LoadSetupService {
     private final DocumentDeliveryRepository documentDeliveryRepository;
     private final MeetingDeliveryRepository meetingDeliveryRepository;
 
+    private final AnnouncementRepository announcementRepository;
+    private final AnnouncementMapper announcementMapper;
+
     public LoadSetupServiceImpl(
         DashboardTemplateRepository dashboardTemplateRepository,
         DashboardTemplateMapper dashboardTemplateMapper,
@@ -44,7 +51,9 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         DepartmentRepository departmentRepository,
         DepartmentMapper departmentMapper,
         DocumentDeliveryRepository documentDeliveryRepository,
-        MeetingDeliveryRepository meetingDeliveryRepository
+        MeetingDeliveryRepository meetingDeliveryRepository,
+        AnnouncementRepository announcementRepository,
+        AnnouncementMapper announcementMapper
     ) {
         this.dashboardTemplateRepository = dashboardTemplateRepository;
         this.dashboardTemplateMapper = dashboardTemplateMapper;
@@ -54,6 +63,8 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         this.departmentMapper = departmentMapper;
         this.documentDeliveryRepository = documentDeliveryRepository;
         this.meetingDeliveryRepository = meetingDeliveryRepository;
+        this.announcementRepository = announcementRepository;
+        this.announcementMapper = announcementMapper;
     }
 
     @Override
@@ -83,5 +94,11 @@ public class LoadSetupServiceImpl implements LoadSetupService {
         draftSummaryDTO.setDeliveryCount(deliveryCount);
         draftSummaryDTO.setMeetingCount(meetingCount);
         return draftSummaryDTO;
+    }
+
+    @Override
+    public List<AnnouncementDTO> getAllAnnouncements() {
+        List<Announcement> entityList = this.announcementRepository.findByActiveFlagOrderById("Y");
+        return this.announcementMapper.toDto(entityList);
     }
 }
