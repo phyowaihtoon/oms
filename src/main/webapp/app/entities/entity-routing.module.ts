@@ -10,6 +10,11 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./department/department.module').then(m => m.DepartmentModule),
       },
       {
+        path: 'announcement',
+        data: { pageTitle: 'home.title' },
+        loadChildren: () => import('./announcement/announcement.module').then(m => m.AnnouncementModule),
+      },
+      {
         path: 'delivery',
         data: { pageTitle: 'home.title' },
         loadChildren: () => import('./delivery/delivery.module').then(m => m.DeliveryModule),

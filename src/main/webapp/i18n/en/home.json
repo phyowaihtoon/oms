@@ -5,6 +5,7 @@
     "calendar": "Calendar",
     "meeting_draft": "Meeting Draft",
     "document_draft": "Document Draft",
+    "dashboard_announcement_title": "Announcement",
     "dashboard_title1": "Document Received",
     "dashboard_title2": "Document Sent",
     "document_no": "Document No.",

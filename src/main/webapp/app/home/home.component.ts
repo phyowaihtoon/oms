@@ -16,6 +16,8 @@ import { IUserAuthority } from 'app/login/userauthority.model';
 import { UserAuthorityService } from 'app/login/userauthority.service';
 import { Subscription } from 'rxjs';
 import * as dayjs from 'dayjs';
+import { AnnouncementService } from 'app/entities/announcement/service/announcement.service';
+import { IAnnouncement } from 'app/entities/announcement/announcement.model';
 
 @Component({
   selector: 'jhi-home',
@@ -47,6 +49,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   _dashboardData1: IDocumentDelivery[] = [];
   _dashboardData2: IDocumentDelivery[] = [];
+  _announcementStr: string = '';
 
   constructor(
     private accountService: AccountService,
@@ -66,6 +69,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     } */
     const userAuthority = this.userAuthorityService.retrieveUserAuthority();
     this._departmentName = userAuthority?.department?.departmentName;
+    this.getAnnouncement();
     this.getDraftSummary();
     this.getMeetingList();
     this.loadDashboard1(1);
@@ -113,12 +117,35 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.makeTodayDateSelected();
 
     this._lDate = this.calendar.getToday();
+    this.getAnnouncement();
     this.getDraftSummary();
     this.getMeetingList();
     this._dashboardData1 = [];
     this._dashboardData2 = [];
     this.loadDashboard1(1);
     this.loadDashboard2(1);
+  }
+
+  getAnnouncement(): void {
+    this._announcementStr = '';
+    this.loadSetupService.loadAllAnnouncement().subscribe(
+      (res: HttpResponse<IAnnouncement[]>) => {
+        if (res.body) {
+          res.body.forEach(data => {
+            if (data.description) {
+              //this._announcementStr = this._announcementStr + " " + data.description + "။";
+              this._announcementStr = this._announcementStr
+                .concat(' '.toString())
+                .concat(data.description.toString())
+                .concat('။'.toString());
+            }
+          });
+        }
+      },
+      error => {
+        console.log('Loading Draft Summary Failed : ', error);
+      }
+    );
   }
 
   getDraftSummary(): void {
