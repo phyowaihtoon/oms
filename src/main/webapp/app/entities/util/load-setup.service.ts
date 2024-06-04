@@ -11,11 +11,13 @@ export type CodeTypeArrayType = HttpResponse<ICodeType[]>;
 export type HeadDepartmentType = HttpResponse<IHeadDepartment[]>;
 export type SubDepartmentType = HttpResponse<IDepartment[]>;
 export type DraftSummaryType = HttpResponse<IDraftSummary>;
+export type AnnouncementType = HttpResponse<IAnnouncement[]>;
 
 import { ICodeType, IDocumentStatus, IDraftSummary, IPriority, IWorkflowAuthority } from './setup.model';
 import { IDashboardTemplate } from 'app/services/dashboard-template.model';
 import { IDepartment, IHeadDepartment } from '../department/department.model';
 import { IUser } from '../user/user.model';
+import { IAnnouncement } from '../announcement/announcement.model';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +49,11 @@ export class LoadSetupService {
   loadDraftSummary(): Observable<DraftSummaryType> {
     const childURL = '/draftsummary';
     return this.http.get<IDraftSummary>(this.resourceUrl + childURL, { observe: 'response' });
+  }
+
+  loadAllAnnouncement(): Observable<AnnouncementType> {
+    const childURL = '/announcement';
+    return this.http.get<IAnnouncement[]>(this.resourceUrl + childURL, { observe: 'response' });
   }
 
   loadAllUsers(): Observable<HttpResponse<IUser[]>> {

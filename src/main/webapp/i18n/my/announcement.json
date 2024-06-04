@@ -1,0 +1,27 @@
+{
+  "dmsApp": {
+    "announcement": {
+      "home": {
+        "title": "အသိပေးကြေငြာချက်",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "အသစ်ထည့်မည်",
+        "createOrEditLabel": "Announcement အသစ်ထည့်ခြင်း (သို့) ပြုပြင်ခြင်း",
+        "notFound": "No Announcements found"
+      },
+      "created": "{{ param }} အိုင်ဒီဖြင့် Announcement အသစ်တစ်ခုအား ထည့်ပြီးပါပြီ။",
+      "updated": "{{ param }} အိုင်ဒီဖြင့် Announcement တစ်ခုအား ပြုပြင်ပြီးပါပြီ။",
+      "deleted": "{{ param }} အိုင်ဒီဖြင့် Announcement တစ်ခုအား ဖျက်ပြီးပါပြီ။",
+      "delete": {
+        "question": "Announcement {{ id }} အား ဖျက်ပါမည်။ သေချာပါသလား?"
+      },
+      "detail": {
+        "title": "Announcement"
+      },
+      "id": "ID",
+      "description": "အကြောင်းအရာ",
+      "delFlag": "Del Flag",
+      "activeFlag": "အခြေအနေ",
+      "checkAll": "အသိပေးကြေငြာချက် အားလုံး"
+    }
+  }
+}

@@ -10,6 +10,7 @@
         "main": "Entities",
         "category": "Category",
         "department": "Department",
+        "announcement": "Announcement",
         "applicationUser": "User Authority",
         "userRole": "Role Access",
         "sysconfig": "System Configuration",

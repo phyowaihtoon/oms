@@ -10,6 +10,7 @@
         "category": "Category",
         "book": "Book",
         "department": "Department",
+        "announcement": "အသိပေးကြေငြာချက်",
         "applicationUser": "User Authority",
         "userRole": "Role Access",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
