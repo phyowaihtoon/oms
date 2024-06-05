@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
+	
     @Modifying(clearAutomatically = true)
     @Query(value = "update Announcement ann set ann.delFlag=?1 where ann.id=?2")
     void updateDelFlag(String delFlag, Long id);
@@ -22,4 +23,6 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     Page<Announcement> findAllByDelFlag(String delflag, Pageable pageable);
 
     List<Announcement> findByActiveFlagOrderById(String activeFlag);
+    
+    List<Announcement> findByActiveFlagAndDelFlagOrderById(String activeFlag, String delFlag);
 }

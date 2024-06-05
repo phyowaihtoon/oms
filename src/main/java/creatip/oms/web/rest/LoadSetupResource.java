@@ -65,7 +65,7 @@ public class LoadSetupResource {
 
     @GetMapping("/subdept")
     public List<DepartmentDTO> loadAllSubDepartments() {
-        return this.loadSetupService.getAllSubDepartments();
+        return this.loadSetupService.getAllSubDepartmentsByDelFlag("N");
     }
 
     @GetMapping("/draftsummary")

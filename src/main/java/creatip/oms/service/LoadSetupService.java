@@ -13,6 +13,8 @@ public interface LoadSetupService {
     public List<HeadDepartmentDTO> getAllHeadDepartments();
 
     public List<DepartmentDTO> getAllSubDepartments();
+    
+    public List<DepartmentDTO> getAllSubDepartmentsByDelFlag(String delFlag);
 
     public DraftSummaryDTO getDraftSummary(DepartmentDTO sender);
 

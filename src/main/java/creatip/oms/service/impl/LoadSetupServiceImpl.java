@@ -98,7 +98,13 @@ public class LoadSetupServiceImpl implements LoadSetupService {
 
     @Override
     public List<AnnouncementDTO> getAllAnnouncements() {
-        List<Announcement> entityList = this.announcementRepository.findByActiveFlagOrderById("Y");
+        List<Announcement> entityList = this.announcementRepository.findByActiveFlagAndDelFlagOrderById("Y", "N");
         return this.announcementMapper.toDto(entityList);
     }
+
+	@Override
+	public List<DepartmentDTO> getAllSubDepartmentsByDelFlag(String delFlag) {
+		List<Department> entityList = this.departmentRepository.getAllSubDepartmentsByDelFlag("N");
+        return this.departmentMapper.toDto(entityList);
+	}
 }
