@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   _dashboardData1: IDocumentDelivery[] = [];
   _dashboardData2: IDocumentDelivery[] = [];
   _announcementStr: string = '';
+  _textSpeed: string = '';
 
   constructor(
     private accountService: AccountService,
@@ -138,6 +139,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                 .concat(' '.toString())
                 .concat(data.description.toString())
                 .concat('။'.toString());
+
+              this._textSpeed = (this._announcementStr.length/3).toString() + 's';  
             }
           });
         }

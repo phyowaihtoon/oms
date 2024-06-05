@@ -42,9 +42,13 @@
         <span jhiTranslate="home.dashboard_announcement_title">Announcement</span>
       </div>
       <div class="box-body">
-        <ng-marquee speed="drowsy" class="marquee">
+      
+        <ng-marquee duration={{_textSpeed}}  class="marquee">
           <mark>{{ _announcementStr }}</mark>
-        </ng-marquee>
+        </ng-marquee>  
+ 
+
+       
       </div>
     </div>
 
@@ -159,3 +163,4 @@
     </div>
   </div>
 </div>
+
